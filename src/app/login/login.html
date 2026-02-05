@@ -1,0 +1,47 @@
+<header class="header">
+  <div class="header-top">
+    <div class="icon-container">
+      <mat-icon>attach_money</mat-icon>
+    </div>
+    <h1 class="header-title">Sistema de Nómina</h1>
+  </div>
+
+  <div class="header-middle">
+    <div class="icon-container">
+      <mat-icon>nomina.png</mat-icon>
+    </div>
+    <h2 class="header-subtitle">SIINOM</h2>
+  </div>
+</header>
+
+<mat-card class="card" appearance="outlined">
+    <label class="field-title" for="usuario">Usuario:</label>
+        <mat-form-field appearance="outline"> 
+            <input matInput placeholder="Ingresar usuario" [(ngModel)]="credentials.user"/>
+        </mat-form-field>
+
+    <label class="field-title" for="password">Contraseña:</label>
+        <mat-form-field appearance="outline">
+            <input matInput placeholder="Ingresar contraseña" type="password" [(ngModel)]="credentials.password"/>
+        </mat-form-field>
+
+  <div class="login-button">
+    <button mat-raised-button color="primary" (click)="login()" [disabled]="loading"> 
+      {{ loading ? 'Accesando...' : 'Accesar'}} 
+    </button>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+</mat-card>
+
+<div class="footer">
+  <div class="header-bottom">
+    Dirección General de Recursos Humanos/Dirección de Nómina y Control de Plazas
+  </div>
+
+  <div class="footer-brand">
+    <img class="brand-logo" src="assets/img/Hidalgo_Seph.png" alt="Hidalgo Educación - Secretaría de Educación Pública" />
+  </div>
+</div>

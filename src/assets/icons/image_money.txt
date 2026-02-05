@@ -1,0 +1,1 @@
+<img src="/images/dolar.svg" alt="Signo dólar dorado" width="32" height="32">

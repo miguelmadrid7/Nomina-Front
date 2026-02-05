@@ -1,0 +1,23 @@
+// 1️⃣ @use siempre al inicio
+@use '@angular/material' as mat;
+
+// 2️⃣ Definir tema Angular Material
+html {
+  @include mat.theme((
+    color: (
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+// 3️⃣ Estilos globales del body
+body {
+  color-scheme: light;  // modo claro
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+}

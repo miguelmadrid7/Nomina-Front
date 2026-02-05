@@ -1,0 +1,15 @@
+.qna-filters-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.qna-field {
+  min-width: 140px;
+}
+
+/* Si quieres más compacto: */
+.qna-field .mat-mdc-form-field-infix {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
