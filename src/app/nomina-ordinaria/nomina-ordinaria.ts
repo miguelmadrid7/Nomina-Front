@@ -116,30 +116,31 @@ export class NominaOrdinaria implements OnInit {
   });
 
   const adaptedData = filtered.map((item: any) => {
-    const conceptos = item.conceptos ?? [];
+  const conceptos = item.conceptos ?? [];
 
-    // 1) intenta concepto con qnaProceso exacto
-    let concept = conceptos.find((c: any) => c?.qnaProceso === target);
+  // 1) intenta concepto con qnaProceso exacto
+  let concept = conceptos.find((c: any) => c?.qnaProceso === target);
 
-    // 2) si no hay exacto, toma alguno vigente por rango
-    if (!concept) {
-      concept = conceptos.find((c: any) => {
-        const ini = c?.qnaIni as number | undefined;
-        const fin = c?.qnaFin as number | undefined;
-        return typeof ini === 'number' && typeof fin === 'number' && ini <= target && fin >= target;
-      }) ?? conceptos[0];
-    }
+  // 2) si no hay exacto, toma alguno vigente por rango
+  if (!concept) {
+    concept = conceptos.find((c: any) => {
+      const ini = c?.qnaIni as number | undefined;
+      const fin = c?.qnaFin as number | undefined;
+      return typeof ini === 'number' && typeof fin === 'number' && ini <= target && fin >= target;
+    }) ?? conceptos[0];
+  }
 
-    return {
-      empleadoId: item.tab_empleados_id,
-      nombreEmpleado: item.nombre_empleado,
-      qnaProceso: this.qnaProceso, // muestra la quincena seleccionada
-      nivelSueldo: concept?.catCategoriasCve ?? '',
-      concepto: concept?.conceptoCve ?? '',
-      tipoConcepto: concept?.conceptoCve ?? '',
-      totalImporteQnal: item.total_importe_qnal
-    };
-  });
+  return {
+    // usa las claves camelCase que viene del backend
+    empleadoId: item.tabEmpleadosId,
+    nombreEmpleado: item.nombreEmpleado,
+    qnaProceso: this.qnaProceso,
+    nivelSueldo: concept?.catCategoriasCve ?? '',
+    concepto: concept?.conceptoCve ?? '',
+    tipoConcepto: concept?.conceptoCve ?? '',
+    totalImporteQnal: item.totalImporteQnal
+  };
+});
 
   this.dataSource.data = adaptedData;
   this.totalElements = adaptedData.length;

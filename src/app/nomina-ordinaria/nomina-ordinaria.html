@@ -29,10 +29,10 @@
             <mat-form-field appearance="outline" class="qna-field">
                 <mat-label>Quincena</mat-label>
                 <mat-select [(ngModel)]="quincenaSeleccionada" (selectionChange)="onQuincenaChange()">
-                <mat-option *ngFor="let q of quincenas" [value]="q">
-                    {{ q.toString().padStart(2, '0') }}
-                </mat-option>
-                </mat-select>
+  <mat-option *ngFor="let q of quincenas" [value]="q">
+    {{ q.toString().padStart(2,'0') }}
+  </mat-option>
+</mat-select>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="qna-field">
