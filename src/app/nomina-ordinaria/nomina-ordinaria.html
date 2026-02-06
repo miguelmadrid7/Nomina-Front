@@ -4,11 +4,15 @@
 
   <div class="actions-right">
     <button matButton="filled" class="btn-descarga-csv">Descraga CSV.</button>
-    <button matButton="filled" class="btn-descarga-csv">Ver Registros.</button>
-    <button matButton="filled" class="btn-descarga-csv">Ocultar Registros.</button>
+    <button matButton="filled" class="btn-descarga-csv" (click) = "showRecordsTable()">Ver Registros.</button>
+    <button matButton="filled" class="btn-descarga-csv" (click) = "hideRecordsTable()">Ocultar Registros.</button>
   </div>
 
-<div class="table-container">
+  <div *ngIf="!showRecords" class="empty">
+    Presiona "Ver Registros" para cargar la información.
+  </div>
+
+<div class="table-container" *ngIf="showRecords">
   <div class="table-card card" [class.is-loading]="false">
     <div *ngIf="dataSource.data.length === 0" class="empty">
       No hay datos para el año {{ anioSeleccionado }} y quincena
@@ -90,7 +94,7 @@
       </table>
     </div>
 
-    <div class="table-footer">
+    <div class="table-footer" *ngIf="dataSource.data.length > 0">
       <mat-paginator
         [length]="totalElements"
         [pageSize]="50"

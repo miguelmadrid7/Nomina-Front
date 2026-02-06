@@ -52,24 +52,36 @@ export class NominaOrdinaria implements OnInit {
   nivelSueldo?: number;
   concepto?: string[];
   tipoConcepto?: string;
-
   totalElements = 0;
+  showRecords = false;
 
   constructor(private nominaService: NominaService) {}
 
   ngOnInit(): void {
-    this.refresh();
+    //this.refresh();
   }
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
   }
 
+  showRecordsTable(): void {
+    this.showRecords = true;
+    this.refresh();
+  }
+
+  hideRecordsTable(): void {
+    this.showRecords = false;
+    this.clearTable();
+  }
+
   onAnioChange(): void {
+    if (this.showRecords)
     this.refresh();
   }
 
   onQuincenaChange(): void {
+    if (this.showRecords)
     this.refresh();
   }
 
