@@ -28,14 +28,22 @@
   box-sizing: border-box;
 }
 
+.table-card.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
 .table-scroll {
   width: 100%;
-  overflow: auto;
+  overflow-x: auto;
+  overflow-y: scroll;
 }
 
 .nomina-table {
   width: 100%;
-  border-collapse: collapse;
 }
 
 .nomina-table th,
@@ -58,6 +66,12 @@
   align-items: flex-start;
 }
 
+/* Opcional: si quieres que respete bien el border-radius de la card */
+.table-scroll .nomina-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
 .table-footer {
   display: flex;
   justify-content: flex-end;
@@ -67,7 +81,6 @@
   box-sizing: border-box;
 }
 
-/* Mensaje sin datos estilo "empty" como tu otro template */
 .empty {
   padding: 16px;
   border: 1px dashed #e5e7eb;
@@ -76,7 +89,6 @@
   background: #fafafa;
 }
 
-/* QNA filters row dentro del header */
 .qna-filters-row {
   display: flex;
   gap: 10px;
@@ -88,7 +100,6 @@
   max-width: 200px;
 }
 
-/* Compactar mat-form-field como tus col-filter */
 .qna-field .mat-form-field-wrapper,
 .qna-field .mat-form-field-flex,
 .qna-field .mat-form-field-infix {
@@ -102,34 +113,4 @@
   .qna-field {
     width: 120px;
   }
-}
-
-.table-card.card {
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  background: #fff;
-  overflow: hidden; /* clave para que el borde/radius se vea bien */
-}
-
-.table-scroll {
-  overflow: auto;
-}
-
-/* Opcional: separa la tabla del borde de la card si quieres aire */
-.table-scroll .nomina-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.table-card.card {
-  box-shadow: 0 1px 2px rgba(0,0,0,.06);
-}
-
-
-.table-scroll {
-
-  overflow-y: scroll;
-  overflow-x: auto;
-  width: 100%;
 }
