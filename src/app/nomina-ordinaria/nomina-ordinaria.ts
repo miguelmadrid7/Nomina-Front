@@ -169,4 +169,29 @@ export class NominaOrdinaria implements OnInit {
       }
     });
   }
+
+  downloadExcel(): void {
+    const qna = this['buildQnaProceso'](this.anioSeleccionado, this.quincenaSeleccionada);
+    if (!qna) return;
+
+    this.nominaService.downloadExcel({
+      qnaProceso: qna,
+      nivelSueldo: this.nivelSueldo,
+      conceptos: this.concepto,
+      empleadoId: this.empleadoId,
+      tipoConcepto: this.tipoConcepto
+    }).subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'calculo_nomina.xlsx';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Error descargando Excel', err);
+      }
+    });
+  }
 }
