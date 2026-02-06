@@ -128,7 +128,7 @@
 
 
 .table-scroll {
-  max-height: 60vh;       /* ajusta: 50vh, 70vh o 400px */
+
   overflow-y: scroll;
   overflow-x: auto;
   width: 100%;
