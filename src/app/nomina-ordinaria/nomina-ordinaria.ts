@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
+import { finalize } from 'rxjs/operators';
 import { NominaService } from '../servicios/nomina-ordinaria.service';
 
 @Component({
@@ -25,8 +26,6 @@ import { NominaService } from '../servicios/nomina-ordinaria.service';
   styleUrl: './nomina-ordinaria.css'
 })
 export class NominaOrdinaria implements OnInit {
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   dataSource = new MatTableDataSource<any>([]);
   displayedColumns: string[] = [
@@ -53,7 +52,12 @@ export class NominaOrdinaria implements OnInit {
   concepto?: string[];
   tipoConcepto?: string;
   totalElements = 0;
+
   showRecords = false;
+  hasSearched = false;
+  isLoading = false;
+  private fetchSeq = 0;
+  private activeFetch = 0;
 
   constructor(private nominaService: NominaService) {}
 
@@ -61,31 +65,38 @@ export class NominaOrdinaria implements OnInit {
     //this.refresh();
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+  @ViewChild(MatPaginator) set matPaginator(p: MatPaginator) {
+    if (p) this.dataSource.paginator = p;
   }
 
   showRecordsTable(): void {
+    if (this.isLoading) return;
     this.showRecords = true;
     this.refresh();
   }
 
   hideRecordsTable(): void {
     this.showRecords = false;
+    this.hasSearched = false;
+    this.isLoading = false;
     this.clearTable();
+
   }
 
   onAnioChange(): void {
-    if (this.showRecords)
+    if (this.showRecords  && !this.isLoading)
     this.refresh();
   }
 
   onQuincenaChange(): void {
-    if (this.showRecords)
+    if (this.showRecords  && !this.isLoading)
     this.refresh();
   }
 
   private refresh(): void {
+    console.log('REFRESH', { isLoading: this.isLoading, anio: this.anioSeleccionado, qna: this.quincenaSeleccionada });
+    if (this.isLoading) return;
+
     const qna = this.buildQnaProceso(this.anioSeleccionado, this.quincenaSeleccionada);
     if (!qna) {
       this.clearTable();
@@ -151,27 +162,45 @@ export class NominaOrdinaria implements OnInit {
   }
 
   private fetchNomina(): void {
+    this.hasSearched = true;
+
+    const seq = ++this.fetchSeq;
+    this.activeFetch = seq;
+
+    this.isLoading = true;
+    //this.cdr.detectChanges();
+
     this.nominaService.getCalculation({
       qnaProceso: this.qnaProceso,
       empleadoId: this.empleadoId,
       nivelSueldo: this.nivelSueldo,
       concepto: this.concepto,
       tipoConcepto: this.tipoConcepto
-    }).subscribe({
+    }).pipe(
+      finalize(() => {
+        if (this.activeFetch === seq) {
+          this.isLoading = false;
+          //this.cdr.detectChanges();
+        }
+      })
+    ).subscribe({
       next: (response: any) => {
         const data = this.adaptResponse(response?.data ?? [], this.qnaProceso);
         this.dataSource.data = data;
         this.totalElements = data.length;
+        //this.cdr.detectChanges();
       },
       error: err => {
         console.error('Error al cargar nómina', err);
         this.clearTable();
+        //this.cdr.detectChanges();
       }
     });
   }
 
   downloadExcel(): void {
-    const qna = this['buildQnaProceso'](this.anioSeleccionado, this.quincenaSeleccionada);
+    const qna = this.buildQnaProceso(this.anioSeleccionado, this.quincenaSeleccionada);
+    //const qna = this['buildQnaProceso'](this.anioSeleccionado, this.quincenaSeleccionada);
     if (!qna) return;
 
     this.nominaService.downloadExcel({
