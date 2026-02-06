@@ -114,3 +114,18 @@
     width: 120px;
   }
 }
+
+.btn-descarga-csv {
+  background-color: #491D2A !important;
+  color: #fff !important;
+}
+
+.actions-right {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
