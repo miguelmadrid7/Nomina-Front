@@ -33,25 +33,25 @@
   overflow: auto;
 }
 
-.orders-table {
+.nomina-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.orders-table th,
-.orders-table td {
+.nomina-table th,
+.nomina-table td {
   padding: 6px 8px;
   border: 1px solid #e5e7eb;
   text-align: left;
   vertical-align: middle;
 }
 
-.orders-table th {
+.nomina-table th {
   font-weight: 600;
   color: #000;
 }
 
-.orders-table th .header-cell {
+.nomina-table th .header-cell {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -116,7 +116,7 @@
 }
 
 /* Opcional: separa la tabla del borde de la card si quieres aire */
-.table-scroll .orders-table {
+.table-scroll .nomina-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
@@ -124,4 +124,12 @@
 
 .table-card.card {
   box-shadow: 0 1px 2px rgba(0,0,0,.06);
+}
+
+
+.table-scroll {
+  max-height: 60vh;       /* ajusta: 50vh, 70vh o 400px */
+  overflow-y: scroll;
+  overflow-x: auto;
+  width: 100%;
 }
