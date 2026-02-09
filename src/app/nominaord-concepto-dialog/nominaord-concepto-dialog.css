@@ -29,27 +29,79 @@
   font-size: 15px;
 }
 
+/* Info del empleado alineada con la tabla */
 .employee-info {
-  margin-left: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   margin-bottom: 10px;
+  padding: 0 5px; /* mismo padding lateral que la tabla/modal */
+  box-sizing: border-box;
 }
 
 .employee-field {
   font-size: 16px;
-  margin-bottom: 4px;
+  display: flex;
+  gap: 6px; /* separa label de value */
 }
 
 /* Etiquetas */
 .label {
   font-weight: 600;
-  margin-right: 6px;
   color: #333;
 }
 
 /* Valores (CURP, RFC, QNA) */
 .value {
   font-weight: 700;
-  font-size: 17px;
+  font-size: 16px;
   color: #000;
 }
 
+.table-card.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-height: 80vh; /* altura máxima del modal */
+  padding: 16px; /* separación interna de todos los lados */
+  box-sizing: border-box;
+}
+
+.table-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: auto;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mantener bordes de tabla separados */
+.nomina-table th,
+.nomina-table td {
+  border: 1px solid #e5e7eb;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.nomina-table th {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  font-weight: 600;
+  z-index: 2;
+}
+
+.total-row {
+  display: flex;
+  justify-content: flex-start; /* ahora a la izquierda */
+  gap: 12px;
+  margin-top: 16px;
+  margin-left: 0; /* quitar margen extra lateral para que respete padding del modal */
+  padding: 8px 0 0 0;
+  border-top: 1px solid #e5e7eb;
+  font-weight: 600;
+  font-size: 14px;
+}

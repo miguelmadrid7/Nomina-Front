@@ -1,65 +1,59 @@
 <h2 mat-dialog-title>Empleado: {{data.nombreEmpleado}}</h2>
-<div class="employee-info">
-  <div class="employee-field">
-    <span class="label">CURP:</span>
-    <span class="value">{{ data.curp }}</span>
+
+<div class="table-card card">
+
+  <!-- Info del empleado -->
+  <div class="employee-info">
+    <div class="employee-field">
+      <span class="label">CURP:</span>
+      <span class="value">{{ data.curp }}</span>
+    </div>
+    <div class="employee-field">
+      <span class="label">RFC:</span>
+      <span class="value">{{ data.rfc }}</span>
+    </div>
+    <div class="employee-field" *ngIf="data.conceptos?.length">
+      <span class="label">QNA:</span>
+      <span class="value">{{ data.qnaProceso }}</span>
+    </div>
   </div>
 
-  <div class="employee-field">
-    <span class="label">RFC:</span>
-    <span class="value">{{ data.rfc }}</span>
-  </div>
+  <!-- Tabla con scroll -->
+  <div class="table-scroll content">
+    <table mat-table [dataSource]="data.conceptos" class="nomina-table full">
 
-  <div class="employee-field" *ngIf="data.conceptos?.length">
-    <span class="label">QNA:</span>
-    <span class="value">
-      {{ data.qnaProceso }}
+      <ng-container matColumnDef="categoria">
+        <th mat-header-cell *matHeaderCellDef>Categoria</th>
+        <td mat-cell *matCellDef="let c">{{ c.catCategoriasCve }}</td>
+      </ng-container>
 
-    </span>
-  </div>
-</div>
+      <ng-container matColumnDef="concepto">
+        <th mat-header-cell *matHeaderCellDef>Concepto</th>
+        <td mat-cell *matCellDef="let c">{{ c.conceptoCve }}</td>
+      </ng-container>
 
-<mat-dialog-content class="content">
-  <table mat-table [dataSource]="data.conceptos" class="mat-elevation-z1 full">
+      <ng-container matColumnDef="clave">
+        <th mat-header-cell *matHeaderCellDef>Tipo SD/D</th>
+        <td mat-cell *matCellDef="let c">{{ c.tipoConcepto ?? '-' }}</td>
+      </ng-container>
 
-    <ng-container matColumnDef="categoria">
-      <th mat-header-cell *matHeaderCellDef>Categoria</th>
-      <td mat-cell *matCellDef="let c">{{ c.catCategoriasCve }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="concepto">
-      <th mat-header-cell *matHeaderCellDef>Concepto</th>
-      <td mat-cell *matCellDef="let c">
-        {{ c.conceptoCve }}
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="clave">
-      <th mat-header-cell *matHeaderCellDef>Tipo SD/D</th>
-      <td mat-cell *matCellDef="let c"></td>
-    </ng-container>
-
-    <ng-container matColumnDef="importe">
-      <th mat-header-cell *matHeaderCellDef>Importe</th>
-      <td mat-cell *matCellDef="let c">
-        {{ c.importeQnal | number:'1.2-2' }}
-      </td>
-    </ng-container>
+      <ng-container matColumnDef="importe">
+        <th mat-header-cell *matHeaderCellDef>Importe $</th>
+        <td mat-cell *matCellDef="let c">{{ c.importeQnal | number:'1.2-2' }}</td>
+      </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="cols"></tr>
       <tr mat-row *matRowDef="let row; columns: cols;"></tr>
     </table>
-  </mat-dialog-content>
+  </div>
 
+  <!-- Footer con total -->
+  <div class="table-footer">
+    <div class="total-row">
+      <span>Total $:</span>
+      <strong>${{ totalImporte | number:'1.2-2' }}</strong>
+    </div>
+    <button mat-button (click)="close()">Cerrar</button>
+  </div>
 
-<div class="employee-info" *ngIf="data.conceptos?.length">
-  <div class="employee-field">
-   <span>Total:</span>
-   <strong>{{ totalImporte | number:'1.2-2' }}</strong>
 </div>
-
-<mat-dialog-actions align="end">
-  <button mat-button (click)="close()">Cerrar</button>
-</mat-dialog-actions>
-
-
