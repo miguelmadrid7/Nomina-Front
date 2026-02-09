@@ -1,3 +1,12 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;        /* antes: min-height: 100vh */
+  overflow: hidden;     /* importante: evita scroll del body y encierra el layout */
+  box-sizing: border-box;
+}
+
+/* Encabezado y acciones */
 .page-title {
   margin: 0;
   font-size: 1.6rem;
@@ -13,6 +22,7 @@
   margin-bottom: 1rem;
   padding-left: 8px;
   box-sizing: border-box;
+  flex: 0 0 auto;
 }
 
 .header-actions {
@@ -22,26 +32,64 @@
   margin-top: 4px;
 }
 
-.table-card {
-  overflow-x: auto;
+.actions-right {
   width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 0 8px;
   box-sizing: border-box;
+  flex: 0 0 auto;
 }
 
+/* Contenedor principal que crece para llenar la pantalla */
+.table-container {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Tarjeta de la tabla en flex columna */
+.table-card {
+  overflow: visible;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* No ocultar el scroll interno */
 .table-card.card {
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   background: #fff;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
+/* Área scrolleable que ocupa el espacio restante, con scroll siempre visible */
 .table-scroll {
   width: 100%;
   overflow-x: auto;
   overflow-y: scroll;
+  flex: 1 1 auto;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable both-edges;
 }
 
+.nomina-table th {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 1;
+}
+
+/* Tabla */
 .nomina-table {
   width: 100%;
 }
@@ -66,13 +114,15 @@
   align-items: flex-start;
 }
 
-/* Opcional: si quieres que respete bien el border-radius de la card */
+/* Respeta border-radius de la card */
 .table-scroll .nomina-table {
   border-collapse: separate;
   border-spacing: 0;
 }
 
+/* Footer/paginador fijo al fondo de la tarjeta */
 .table-footer {
+  flex: 0 0 auto;
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -81,12 +131,14 @@
   box-sizing: border-box;
 }
 
+/* Varios */
 .empty {
   padding: 16px;
   border: 1px dashed #e5e7eb;
   border-radius: 8px;
   color: #374151;
   background: #fafafa;
+  flex: 0 0 auto;
 }
 
 .qna-filters-row {
@@ -119,14 +171,3 @@
   background-color: #491D2A !important;
   color: #fff !important;
 }
-
-.actions-right {
-  width: 100%;
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-bottom: 10px;
-  padding: 0 8px;
-  box-sizing: border-box;
-}
-
