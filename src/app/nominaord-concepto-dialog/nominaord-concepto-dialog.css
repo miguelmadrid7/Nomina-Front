@@ -1,0 +1,55 @@
+.content {
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  max-height:60vh;
+  overflow:auto;
+}
+
+.full {
+  width: 100%;
+}
+
+
+.qna-info {
+  margin-bottom: 12px;
+  margin-left: 25px;
+  font-size: 14px;
+  color: #555;
+}
+
+.total-row {
+  display: flex;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-top: 16px;
+  margin-left: 25px;
+  padding-top: 8px;
+  border-top: 1px solid #e0e0e0;
+  font-size: 15px;
+}
+
+.employee-info {
+  margin-left: 25px;
+  margin-bottom: 10px;
+}
+
+.employee-field {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+/* Etiquetas */
+.label {
+  font-weight: 600;
+  margin-right: 6px;
+  color: #333;
+}
+
+/* Valores (CURP, RFC, QNA) */
+.value {
+  font-weight: 700;
+  font-size: 17px;
+  color: #000;
+}
+

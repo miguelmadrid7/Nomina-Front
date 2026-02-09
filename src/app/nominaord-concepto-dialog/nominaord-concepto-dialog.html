@@ -1,0 +1,64 @@
+<h2 mat-dialog-title>Empleado: {{data.nombreEmpleado}}</h2>
+<div class="employee-info">
+  <div class="employee-field">
+    <span class="label">CURP:</span>
+    <span class="value">{{ data.curp }}</span>
+  </div>
+
+  <div class="employee-field">
+    <span class="label">RFC:</span>
+    <span class="value">{{ data.rfc }}</span>
+  </div>
+
+  <div class="employee-field" *ngIf="data.conceptos?.length">
+    <span class="label">QNA:</span>
+    <span class="value">
+      {{ data.conceptos[0].qnaProceso ?? (data.conceptos[0].qnaIni + ' - ' + data.conceptos[0].qnaFin) }}
+    </span>
+  </div>
+</div>
+
+<mat-dialog-content class="content">
+  <table mat-table [dataSource]="data.conceptos" class="mat-elevation-z1 full">
+
+    <ng-container matColumnDef="categoria">
+      <th mat-header-cell *matHeaderCellDef>Categoria</th>
+      <td mat-cell *matCellDef="let c">{{ c.catCategoriasCve }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="concepto">
+      <th mat-header-cell *matHeaderCellDef>Concepto</th>
+      <td mat-cell *matCellDef="let c">
+        {{ c.conceptoCve }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="clave">
+      <th mat-header-cell *matHeaderCellDef>Tipo SD/D</th>
+      <td mat-cell *matCellDef="let c"></td>
+    </ng-container>
+
+    <ng-container matColumnDef="importe">
+      <th mat-header-cell *matHeaderCellDef>Importe</th>
+      <td mat-cell *matCellDef="let c">
+        {{ c.importeQnal | number:'1.2-2' }}
+      </td>
+    </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="cols"></tr>
+      <tr mat-row *matRowDef="let row; columns: cols;"></tr>
+    </table>
+  </mat-dialog-content>
+
+
+<div class="employee-info" *ngIf="data.conceptos?.length">
+  <div class="employee-field">
+   <span>Total:</span>
+   <strong>{{ totalImporte | number:'1.2-2' }}</strong>
+</div>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Cerrar</button>
+</mat-dialog-actions>
+
+
