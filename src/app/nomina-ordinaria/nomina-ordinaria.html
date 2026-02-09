@@ -2,48 +2,74 @@
   <h2 class="page-title">Nómina ordinaria</h2>
 </div>
 
-<div class="empty">
-  debug: showRecords={{showRecords}} | isLoading={{isLoading}} | hasSearched={{hasSearched}} | rows={{dataSource.data.length}}
-</div>
-
   <div class="actions-right">
-    <button matButton="filled" class="btn-descarga-csv" (click)="downloadExcel()" [disabled]="isLoading">
-      Descarga CSV.
+    <button matButton="filled" class="btn-descarga-csv" (click)="clearFilters()">
+      Limpiar filtros
     </button>
 
-    <button matButton="filled" class="btn-descarga-csv" (click)="showRecordsTable()" [disabled]="isLoading">
+    <button matButton="filled" class="btn-descarga-csv" (click)="showRecordsTable()">
       Ver Registros.
     </button>
 
-    <button matButton="filled" class="btn-descarga-csv" (click)="hideRecordsTable()" [disabled]="isLoading">
+    <button matButton="filled" class="btn-descarga-csv" (click)="hideRecordsTable()">
       Ocultar Registros.
+    </button>
+
+    <button matButton="filled" class="btn-descarga-csv" (click)="downloadExcel()">
+      Descarga CSV.
     </button>
   </div>
 
 <div class="table-container" *ngIf="showRecords">
-  <div class="table-card card" [class.is-loading]="isLoading">
+  <div class="table-card card">
+      <div class="table-content">
 
-    <div *ngIf="isLoading" class="empty">
-      Cargando registros...
-    </div>
-
-    <ng-container *ngIf="!isLoading">
-      <ng-container *ngIf="dataSource.data.length > 0; else noData">
 
         <div class="table-scroll">
           <table mat-table [dataSource]="dataSource" class="nomina-table">
 
-            <!-- ID -->
-            <ng-container matColumnDef="empleadoId">
-              <th mat-header-cell *matHeaderCellDef>ID Empleado</th>
-              <td mat-cell *matCellDef="let e">{{ e.empleadoId }}</td>
+            <!-- CURP -->
+            <ng-container matColumnDef="curp">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="header-filter">
+                  <span>CURP</span>
+                  <input
+                    matInput
+                    placeholder="Buscar"
+                    (keyup.enter)="applyFilter('curp', $event.target.value)">
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let e">{{ e.curp }}</td>
+            </ng-container>
+
+
+            <!-- RFC -->
+            <ng-container matColumnDef="rfc">
+              <th mat-header-cell *matHeaderCellDef>
+                <div class="header-filter">
+                  <span>RFC</span>
+                  <input
+                    matInput
+                    placeholder="Buscar"
+                    (keyup.enter)="applyFilter('rfc', $event.target.value)">
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
             </ng-container>
 
             <!-- Nombre -->
-            <ng-container matColumnDef="nombreEmpleado">
-              <th mat-header-cell *matHeaderCellDef>Nombre Empleado</th>
-              <td mat-cell *matCellDef="let e">{{ e.nombreEmpleado }}</td>
-            </ng-container>
+           <ng-container matColumnDef="nombreEmpleado">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-filter">
+                <span>Empleado</span>
+                <input
+                  matInput
+                  placeholder="Buscar"
+                  (keyup.enter)="applyFilter('nombreEmpleado', $event.target.value)">
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let e">{{ e.nombreEmpleado }}</td>
+          </ng-container>
 
             <!-- QNA -->
             <ng-container matColumnDef="qnaProceso">
@@ -74,22 +100,20 @@
 
             <!-- Nivel -->
             <ng-container matColumnDef="nivelSueldo">
-              <th mat-header-cell *matHeaderCellDef>Nivel Sueldo</th>
+              <th mat-header-cell *matHeaderCellDef>Categoría</th>
               <td mat-cell *matCellDef="let e">{{ e.nivelSueldo }}</td>
             </ng-container>
 
             <!-- Concepto -->
             <ng-container matColumnDef="concepto">
-              <th mat-header-cell *matHeaderCellDef>Concepto</th>
-              <td mat-cell *matCellDef="let e">{{ e.concepto }}</td>
+              <th mat-header-cell *matHeaderCellDef>Conceptos</th>
+              <td mat-cell *matCellDef="let e">
+                <button mat-button color="primary" (click)="openConceptosDialog(e)">
+                  Ver detalle
+                </button></td>
             </ng-container>
 
-            <!-- Tipo -->
-            <ng-container matColumnDef="tipoConcepto">
-              <th mat-header-cell *matHeaderCellDef>Tipo Concepto</th>
-              <td mat-cell *matCellDef="let e">{{ e.tipoConcepto }}</td>
-            </ng-container>
-
+           
             <!-- Importe -->
             <ng-container matColumnDef="totalImporteQnal">
               <th mat-header-cell *matHeaderCellDef>Importe Total</th>
@@ -113,20 +137,11 @@
             aria-label="Select page">
           </mat-paginator>
         </div>
+         </div>
 
-      </ng-container>
+    
 
-      <ng-template #noData>
-        <div class="empty" *ngIf="hasSearched">
-          No hay datos para el año {{ anioSeleccionado }} y quincena
-          {{ quincenaSeleccionada.toString().padStart(2, '0') }}
-        </div>
-
-        <div class="empty" *ngIf="!hasSearched">
-          Presiona "Ver Registros" para cargar la información.
-        </div>
-      </ng-template>
-    </ng-container>
+      
 
   </div>
 </div>

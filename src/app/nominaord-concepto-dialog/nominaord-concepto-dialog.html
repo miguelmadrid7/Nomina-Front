@@ -13,7 +13,8 @@
   <div class="employee-field" *ngIf="data.conceptos?.length">
     <span class="label">QNA:</span>
     <span class="value">
-      {{ data.conceptos[0].qnaProceso ?? (data.conceptos[0].qnaIni + ' - ' + data.conceptos[0].qnaFin) }}
+      {{ data.qnaProceso }}
+
     </span>
   </div>
 </div>

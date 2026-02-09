@@ -1,7 +1,7 @@
 :host {
   display: flex;
   flex-direction: column;
-  height: 100vh;        /* antes: min-height: 100vh */
+  min-height: 100vh; /* antes: min-height: 100vh */
   overflow: hidden;     /* importante: evita scroll del body y encierra el layout */
   box-sizing: border-box;
 }
@@ -44,6 +44,12 @@
   flex: 0 0 auto;
 }
 
+
+/* Tabla */
+.nomina-table {
+  width: 100%;
+}
+
 /* Contenedor principal que crece para llenar la pantalla */
 .table-container {
   flex: 1 1 auto;
@@ -54,21 +60,21 @@
 
 /* Tarjeta de la tabla en flex columna */
 .table-card {
-  overflow: visible;
-  width: 100%;
-  box-sizing: border-box;
+  
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
+  overflow: hidden;
 }
+
 
 /* No ocultar el scroll interno */
 .table-card.card {
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   background: #fff;
-  overflow: visible;
+  overflow: hidden;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
@@ -76,24 +82,21 @@
 .table-scroll {
   width: 100%;
   overflow-x: auto;
-  overflow-y: scroll;
+  overflow-y: auto;
   flex: 1 1 auto;
   min-height: 0;
   -webkit-overflow-scrolling: touch;
   scrollbar-gutter: stable both-edges;
+  max-height: calc(100vh - 200px);
 }
 
 .nomina-table th {
   position: sticky;
   top: 0;
-  background: #fff;
-  z-index: 1;
+  background: #ffffff;
+  z-index: 3;
 }
 
-/* Tabla */
-.nomina-table {
-  width: 100%;
-}
 
 .nomina-table th,
 .nomina-table td {
@@ -108,7 +111,8 @@
   color: #000;
 }
 
-.nomina-table th .header-cell {
+.nomina-table th 
+.header-cell {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -116,7 +120,8 @@
 }
 
 /* Respeta border-radius de la card */
-.table-scroll .nomina-table {
+.table-scroll 
+.nomina-table {
   border-collapse: separate;
   border-spacing: 0;
 }
@@ -130,6 +135,7 @@
   padding: 8px;
   gap: 8px;
   box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 /* Varios */
@@ -171,4 +177,35 @@
 .btn-descarga-csv {
   background-color: #491D2A !important;
   color: #fff !important;
+}
+
+.nomina-dialog-wide 
+.mat-dialog-container {
+  width: 1100px;
+  max-width: 95vw;
+  max-height: 85vh;
+}
+
+.header-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.header-filter span {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.header-filter input {
+  font-size: 12px;
+  padding: 2px 4px;
+}
+
+
+.table-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
 }

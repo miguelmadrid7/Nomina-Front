@@ -7,8 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
-import { finalize } from 'rxjs/operators';
 import { NominaService } from '../servicios/nomina-ordinaria.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { NominaordConceptoDialog } from '../nominaord-concepto-dialog/nominaord-concepto-dialog';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-nomina-ordinaria',
@@ -20,7 +22,9 @@ import { NominaService } from '../servicios/nomina-ordinaria.service';
     MatButtonModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatOption
+    MatOption,
+    MatDialogModule,
+    MatInputModule
   ],
   templateUrl: './nomina-ordinaria.html',
   styleUrl: './nomina-ordinaria.css'
@@ -28,23 +32,14 @@ import { NominaService } from '../servicios/nomina-ordinaria.service';
 export class NominaOrdinaria implements OnInit {
 
   dataSource = new MatTableDataSource<any>([]);
-  displayedColumns: string[] = [
-    'empleadoId',
-    'nombreEmpleado',
-    'qnaProceso',
-    'nivelSueldo',
-    'concepto',
-    'tipoConcepto',
-    'totalImporteQnal'
-  ];
-
+  displayedColumns: string[] = ['curp', 'rfc', 'nombreEmpleado', 'qnaProceso', 'nivelSueldo', 'concepto', 'totalImporteQnal'];
+  filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
 
   anios: number[] = [2026, 2025, 2024];
   quincenas: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
 
   anioSeleccionado = 2026;
   quincenaSeleccionada = 1;
-
 
   qnaProceso!: number;
   empleadoId?: number;
@@ -54,15 +49,20 @@ export class NominaOrdinaria implements OnInit {
   totalElements = 0;
 
   showRecords = false;
-  hasSearched = false;
-  isLoading = false;
-  private fetchSeq = 0;
-  private activeFetch = 0;
 
-  constructor(private nominaService: NominaService) {}
+
+  constructor(private nominaService: NominaService, private dialog: MatDialog) {}
 
   ngOnInit(): void {
-    //this.refresh();
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+    const search = JSON.parse(filter);
+
+    return (
+      data.nombreEmpleado?.toLowerCase().includes(search.nombreEmpleado) &&
+      data.curp?.toLowerCase().includes(search.curp) &&
+      data.rfc?.toLowerCase().includes(search.rfc)
+    );
+  };
   }
 
   @ViewChild(MatPaginator) set matPaginator(p: MatPaginator) {
@@ -70,35 +70,35 @@ export class NominaOrdinaria implements OnInit {
   }
 
   showRecordsTable(): void {
-    if (this.isLoading) return;
     this.showRecords = true;
     this.refresh();
   }
 
   hideRecordsTable(): void {
     this.showRecords = false;
-    this.hasSearched = false;
-    this.isLoading = false;
     this.clearTable();
-
   }
 
   onAnioChange(): void {
-    if (this.showRecords  && !this.isLoading)
-    this.refresh();
+    if (this.showRecords) this.refresh();
   }
 
   onQuincenaChange(): void {
-    if (this.showRecords  && !this.isLoading)
-    this.refresh();
+    if (this.showRecords) this.refresh();
   }
 
-  private refresh(): void {
-    console.log('REFRESH', { isLoading: this.isLoading, anio: this.anioSeleccionado, qna: this.quincenaSeleccionada });
-    if (this.isLoading) return;
 
-    const qna = this.buildQnaProceso(this.anioSeleccionado, this.quincenaSeleccionada);
+  /*
+   * Este metodo calcula la qna + año seleccionado
+   */
+  refresh(): void {
+    const qna = this.anioSeleccionado && this.quincenaSeleccionada
+    ? parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada.toString().padStart(2,'0')}`, 10)
+    : null;
+
     if (!qna) {
+      this.dataSource.data = [];
+      this.totalElements = 0;
       this.clearTable();
       return;
     }
@@ -106,10 +106,7 @@ export class NominaOrdinaria implements OnInit {
     this.fetchNomina();
   }
 
-  private buildQnaProceso(anio?: number, quincena?: number): number | null {
-    if (!anio || !quincena) return null;
-    return parseInt(`${anio}${quincena.toString().padStart(2, '0')}`, 10);
-  }
+  
 
   private clearTable(): void {
     this.dataSource.data = [];
@@ -152,57 +149,49 @@ export class NominaOrdinaria implements OnInit {
           empleadoId: item.tabEmpleadosId,
           nombreEmpleado: item.nombreEmpleado,
           qnaProceso: target,
+          curp: item.curp,
+          rfc: item.rfc,
           nivelSueldo: concept?.catCategoriasCve ?? '',
           concepto: concept?.conceptoCve ?? '',
           tipoConcepto: concept?.tipoConcepto ?? (concept?.conceptoCve ?? ''),
-          totalImporteQnal: item.totalImporteQnal
+          totalImporteQnal: item.totalImporteQnal,
+          conceptos: conceptos
         };
       })
       .filter(Boolean) as any[];
   }
 
   private fetchNomina(): void {
-    this.hasSearched = true;
-
-    const seq = ++this.fetchSeq;
-    this.activeFetch = seq;
-
-    this.isLoading = true;
-    //this.cdr.detectChanges();
-
     this.nominaService.getCalculation({
       qnaProceso: this.qnaProceso,
       empleadoId: this.empleadoId,
       nivelSueldo: this.nivelSueldo,
       concepto: this.concepto,
       tipoConcepto: this.tipoConcepto
-    }).pipe(
-      finalize(() => {
-        if (this.activeFetch === seq) {
-          this.isLoading = false;
-          //this.cdr.detectChanges();
-        }
-      })
-    ).subscribe({
-      next: (response: any) => {
+    })
+    .subscribe({
+      next: (response) => {
         const data = this.adaptResponse(response?.data ?? [], this.qnaProceso);
         this.dataSource.data = data;
         this.totalElements = data.length;
-        //this.cdr.detectChanges();
       },
-      error: err => {
-        console.error('Error al cargar nómina', err);
+      error: (err) => {
+        console.error('Error backend (500)', err);
         this.clearTable();
-        //this.cdr.detectChanges();
       }
     });
   }
 
+  /*
+   * Este metodo hace la funcion de descargar el excel con el nombre de Nomina_Calculada
+   */
   downloadExcel(): void {
-    const qna = this.buildQnaProceso(this.anioSeleccionado, this.quincenaSeleccionada);
-    //const qna = this['buildQnaProceso'](this.anioSeleccionado, this.quincenaSeleccionada);
+    const qna = 
+      this.anioSeleccionado && this.quincenaSeleccionada
+      ? parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada.toString().padStart(2,'0')}`, 10)
+      : null;
+    
     if (!qna) return;
-
     this.nominaService.downloadExcel({
       qnaProceso: qna,
       nivelSueldo: this.nivelSueldo,
@@ -214,7 +203,7 @@ export class NominaOrdinaria implements OnInit {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'calculo_nomina.xlsx';
+        a.download = 'Calculo_Nomina.xlsx';
         a.click();
         window.URL.revokeObjectURL(url);
       },
@@ -223,4 +212,51 @@ export class NominaOrdinaria implements OnInit {
       }
     });
   }
+
+  /*
+  * Este metodo tiene la funcion de pasarle los parametros al dialogo del componente de nomina-concepto-dialog 
+  */
+  openConceptosDialog(row: any) {
+      this.dialog.open(NominaordConceptoDialog, {
+        panelClass: 'nomina-dialog-wide',
+        data: {
+          empleadoId: row.empleadoId,
+          nombreEmpleado: row.nombreEmpleado,
+          qnaProceso: row.qnaProceso,
+          conceptos: row.conceptos ?? [],
+          curp: row.curp,
+          rfc: row.rfc,
+        }
+      });
+  }
+
+  /*
+  * Este metodo aplica cmomo tal los filtros de los inpust de CURP, RFC y NOMBRE DEL EMPLEADO
+  */
+  applyFilter( column: 'curp' | 'rfc' |'nombreEmpleado', value: string) {
+    this.filterValues[column] = value.trim().toLowerCase();
+    this.dataSource.filter = JSON.stringify(this.filterValues);
+  }
+
+  
+  /*
+  * Este metodo sirve para hacer la limpieza de los filtros de los inputs
+  * Tambien limpia los filtros de las fechas de QNA a su año por defecto
+  */
+  clearFilters(): void {
+    this.filterValues = { 
+      curp: '', 
+      rfc: '',
+      nombreEmpleado: '' 
+    };
+
+    this.dataSource.filter = JSON.stringify(this.filterValues);
+    this.anioSeleccionado = 2026;
+    this.quincenaSeleccionada = 1;
+
+    if (this.showRecords) {
+      this.refresh();
+    }
+  }
+
 }
