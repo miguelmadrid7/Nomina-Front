@@ -6,6 +6,7 @@ import { ListEmpleado } from './catalogos/empleado/list-empleado/list-empleado';
 import { Login } from './login/login';
 import { NominaOrdinaria } from './nomina-ordinaria/nomina-ordinaria';
 import { NominaExtraordinaria } from './nomina-extraordinaria/nomina-extraordinaria';
+import { PensionAlimenticia } from './pension-alimenticia/pension-alimenticia';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -26,6 +27,11 @@ export const routes: Routes = [
                     { 
                         path: 'nomina/extraordinaria', 
                         component: NominaExtraordinaria
+                    },
+
+                    { 
+                        path: 'pension/alimenticia', 
+                        component: PensionAlimenticia
                     },
 
                 ]
