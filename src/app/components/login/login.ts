@@ -44,14 +44,19 @@ export class Login {
     this.loading = true;
     this.error = '';
 
+    // src/app/components/login/login.ts (solo el método login)
     this.loginService.login(this.credentials).subscribe({
-      next: (response: LoginResponse) => {
-        if(response.token){
-          this.loginService.setToken(response.token);
+      next: (resp) => {
+        const token = resp.headers.get('Authorization'); // viene SIN "Bearer "
+        if (token) {
+          this.loginService.setToken(token); // guarda el JWT crudo
           this.router.navigate(['/home']);
+        } else {
+          this.error = 'No se recibió token de autenticación';
+          this.loading = false;
         }
       },
-      error: (err) => {
+      error: () => {
         this.error = 'Acceso denegado, verifique su usuario y contraseña';
         this.loading = false;
       }

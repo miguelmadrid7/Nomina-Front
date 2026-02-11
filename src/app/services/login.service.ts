@@ -1,10 +1,10 @@
+// src/app/services/login.service.ts
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
-import { LoginPayload, LoginResponse } from '../interfaces/login-inter';
+import { LoginPayload } from '../interfaces/login-inter';
 import { isPlatformBrowser } from '@angular/common';
-
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
@@ -13,13 +13,15 @@ export class LoginService {
 
   constructor(private http: HttpClient) {}
 
-   private isBrowser() {
+  private isBrowser() {
     return isPlatformBrowser(this.platformId);
   }
 
-  login(payload: LoginPayload): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.base}/users/getToken`, payload, {
-      headers: { 'Content-Type': 'application/json' }
+  // Cambiar a /login y observar headers
+  login(payload: LoginPayload): Observable<HttpResponse<any>> {
+    return this.http.post(`${this.base}/login`, payload, {
+      headers: { 'Content-Type': 'application/json' },
+      observe: 'response'
     });
   }
 
@@ -27,31 +29,31 @@ export class LoginService {
     if (!this.isBrowser()) return false;
     const token = this.getToken();
     if (!token) return false;
-
-    // Validación opcional de expiración (si tu JWT tiene 'exp')
     try {
       const payload = JSON.parse(atob(token.split('.')[1] || ''));
       if (payload?.exp) {
         const nowSec = Math.floor(Date.now() / 1000);
         return payload.exp > nowSec;
       }
-      return true; // si no hay exp, asumimos válido mientras exista
+      return true;
     } catch {
       return false;
     }
   }
 
+  // SSR-safe
   setToken(token: string) {
-    localStorage.setItem('token', token);
+    if (!this.isBrowser()) return;
+    localStorage.setItem('token', token); // Guarda el JWT crudo (SIN "Bearer ")
   }
 
   getToken() {
-    return localStorage.getItem('token');
+    if (!this.isBrowser()) return null;
+    return localStorage.getItem('token'); // Devuelve el JWT crudo
   }
 
   logout() {
+    if (!this.isBrowser()) return;
     localStorage.removeItem('token');
-   }
-
-
+  }
 }

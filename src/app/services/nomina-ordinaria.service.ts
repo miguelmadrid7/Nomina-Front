@@ -61,9 +61,11 @@ export class NominaService {
   }) {
     const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
 
-    let headers = new HttpHeaders();
+  
+    let headers = new HttpHeaders().set('Content-Type', 'application/json');
     if (token) headers = headers.set('Authorization', `Bearer ${token}`);
 
+    console.log('token usado para excel', token);
     return this.http.post(`${this.base}/calculation/excel`, body, {
       headers,
       responseType: 'blob'

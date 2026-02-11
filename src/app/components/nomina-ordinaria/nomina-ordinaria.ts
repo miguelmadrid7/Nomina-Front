@@ -122,29 +122,13 @@ export class NominaOrdinaria implements OnInit {
     this.totalElements = 0;
   }
 
-  private isApplicableConcept(c: any, target: number): boolean {
-    const qp = c?.qnaProceso;
-    const ini = c?.qnaIni;
-    const fin = c?.qnaFin;
-
-    return (qp === target) || (
-      typeof ini === 'number' &&
-      typeof fin === 'number' &&
-      ini <= target &&
-      fin >= target
-    );
-  }
-
-  private pickConcept(conceptos: any[], target: number): any | null {
-    if (!Array.isArray(conceptos) || conceptos.length === 0) return null;
-
-    return (
-      conceptos.find(c => c?.qnaProceso === target) ??
-      conceptos.find(c => this.isApplicableConcept(c, target)) ??
-      conceptos[0] ??
-      null
-    );
-  }
+ private pickConcept(conceptos: any[], target: number): any | null {
+  if (!Array.isArray(conceptos) || conceptos.length === 0) return null;
+  return conceptos[0];
+}
+private isApplicableConcept(c: any, target: number): boolean {
+  return true;
+}
 
   private adaptResponse(items: any[], target: number): any[] {
     return (items ?? [])
