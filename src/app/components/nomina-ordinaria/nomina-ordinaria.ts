@@ -26,7 +26,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatOption,
     MatDialogModule,
     MatInputModule,
-    MatProgressBarModule   
+    MatProgressBarModule
   ],
   templateUrl: './nomina-ordinaria.html',
   styleUrl: './nomina-ordinaria.css'
@@ -62,12 +62,16 @@ export class NominaOrdinaria implements OnInit {
     this.dataSource.filterPredicate = (data: any, filter: string) => {
     const search = JSON.parse(filter);
 
-    return (
-      data.nombreEmpleado?.toLowerCase().includes(search.nombreEmpleado) &&
-      data.curp?.toLowerCase().includes(search.curp) &&
-      data.rfc?.toLowerCase().includes(search.rfc)
-    );
-  };
+     const curp = (data.curp ?? '').toString().toUpperCase();
+     const rfc = (data.rfc ?? '').toString().toUpperCase();
+     const nombre = (data.nombreEmpleado ?? '').toString().toUpperCase();
+
+      return (
+        nombre.includes(search.nombreEmpleado) &&
+        curp.includes(search.curp) &&
+        rfc.includes(search.rfc)
+      );
+    };
   }
 
   @ViewChild(MatPaginator) set matPaginator(p: MatPaginator) {
@@ -111,7 +115,7 @@ export class NominaOrdinaria implements OnInit {
     this.fetchNomina();
   }
 
-  
+
 
   private clearTable(): void {
     this.dataSource.data = [];
@@ -186,7 +190,7 @@ export class NominaOrdinaria implements OnInit {
 
         this.progress = 100;
         setTimeout(() => {
-          this.loading = false; 
+          this.loading = false;
           this.progress = 0;
         }, 300);
       },
@@ -204,11 +208,11 @@ export class NominaOrdinaria implements OnInit {
    * Este metodo hace la funcion de descargar el excel con el nombre de Nomina_Calculada
    */
   downloadExcel(): void {
-    const qna = 
+    const qna =
       this.anioSeleccionado && this.quincenaSeleccionada
       ? parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada.toString().padStart(2,'0')}`, 10)
       : null;
-    
+
     if (!qna) return;
     this.nominaService.downloadExcel({
       qnaProceso: qna,
@@ -232,7 +236,7 @@ export class NominaOrdinaria implements OnInit {
   }
 
   /*
-  * Este metodo tiene la funcion de pasarle los parametros al dialogo del componente de nomina-concepto-dialog 
+  * Este metodo tiene la funcion de pasarle los parametros al dialogo del componente de nomina-concepto-dialog
   */
   openConceptosDialog(row: any) {
       this.dialog.open(NominaordConceptoDialog, {
@@ -252,20 +256,28 @@ export class NominaOrdinaria implements OnInit {
   * Este metodo aplica cmomo tal los filtros de los inpust de CURP, RFC y NOMBRE DEL EMPLEADO
   */
   applyFilter( column: 'curp' | 'rfc' |'nombreEmpleado', value: string) {
-    this.filterValues[column] = value.trim().toLowerCase();
+    this.filterValues[column] = (value ?? '').trim().toUpperCase();
     this.dataSource.filter = JSON.stringify(this.filterValues);
   }
 
-  
+  /**
+   * Este metodo es para qiue el input muestre que cuando se escribe estan en mayusculas
+   */
+  enforceUppercase(evt: Event) {
+    const input = evt.target as HTMLInputElement;
+    input.value = (input.value ?? '').toUpperCase();
+  }
+
+
   /*
   * Este metodo sirve para hacer la limpieza de los filtros de los inputs
   * Tambien limpia los filtros de las fechas de QNA a su año por defecto
   */
   clearFilters(): void {
-    this.filterValues = { 
-      curp: '', 
+    this.filterValues = {
+      curp: '',
       rfc: '',
-      nombreEmpleado: '' 
+      nombreEmpleado: ''
     };
 
     this.dataSource.filter = JSON.stringify(this.filterValues);
