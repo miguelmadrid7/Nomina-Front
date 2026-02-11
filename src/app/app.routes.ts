@@ -18,7 +18,7 @@ export const routes: Routes = [
             canActivate: [AuthGuard],
             canActivateChild: [AuthGuard],
                 children: [
-                  { path: '', pathMatch: 'full', redirectTo: 'home' }, // default dentro de /home
+    
                   { path: 'empleados/list', component: ListEmpleado},
                   { path: 'empleados/form', component: FormEmpleado},
 
@@ -39,9 +39,8 @@ export const routes: Routes = [
 
                 ]
         },
+        
       { path: '**', redirectTo: 'login' }
-
-
 ];
 
 
