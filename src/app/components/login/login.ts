@@ -5,8 +5,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { AuthService } from '../servicios/login.service';
-import { LoginPayload, LoginResponse } from '../interfaces/login-inter';
+import { LoginService } from '../../services/login.service';
+import { LoginPayload, LoginResponse } from '../../interfaces/login-inter';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -27,7 +27,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './login.css'
 })
 export class Login {
-  
+
   credentials: LoginPayload = {
     user: '',
     password: ''
@@ -37,17 +37,17 @@ export class Login {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private loginService: LoginService
   ) {}
 
   login () {
     this.loading = true;
     this.error = '';
 
-    this.authService.login(this.credentials).subscribe({
+    this.loginService.login(this.credentials).subscribe({
       next: (response: LoginResponse) => {
         if(response.token){
-          this.authService.setToken(response.token);
+          this.loginService.setToken(response.token);
           this.router.navigate(['/home']);
         }
       },
