@@ -209,3 +209,9 @@
   flex: 1 1 auto;
   min-height: 0;
 }
+
+.mat-progress-bar {
+  height: 6px;
+  border-radius: 3px;
+}
+

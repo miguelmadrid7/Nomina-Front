@@ -7,10 +7,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
-import { NominaService } from '../servicios/nomina-ordinaria.service';
+import { NominaService } from '../../services/nomina-ordinaria.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NominaordConceptoDialog } from '../nominaord-concepto-dialog/nominaord-concepto-dialog';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-nomina-ordinaria',
@@ -24,7 +25,8 @@ import { MatInputModule } from '@angular/material/input';
     MatSelectModule,
     MatOption,
     MatDialogModule,
-    MatInputModule
+    MatInputModule,
+    MatProgressBarModule   
   ],
   templateUrl: './nomina-ordinaria.html',
   styleUrl: './nomina-ordinaria.css'
@@ -49,6 +51,9 @@ export class NominaOrdinaria implements OnInit {
   totalElements = 0;
 
   showRecords = false;
+
+  loading = false;
+  progress =0;
 
 
   constructor(private nominaService: NominaService, private dialog: MatDialog) {}
@@ -162,6 +167,9 @@ export class NominaOrdinaria implements OnInit {
   }
 
   private fetchNomina(): void {
+    this.loading = true;
+    this.progress = 0;
+
     this.nominaService.getCalculation({
       qnaProceso: this.qnaProceso,
       empleadoId: this.empleadoId,
@@ -171,13 +179,23 @@ export class NominaOrdinaria implements OnInit {
     })
     .subscribe({
       next: (response) => {
+        this.progress = 60;
         const data = this.adaptResponse(response?.data ?? [], this.qnaProceso);
         this.dataSource.data = data;
         this.totalElements = data.length;
+
+        this.progress = 100;
+        setTimeout(() => {
+          this.loading = false; 
+          this.progress = 0;
+        }, 300);
       },
       error: (err) => {
         console.error('Error backend (500)', err);
         this.clearTable();
+
+        this.loading = false;
+        this.progress = 0;
       }
     });
   }

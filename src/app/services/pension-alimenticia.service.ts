@@ -26,5 +26,28 @@ export class PensionAlimenticiaService {
     return this.http.get(`${this.base}/catalogo/bancos`, { headers });
   }
 
+  addBeneficiarioAlim(payload: any): Observable<any> {
+    let headers = new HttpHeaders();
+    if(this.isBrowser) {
+        const token = localStorage.getItem('token');
+        if(token) {
+            headers = headers.set('Authorization', `Bearer ${token}`)
+        }
+    }
+    return this.http.post(`${this.base}/beneficarios/alim`, payload, { headers });
+  }
+
+  addBeneficario(payload: any): Observable<any>{
+    let headers = new HttpHeaders();
+    if(this.isBrowser) {
+        const token = localStorage.getItem('token');
+        if(token) {
+            headers = headers.set('Authorization', `Bearer ${token}`)
+            }
+        }
+        return this.http.post(`${this.base}/beneficarios`, payload, { headers });
+    }
+
+
 
 }

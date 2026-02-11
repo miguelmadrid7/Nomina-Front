@@ -6,12 +6,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatOption, MatSelectModule } from '@angular/material/select';
-import { error } from 'console';
-import { PensionAlimenticiaService } from '../servicios/pension-alimenticia.service';
-import { Observable } from 'rxjs';
+import { PensionAlimenticiaService } from '../../services/pension-alimenticia.service';
 
 @Component({
   selector: 'app-pension-alimenticia',
+  standalone: true,
   imports: [
     MatFormFieldModule,
     CommonModule,
@@ -56,13 +55,12 @@ export class PensionAlimenticia {
         this.bancos = response.data;
       },
       error: (err: any) => {
-        console.error('Error al  cargar bancos', error)
+        console.error('Error al  cargar bancos', err)
       }
     })
   }
 
   guardar(): void {
-
   const beneficiarioAlimPayload = {
     rfc: this.rfc,
     primerApellido: this.apellidoPaterno,
@@ -70,7 +68,7 @@ export class PensionAlimenticia {
     nombre: this.nombreCompleto
   };
 
-  // 2️⃣ Crear beneficiario base
+
   this.pensionAlimenticiaService.addBeneficiarioAlim(beneficiarioAlimPayload)
     .subscribe({
       next: (resp: any) => {

@@ -21,6 +21,13 @@
   </div>
 
 <div class="table-container" *ngIf="showRecords">
+  <mat-progress-bar
+    *ngIf="loading"
+    mode="determinate"
+    [value]="progress"
+    color="primary"
+    style="margin-bottom: 8px;">
+  </mat-progress-bar>
   <div class="table-card card">
       <div class="table-content">
 
