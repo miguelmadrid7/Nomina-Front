@@ -102,7 +102,7 @@
       <div>
         <span class="filter-label">Factor / Importe*</span>
         <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="factorImporte" placeholder="0.00 / 0%">
+          <input matInput type="number" [(ngModel)]="factorImporte" placeholder="0.00 / 0%">
         </mat-form-field>
       </div>
 
@@ -123,7 +123,7 @@
       <div>
         <span class="filter-label">CLABE interbancaria*</span>
         <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="numeroDocumento" placeholder="18 dígitos">
+          <input matInput type="number" [(ngModel)]="numeroDocumento" placeholder="18 dígitos">
         </mat-form-field>
       </div>
     </mat-card-content>
@@ -142,14 +142,14 @@
       <div>
         <span class="filter-label">Inicio*</span>
         <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="vigenciaInicio" placeholder="QQ/AA">
+          <input matInput type="number" [(ngModel)]="vigenciaInicio" placeholder="QQ/AA">
         </mat-form-field>
       </div>
 
         <div>
           <span class="filter-label">Hasta*</span>
             <mat-form-field appearance="outline">
-              <input matInput [(ngModel)]="vigenciaFin" placeholder="99/9999">
+              <input matInput type="number" [(ngModel)]="vigenciaFin" placeholder="99/9999">
             </mat-form-field>
         </div>
       </div>
