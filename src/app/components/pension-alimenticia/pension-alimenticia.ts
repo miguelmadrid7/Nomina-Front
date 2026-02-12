@@ -12,7 +12,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { Empleado } from '../servicios/empleado';
 import { EmpleadoItem } from '../../interfaces/Emplado-inter';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { PensionAlimenDialog } from '../../pension-alimen-dialog/pension-alimen-dialog';
+import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dialog';
 
 @Component({
   selector: 'app-pension-alimenticia',
@@ -155,8 +155,7 @@ export class PensionAlimenticia {
     return;
   }
   this.empleadoId = emp.id;
-  this.rfc = emp.rfc || '';
-  this.nombreCompleto = emp.nombreCompleto || '';
+  
   }
 
   cargarBancos(): void {
@@ -171,13 +170,14 @@ export class PensionAlimenticia {
     })
   }
 
-  guardar(): void {
+ guardar(): void {
+  if (this.guardando) return;
   this.guardando = true;
 
   const fail = (msg: string) => {
     this.dialog.open(PensionAlimenDialog, {
       width: '360px',
-      data: { title: 'Faltan datos', message: msg }
+      data: { title: 'Faltan datos', message: msg, type: 'error' } // <- X en validaciones
     });
     this.guardando = false;
   };
@@ -186,7 +186,10 @@ export class PensionAlimenticia {
   if (!['P','F'].includes(this.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
   if (this.factorImporte == null || this.numeroBeneficiario == null) return fail('Captura Factor/Importe y No. Beneficiaria.');
   if (!this.vigenciaInicio || !this.vigenciaFin) return fail('Captura la vigencia de inicio y fin.');
-  if (!this.numeroDocumento || this.numeroDocumento.trim().length !== 18) return fail('La CLABE debe tener 18 dígitos.');
+
+  // Normalizar y validar CLABE (18 dígitos)
+  const clabe = String(this.numeroDocumento ?? '').trim();
+  if (!/^\d{18}$/.test(clabe)) return fail('La CLABE debe tener exactamente 18 dígitos numéricos.');
 
   const beneficiarioAlimPayload = {
     rfc: this.rfc,
@@ -201,7 +204,7 @@ export class PensionAlimenticia {
       if (!beneficiarioAlimId) {
         this.dialog.open(PensionAlimenDialog, {
           width: '360px',
-          data: { title: 'Error', message: 'No se recibió ID del beneficiario base.' }
+          data: { title: 'Error', message: 'No se recibió ID del beneficiario base.', type: 'error' }
         });
         this.guardando = false;
         return;
@@ -215,23 +218,28 @@ export class PensionAlimenticia {
         numeroBenef: Number(this.numeroBeneficiario),
         qnaini: Number(this.vigenciaInicio),
         qnafin: Number(this.vigenciaFin),
-        numeroDocumento: this.numeroDocumento.trim(),
-        // bancoId: this.bancoSeleccionado // si el backend lo exige
+        numeroDocumento: clabe
+        // bancoId: this.bancoSeleccionado // agrégalo si tu backend lo requiere
       };
+
+      if ([beneficiarioPayload.factorImporte, beneficiarioPayload.numeroBenef, beneficiarioPayload.qnaini, beneficiarioPayload.qnafin].some(v => Number.isNaN(v))) {
+        return fail('Revisa que los campos numéricos tengan valores válidos.');
+      }
 
       this.pensionAlimenticiaService.addBeneficario(beneficiarioPayload).subscribe({
         next: () => {
           this.dialog.open(PensionAlimenDialog, {
             width: '360px',
-            data: { title: 'Éxito', message: 'Se guardó correctamente tus datos.' }
+            data: { title: 'Éxito', message: 'Se guardó correctamente tus datos.', type: 'success' } // <- palomita
           });
           this.guardando = false;
+          // Opcional: limpiar formulario aquí
         },
         error: err => {
           console.error('Error al guardar pensión alimenticia', err);
           this.dialog.open(PensionAlimenDialog, {
             width: '360px',
-            data: { title: 'Error', message: 'Error al guardar pensión alimenticia.' }
+            data: { title: 'Error', message: 'Error al guardar pensión alimenticia.', type: 'error' }
           });
           this.guardando = false;
         }
@@ -241,7 +249,7 @@ export class PensionAlimenticia {
       console.error('Error al crear beneficiario base', err);
       this.dialog.open(PensionAlimenDialog, {
         width: '360px',
-        data: { title: 'Error', message: 'No se pudo crear el beneficiario base.' }
+        data: { title: 'Error', message: 'No se pudo crear el beneficiario base.', type: 'error' }
       });
       this.guardando = false;
     }
@@ -252,15 +260,8 @@ export class PensionAlimenticia {
     this.searchText = '';
     this.resultados = [];
     this.cargandoBusqueda = false;
-    this.empleadoId = undefined as any;
+    this.empleadoId = null;
     this.rfc = '';
     this.nombreCompleto = '';
   }
-
-  testDialog() {
-  this.dialog.open(PensionAlimenDialog, {
-    width: '360px',
-    data: { title: 'Prueba', message: 'Dialog OK' }
-  });
-}
 }

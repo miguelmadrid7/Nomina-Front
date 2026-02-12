@@ -1,0 +1,36 @@
+.dialog-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.dialog-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  margin-top: 4px;
+}
+
+.dialog-icon mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+/* Colores por tipo (ajusta a tu paleta) */
+.dialog-icon.success { background: #5a2a35; } /* tu tono vino */
+.dialog-icon.error   { background: #d32f2f; }
+.dialog-icon.info    { background: #1976d2; }
+
+.dialog-content {
+  text-align: center;
+}
+
+.btn {
+    background: #491D2A
+}

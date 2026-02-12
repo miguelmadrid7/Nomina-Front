@@ -123,13 +123,12 @@
       <div>
         <span class="filter-label">CLABE interbancaria*</span>
         <mat-form-field appearance="outline">
-          <input matInput type="number" [(ngModel)]="numeroDocumento" placeholder="18 dígitos">
+          <input matInput type="text" [(ngModel)]="numeroDocumento" placeholder="18 dígitos" maxlength="18">
         </mat-form-field>
       </div>
     </mat-card-content>
   </mat-card>
 
-  <button mat-stroked-button (click)="testDialog()">Test Dialog</button>
   <div class="section-divider"></div>
 
   <!-- VIGENCIA -->
