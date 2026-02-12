@@ -1,46 +1,57 @@
 <div class="page-container">
-
-  <!-- TÍTULO -->
   <div class="page-header">
     <h2 class="page-title">Registro Beneficiarios De Pensión Alimenticia</h2>
   </div>
 
-  <!-- BUSCAR EMPLEADO -->
-  <div class="search-section">
-    <div class="search-left">
-      <span class="section-header">Buscar empleado.</span>
-      <mat-form-field appearance="outline" class="full-width">
-        <input
-          matInput
-          placeholder="BUSCAR POR RFC, CURP O NOMBRE..."
-        />
-      </mat-form-field>
-    </div>
+  <div class="section-divider"></div>
 
-    <div class="search-actions">
-      <button mat-stroked-button class="btn">
-        Limpiar
-      </button>
-      <button mat-flat-button class="btn">
-        Buscar
-      </button>
-    </div>
+  <!-- BUSCAR EMPLEADO -->
+  <div class="section-header">
+    <h3>Buscar empleado.</h3>
+      <div class="search-actions">
+        <button mat-stroked-button class="btn-outline" (click)="clearSearch()">
+          Limpiar
+        </button>
+        <button mat-flat-button class="btn-primary" (click)="searchEmployee()">
+          Buscar
+        </button>
+      </div>
+  </div>
+  <div class="search-card">
+    <mat-form-field appearance="outline" class="search-input">
+      <input
+        matInput
+        [(ngModel)]="searchText"
+        [matAutocomplete]="auto"
+        (input)="searchEmployee()"
+        placeholder="BUSCAR POR RFC, CURP O NOMBRE...">
+
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        [displayWith]="displayEmpleado"
+        (optionSelected)="onOptionSelected($event.option.value)">
+
+        <mat-option *ngFor="let emp of resultados" [value]="emp">
+          {{ emp?.rfc || '—' }} · {{ emp?.curp || '—' }} · {{ emp?.nombreCompleto || '—' }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
   </div>
 
+ 
   <div class="section-divider"></div>
 
   <!-- AGREGAR BENEFICIARIO -->
   <div class="section-header">
     <h3>Agregar Beneficiario.</h3>
-    <button mat-flat-button class="btn" (click)="guardar()">
+    <button mat-flat-button class="btn" (click)="guardar()" [disabled]="guardando">
       Guardar
     </button>
   </div>
-
   <mat-card class="form-card">
     <mat-card-content class="form-grid">
 
-      <div>
+      <div class="span-1">
         <span class="filter-label">Apellido paterno*</span>
         <mat-form-field appearance="outline">
           <input matInput [(ngModel)]="apellidoPaterno" placeholder="Ingresar Apellido Paterno">
@@ -64,7 +75,7 @@
       <div>
         <span class="filter-label">RFC*</span>
         <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="nombreCompleto" placeholder="Ingresar Nombre(s)">
+          <input matInput [(ngModel)]="rfc" placeholder="Ingresa RFC">
         </mat-form-field>
       </div>
 
@@ -75,10 +86,16 @@
         </mat-form-field>
       </div>
 
+      <div class="grid-empty"></div>
+
       <div>
         <span class="filter-label">Forma de aplicación*</span>
-        <mat-form-field appearance="outline">
-          <input matInput [(ngModel)]="formaAplicacion" placeholder="Forma de aplicación">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Seleccionar forma.</mat-label>
+          <mat-select [(ngModel)]="formaAplicacion">
+            <mat-option value="P">Factor</mat-option>
+            <mat-option value="F">Importe fijo</mat-option>
+          </mat-select>
         </mat-form-field>
       </div>
 
@@ -89,17 +106,19 @@
         </mat-form-field>
       </div>
 
-      <mat-form-field appearance="outline" class="full-width">
-  <mat-label>Buscar banco</mat-label>
-  <mat-select [(ngModel)]="bancoSeleccionado">
+      <div class="grid-empty"></div>
 
-    <mat-option *ngFor="let bank of bancos" [value]="bank.id">
-      {{ bank.banco }}
-    </mat-option>
-
-  </mat-select>
-</mat-form-field>
-
+      <div>
+        <span class="filter-label">Buscar banco*</span>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Buscar banco...</mat-label>
+            <mat-select [(ngModel)]="bancoSeleccionado">
+              <mat-option *ngFor="let bank of bancos" [value]="bank.id">
+                {{ bank.banco }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
 
       <div>
         <span class="filter-label">CLABE interbancaria*</span>
@@ -107,29 +126,35 @@
           <input matInput [(ngModel)]="numeroDocumento" placeholder="18 dígitos">
         </mat-form-field>
       </div>
-
     </mat-card-content>
   </mat-card>
 
+  <button mat-stroked-button (click)="testDialog()">Test Dialog</button>
   <div class="section-divider"></div>
 
   <!-- VIGENCIA -->
-  <h3 class="section-title">Vigencia de movimiento.</h3>
-
-  <div class="vigencia-grid">
-    <div>
-      <span class="filter-label">Inicio*</span>
-      <mat-form-field appearance="outline">
-        <input matInput placeholder="QQ/AA">
-      </mat-form-field>
-    </div>
-
-    <div>
-      <span class="filter-label">Hasta*</span>
-      <mat-form-field appearance="outline">
-        <input matInput placeholder="99/9999">
-      </mat-form-field>
-    </div>
+  <div class="section-header">
+    <h3>Vigencia de movimiento.</h3>
   </div>
+  <mat-card class="form-card">
+    <mat-card-content class="form-grid">
+      <div class="vigencia-grid">
+      <div>
+        <span class="filter-label">Inicio*</span>
+        <mat-form-field appearance="outline">
+          <input matInput [(ngModel)]="vigenciaInicio" placeholder="QQ/AA">
+        </mat-form-field>
+      </div>
+
+        <div>
+          <span class="filter-label">Hasta*</span>
+            <mat-form-field appearance="outline">
+              <input matInput [(ngModel)]="vigenciaFin" placeholder="99/9999">
+            </mat-form-field>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
 
 </div>

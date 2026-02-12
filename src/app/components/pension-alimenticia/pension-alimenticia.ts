@@ -7,6 +7,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatOption, MatSelectModule } from '@angular/material/select';
 import { PensionAlimenticiaService } from '../../services/pension-alimenticia.service';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatOptionModule } from '@angular/material/core';
+import { Empleado } from '../servicios/empleado';
+import { EmpleadoItem } from '../../interfaces/Emplado-inter';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { PensionAlimenDialog } from '../../pension-alimen-dialog/pension-alimen-dialog';
 
 @Component({
   selector: 'app-pension-alimenticia',
@@ -19,7 +25,11 @@ import { PensionAlimenticiaService } from '../../services/pension-alimenticia.se
     MatCardModule, 
     MatButtonModule,
     MatSelectModule,
-    MatOption
+    MatOption,
+    MatAutocompleteModule,
+    MatOptionModule,
+    MatDialogModule,
+    PensionAlimenDialog     
   ],
   templateUrl: './pension-alimenticia.html',
   styleUrl: './pension-alimenticia.css'
@@ -31,7 +41,7 @@ export class PensionAlimenticia {
   apellidoMaterno: string = '';
   nombreCompleto: string = '';
 
-  empleadoId!: number;
+  empleadoId: number | null = null;
   formaAplicacion: string = '';
   factorImporte!: number;
   numeroBeneficiario!: number;
@@ -42,10 +52,111 @@ export class PensionAlimenticia {
   bancos: any[] = [];
   bancoSeleccionado: any;
 
-  constructor(private pensionAlimenticiaService:  PensionAlimenticiaService) {}
+  searchText: string = '';
+  selectedEmpleado: EmpleadoItem | null = null;
+  resultados: EmpleadoItem[] = [];
+  cargandoBusqueda = false;
+  guardando = false;
+
+
+
+  constructor(
+    private pensionAlimenticiaService: PensionAlimenticiaService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     this.cargarBancos();
+  }
+
+  private esRFC(v: string) {
+    // RFC persona física común (simplificado, en mayúsculas)
+    return /^[A-ZÑ&]{4}\d{6}[A-Z0-9]{3}$/.test(v);
+  }
+
+  private esCURP(v: string) {
+    // CURP (simplificado)
+    return /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/.test(v);
+  }
+
+  displayEmpleado(emp: EmpleadoItem | string | null): string {
+      if (!emp) return '';
+      if (typeof emp === 'string') return emp; // mientras escribes
+      const rfc  = (emp.rfc ?? emp.RFC ?? '').toString().trim() || '—';
+      const curp = (emp.curp ?? emp.CURP ?? '').toString().trim() || '—';
+      const pa = (emp.primer_apellido ?? emp.primerApellido ?? '').toString().trim();
+      const sa = (emp.segundo_apellido ?? emp.segundoApellido ?? '').toString().trim();
+      const no = (emp.nombre ?? '').toString().trim();
+      const concatenado = (emp.empleado ?? '').toString().trim();
+      const nombre = (concatenado || [pa, sa, no].filter(Boolean).join(' '))
+        .replace(/\s+/g,' ')
+        .trim() || '—';
+      return `${rfc} · ${curp} · ${nombre}`;
+  }
+
+  onOptionSelected(emp: EmpleadoItem) {
+    this.selectEmpleado(emp);                  
+    this.searchText = this.displayEmpleado(emp);  
+  }
+
+  searchEmployee() {
+  const q = (this.searchText || '').trim().toUpperCase();
+  if (!q) { this.resultados = []; return; }
+  this.cargandoBusqueda = true;
+
+  // deja pasar si es RFC/CURP parcial con >=3
+  const targetRFC  = this.esRFC(q)  ? 'RFC'  : null;
+  const targetCURP = this.esCURP(q) ? 'CURP' : null;
+
+  if (q.length < 3 && !this.esRFC(q) && !this.esCURP(q)) {
+    this.resultados = [];
+    this.cargandoBusqueda = false;
+    return;
+  }
+
+  const obs =
+    (this.esRFC(q) || (targetRFC && q.length >= 3))  ? this.pensionAlimenticiaService.searchPorTarget('RFC', q)  :
+    (this.esCURP(q) || (targetCURP && q.length >= 3))? this.pensionAlimenticiaService.searchPorTarget('CURP', q) :
+                                                       this.pensionAlimenticiaService.searchEmpleadoLibre(q);
+
+
+      obs.subscribe({
+        next: (resp: any) => {
+          const d = resp?.data;
+          const arr = Array.isArray(d) ? d : (d ? [d] : []);
+          this.resultados = arr.map((emp: any) => {
+            const pa = (emp?.primer_apellido ?? emp?.primerApellido ?? '').toString().trim();
+            const sa = (emp?.segundo_apellido ?? emp?.segundoApellido ?? '').toString().trim();
+            const no = (emp?.nombre ?? '').toString().trim();
+            const concatenado = (emp?.empleado ?? '').toString().trim();
+            const nombre = (concatenado || [pa, sa, no].filter(Boolean).join(' '))
+              .replace(/\s+/g, ' ')
+              .trim();
+            return {
+              ...emp,
+              nombreCompleto: nombre,
+              rfc: (emp?.rfc ?? emp?.RFC ?? '').toString().trim(),
+              curp: (emp?.curp ?? emp?.CURP ?? '').toString().trim()
+            } as Empleado;
+          });
+          this.cargandoBusqueda = false;
+        },
+        error: () => {
+          this.resultados = [];
+          this.cargandoBusqueda = false;
+        }
+      });
+  }
+
+  selectEmpleado(emp: EmpleadoItem) {
+  if (emp?.id == null) {
+    console.warn('Empleado sin id');
+    this.empleadoId = null;
+    return;
+  }
+  this.empleadoId = emp.id;
+  this.rfc = emp.rfc || '';
+  this.nombreCompleto = emp.nombreCompleto || '';
   }
 
   cargarBancos(): void {
@@ -61,6 +172,22 @@ export class PensionAlimenticia {
   }
 
   guardar(): void {
+  this.guardando = true;
+
+  const fail = (msg: string) => {
+    this.dialog.open(PensionAlimenDialog, {
+      width: '360px',
+      data: { title: 'Faltan datos', message: msg }
+    });
+    this.guardando = false;
+  };
+
+  if (!this.empleadoId) return fail('Selecciona un empleado antes de guardar.');
+  if (!['P','F'].includes(this.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
+  if (this.factorImporte == null || this.numeroBeneficiario == null) return fail('Captura Factor/Importe y No. Beneficiaria.');
+  if (!this.vigenciaInicio || !this.vigenciaFin) return fail('Captura la vigencia de inicio y fin.');
+  if (!this.numeroDocumento || this.numeroDocumento.trim().length !== 18) return fail('La CLABE debe tener 18 dígitos.');
+
   const beneficiarioAlimPayload = {
     rfc: this.rfc,
     primerApellido: this.apellidoPaterno,
@@ -68,50 +195,72 @@ export class PensionAlimenticia {
     nombre: this.nombreCompleto
   };
 
-
-  this.pensionAlimenticiaService.addBeneficiarioAlim(beneficiarioAlimPayload)
-    .subscribe({
-      next: (resp: any) => {
-
-        const beneficiarioAlimId = resp?.data?.id;
-
-        if (!beneficiarioAlimId) {
-          console.error('No se recibió ID del beneficiario');
-          return;
-        }
-
-        const beneficiarioPayload = {
-          tabEmpleadosId: this.empleadoId, // debes tenerlo del buscador
-          tabBeneficiariosAlimId: beneficiarioAlimId,
-          formaAplicacion: this.formaAplicacion,
-          factorImporte: this.factorImporte,
-          numeroBenef: this.numeroBeneficiario,
-          qnaini: this.vigenciaInicio,
-          qnafin: this.vigenciaFin,
-          numeroDocumento: this.numeroDocumento,
-          bancoId: this.bancoSeleccionado // si aplica
-        };
-
-        this.pensionAlimenticiaService.addBeneficario(beneficiarioPayload)
-          .subscribe({
-            next: () => {
-              console.log('Beneficiario guardado correctamente');
-            },
-            error: err => {
-              console.error('Error al guardar pensión alimenticia', err);
-            }
-          });
-
-      },
-      error: err => {
-        console.error('Error al crear beneficiario base', err);
+  this.pensionAlimenticiaService.addBeneficiarioAlim(beneficiarioAlimPayload).subscribe({
+    next: (resp: any) => {
+      const beneficiarioAlimId = resp?.data?.id;
+      if (!beneficiarioAlimId) {
+        this.dialog.open(PensionAlimenDialog, {
+          width: '360px',
+          data: { title: 'Error', message: 'No se recibió ID del beneficiario base.' }
+        });
+        this.guardando = false;
+        return;
       }
-    });
+
+      const beneficiarioPayload = {
+        tabEmpleadosId: this.empleadoId,
+        tabBeneficiariosAlimId: beneficiarioAlimId,
+        formaAplicacion: this.formaAplicacion,
+        factorImporte: Number(this.factorImporte),
+        numeroBenef: Number(this.numeroBeneficiario),
+        qnaini: Number(this.vigenciaInicio),
+        qnafin: Number(this.vigenciaFin),
+        numeroDocumento: this.numeroDocumento.trim(),
+        // bancoId: this.bancoSeleccionado // si el backend lo exige
+      };
+
+      this.pensionAlimenticiaService.addBeneficario(beneficiarioPayload).subscribe({
+        next: () => {
+          this.dialog.open(PensionAlimenDialog, {
+            width: '360px',
+            data: { title: 'Éxito', message: 'Se guardó correctamente tus datos.' }
+          });
+          this.guardando = false;
+        },
+        error: err => {
+          console.error('Error al guardar pensión alimenticia', err);
+          this.dialog.open(PensionAlimenDialog, {
+            width: '360px',
+            data: { title: 'Error', message: 'Error al guardar pensión alimenticia.' }
+          });
+          this.guardando = false;
+        }
+      });
+    },
+    error: err => {
+      console.error('Error al crear beneficiario base', err);
+      this.dialog.open(PensionAlimenDialog, {
+        width: '360px',
+        data: { title: 'Error', message: 'No se pudo crear el beneficiario base.' }
+      });
+      this.guardando = false;
+    }
+  });
 }
 
+  clearSearch() {
+    this.searchText = '';
+    this.resultados = [];
+    this.cargandoBusqueda = false;
+    this.empleadoId = undefined as any;
+    this.rfc = '';
+    this.nombreCompleto = '';
+  }
 
-
-
-
-
+  testDialog() {
+  this.dialog.open(PensionAlimenDialog, {
+    width: '360px',
+    data: { title: 'Prueba', message: 'Dialog OK' }
+  });
+}
 }
