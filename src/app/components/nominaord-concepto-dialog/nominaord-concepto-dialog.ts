@@ -27,7 +27,7 @@ export class NominaordConceptoDialog {
   cols = ['categoria','concepto', 'clave', 'importe',];
   name = '';
   totalImporte = 0;
-    
+
   constructor(
   @Inject(MAT_DIALOG_DATA) public data: {
     empleadoId: number;
