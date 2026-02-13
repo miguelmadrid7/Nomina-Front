@@ -22,14 +22,14 @@ import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dia
     CommonModule,
     FormsModule,
     MatInputModule,
-    MatCardModule, 
+    MatCardModule,
     MatButtonModule,
     MatSelectModule,
     MatOption,
     MatAutocompleteModule,
     MatOptionModule,
     MatDialogModule,
-    PensionAlimenDialog     
+    PensionAlimenDialog
   ],
   templateUrl: './pension-alimenticia.html',
   styleUrl: './pension-alimenticia.css'
@@ -95,8 +95,8 @@ export class PensionAlimenticia {
   }
 
   onOptionSelected(emp: EmpleadoItem) {
-    this.selectEmpleado(emp);                  
-    this.searchText = this.displayEmpleado(emp);  
+    this.selectEmpleado(emp);
+    this.searchText = this.displayEmpleado(emp);
   }
 
   searchEmployee() {
@@ -155,7 +155,7 @@ export class PensionAlimenticia {
     return;
   }
   this.empleadoId = emp.id;
-  
+
   }
 
   cargarBancos(): void {

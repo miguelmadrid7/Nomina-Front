@@ -71,4 +71,15 @@ export class NominaService {
       responseType: 'blob'
     });
   }
+
+  executePayrollProcess(qnaProceso: number): Observable<any> {
+    return this.http.post(`${this.base}/calculation/execute`, { qnaProceso });
+  }
+
+getJobStatus(id: number): Observable<any> {
+  return this.http.get(`${this.base}/calculation/status/${id}`);
+}
+
+
+
 }
