@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { CalculationNomina } from '../interfaces/nomina-ordinaria-inter';
 
 @Injectable({ providedIn: 'root' })
 export class NominaService {
@@ -52,33 +53,29 @@ export class NominaService {
     return this.http.get(`${this.base}/calculation`, { headers });
   }
 
-  downloadExcel(body: {
-    qnaProceso: number;
-    nivelSueldo?: number;
-    conceptos?: string[];
-    empleadoId?: number;
-    tipoConcepto?: string;
-  }) {
-    const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
-
-  
-    let headers = new HttpHeaders().set('Content-Type', 'application/json');
-    if (token) headers = headers.set('Authorization', `Bearer ${token}`);
-
-    console.log('token usado para excel', token);
-    return this.http.post(`${this.base}/calculation/excel`, body, {
-      headers,
-      responseType: 'blob'
-    });
-  }
 
   executePayrollProcess(qnaProceso: number): Observable<any> {
     return this.http.post(`${this.base}/calculation/execute`, { qnaProceso });
   }
 
-getJobStatus(id: number): Observable<any> {
-  return this.http.get(`${this.base}/calculation/status/${id}`);
-}
+  getJobStatus(id: number): Observable<any> {
+    return this.http.get(`${this.base}/calculation/status/${id}`);
+  }
+
+  downloadExcel(request: CalculationNomina) {
+  const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
+
+  let headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+  if (token) {
+    headers = headers.set('Authorization', `Bearer ${token}`);
+  }
+  return this.http.post( `${this.base}/calculation/excel`, request, { headers, responseType: 'blob' });
+  }
+
+  exportarConceptosCSV(): Observable<Blob> {
+    return this.http.post(`${this.base}/anexo/export-anexo-v`, null, { responseType: 'blob' });
+  }
 
 
 
