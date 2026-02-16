@@ -8,6 +8,7 @@ import { NominaExtraordinaria } from '../app/components/nomina-extraordinaria/no
 import { PensionAlimenticia } from '../app/components/pension-alimenticia/pension-alimenticia';
 import { AuthGuard } from './auth/auth.guard';
 import { CalculoNominaComponent } from './components/nomina/calculo-nomina/calculo-nomina.component';
+import { GenerarProductoComponent } from './components/nomina/generar-producto/generar-producto.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -36,6 +37,16 @@ export const routes: Routes = [
                     {
                         path: 'nomina/extraordinaria',
                         component: NominaExtraordinaria
+                    },
+
+                    {
+                        path: 'nomina/',
+                        component: NominaExtraordinaria
+                    },
+
+                    {
+                        path: 'nomina/generar-producto',
+                        component: GenerarProductoComponent
                     },
 
                     {
