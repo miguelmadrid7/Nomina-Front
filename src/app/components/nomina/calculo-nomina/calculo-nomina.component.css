@@ -1,0 +1,48 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+
+.btn {
+  background-color: #491D2A !important;
+  color: #ffffff !important;
+  border-radius: 25px !important;
+  padding: 8px 24px !important;
+  font-weight: 500;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  text-transform: none; /* evita mayúsculas forzadas */
+}
+
+/* Hover */
+.btn:hover:not(:disabled) {
+  background-color: #5a2435 !important;
+}
+
+/* Estado deshabilitado */
+.btn:disabled {
+  background-color: #a58a92 !important;
+  color: #ffffff !important;
+}
+
+.actions-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+
+.process-steps {
+  margin-top: 20px;
+  max-width: 500px;
+}
+
+.step-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+}
