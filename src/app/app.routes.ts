@@ -7,6 +7,7 @@ import { NominaOrdinaria } from '../app/components/nomina-ordinaria/nomina-ordin
 import { NominaExtraordinaria } from '../app/components/nomina-extraordinaria/nomina-extraordinaria';
 import { PensionAlimenticia } from '../app/components/pension-alimenticia/pension-alimenticia';
 import { AuthGuard } from './auth/auth.guard';
+import { CalculoNominaComponent } from './components/nomina/calculo-nomina/calculo-nomina.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -21,6 +22,11 @@ export const routes: Routes = [
     
                   { path: 'empleados/list', component: ListEmpleado},
                   { path: 'empleados/form', component: FormEmpleado},
+
+                    {
+                        path: 'nomina/calculo',
+                        component: CalculoNominaComponent
+                    },
 
                     {
                         path: 'nomina/ordinaria',

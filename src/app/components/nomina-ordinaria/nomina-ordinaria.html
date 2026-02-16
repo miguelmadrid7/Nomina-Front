@@ -18,56 +18,8 @@
   <button mat-raised-button class="btn-descarga-csv" (click)="downloadExcel()">
     Descarga CSV.
   </button>
-
-  <button
-    mat-raised-button
-    color="primary"
-    class="execute-btn"
-    (click)="executePayrollProcess()"
-    [disabled]="processing">
-
-    <ng-container *ngIf="!processing">
-      Ejecutar Cálculo Nómina
-    </ng-container>
-
-    <ng-container *ngIf="processing">
-      <mat-progress-spinner
-        diameter="20"
-        mode="indeterminate"
-        strokeWidth="3">
-      </mat-progress-spinner>
-      Procesando...
-    </ng-container>
-
-  </button>
 </div>
 
-<div class="process-steps" *ngIf="processing">
-  <mat-vertical-stepper [selectedIndex]="currentStepIndex" linear>
-   
-    <mat-step *ngFor="let step of steps; let i = index"
-              [completed]="progress >= step.progress">
-      <ng-template matStepLabel>
-        {{ step.label }}
-      </ng-template>
-
-      <div class="step-content">
-        <ng-container *ngIf="progress < step.progress">
-          <mat-progress-spinner
-            diameter="25"
-            mode="indeterminate"
-            strokeWidth="3">
-          </mat-progress-spinner>
-          Ejecutando...
-        </ng-container>
-
-        <ng-container *ngIf="progress >= step.progress">
-          ✔ Completado
-        </ng-container>
-      </div>
-    </mat-step>
-  </mat-vertical-stepper>
-</div>
 
 <div class="table-container" *ngIf="showRecords">
   <div class="table-card card">
@@ -122,6 +74,15 @@
               QNA
               <div class="qna-filters-row">
                 <mat-form-field appearance="outline" class="qna-field">
+                  <mat-label>Año</mat-label>
+                  <mat-select [(ngModel)]="anioSeleccionado" (ngModelChange)="onQnaModelChange()">
+                    <mat-option *ngFor="let anio of anios" [value]="anio">
+                      {{ anio }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="qna-field">
                   <mat-label>Quincena</mat-label>
                  <mat-select [(ngModel)]="quincenaSeleccionada" (ngModelChange)="onQnaModelChange()">
                     <mat-option *ngFor="let q of quincenas" [value]="q">
@@ -130,14 +91,6 @@
                   </mat-select>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="qna-field">
-                  <mat-label>Año</mat-label>
-                  <mat-select [(ngModel)]="anioSeleccionado" (ngModelChange)="onQnaModelChange()">
-                    <mat-option *ngFor="let anio of anios" [value]="anio">
-                      {{ anio }}
-                    </mat-option>
-                  </mat-select>
-                </mat-form-field>
               </div>
             </th>
             <td mat-cell *matCellDef="let e">{{ e.qnaProceso }}</td>
