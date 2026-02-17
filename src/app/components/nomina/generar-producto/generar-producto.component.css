@@ -1,0 +1,52 @@
+.gp-wrapper {
+  background-color: transparent;  /* sin fondo gris */
+  border-radius: 0;               /* opcional: sin bordes redondeados */
+  margin-left: auto;              /* mantiene alineación a la derecha */
+  max-width: 960px;               /* controla el ancho del bloque */
+  width: 100%;
+  padding: 0;                     /* quita relleno del contenedor (opcional) */
+}
+
+
+.page-title { font-weight: 700; }
+
+.gp-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(16,24,40,0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 72px;
+}
+
+.gp-title { 
+    font-weight: 600; 
+}
+
+/* Define un único color para todos los estados */
+.btn-burgundy {
+  background-color: #491D2A;
+  color: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 6px 14px;
+}
+
+/* Hover/Focus/Active */
+.btn-burgundy:hover,
+.btn-burgundy:focus,
+.btn-burgundy:active {
+  background-color: #491D2A;
+  color: #fff;
+}
+
+/* Disabled: fuerza el mismo color y sin opacidad */
+.btn-burgundy:disabled,
+.btn-burgundy.disabled {
+  background-color: #491D2A !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+}
