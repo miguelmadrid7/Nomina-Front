@@ -52,7 +52,7 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
   totalElements = 0;
 
   showRecords = false;
-  
+
 
   // Control de refrescos y QNA
   private isRefreshing = false;
@@ -191,7 +191,7 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
 
   private fetchNomina(): void {
     if (this.isRefreshing) return;
-    this.isRefreshing = true; 
+    this.isRefreshing = true;
 
     this.nominaService.getCalculation({
       qnaProceso: this.qnaProceso,
@@ -202,12 +202,12 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
     })
     .subscribe({
       next: (response) => {
-        
+
         const data = this.adaptResponse(response?.data ?? [], this.qnaProceso);
         this.dataSource.data = data;
         this.totalElements = data.length;
 
-        
+
         setTimeout(() => {
           this.isRefreshing = false;
         }, 300);
