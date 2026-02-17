@@ -74,7 +74,11 @@ export class NominaService {
   }
 
   exportarConceptosCSV(): Observable<Blob> {
-    return this.http.post(`${this.base}/anexo/export-anexo-v`, null, { responseType: 'blob' });
+    return this.http.post(`${this.base}/calculation/export-anexo-v`, null, { responseType: 'blob' });
+  }
+
+  exportarChequesCSV(): Observable<Blob> {
+    return this.http.post(`${this.base}/calculation/export-anexo-cheques`, null, { responseType: 'blob' });
   }
 
 
