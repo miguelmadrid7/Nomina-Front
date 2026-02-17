@@ -8,8 +8,11 @@ import { environment } from '../../../../environments/environment';
 import SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 import { MatButtonModule } from '@angular/material/button';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { CdkStepLabel } from "@angular/cdk/stepper";
+import { HttpHeaders } from '@angular/common/http';
+import { subscribe } from 'diagnostics_channel';
+import { CalculationNomina } from '../../../interfaces/nomina-ordinaria-inter';
 
 @Component({
   selector: 'app-calculo-nomina',
@@ -32,7 +35,7 @@ export class CalculoNominaComponent {
   deliverableReady = false;
   private stompClient: any;
   private progressAnimationInterval: any;
-  
+
 
   steps = [
     { label: 'Inicializando proceso', progress: 5 },
@@ -118,7 +121,7 @@ export class CalculoNominaComponent {
     this.progress = 0;
     this.progressTarget = 0;
 
-    this.nominaService.executePayrollProcess(202601).subscribe({
+    this.nominaService.executePayrollProcess(202522).subscribe({
       next: (resp: any) => {
         const jobId = resp?.data;
         if (jobId) {
@@ -132,14 +135,32 @@ export class CalculoNominaComponent {
   }
 
   downloadCsv(): void {
-  this.nominaService.downloadExcel({ qnaProceso: 202601 })
-    .subscribe((blob: Blob) => {
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'nomina.csv';
-      a.click();
-      window.URL.revokeObjectURL(url);
+
+  const request: CalculationNomina = {
+    qnaProceso: 202522
+  };
+
+  this.nominaService.downloadExcel(request)
+    .subscribe({
+      next: (blob: Blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'calculo_nomina.csv';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      },
+      error: () => {
+        this.snackBar.open('Error al descargar el archivo', 'Cerrar', {
+          duration: 3000
+        });
+      }
     });
   }
+
+
+
+
+
+
 }
