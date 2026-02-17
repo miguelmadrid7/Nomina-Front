@@ -220,34 +220,6 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
     });
   }
 
-  downloadExcel(): void {
-    const qna =
-      this.anioSeleccionado && this.quincenaSeleccionada
-        ? parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada.toString().padStart(2,'0')}`, 10)
-        : null;
-
-    if (!qna) return;
-    this.nominaService.downloadExcel({
-      qnaProceso: qna,
-      nivelSueldo: this.nivelSueldo,
-      conceptos: this.concepto,
-      empleadoId: this.empleadoId,
-      tipoConcepto: this.tipoConcepto
-    }).subscribe({
-      next: (blob: Blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'Calculo_Nomina.xlsx';
-        a.click();
-        window.URL.revokeObjectURL(url);
-      },
-      error: (err) => {
-        console.error('Error descargando Excel', err);
-      }
-    });
-  }
-
   openConceptosDialog(row: any) {
     this.dialog.open(NominaordConceptoDialog, {
       panelClass: 'nomina-dialog-wide',
