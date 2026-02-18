@@ -38,20 +38,20 @@ export class CalculoNominaComponent {
 
 
   steps = [
-    { label: 'Inicializando proceso', progress: 10 },            // truncate
-    { label: 'Insertando nómina cheque plaza', progress: 25 },   // insertNomChequePza
-    { label: 'Insertando nómina cheque concepto', progress: 40 },// insertNomChequeCptoTab
-    { label: 'Calculando concepto 01', progress: 55 },           // cpto_01
-    { label: 'Calculando concepto 02', progress: 70 },           // cpto_02
-    { label: 'Calculando concepto 04', progress: 85 },           // cpto_04
-    { label: 'Calculando concepto H0', progress: 90 },           // cpto_ho
-    { label: 'Calculando concepto informados', progress: 92 },   // cpto_informados
-    { label: 'Calculando concepto quinquenios', progress: 94 },  // cpto_quinquenios
-    { label: 'Calculando primas', progress: 96 },                // primas
-    { label: 'Actualizando importes', progress: 98 },            // updateImportes
-    { label: 'Preparando entregable', progress: 99 },            // preparar
-    { label: 'Finalizando proceso', progress: 100 }              // complete
-  ];
+  { label: 'Inicializando proceso', progress: 10 },            // truncate
+  { label: 'Insertando nómina cheque plaza', progress: 20 },   // insertNomChequePza
+  { label: 'Insertando nómina cheque concepto', progress: 30 },// insertNomChequeCptoTab
+  { label: 'Calculando concepto 01', progress: 40 },           // cpto_01
+  { label: 'Calculando concepto 02', progress: 50 },           // cpto_02
+  { label: 'Calculando concepto 04', progress: 60 },           // cpto_04
+  { label: 'Calculando concepto H0', progress: 65 },           // cpto_ho
+  { label: 'Calculando concepto informados', progress: 72 },   // cpto_informados
+  { label: 'Calculando concepto quinquenios', progress: 82 },  // cpto_quinquenios
+  { label: 'Calculando primas', progress: 92 },                // primas
+  { label: 'Actualizando importes', progress: 95 },            // updateImportes
+  { label: 'Preparando entregable', progress: 98 },            // preparar
+  { label: 'Finalizando proceso', progress: 99 },              // complete (previo al 100)
+];
 
   constructor(
     private nominaService: NominaService,
