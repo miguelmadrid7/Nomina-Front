@@ -105,3 +105,283 @@
   font-weight: 600;
   font-size: 14px;
 }
+
+
+.pd-grid { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr;
+   gap: 12px; 
+   margin-top: 8px; 
+ }
+
+.pd-col table { 
+  width: 100%; 
+  border-radius: 6px; 
+  overflow: hidden; 
+  background: #fff; 
+}
+
+.pd-title { text-align: center; font-weight: 600; margin: 6px 0 8px; }
+.right { text-align: right; }
+.pd-footer-label { font-weight: 600; }
+.pd-footer-total { font-weight: 700; }
+
+
+/* Marco exterior con bordes y esquinas redondeadas */
+.pd-table {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden; /* para que el redondeado se note */
+  background: #fff;
+}
+
+/* Angular Material (MDC) celdas y tabla interna */
+:host ::ng-deep .pd-table .mdc-data-table__table {
+  border-collapse: collapse; /* bordes limpios */
+  width: 100%;
+}
+
+:host ::ng-deep .pd-table .mdc-data-table__header-cell,
+:host ::ng-deep .pd-table .mdc-data-table__cell {
+  border-right: 1px solid #e5e7eb;
+  padding: 6px 8px;
+}
+
+/* Quitar borde derecho en la última columna */
+:host ::ng-deep .pd-table .mdc-data-table__header-cell:last-child,
+:host ::ng-deep .pd-table .mdc-data-table__cell:last-child {
+  border-right: none;
+}
+
+/* Línea horizontal entre filas */
+:host ::ng-deep .pd-table .mdc-data-table__row {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Encabezado con fondo claro y borde inferior */
+:host ::ng-deep .pd-table thead .mdc-data-table__header-row {
+  background: #f7f7f7;
+  border-bottom: 1px solid #e5e7eb;
+  font-weight: 600;
+}
+
+/* Alineación derecha para la columna de importe */
+.right { text-align: right; }
+
+/* Grid para colocar ambas tablas lado a lado */
+.pd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+.pd-title { text-align: start; font-weight: 600; margin: 6px 0 8px; }
+
+:host ::ng-deep .pd-table .mat-header-cell,
+:host ::ng-deep .pd-table .mat-cell {
+  border-right: 1px solid #e5e7eb;
+  padding: 6px 8px;
+}
+:host ::ng-deep .pd-table .mat-header-row,
+:host ::ng-deep .pd-table .mat-row {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+
+.grid-empty {
+  height: 0;              /* línea sin ocupar altura extra */
+  border-top: 1px solid #e5e7eb;
+  margin: 8px 0 12px;     /* separación arriba/abajo */
+  width: 100%;
+}
+
+
+
+
+
+:root {
+  --brand: #491D2A;
+  --brand-600: #3d1823;
+  --brand-100: #f3e9ec;
+  --ink-900: #1a1a1a;
+  --ink-700: #343a40;
+  --ink-500: #6b7280;
+  --line: #e5e7eb;
+  --bg: #ffffff;
+}
+
+/* Contenedor del diálogo */
+.table-card.card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg);
+  padding: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.07);
+}
+
+/* Título del diálogo */
+h2[mat-dialog-title] {
+  color: var(--ink-900);
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  margin-bottom: 6px;
+}
+
+/* Info del empleado */
+.employee-info .label { color: var(--ink-700); }
+.employee-info .value { color: var(--ink-900); }
+
+/* Divider sutil */
+.grid-empty {
+  height: 0;
+  border-top: 1px solid var(--line);
+  margin: 10px 0 12px;
+  width: 100%;
+}
+
+/* Toggle de vista (radios) */
+.view-toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 6px 0 10px;
+  color: var(--ink-700);
+}
+
+/* Estiliza radios (MDC) con tu brand) */
+:host ::ng-deep .mat-mdc-radio-button .mdc-radio__outer-circle {
+  border-color: var(--brand) !important;
+}
+:host ::ng-deep .mat-mdc-radio-button .mdc-radio__inner-circle {
+  border-color: var(--brand) !important;
+}
+:host ::ng-deep .mat-mdc-radio-checked .mdc-radio__background::before {
+  background-color: rgba(73, 29, 42, 0.15) !important;
+}
+:host ::ng-deep .mat-mdc-radio-button .mdc-form-field > label {
+  color: var(--ink-700);
+  font-weight: 500;
+}
+
+/* Grid de tablas */
+.pd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
+.pd-grid.single { grid-template-columns: 1fr; }
+
+/* Encabezados de bloque */
+.pd-title {
+  font-weight: 700;
+  color: var(--ink-900);
+  margin: 4px 0 8px;
+  padding-left: 2px;
+  border-left: 4px solid var(--brand);
+}
+
+/* Tabla Material: marco + header */
+.pd-table {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+:host ::ng-deep .pd-table .mdc-data-table__table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+:host ::ng-deep .pd-table thead .mdc-data-table__header-row {
+  background: var(--brand-100);
+  border-bottom: 1px solid var(--line);
+}
+
+:host ::ng-deep .pd-table .mdc-data-table__header-cell {
+  color: var(--ink-700);
+  font-weight: 700;
+  padding: 8px 10px;
+  border-right: 1px solid var(--line);
+}
+:host ::ng-deep .pd-table .mdc-data-table__header-cell:last-child {
+  border-right: none;
+}
+
+:host ::ng-deep .pd-table .mdc-data-table__row {
+  border-bottom: 1px solid var(--line);
+}
+:host ::ng-deep .pd-table .mdc-data-table__cell {
+  color: var(--ink-900);
+  padding: 8px 10px;
+  border-right: 1px solid var(--line);
+}
+:host ::ng-deep .pd-table .mdc-data-table__cell:last-child {
+  border-right: none;
+}
+
+/* Hover de fila sutil */
+:host ::ng-deep .pd-table tbody .mdc-data-table__row:hover {
+  background: #faf9fa;
+}
+
+/* Alineación derecha */
+.right { text-align: right; }
+
+/* Botón de pie */
+.table-footer {
+  display: flex;
+  justify-content: flex-start;
+}
+:host ::ng-deep .mat-mdc-button.mat-primary,
+:host ::ng-deep button[mat-button] {
+  color: var(--brand);
+  font-weight: 600;
+}
+:host ::ng-deep .mat-mdc-button.mat-primary:hover,
+:host ::ng-deep button[mat-button]:hover {
+  background: rgba(73, 29, 42, 0.06);
+}
+
+
+/* Asegura bordes verticales completos (MDC) */
+:host ::ng-deep .pd-table .mdc-data-table__header-cell,
+:host ::ng-deep .pd-table .mdc-data-table__cell {
+  border-right: 1px solid #e5e7eb;
+  /* si prefieres celdas tipo “grid” completa, añade también borde izquierdo a todas */
+  /* border-left: 1px solid #e5e7eb; */
+}
+
+/* Borde izquierdo solo para la primera columna (si no quieres en todas) */
+:host ::ng-deep .pd-table .mdc-data-table__header-cell:first-child,
+:host ::ng-deep .pd-table .mdc-data-table__cell:first-child {
+  border-left: 1px solid #e5e7eb;
+}
+
+/* Quitar borde derecho en la última columna (evita doble borde con el marco exterior) */
+:host ::ng-deep .pd-table .mdc-data-table__header-cell:last-child,
+:host ::ng-deep .pd-table .mdc-data-table__cell:last-child {
+  border-right: none;
+}
+
+/* Bordes horizontales entre filas */
+:host ::ng-deep .pd-table .mdc-data-table__row {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Borde inferior del encabezado (ya lo tienes, lo reafirmamos) */
+:host ::ng-deep .pd-table thead .mdc-data-table__header-row {
+  border-bottom: 1px solid #e5e7eb;
+  background: #f7f7f7;
+  font-weight: 600;
+}
+
+/* Compatibilidad con versión antigua (no MDC) */
+:host ::ng-deep .pd-table .mat-header-cell,
+:host ::ng-deep .pd-table .mat-cell {
+  border-right: 1px solid #e5e7eb;
+}
+:host ::ng-deep .pd-table .mat-header-cell:first-child,
+:host ::ng-deep .pd-table .mat-cell:first-child {
+  border-left: 1px solid #e5e7eb;
+}
+:host ::ng-deep .pd-table .mat-header-row,
+:host ::ng-deep .pd-table .mat-row {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+
+

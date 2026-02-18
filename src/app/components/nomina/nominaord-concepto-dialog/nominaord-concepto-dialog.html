@@ -1,59 +1,124 @@
-<h2 mat-dialog-title>Empleado: {{data.nombreEmpleado}}</h2>
+<h2 mat-dialog-title>Entidad federativa: HIDALGO</h2>
 
 <div class="table-card card">
-
   <!-- Info del empleado -->
   <div class="employee-info">
+
+    <div class="employee-field">
+      <span class="label">Nombre:</span>
+      <span class="value">{{ data.nombreEmpleado }}</span>
+    </div>
+
     <div class="employee-field">
       <span class="label">CURP:</span>
       <span class="value">{{ data.curp }}</span>
-    </div>
-    <div class="employee-field">
+
       <span class="label">RFC:</span>
       <span class="value">{{ data.rfc }}</span>
     </div>
-    <div class="employee-field" *ngIf="data.conceptos?.length">
+
+    <div class="employee-field">
       <span class="label">QNA:</span>
-      <span class="value">{{ data.qnaProceso }}</span>
+      <span class="value">{{ data.qnaTexto }}</span>
+
+      <span class="label">Nómina (ordinaria, extraoirdinaria):</span>
+      <span class="value"></span>
+    </div>
+
+    <div class="employee-field">
+      <span class="label">No. Comprobante:</span>
+      <span class="value">{{ noComprobanteCab }}</span>
+    </div>
+
+    <div class="employee-field">
+      <span class="label">Percepciones:</span>
+      <span class="value">$ {{ totalPercepciones | number:'1.2-2' }}</span>
+
+      <span class="label">Deducciones:</span>
+      <span class="value">$ {{ totalDeducciones | number:'1.2-2' }}</span>
+    </div>
+
+    <div class="employee-field">
+      <span class="label">Líquido:</span>
+      <span class="value">${{ liquido | number:'1.2-2' }}</span>
     </div>
   </div>
 
-  <!-- Tabla con scroll -->
-  <div class="table-scroll content">
-    <table mat-table [dataSource]="data.conceptos" class="nomina-table full">
+  <div class="grid-empty"></div>
 
-      <ng-container matColumnDef="categoria">
-        <th mat-header-cell *matHeaderCellDef>Categoria</th>
-        <td mat-cell *matCellDef="let c">{{ c.catCategoriasCve }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="concepto">
-        <th mat-header-cell *matHeaderCellDef>Concepto</th>
-        <td mat-cell *matCellDef="let c">{{ c.conceptoCve }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="clave">
-        <th mat-header-cell *matHeaderCellDef>Tipo SD/D</th>
-        <td mat-cell *matCellDef="let c">{{ c.tipoConcepto ?? '-' }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="importe">
-        <th mat-header-cell *matHeaderCellDef>Importe $</th>
-        <td mat-cell *matCellDef="let c">{{ c.importeQnal | number:'1.2-2' }}</td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="cols"></tr>
-      <tr mat-row *matRowDef="let row; columns: cols;"></tr>
-    </table>
+  <!-- Selector de vista -->
+  <div class="view-toggle">
+    <mat-radio-group [(ngModel)]="selectedView">
+      <mat-radio-button value="ambas">Ambas</mat-radio-button>
+      <mat-radio-button value="percepciones">Percepciones</mat-radio-button>
+      <mat-radio-button value="deducciones">Deducciones</mat-radio-button>
+    </mat-radio-group>
   </div>
 
-  <!-- Footer con total -->
+  <!-- Tablas Percepciones / Deducciones con Angular Material -->
+  <div class="pd-grid" [ngClass]="{ 'single': selectedView !== 'ambas' }">
+    <!-- Percepciones -->
+    <div class="pd-col"
+         *ngIf="(selectedView === 'ambas' || selectedView === 'percepciones') && percepciones.length > 0">
+      <div class="pd-title">Percepciones</div>
+      <table mat-table [dataSource]="percepciones" class="mat-elevation-z1 pd-table">
+
+        <ng-container matColumnDef="tipo">
+          <th mat-header-cell *matHeaderCellDef>Tipo</th>
+          <td mat-cell *matCellDef="let r">{{ r.tipo }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="concepto">
+          <th mat-header-cell *matHeaderCellDef>Concepto</th>
+          <td mat-cell *matCellDef="let r">{{ r.concepto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="importe">
+          <th mat-header-cell *matHeaderCellDef class="right">Importe</th>
+          <td mat-cell *matCellDef="let r" class="right">{{ r.importe | number:'1.2-2' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['tipo','concepto','importe']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['tipo','concepto','importe'];"></tr>
+      </table>
+
+      <!-- Estado vacío opcional -->
+      <div *ngIf="percepciones.length === 0" class="empty-hint">Sin percepciones.</div>
+    </div>
+
+    <!-- Deducciones -->
+    <div class="pd-col"
+         *ngIf="(selectedView === 'ambas' || selectedView === 'deducciones') && deducciones.length > 0">
+      <div class="pd-title">Deducciones</div>
+      <table mat-table [dataSource]="deducciones" class="mat-elevation-z1 pd-table">
+
+        <ng-container matColumnDef="tipo">
+          <th mat-header-cell *matHeaderCellDef>Tipo</th>
+          <td mat-cell *matCellDef="let r">{{ r.tipo }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="concepto">
+          <th mat-header-cell *matHeaderCellDef>Concepto</th>
+          <td mat-cell *matCellDef="let r">{{ r.concepto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="importe">
+          <th mat-header-cell *matHeaderCellDef class="right">Importe</th>
+          <td mat-cell *matCellDef="let r" class="right">{{ r.importe | number:'1.2-2' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['tipo','concepto','importe']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['tipo','concepto','importe'];"></tr>
+      </table>
+
+      <!-- Estado vacío opcional -->
+      <div *ngIf="deducciones.length === 0" class="empty-hint">Sin deducciones.</div>
+    </div>
+  </div>
+
+  <div class="grid-empty"></div>
+
   <div class="table-footer">
-    <div class="total-row">
-      <span>Total $:</span>
-      <strong>${{ totalImporte | number:'1.2-2' }}</strong>
-    </div>
     <button mat-button (click)="close()">Cerrar</button>
   </div>
-
 </div>

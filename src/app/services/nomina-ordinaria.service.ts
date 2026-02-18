@@ -48,13 +48,24 @@ export class NominaService {
 }
 
   exportarConceptosCSV(): Observable<Blob> {
-    return this.http.post(`${this.base}/calculation/export-anexo-v`, null, { responseType: 'blob' });
-  }
+  const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
+  let headers = new HttpHeaders().set('Accept', 'text/csv');
+  if (token) headers = headers.set('Authorization', `Bearer ${token}`);
+  return this.http.post(`${this.base}/calculation/export-anexo-v`, null, {
+    headers,
+    responseType: 'blob'
+  });
+}
 
-  exportarChequesCSV(): Observable<Blob> {
-    return this.http.post(`${this.base}/calculation/export-anexo-cheques`, null, { responseType: 'blob' });
-  }
-
+exportarChequesCSV(): Observable<Blob> {
+  const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
+  let headers = new HttpHeaders().set('Accept', 'text/csv');
+  if (token) headers = headers.set('Authorization', `Bearer ${token}`);
+  return this.http.post(`${this.base}/calculation/export-anexo-cheques`, null, {
+    headers,
+    responseType: 'blob'
+  });
+}
 
 
 }
