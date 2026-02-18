@@ -25,9 +25,7 @@ export class NominaService {
   }
 
   return this.http.get(`${this.base}/calculation/nomina-cheque`, { headers });
-}
-
-
+  }
 
   executePayrollProcess(qnaProceso: number): Observable<any> {
     return this.http.post(`${this.base}/calculation/execute`, { qnaProceso });
@@ -37,16 +35,17 @@ export class NominaService {
     return this.http.get(`${this.base}/calculation/status/${id}`);
   }
 
-  downloadExcel(request: CalculationNomina) {
+  downloadCalculoCsv(request: CalculationNomina) {
   const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
+  let headers = new HttpHeaders().set('Accept', 'text/csv');
+  if (token) headers = headers.set('Authorization', `Bearer ${token}`);
 
-  let headers = new HttpHeaders().set('Content-Type', 'application/json');
-
-  if (token) {
-    headers = headers.set('Authorization', `Bearer ${token}`);
-  }
-  return this.http.post( `${this.base}/calculation/excel`, request, { headers, responseType: 'blob' });
-  }
+  return this.http.post(
+    `${this.base}/calculation/excel/csv`,
+    request,
+    { headers, responseType: 'blob', observe: 'response' }
+  );
+}
 
   exportarConceptosCSV(): Observable<Blob> {
     return this.http.post(`${this.base}/calculation/export-anexo-v`, null, { responseType: 'blob' });

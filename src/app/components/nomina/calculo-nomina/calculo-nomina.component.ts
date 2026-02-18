@@ -34,18 +34,23 @@ export class CalculoNominaComponent {
   processing = false;
   deliverableReady = false;
   private stompClient: any;
-  private progressAnimationInterval: any;
+  //private progressAnimationInterval: any;
 
 
   steps = [
-    { label: 'Inicializando proceso', progress: 5 },
-    { label: 'Truncando nómina', progress: 10 },
-    { label: 'Insertando piezas', progress: 25 },
-    { label: 'Insertando conceptos', progress: 40 },
-    { label: 'Calculando concepto 01', progress: 55 },
-    { label: 'Calculando concepto 02', progress: 70 },
-    { label: 'Preparando entregable', progress: 85 },
-    { label: 'Finalizando proceso', progress: 100 }
+    { label: 'Inicializando proceso', progress: 10 },            // truncate
+    { label: 'Insertando nómina cheque plaza', progress: 25 },   // insertNomChequePza
+    { label: 'Insertando nómina cheque concepto', progress: 40 },// insertNomChequeCptoTab
+    { label: 'Calculando concepto 01', progress: 55 },           // cpto_01
+    { label: 'Calculando concepto 02', progress: 70 },           // cpto_02
+    { label: 'Calculando concepto 04', progress: 85 },           // cpto_04
+    { label: 'Calculando concepto H0', progress: 90 },           // cpto_ho
+    { label: 'Calculando concepto informados', progress: 92 },   // cpto_informados
+    { label: 'Calculando concepto quinquenios', progress: 94 },  // cpto_quinquenios
+    { label: 'Calculando primas', progress: 96 },                // primas
+    { label: 'Actualizando importes', progress: 98 },            // updateImportes
+    { label: 'Preparando entregable', progress: 99 },            // preparar
+    { label: 'Finalizando proceso', progress: 100 }              // complete
   ];
 
   constructor(
@@ -69,41 +74,19 @@ export class CalculoNominaComponent {
   }
 
   private handleProgressUpdate(data: any): void {
-  this.progressTarget = data.progress;
+    this.progress = data.progress;
 
-  if (data.progress === 100) {
-    this.progress = 100;
-
-    // Simulamos preparación de entregable
-    setTimeout(() => {
-      this.progress = 100;
+    if (data.progress === 100 || data.status === 'COMPLETED') {
       this.deliverableReady = true;
       this.processing = false;
-      this.cdr.detectChanges();
-    }, 1500);
 
-    if (this.progressAnimationInterval) {
-      clearInterval(this.progressAnimationInterval);
-      this.progressAnimationInterval = null;
-    }
-
-    if (this.stompClient) {
-      this.stompClient.disconnect(() => {});
-    }
-
-    return;
-  }
-
-  if (!this.progressAnimationInterval) {
-    this.progressAnimationInterval = setInterval(() => {
-      if (this.progress < this.progressTarget) {
-        this.progress++;
-        this.cdr.detectChanges();
+      if (this.stompClient) {
+        this.stompClient.disconnect(() => {});
       }
-    }, 20);
-  }
-  }
+    }
 
+    this.cdr.detectChanges();
+  }
 
 
   get currentStepIndex(): number {
@@ -112,55 +95,42 @@ export class CalculoNominaComponent {
   }
 
   executePayrollProcess(): void {
-    if (this.progressAnimationInterval) {
-      clearInterval(this.progressAnimationInterval);
-      this.progressAnimationInterval = null;
+  this.processing = true;
+  this.progress = 0;
+  this.deliverableReady = false;
+
+  this.nominaService.executePayrollProcess(202522).subscribe({
+    next: (resp: any) => {
+      const jobId = resp?.data;
+      if (jobId) this.initWebSocketConnection(jobId);
+    },
+    error: () => {
+      this.processing = false;
     }
-
-    this.processing = true;
-    this.progress = 0;
-    this.progressTarget = 0;
-
-    this.nominaService.executePayrollProcess(202522).subscribe({
-      next: (resp: any) => {
-        const jobId = resp?.data;
-        if (jobId) {
-          this.initWebSocketConnection(jobId);
-        }
-      },
-      error: () => {
-        this.processing = false;
-      }
-    });
+  });
   }
 
-  downloadCsv(): void {
+ downloadCsv(): void {
+  const request: CalculationNomina = { qnaProceso: 202522 };
 
-  const request: CalculationNomina = {
-    qnaProceso: 202522
-  };
-
-  this.nominaService.downloadExcel(request)
-    .subscribe({
-      next: (blob: Blob) => {
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'calculo_nomina.csv';
-        a.click();
-        window.URL.revokeObjectURL(url);
-      },
-      error: () => {
-        this.snackBar.open('Error al descargar el archivo', 'Cerrar', {
-          duration: 3000
-        });
+  this.nominaService.downloadCalculoCsv(request).subscribe({
+    next: (resp) => {
+      if (resp.status === 204 || !resp.body || resp.body.size === 0) {
+        this.snackBar.open('No hay información para exportar', 'Cerrar', { duration: 3000 });
+        return;
       }
-    });
-  }
+      const cd = resp.headers.get('Content-Disposition') || '';
+      const match = /filename\\s*=\\s*\"?([^\";]+)\"?/i.exec(cd);
+      const filename = match ? match[1] : 'calculo_nomina.csv';
 
-
-
-
-
-
+      const url = window.URL.createObjectURL(resp.body);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      window.URL.revokeObjectURL(url);
+    },
+    error: () => {
+      this.snackBar.open('Error al descargar el archivo', 'Cerrar', { duration: 3000 });
+    }
+  });
+}
 }
