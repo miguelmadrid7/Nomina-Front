@@ -46,3 +46,23 @@
   gap: 10px;
   padding: 10px 0;
 }
+
+/* Altura basada en viewport ajustando cabecera/breadcrumb si existen */
+.calculo-scroll {
+  max-height: calc(100vh - 140px); /* ajusta 140px según el alto de tu header/toolbar */
+  overflow: auto;
+  -webkit-overflow-scrolling: touch; /* scroll suave en móviles */
+}
+
+/* Si tienes tablas anchas, permite scroll horizontal también */
+.calculo-scroll {
+  overflow: auto;          /* vertical + horizontal si overflow-x lo requiere */
+}
+
+ /* Encabezados fijos de mat-table (opcional) */
+:host ::ng-deep table .mdc-data-table__header-row {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #fff;
+}
