@@ -11,47 +11,22 @@ export class NominaService {
 
   constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
 
-  getCalculation(params: {
-    qnaProceso: number;
-    nivelSueldo?: number;
-    concepto?: string[];
-    empleadoId?: number;
-    tipoConcepto?: string;
-    page?: number;
-    size?: number;
-  }): Observable<any> {
-    const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
 
-    // EL BACKEND ESPERA @RequestHeader, no params
-    let headers = new HttpHeaders()
-      .set('qnaProceso', params.qnaProceso.toString());
 
-    if(token) {
-      headers = headers.set('Authorization', `Bearer ${token}`);
-    }
+  getNominaCheque(): Observable<any> {
+  const token = isPlatformBrowser(this.platformId)
+    ? localStorage.getItem('token')
+    : null;
 
-    // Agrega los demás headers si existen
-    if(params.nivelSueldo) {
-      headers = headers.set('nivelSueldo', params.nivelSueldo.toString());
-    }
+  let headers = new HttpHeaders();
 
-    if(params.concepto) {
-      params.concepto.forEach(c => {
-        headers = headers.append('concepto', c)
-      });
-    }
-
-    if(params.empleadoId) {
-      headers = headers.set('empleadoId', params.empleadoId.toString());
-    }
-
-    if(params.tipoConcepto) {
-      headers = headers.set('tipoConcepto', params.tipoConcepto.toString());
-    }
-
-    // EL BACKEND NO USA PAGINACIÓN - elimina params
-    return this.http.get(`${this.base}/calculation`, { headers });
+  if (token) {
+    headers = headers.set('Authorization', `Bearer ${token}`);
   }
+
+  return this.http.get(`${this.base}/calculation/nomina-cheque`, { headers });
+}
+
 
 
   executePayrollProcess(qnaProceso: number): Observable<any> {

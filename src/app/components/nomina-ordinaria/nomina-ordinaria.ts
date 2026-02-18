@@ -11,9 +11,8 @@ import { NominaService } from '../../services/nomina-ordinaria.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NominaordConceptoDialog } from '../nominaord-concepto-dialog/nominaord-concepto-dialog';
 import { MatInputModule } from '@angular/material/input';
-
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-
+import { NominaRow } from '../../interfaces/nomina-row-inter';
 
 @Component({
   selector: 'app-nomina-ordinaria',
@@ -35,9 +34,18 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 })
 export class NominaOrdinaria implements OnInit, AfterViewInit {
 
-  dataSource = new MatTableDataSource<any>([]);
-  displayedColumns: string[] = ['curp', 'rfc', 'nombreEmpleado', 'qnaProceso', 'nivelSueldo', 'concepto', 'totalImporteQnal'];
-  filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
+  dataSource = new MatTableDataSource<NominaRow>([]);
+  //displayedColumns: string[] = ['curp', 'rfc', 'nombreEmpleado', 'qnaProceso', 'nivelSueldo', 'concepto', 'totalImporteQnal'];
+
+  displayedColumns: string[] = [
+  'curp',
+  'rfc',
+  'nombreEmpleado',
+  'qnaProceso',
+  'clavePlaza',
+  'conceptoDetalle',
+];
+filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
 
   anios: number[] = [2026, 2025, 2024];
   quincenas: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
@@ -190,46 +198,94 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
   }
 
   private fetchNomina(): void {
-    if (this.isRefreshing) return;
-    this.isRefreshing = true;
+  if (this.isRefreshing) return;
+  this.isRefreshing = true;
 
-    this.nominaService.getCalculation({
-      qnaProceso: this.qnaProceso,
-      empleadoId: this.empleadoId,
-      nivelSueldo: this.nivelSueldo,
-      concepto: this.concepto,
-      tipoConcepto: this.tipoConcepto
-    })
-    .subscribe({
-      next: (response) => {
+  this.nominaService.getNominaCheque().subscribe({
+    next: (response) => {
 
-        const data = this.adaptResponse(response?.data ?? [], this.qnaProceso);
-        this.dataSource.data = data;
-        this.totalElements = data.length;
+      const raw = response?.data ?? [];
 
+      const mapped: NominaRow[] = raw.map((row: any[]) => ({
+        noComprobante: row[0],
+        ur: row[1],
+        periodo: row[2],
+        qnaProceso: (() => {
+          const per = String(row[2] ?? '');
+          const m = per.match(/^(\d{1,2})\/(\d{4})$/);
+          if (m) {
+            const q = m[1].padStart(2,'0');
+            const y = m[2];
+            return parseInt(`${y}${q}`, 10);
+          }
+          return null;
+        })(),
+        tipoNomina: row[3],
+        clavePlaza: row[4],
+        curp: row[5],
+        rfc: row[6],
+        nombreEmpleado: `${row[7]} ${row[8]} ${row[9]}`,
+        tipoConcepto: row[10],
+        concepto: row[11],
+        descConcepto: row[12],
+        importe: Number(row[13]) || 0,
+        baseCalculoIsr: Number(row[14]) || 0
+      }));
 
-        setTimeout(() => {
-          this.isRefreshing = false;
-        }, 300);
-      },
-      error: (err) => {
-        console.error('Error backend (500)', err);
-        this.clearTable();
-        this.isRefreshing = false;
-      }
-    });
-  }
+      const targetQna = parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada.toString().padStart(2,'0')}`, 10);
+      const filtered = mapped.filter(r => r.qnaProceso === targetQna);
+
+      // Agrupar por empleado/comprobante para evitar duplicados en la tabla
+      const groupedMap = filtered.reduce((map, r) => {
+        const key = `${r.rfc}|${r.curp}|${r.qnaProceso}|${r.noComprobante}`;
+        if (!map.has(key)) {
+          map.set(key, { ...r, detalles: [] as NominaRow['detalles'] });
+        }
+        const holder = map.get(key)!;
+        holder.detalles!.push({
+          noComprobante: r.noComprobante,
+          tipoConcepto: r.tipoConcepto,
+          concepto: r.concepto,
+          importe: r.importe,
+        });
+        return map;
+      }, new Map<string, NominaRow>());
+
+      const grouped = Array.from(groupedMap.values());
+
+      this.dataSource.data = grouped;
+      this.totalElements = grouped.length;
+      this.isRefreshing = false;
+    },
+    error: () => {
+      this.clearTable();
+      this.isRefreshing = false;
+    }
+  });
+}
+
 
   openConceptosDialog(row: any) {
+    const detalles = (row.detalles && row.detalles.length)
+      ? row.detalles
+      : (this.dataSource.data as NominaRow[])
+          .filter(d => d.noComprobante === row.noComprobante && d.rfc === row.rfc && d.curp === row.curp)
+          .map(d => ({
+            noComprobante: d.noComprobante,
+            tipoConcepto: d.tipoConcepto,
+            concepto: d.concepto,
+            importe: Number(d.importe) || 0,
+          }));
+
     this.dialog.open(NominaordConceptoDialog, {
       panelClass: 'nomina-dialog-wide',
       data: {
         empleadoId: row.empleadoId,
         nombreEmpleado: row.nombreEmpleado,
-        qnaProceso: row.qnaProceso,
-        conceptos: row.conceptos ?? [],
         curp: row.curp,
         rfc: row.rfc,
+        qnaTexto: `${this.anioSeleccionado}/${this.quincenaSeleccionada.toString().padStart(2,'0')}`,
+        detalles
       }
     });
   }

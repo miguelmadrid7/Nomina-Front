@@ -23,24 +23,28 @@ import { MatTableModule } from '@angular/material/table';
   styleUrl: './nominaord-concepto-dialog.css'
 })
 export class NominaordConceptoDialog {
-
-  cols = ['categoria','concepto', 'clave', 'importe',];
+  cols = ['tipoConcepto','concepto','noComprobante', 'importe',];
   name = '';
   totalImporte = 0;
 
   constructor(
   @Inject(MAT_DIALOG_DATA) public data: {
-    empleadoId: number;
+    empleadoId?: number;
     nombreEmpleado: string;
-    qnaProceso: number;
-    conceptos: any[];
     curp: string;
     rfc: string;
+    qnaTexto: string;
+    detalles: Array<{
+      noComprobante: number|string;
+      tipoConcepto: string;
+      concepto: string;
+      importe: number;
+    }>
   },
   private ref: MatDialogRef<NominaordConceptoDialog>
 ) {
-  this.totalImporte = (data.conceptos ?? [])
-    .reduce((acc, c) => acc + (Number(c.importeQnal) || 0), 0);
+  this.totalImporte = (data.detalles ?? [])
+    .reduce((acc, c) => acc + (Number(c.importe) || 0), 0);
 }
 
 

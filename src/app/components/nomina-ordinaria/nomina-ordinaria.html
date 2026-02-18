@@ -92,12 +92,7 @@
             <td mat-cell *matCellDef="let e">{{ e.qnaProceso }}</td>
           </ng-container>
 
-          <ng-container matColumnDef="nivelSueldo">
-            <th mat-header-cell *matHeaderCellDef>Categoría</th>
-            <td mat-cell *matCellDef="let e">{{ e.nivelSueldo }}</td>
-          </ng-container>
-
-          <ng-container matColumnDef="concepto">
+          <ng-container matColumnDef="conceptoDetalle">
             <th mat-header-cell *matHeaderCellDef>Conceptos</th>
             <td mat-cell *matCellDef="let e">
               <button mat-button color="primary" (click)="openConceptosDialog(e)">
@@ -106,11 +101,9 @@
             </td>
           </ng-container>
 
-          <ng-container matColumnDef="totalImporteQnal">
-            <th mat-header-cell *matHeaderCellDef>Importe Total $</th>
-            <td mat-cell *matCellDef="let e">
-              ${{ e.totalImporteQnal | number:'1.2-2' }}
-            </td>
+          <ng-container matColumnDef="clavePlaza">
+            <th mat-header-cell *matHeaderCellDef>Clave Plaza</th>
+            <td mat-cell *matCellDef="let e">{{ e.clavePlaza }}</td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -120,7 +113,7 @@
 
       <div class="table-footer">
         <mat-paginator
-          [length]="dataSource.data.length"
+          [length]="totalElements"
           [pageSize]="50"
           [pageSizeOptions]="[50, 100, 150, 200]"
           showFirstLastButtons
