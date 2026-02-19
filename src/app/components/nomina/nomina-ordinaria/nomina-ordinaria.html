@@ -92,6 +92,17 @@
             <td mat-cell *matCellDef="let e">{{ e.qnaProceso }}</td>
           </ng-container>
 
+
+           <ng-container matColumnDef="clavePlaza">
+            <th mat-header-cell *matHeaderCellDef>Clave Plaza</th>
+            <td mat-cell *matCellDef="let e">{{ e.clavePlaza }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="baseCalculoIsr">
+            <th mat-header-cell *matHeaderCellDef>Base Cálculo ISR</th>
+            <td mat-cell *matCellDef="let e">{{ e.baseCalculoIsr }}</td>
+          </ng-container>
+
           <ng-container matColumnDef="conceptoDetalle">
             <th mat-header-cell *matHeaderCellDef>Conceptos</th>
             <td mat-cell *matCellDef="let e">
@@ -99,11 +110,6 @@
                 Ver detalle
               </button>
             </td>
-          </ng-container>
-
-          <ng-container matColumnDef="clavePlaza">
-            <th mat-header-cell *matHeaderCellDef>Clave Plaza</th>
-            <td mat-cell *matCellDef="let e">{{ e.clavePlaza }}</td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

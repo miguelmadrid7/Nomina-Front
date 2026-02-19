@@ -42,6 +42,7 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
   'nombreEmpleado',
   'qnaProceso',
   'clavePlaza',
+  'baseCalculoIsr',
   'conceptoDetalle',
 ];
 filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
