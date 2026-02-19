@@ -35,8 +35,6 @@ import { NominaRow } from '../../interfaces/nomina-row-inter';
 export class NominaOrdinaria implements OnInit, AfterViewInit {
 
   dataSource = new MatTableDataSource<NominaRow>([]);
-  //displayedColumns: string[] = ['curp', 'rfc', 'nombreEmpleado', 'qnaProceso', 'nivelSueldo', 'concepto', 'totalImporteQnal'];
-
   displayedColumns: string[] = [
   'curp',
   'rfc',

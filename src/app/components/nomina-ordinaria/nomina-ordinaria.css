@@ -1,132 +1,153 @@
+/* Shell de la vista */
 :host {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* antes: min-height: 100vh */
-  overflow: hidden;     /* importante: evita scroll del body y encierra el layout */
+  height: 100dvh;      /* antes: min-height: 100vh */
+  overflow: hidden;    /* mantenido */
   box-sizing: border-box;
+  padding: 16px;
 }
 
 /* Encabezado y acciones */
-.page-title {
-  margin: 0;
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: inherit;
-}
-
 .page-header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 1rem;
-  padding-left: 8px;
-  box-sizing: border-box;
-  flex: 0 0 auto;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding-left: 4px;
 }
-
-
-.header-actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin-top: 4px;
+.page-title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: .2px;
+  color: #1f2937;
 }
-
 .actions-right {
   width: 100%;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-bottom: 10px;
-  padding: 0 8px;
+  margin: 8px 0 12px 0;
+  padding: 0 4px;
   box-sizing: border-box;
-  flex: 0 0 auto;
 }
 
-
-/* Tabla */
-.nomina-table {
-  width: 100%;
+/* Botones */
+.btn-descarga-csv {
+  background-color: #491D2A !important;
+  color: #fff !important;
+  border-radius: 22px !important;
+  padding: 8px 18px !important;
+  font-weight: 600;
+  text-transform: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
 }
+.btn-descarga-csv:hover { background-color: #5a2435 !important; }
 
-/* Contenedor principal que crece para llenar la pantalla */
+/* Contenedor principal de tabla (flex para scroll correcto) */
 .table-container {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: 0;                 /* clave para que .table-scroll pueda scrollear */
 }
 
-/* Tarjeta de la tabla en flex columna */
-.table-card {
-  
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: hidden;
-}
-
-
-/* No ocultar el scroll interno */
+/* Tarjeta de la tabla */
 .table-card.card {
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   background: #fff;
   overflow: hidden;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
-/* Área scrolleable que ocupa el espacio restante, con scroll siempre visible */
+/* Contenido y área scrolleable */
+.table-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
 .table-scroll {
   width: 100%;
-  overflow-x: auto;
-  overflow-y: auto;
+  overflow: auto;                /* x + y */
   flex: 1 1 auto;
   min-height: 0;
   -webkit-overflow-scrolling: touch;
   scrollbar-gutter: stable both-edges;
-  max-height: calc(100vh - 200px);
 }
 
+/* Tabla */
+.nomina-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.nomina-table th,
+.nomina-table td {
+  padding: 8px 10px;
+  border: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;           /* evita saltos feos en encabezados */
+}
 .nomina-table th {
   position: sticky;
   top: 0;
   background: #ffffff;
   z-index: 3;
+  font-weight: 700;
+  color: #111827;
+  box-shadow: 0 1px 0 rgba(0,0,0,.05);
 }
 
+/* Fila hover y rayado suave (opcional) */
+.nomina-table tr:nth-child(even) td { background: #fafafa; }
+.nomina-table tr:hover td { background: #f5f7fb; }
 
-.nomina-table th,
-.nomina-table td {
-  padding: 6px 8px;
-  border: 1px solid #e5e7eb;
-  text-align: left;
-  vertical-align: middle;
-}
-
-.nomina-table th {
-  font-weight: 600;
-  color: #000;
-}
-
-.nomina-table th 
-.header-cell {
+/* Header con filtro (CURP/RFC/Empleado) */
+.header-filter {
   display: flex;
   flex-direction: column;
   gap: 6px;
   align-items: flex-start;
 }
-
-/* Respeta border-radius de la card */
-.table-scroll 
-.nomina-table {
-  border-collapse: separate;
-  border-spacing: 0;
+.header-filter span {
+  font-weight: 700;
+  font-size: 13px;
+  color: #1f2937;
+}
+.header-filter input {
+  font-size: 12px;
+  padding: 6px 8px;
+  width: 180px;
+  box-sizing: border-box;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.header-filter input:focus {
+  border-color: #491D2A;
+  box-shadow: 0 0 0 3px rgba(73,29,42,.15);
 }
 
-/* Footer/paginador fijo al fondo de la tarjeta */
+/* Columna QNA con selects en línea */
+.qna-filters-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.qna-field { width: 160px; max-width: 200px; }
+
+/* Paginador/foot */
 .table-footer {
   flex: 0 0 auto;
   display: flex;
@@ -135,10 +156,11 @@
   padding: 8px;
   gap: 8px;
   box-sizing: border-box;
-  flex-shrink: 0;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
 }
 
-/* Varios */
+/* Estados vacíos */
 .empty {
   padding: 16px;
   border: 1px dashed #e5e7eb;
@@ -148,78 +170,18 @@
   flex: 0 0 auto;
 }
 
-.qna-filters-row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
+/* Mat stepper (si se usa en esta pantalla) */
+.process-steps { margin-top: 20px; max-width: 900px; }
+.step-content { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
 
-.qna-field {
-  width: 160px;
-  max-width: 200px;
+/* Ajustes responsive */
+@media (max-width: 960px) {
+  .header-filter input { width: 140px; }
+  .qna-field { width: 140px; }
 }
-
-.qna-field .mat-form-field-wrapper,
-.qna-field .mat-form-field-flex,
-.qna-field .mat-form-field-infix {
-  height: 34px !important;
-  min-height: 34px !important;
-  padding: 0 6px !important;
-  align-items: center;
-}
-
 @media (max-width: 720px) {
-  .qna-field {
-    width: 120px;
-  }
-}
-
-.btn-descarga-csv {
-  background-color: #491D2A !important;
-  color: #fff !important;
-}
-
-.nomina-dialog-wide 
-.mat-dialog-container {
-  width: 1100px;
-  max-width: 95vw;
-  max-height: 85vh;
-}
-
-.header-filter {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.header-filter span {
-  font-weight: 600;
-  font-size: 13px;
-}
-
-.header-filter input {
-  font-size: 12px;
-  padding: 2px 4px;
-}
-
-
-.table-content {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
-}
-
-
-
-.process-steps {
-  margin-top: 20px;
-  max-width: 500px;
-}
-
-.step-content {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 0;
+  .actions-right { justify-content: flex-start; flex-wrap: wrap; }
+  .btn-descarga-csv { width: auto; }
+  .header-filter input { width: 120px; }
+  .qna-field { width: 120px; }
 }
