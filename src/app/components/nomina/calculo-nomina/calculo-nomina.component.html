@@ -1,62 +1,85 @@
-<div class="page-header">
-  <h2 class="page-title">Cálculo nómina</h2>
-</div>
+<div class="page">
+  <div class="page-header">
+    <h2 class="page-title">Cálculo de nómina</h2>
+    <p class="page-subtitle">Ejecuta y da seguimiento al proceso de cálculo.</p>
+  </div>
 
+  <mat-card class="actions-card" appearance="outlined">
     <div class="actions-row">
-        <button
-            mat-raised-button
-            class = "btn"
-            (click)="executePayrollProcess()"
-            [disabled]="processing">
+      <button
+        mat-raised-button
+        color="primary"
+        class="btn-primary"
+        (click)="executePayrollProcess()"
+        [disabled]="processing">
+        <ng-container *ngIf="!processing">
+          <mat-icon>play_circle</mat-icon>
+          Ejecutar cálculo de nómina
+        </ng-container>
+        <ng-container *ngIf="processing">
+          <mat-progress-spinner diameter="18" mode="indeterminate" strokeWidth="3"></mat-progress-spinner>
+          Procesando...
+        </ng-container>
+      </button>
 
-            <ng-container *ngIf="!processing">
-                Ejecutar Cálculo Nómina
-            </ng-container>
-
-            <ng-container *ngIf="processing">
-            <mat-progress-spinner
-                diameter="20"
-                mode="indeterminate"
-                strokeWidth="3">
-            </mat-progress-spinner>
-            Procesando...
-            </ng-container>
-        </button>
-
-          <button
-                mat-raised-button
-                class="btn"
-                (click)="downloadCsv()"
-                [disabled]="!deliverableReady || processing">
-                Descargar CSV
-            </button>
+      <button
+        mat-stroked-button
+        color="primary"
+        class="btn-secondary"
+        (click)="downloadCsv()"
+        [disabled]="!deliverableReady || processing">
+        <mat-icon>download</mat-icon>
+        Descargar CSV
+      </button>
     </div>
 
-    <div class="calculo-scroll">
-   <div class="process-steps" *ngIf="processing || progress === 100">
+    <div class="hints">
+      <mat-icon color="primary">info</mat-icon>
+      <span>El proceso puede tardar un poco. No cierres esta ventana.</span>
+    </div>
+  </mat-card>
+
+  <div class="calculo-scroll">
+    <mat-card class="progress-card" appearance="outlined">
+      <div class="progress-header">
+        <div class="status">
+          <span class="status-dot" [class.running]="processing" [class.done]="progress===100"></span>
+          <span class="status-text">{{ processing ? 'En ejecución' : (progress===100 ? 'Completado' : 'Pendiente') }}</span>
+        </div>
+        <div class="progress-number">{{ progress }}%</div>
+      </div>
+
+      <mat-progress-bar
+        class="progress-bar"
+        [color]="progress === 100 ? 'primary' : 'accent'"
+        [mode]="processing ? 'indeterminate' : 'determinate'"
+        [value]="processing ? 0 : progress">
+      </mat-progress-bar>
+
+      <div class="process-steps" *ngIf="processing || progress === 100">
         <mat-vertical-stepper [selectedIndex]="currentStepIndex" linear>
-            <mat-step *ngFor="let step of steps; let i = index" [completed]="progress >= step.progress">
+          <mat-step *ngFor="let step of steps; let i = index" [completed]="progress >= step.progress">
+            <ng-template matStepLabel>
+              <div class="step-label">
+                <mat-icon class="step-icon" [class.done]="progress >= step.progress">
+                  {{ progress >= step.progress ? 'check_circle' : 'schedule' }}
+                </mat-icon>
+                {{ step.label }}
+              </div>
+            </ng-template>
 
-                <ng-template matStepLabel>
-                    {{ step.label }}
-                </ng-template>
-
-                <div class="step-content">
-                    <ng-container *ngIf="progress < step.progress">
-                        <mat-progress-spinner
-                            diameter="25"
-                            mode="indeterminate"
-                            strokeWidth="3">
-                        </mat-progress-spinner>
-                            Ejecutando...
-                    </ng-container>
-
-                    <ng-container *ngIf="progress >= step.progress">
-                        ✔ Completado
-                    </ng-container>
-                </div>
-
-            </mat-step>
+            <div class="step-content">
+              <ng-container *ngIf="progress < step.progress">
+                <mat-progress-spinner diameter="22" mode="indeterminate" strokeWidth="3"></mat-progress-spinner>
+                Ejecutando...
+              </ng-container>
+              <ng-container *ngIf="progress >= step.progress">
+                <span class="chip chip-done">Completado</span>
+              </ng-container>
+            </div>
+          </mat-step>
         </mat-vertical-stepper>
-    </div>
-    </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

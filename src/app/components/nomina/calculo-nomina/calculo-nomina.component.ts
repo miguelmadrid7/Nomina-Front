@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatStepperModule } from '@angular/material/stepper';
@@ -8,11 +7,11 @@ import { environment } from '../../../../environments/environment';
 import SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 import { MatButtonModule } from '@angular/material/button';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { CdkStepLabel } from "@angular/cdk/stepper";
-import { HttpHeaders } from '@angular/common/http';
-import { subscribe } from 'diagnostics_channel';
+import { CommonModule } from '@angular/common';
 import { CalculationNomina } from '../../../interfaces/nomina-ordinaria-inter';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-calculo-nomina',
@@ -22,10 +21,13 @@ import { CalculationNomina } from '../../../interfaces/nomina-ordinaria-inter';
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatStepperModule,
+    MatCardModule,          // <-- nuevo
+    MatIconModule,          // <-- nuevo
+    MatProgressBarModule,
 ],
   templateUrl: './calculo-nomina.component.html',
-  styleUrl: './calculo-nomina.component.css',
-   host: { 'ngSkipHydration': 'true' }
+  styleUrls:[ './calculo-nomina.component.css'],
+  host: { 'ngSkipHydration': 'true' }
 })
 export class CalculoNominaComponent {
 
@@ -34,7 +36,6 @@ export class CalculoNominaComponent {
   processing = false;
   deliverableReady = false;
   private stompClient: any;
-  //private progressAnimationInterval: any;
 
 
   steps = [
@@ -132,5 +133,5 @@ export class CalculoNominaComponent {
       this.snackBar.open('Error al descargar el archivo', 'Cerrar', { duration: 3000 });
     }
   });
-}
+  }
 }
