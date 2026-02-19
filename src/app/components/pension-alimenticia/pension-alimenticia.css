@@ -1,140 +1,239 @@
-/* TÍTULO */
-.page-title {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 16px;
+:host {
+  --brand: #491D2A;
+  --ink-900: #1a1a1a;
+  --ink-700: #343a40;
+  --line: #e5e7eb;
+  --bg: #ffffff;
+  --card: #f6f6f7;
 }
 
-/* BUSCADOR */
-.search-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 16px;
+/* Página */
+.page-container { 
+  padding: 8px 0 24px; 
 }
 
-.search-left {
-  flex: 1;
+/* Título */
+.page-header { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
 }
 
-.search-actions {
-  display: flex;
-  gap: 12px;
+.page-title { 
+  font-size: 22px; 
+  font-weight: 700; 
+  margin: 0 0 16px; 
+  color: var(--ink-900); 
 }
 
-/* SEPARADOR */
-.section-divider {
-  height: 1px;
-  background-color: #491D2A;
-  margin: 20px 0;
+/* Separador */
+.section-divider { 
+  height: 2px; 
+  background: var(--brand); 
+  opacity: 0.15; 
+  margin: 18px 0 16px; 
 }
 
-/* HEADER SECCIÓN */
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
+/* Encabezado de sección + acciones */
+.section-header { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  gap: 12px; 
+  margin: 8px 0 12px; 
 }
 
-.section-header h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
+.section-header h3 { 
+  margin: 0; 
+  font-size: 16px; 
+  font-weight: 700; 
+  color: var(--ink-900); 
 }
 
-.grid-empty {
-  min-height: 1px;
+.search-actions { 
+  display: flex; 
+  gap: 10px; 
 }
 
-.search-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 700;
-}
-
-.search-subtitle {
-  font-size: 14px;
-  color: #333;
-}
-
-/* HEADER INTERNO */
-.search-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 16px;
-}
-
-.search-input {
-  width: 100%;
-  display: block;
-}
-
-.search-input 
-.mat-mdc-text-field-wrapper {
-  width: 100%;
-}
-
-/* TARJETA DE BÚSQUEDA */
+/* Tarjeta de búsqueda */
 .search-card {
-  
-  padding: 20px;
-  border-radius: 6px;
-  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  margin-bottom: 18px;
 }
 
-/* CARD FORMULARIO */
+/* Campo de búsqueda */
+.search-input { 
+  width: 100%; 
+  display: block; 
+}
+
+.search-input .mat-mdc-text-field-wrapper { 
+  width: 100%; 
+}
+
+/* Tarjeta de formulario */
 .form-card {
-  background-color: #eeeeee;
-  padding: 20px;
-  border-radius: 6px;
-  margin-bottom: 20px;
-}
-/* GRID FORMULARIO */
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px 24px;
+  background-color: var(--card);
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  margin-bottom: 18px;
 }
 
-/* VIGENCIA */
-.vigencia-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+/* Grids */
+.form-grid { 
+  display: grid; 
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 14px 20px; 
 }
 
-/* LABELS */
-.filter-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #2f3b52;
-  margin-bottom: 4px;
-  display: block;
+.vigencia-grid { 
+  display: grid; 
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 16px 20px; 
 }
 
-.btn {
-  background-color: #491D2A !important;
+.grid-empty { 
+  min-height: 1px; 
+}
+
+/* Labels */
+.filter-label { 
+  font-size: 12px; 
+  font-weight: 700; 
+  color: var(--ink-700);
+   margin-bottom: 6px; 
+   display: block; 
+}
+
+/* Botones */
+.btn,
+.btn-primary,
+.btn-outline { 
+  font-weight: 700; 
+  letter-spacing: .2px; 
+}
+
+/* Primario sólido */
+.btn,
+.btn-primary {
+  background-color: var(--brand) !important;
   color: #fff !important;
 }
 
+.btn:hover,
+.btn-primary:hover { 
+  filter: brightness(0.95); 
+}
 
-/* INPUT FULL */
-.full-width {
+/* Contorno */
+.btn-outline {
+  border-color: var(--brand) !important;
+  color: var(--brand) !important;
+  background: transparent !important;
+}
+
+.btn-outline:hover { 
+  background: rgba(73,29,42,0.08) !important; 
+}
+
+/* Inputs Material: bordes y foco en brand */
+:host ::ng-deep 
+.mat-mdc-form-field-appearance-outline 
+.mdc-notched-outline__leading,
+:host ::ng-deep 
+.mat-mdc-form-field-appearance-outline 
+.mdc-notched-outline__trailing {
+  border-color: #d9dbe0;
+}
+
+:host ::ng-deep .mat-mdc-form-field.mat-focused 
+.mdc-notched-outline__leading,
+:host ::ng-deep .mat-mdc-form-field.mat-focused 
+mdc-notched-outline__trailing,
+:host ::ng-deep .mat-mdc-select.mat-focused 
+.mdc-notched-outline__leading,
+:host ::ng-deep .mat-mdc-select.mat-focused 
+.mdc-notched-outline__trailing {
+  border-color: var(--brand) !important;
+}
+
+:host ::ng-deep 
+.mat-mdc-form-field-focus-overlay { 
+  background: rgba(73,29,42,0.06); 
+}
+
+/* Autocomplete: item focus/hover */
+:host ::ng-deep 
+.mat-mdc-autocomplete-panel 
+.mdc-list-item--selected,
+:host ::ng-deep 
+.mat-mdc-autocomplete-panel
+.mdc-list-item:hover {
+  background: rgba(73,29,42,0.06) !important;
+}
+
+:host ::ng-deep 
+.mat-mdc-autocomplete-panel 
+.mdc-list-item__primary-text { 
+  color: var(--ink-900); 
+}
+
+/* Utilidades */
+.full-width { width: 100%; }
+
+/* Responsive */
+@media (max-width: 1080px) {
+  .form-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 720px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .vigencia-grid { grid-template-columns: 1fr; }
+  .section-header { align-items: flex-start; flex-direction: column; gap: 8px; }
+  .search-actions { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+}
+
+.field-title {
+  display: block;
+  font-weight: 700;
+  color: #1e1e1e;
+  margin: 8px 0 4px;
+  font-size: 14px;
+}
+
+:host ::ng-deep 
+.login-field.with-separator 
+.mat-mdc-form-field-icon-prefix {
+  color: #718096;
+  padding-right: 12px;
+  margin-right: 8px;
+  border-right: 1px solid #e2e8f0;
+}
+
+:host ::ng-deep 
+.login-field.with-separator 
+.mat-mdc-form-field-icon-suffix {
+  padding-left: 12px;
+  margin-left: 8px;
+  border-left: 1px solid #e2e8f0;
+  color: #718096;
+}
+
+.form-card mat-form-field {
+  display: block;
   width: 100%;
 }
 
 
-
-.btn-primary {
-  background-color: #491D2A !important;
-  color: #fff !important;
+:host ::ng-deep .mat-mdc-form-field.ng-invalid.ng-touched .mdc-notched-outline__leading,
+:host ::ng-deep .mat-mdc-form-field.ng-invalid.ng-touched .mdc-notched-outline__notch,
+:host ::ng-deep .mat-mdc-form-field.ng-invalid.ng-touched .mdc-notched-outline__trailing {
+  border-color: #d32f2f !important;
 }
-
-.btn-outline {
-  border-color: #491D2A !important;
-  color: #491D2A !important;
-}
-
 

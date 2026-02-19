@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,6 +9,7 @@ import { MatOption, MatSelectModule } from '@angular/material/select';
 import { PensionAlimenticiaService } from '../../services/pension-alimenticia.service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
 import { Empleado } from '../servicios/empleado';
 import { EmpleadoItem } from '../../interfaces/Emplado-inter';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -28,6 +29,7 @@ import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dia
     MatOption,
     MatAutocompleteModule,
     MatOptionModule,
+    MatIconModule,
     MatDialogModule,
     PensionAlimenDialog
   ],
@@ -170,8 +172,12 @@ export class PensionAlimenticia {
     })
   }
 
- guardar(): void {
+ guardar(form?: NgForm) {
   if (this.guardando) return;
+  if (form && form.invalid) {
+    Object.values(form.controls).forEach(c => c.markAsTouched());
+    return;
+  }
   this.guardando = true;
 
   const fail = (msg: string) => {
