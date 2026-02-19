@@ -16,7 +16,7 @@ export class GenerarProductoComponent {
 
   //Anexo V
   descargarCSVAnexoV() {
-  this.nominaService.exportarChequesCSV().subscribe({
+  this.nominaService.exportarAnexoV().subscribe({
     next: (blob: Blob) => {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -33,7 +33,7 @@ export class GenerarProductoComponent {
 
   //ANEXO VI
   descargarCSVAnexoVI() {
-    this.nominaService.exportarConceptosCSV().subscribe({
+    this.nominaService.exportarAnexoVI().subscribe({
       next: (blob: Blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');

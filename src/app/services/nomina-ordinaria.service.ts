@@ -47,7 +47,7 @@ export class NominaService {
   );
 }
 
-  exportarConceptosCSV(): Observable<Blob> {
+exportarAnexoV(): Observable<Blob> {
   const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
   let headers = new HttpHeaders().set('Accept', 'text/csv');
   if (token) headers = headers.set('Authorization', `Bearer ${token}`);
@@ -57,15 +57,18 @@ export class NominaService {
   });
 }
 
-exportarChequesCSV(): Observable<Blob> {
+
+  exportarAnexoVI(): Observable<Blob> {
   const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
   let headers = new HttpHeaders().set('Accept', 'text/csv');
   if (token) headers = headers.set('Authorization', `Bearer ${token}`);
-  return this.http.post(`${this.base}/calculation/export-anexo-cheques`, null, {
+  return this.http.post(`${this.base}/calculation/export-anexo-VI`, null, {
     headers,
     responseType: 'blob'
   });
 }
+
+
 
 
 }
