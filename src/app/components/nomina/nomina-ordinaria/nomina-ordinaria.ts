@@ -7,15 +7,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
-import { NominaService } from '../../services/nomina-ordinaria.service';
+import { NominaService } from '../../../services/nomina-ordinaria.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { NominaordConceptoDialog } from '../../components/nomina/nominaord-concepto-dialog/nominaord-concepto-dialog';
+import { NominaordConceptoDialog } from '../../nomina/nominaord-concepto-dialog/nominaord-concepto-dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { NominaRow } from '../../interfaces/nomina-row-inter';
+import { NominaRow } from '../../../interfaces/nomina-row-inter';
 
 @Component({
   selector: 'app-nomina-ordinaria',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -30,7 +31,7 @@ import { NominaRow } from '../../interfaces/nomina-row-inter';
     MatSnackBarModule,
   ],
   templateUrl: './nomina-ordinaria.html',
-  styleUrl: './nomina-ordinaria.css',
+  styleUrls: ['./nomina-ordinaria.css'],
 })
 export class NominaOrdinaria implements OnInit, AfterViewInit {
 
@@ -276,7 +277,11 @@ filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
           }));
 
     this.dialog.open(NominaordConceptoDialog, {
-      panelClass: 'nomina-dialog-wide',
+       width: '960px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      autoFocus: false,
+      panelClass: 'brand-dialog',
       data: {
         empleadoId: row.empleadoId,
         nombreEmpleado: row.nombreEmpleado,
