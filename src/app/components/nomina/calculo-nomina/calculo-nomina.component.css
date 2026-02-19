@@ -1,17 +1,20 @@
 :host {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  padding: 16px;
+  height: 100vh;
+  padding: 5px;
 }
 
 /* Contenedor principal centrado y con ancho legible */
 .page {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 20px;
   width: 100%;
-  margin: 0;            
+  margin: 0;
   padding: 8px 12px;
+  flex: 1;
+  min-height: 0;        /* CLAVE para que el hijo pueda scrollear */
 }
 
 /* Encabezado de página */
@@ -105,7 +108,8 @@
 
 /* Contenedor scroll de la sección de cálculo */
 .calculo-scroll {
-  max-height: calc(100vh - 140px);
+  flex: 1;
+  min-height: 0;        /* CLAVE: evita que colapse el scroll interno */
   overflow: auto;
   -webkit-overflow-scrolling: touch;
 }
