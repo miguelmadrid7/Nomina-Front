@@ -21,8 +21,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatStepperModule,
-    MatCardModule,          // <-- nuevo
-    MatIconModule,          // <-- nuevo
+    MatCardModule,
+    MatIconModule,
     MatProgressBarModule,
 ],
   templateUrl: './calculo-nomina.component.html',
