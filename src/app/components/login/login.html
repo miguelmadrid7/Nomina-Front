@@ -14,27 +14,67 @@
   </div>
 </header>
 
-<mat-card class="card" appearance="outlined">
+<form #f="ngForm" (ngSubmit)="login(f)" novalidate>
+  <mat-card class="card" appearance="outlined">
+
     <label class="field-title" for="usuario">Usuario:</label>
-        <mat-form-field appearance="outline">
-            <input matInput placeholder="Ingresar usuario" [(ngModel)]="credentials.user"/>
-        </mat-form-field>
+    <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+      <mat-icon matPrefix>person</mat-icon>
+      <input
+        matInput
+        id="usuario"
+        name="user"
+        placeholder="Ingresar usuario"
+        [(ngModel)]="credentials.user"
+        required
+      />
+      <mat-error *ngIf="f.submitted || (f.controls['user']?.invalid && f.controls['user']?.touched)">
+        Por favor ingrese su usuario.
+      </mat-error>
+    </mat-form-field>
 
     <label class="field-title" for="password">Contraseña:</label>
-        <mat-form-field appearance="outline">
-            <input matInput placeholder="Ingresar contraseña" type="password" [(ngModel)]="credentials.password"/>
-        </mat-form-field>
+    <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+      <mat-icon matPrefix>lock</mat-icon>
+      <input
+        matInput
+        id="password"
+        name="password"
+        placeholder="Ingresar contraseña"
+        [type]="hide ? 'password' : 'text'"
+        [(ngModel)]="credentials.password"
+        required
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="hide = !hide"
+        (mousedown)="$event.preventDefault()"
+        [attr.aria-label]="hide ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+        [attr.title]="hide ? 'Mostrar contraseña' : 'Ocultar contraseña'">
+        <mat-icon>{{ hide ? 'visibility' : 'visibility_off' }}</mat-icon>
+      </button>
 
-  <div class="login-button">
-    <button mat-raised-button color="primary" (click)="login()" [disabled]="loading">
-      {{ loading ? 'Accesando...' : 'Accesar'}}
-    </button>
-  </div>
+      <mat-error *ngIf="f.submitted || (f.controls['password']?.invalid && f.controls['password']?.touched)">
+        Por favor ingrese su contraseña.
+      </mat-error>
+    </mat-form-field>
 
-  <div *ngIf="error" class="error-message">
-    {{ error }}
-  </div>
-</mat-card>
+
+    <div class="login-button">
+      <button mat-raised-button color="primary" type="submit" [disabled]="loading">
+        {{ loading ? 'Accesando...' : 'Accesar' }}
+      </button>
+    </div>
+
+    <div class="aux-links">
+  <a routerLink="/recuperar-contraseña">¿Olvidaste tu contraseña?</a>
+</div>
+    <!-- Mensaje general opcional además de los por campo -->
+    
+  </mat-card>
+</form>
 
 <div class="footer">
   <div class="header-bottom">

@@ -161,3 +161,41 @@ mat-form-field {
 @media (max-width: 480px) {
   .card { margin: 24px auto; padding: 16px; }
 }
+
+
+
+:host ::ng-deep .login-field.with-separator .mat-mdc-form-field-icon-prefix {
+  color: #718096;
+  padding-right: 12px;
+  margin-right: 8px;
+  border-right: 1px solid #e2e8f0;
+}
+:host ::ng-deep .login-field.with-separator .mat-mdc-form-field-icon-suffix {
+  padding-left: 12px;
+  margin-left: 8px;
+  border-left: 1px solid #e2e8f0;
+  color: #718096;
+}
+
+/* Refuerzo visual del borde en error */
+:host ::ng-deep .mat-mdc-form-field.ng-invalid.ng-touched .mdc-notched-outline__leading,
+:host ::ng-deep .mat-mdc-form-field.ng-invalid.ng-touched .mdc-notched-outline__notch,
+:host ::ng-deep .mat-mdc-form-field.ng-invalid.ng-touched .mdc-notched-outline__trailing {
+  border-color: #d32f2f !important; /* rojo error Material */
+}
+
+.aux-links {
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-end; /* alinea a la derecha */
+}
+
+.aux-links a {
+  font-size: 13px;
+  color: #3f51b5;        /* color primario */
+  text-decoration: none; /* sin subrayado por defecto */
+}
+
+.aux-links a:hover {
+  text-decoration: underline;
+}

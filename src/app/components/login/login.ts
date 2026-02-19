@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { LoginService } from '../../services/login.service';
 import { LoginPayload, LoginResponse } from '../../interfaces/login-inter';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 
 
 @Component({
@@ -34,33 +34,37 @@ export class Login {
   };
   loading: boolean = false;
   error: string = '';
+  hide = true;
 
   constructor(
     private router: Router,
     private loginService: LoginService
   ) {}
 
-  login () {
-    this.loading = true;
-    this.error = '';
-
-    // src/app/components/login/login.ts (solo el método login)
-    this.loginService.login(this.credentials).subscribe({
-      next: (resp) => {
-        const token = resp.headers.get('Authorization'); // viene SIN "Bearer "
-        if (token) {
-          this.loginService.setToken(token); // guarda el JWT crudo
-          this.router.navigate(['/home']);
-        } else {
-          this.error = 'No se recibió token de autenticación';
-          this.loading = false;
-        }
-      },
-      error: () => {
-        this.error = 'Acceso denegado, verifique su usuario y contraseña';
-        this.loading = false;
-      }
-    });
+  login(form?: NgForm) {
+  this.error = '';
+  if (form && form.invalid) {
+    Object.values(form.controls).forEach(c => c.markAsTouched());
+    return;
   }
+
+  this.loading = true;
+  this.loginService.login(this.credentials).subscribe({
+    next: (resp) => {
+      const token = resp.headers.get('Authorization');
+      if (token) {
+        this.loginService.setToken(token);
+        this.router.navigate(['/home']);
+      } else {
+        this.error = 'No se recibió token de autenticación';
+      }
+      this.loading = false;
+    },
+    error: () => {
+      this.error = 'Acceso denegado, verifique su usuario y contraseña';
+      this.loading = false;
+    }
+  });
+}
 
 }
