@@ -1,9 +1,14 @@
-<h2 mat-dialog-title>Entidad federativa: HIDALGO</h2>
+<div class="dlg-bar">
+  <div class="dlg-bar-title">Entidad federativa: HIDALGO</div>
+  <button mat-icon-button mat-dialog-close aria-label="Cerrar">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
 
-<div class="table-card card">
+
+ <mat-dialog-content class="dlg-content">
+
   <!-- Info del empleado -->
-  <div class="employee-info">
-
     <div class="employee-field">
       <span class="label">Nombre:</span>
       <span class="value">{{ data.nombreEmpleado }}</span>
@@ -42,9 +47,9 @@
       <span class="label">Líquido:</span>
       <span class="value">${{ liquido | number:'1.2-2' }}</span>
     </div>
-  </div>
 
-  <div class="grid-empty"></div>
+
+
 
   <!-- Selector de vista -->
   <div class="view-toggle">
@@ -115,10 +120,11 @@
       <div *ngIf="deducciones.length === 0" class="empty-hint">Sin deducciones.</div>
     </div>
   </div>
+</mat-dialog-content>
 
-  <div class="grid-empty"></div>
 
-  <div class="table-footer">
-    <button mat-button (click)="close()">Cerrar</button>
-  </div>
-</div>
+
+
+  <mat-dialog-actions align="end" class="dlg-actions">
+  <button mat-stroked-button color="primary" (click)="close()">Cerrar</button>
+</mat-dialog-actions>

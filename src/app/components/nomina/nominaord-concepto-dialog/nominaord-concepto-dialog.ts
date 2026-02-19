@@ -4,13 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-nominaord-concepto-dialog',
+  standalone: true, 
   imports: [
     CommonModule,
     FormsModule,
@@ -19,7 +20,8 @@ import { MatRadioModule } from '@angular/material/radio';
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatRadioModule
+    MatRadioModule,
+    MatIconModule
   ],
   templateUrl: './nominaord-concepto-dialog.html',
   styleUrls: ['./nominaord-concepto-dialog.css']
