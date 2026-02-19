@@ -48,7 +48,7 @@ export class CalculoNominaComponent {
   { label: 'Calculando concepto H0', progress: 65 },           // cpto_ho
   { label: 'Calculando concepto informados', progress: 72 },   // cpto_informados
   { label: 'Calculando concepto quinquenios', progress: 82 },  // cpto_quinquenios
-  { label: 'Calculando primas', progress: 92 },                // primas
+  { label: 'Calculando nómina cheque concepto primas', progress: 92 },                // nom_cheque_cpto_primas
   { label: 'Actualizando importes', progress: 95 },            // updateImportes
   { label: 'Preparando entregable', progress: 98 },            // preparar
   { label: 'Finalizando proceso', progress: 99 },              // complete (previo al 100)
