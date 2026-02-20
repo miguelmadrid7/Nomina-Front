@@ -241,3 +241,14 @@ mdc-notched-outline__trailing,
   border-color: #d32f2f !important;
 }
 
+/* Forzar visualmente mayúsculas en todos los inputs/selects del componente */
+:host ::ng-deep input[matinput],
+:host ::ng-deep .mdc-text-field__input {
+  text-transform: uppercase;
+}
+
+:host ::ng-deep .mat-mdc-select-value,
+:host ::ng-deep .mat-mdc-option .mdc-list-item__primary-text {
+  text-transform: uppercase;
+}
+
