@@ -42,15 +42,16 @@ export class CalculoNominaComponent {
   { label: 'Inicializando proceso', progress: 10 },            // truncate
   { label: 'Insertando nómina cheque plaza', progress: 20 },   // insertNomChequePza
   { label: 'Insertando nómina cheque concepto', progress: 30 },// insertNomChequeCptoTab
-  { label: 'Calculando concepto 01', progress: 40 },           // cpto_01
-  { label: 'Calculando concepto 02', progress: 50 },           // cpto_02
-  { label: 'Calculando concepto 04', progress: 60 },           // cpto_04
-  { label: 'Calculando concepto H0', progress: 65 },           // cpto_ho
-  { label: 'Calculando concepto informados', progress: 72 },   // cpto_informados
-  { label: 'Calculando concepto quinquenios', progress: 82 },  // cpto_quinquenios
-  { label: 'Calculando nómina cheque concepto primas', progress: 92 },                // nom_cheque_cpto_primas
-  { label: 'Actualizando importes', progress: 95 },            // updateImportes
-  { label: 'Preparando entregable', progress: 98 },            // preparar
+  { label: 'Calculando concepto H0', progress: 40 },           // cpto_ho
+  { label: 'Calculando concepto informados', progress: 50 },   // cpto_informados
+  { label: 'Calculando concepto quinquenios', progress: 60 },  // cpto_quinquenios
+  { label: 'Calculando nómina cheque concepto primas', progress: 65 }, // nom_cheque_cpto_primas
+  { label: 'Calculando nómina cheque plaza sueldos gravables', progress: 70 }, // nom_cheque_pza_sueldogravable
+  { label: 'Calculando concepto 01', progress: 75 },           // cpto_01
+  { label: 'Calculando concepto 02', progress: 80 },           // cpto_02
+  { label: 'Calculando concepto 04', progress: 85 },           // cpto_04
+  { label: 'Actualizando importes', progress: 90 },            // updateImportes
+  { label: 'Preparando entregable', progress: 95 },            // preparar
   { label: 'Finalizando proceso', progress: 99 },              // complete (previo al 100)
 ];
 
