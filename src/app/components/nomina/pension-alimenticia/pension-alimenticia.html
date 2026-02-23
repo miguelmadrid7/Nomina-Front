@@ -1,0 +1,293 @@
+<div class="page-container">
+  <div class="page-header">
+    <h2 class="page-title">Registro Beneficiarios De Pensión Alimenticia</h2>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- BUSCAR EMPLEADO -->
+  <div class="section-header">
+    <h3>Buscar empleado.</h3>
+    <div class="search-actions">
+      <button mat-stroked-button class="btn-outline" (click)="clearSearch()">
+        Limpiar
+      </button>
+      <button mat-flat-button class="btn-primary" (click)="searchEmployee()">
+        Buscar
+      </button>
+    </div>
+  </div>
+
+  <div class="search-card">
+    <label class="field-title" for="buscarEmpleado">Buscar empleado</label>
+    <mat-form-field appearance="outline" class="login-field with-separator search-input" floatLabel="always">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        id="buscarEmpleado"
+        [(ngModel)]="searchText"
+        [matAutocomplete]="auto"
+        (input)="searchEmployee()"
+        placeholder="BUSCAR POR RFC, CURP O NOMBRE...">
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        [displayWith]="displayEmpleado"
+        (optionSelected)="onOptionSelected($event.option.value)">
+        <mat-option *ngFor="let emp of resultados" [value]="emp">
+          {{ emp?.rfc || '—' }} · {{ emp?.curp || '—' }} · {{ emp?.nombreCompleto || '—' }}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <form #f="ngForm" (ngSubmit)="guardar(f)" novalidate>
+    <!-- AGREGAR BENEFICIARIO -->
+    <div class="section-header">
+      <h3>Agregar Beneficiario.</h3>
+      <button mat-flat-button class="btn" type="submit" [disabled]="guardando">
+        Guardar
+      </button>
+    </div>
+
+    <mat-card class="form-card">
+      <mat-card-content class="form-grid">
+        <!-- Apellido paterno -->
+        <div class="span-1">
+          <label class="field-title" for="apellidoPaterno">Apellido paterno*</label>
+          <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+            <mat-icon matPrefix>person</mat-icon>
+            <input
+              matInput
+              id="apellidoPaterno"
+              name="apellidoPaterno"
+              [(ngModel)]="apellidoPaterno"
+              placeholder="Ingresar Apellido Paterno"
+              required
+              minlength="2" />
+            <mat-error *ngIf="f.submitted || (f.controls['apellidoPaterno']?.invalid && f.controls['apellidoPaterno']?.touched)">
+              Ingresa el apellido paterno (mín. 2 caracteres).
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Apellido materno -->
+        <div>
+          <label class="field-title" for="apellidoMaterno">Apellido materno*</label>
+          <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+            <mat-icon matPrefix>person</mat-icon>
+            <input
+              matInput
+              id="apellidoMaterno"
+              name="apellidoMaterno"
+              [(ngModel)]="apellidoMaterno"
+              placeholder="Ingresar Apellido Materno"
+              required
+              minlength="2" />
+            <mat-error *ngIf="f.submitted || (f.controls['apellidoMaterno']?.invalid && f.controls['apellidoMaterno']?.touched)">
+              Ingresa el apellido materno (mín. 2 caracteres).
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Nombre completo -->
+        <div>
+          <label class="field-title" for="nombreCompleto">Nombre completo*</label>
+          <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+            <mat-icon matPrefix>person</mat-icon>
+            <input
+              matInput
+              id="nombreCompleto"
+              name="nombreCompleto"
+              [(ngModel)]="nombreCompleto"
+              placeholder="Ingresar Nombre(s)"
+              required
+              minlength="2" />
+            <mat-error *ngIf="f.submitted || (f.controls['nombreCompleto']?.invalid && f.controls['nombreCompleto']?.touched)">
+              Ingresa el nombre (mín. 2 caracteres).
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- RFC -->
+        <div>
+          <label class="field-title" for="rfc">RFC*</label>
+          <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+            <mat-icon matPrefix>badge</mat-icon>
+            <input
+              matInput
+              id="rfc"
+              name="rfc"
+              [(ngModel)]="rfc"
+              placeholder="Ingresa RFC"
+              required
+              pattern="^[A-ZÑ&]{4}\d{6}[A-Z0-9]{3}$" />
+            <mat-error *ngIf="f.submitted || (f.controls['rfc']?.invalid && f.controls['rfc']?.touched)">
+              Ingresa un RFC válido (13 caracteres, mayúsculas y dígitos).
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+  
+        
+        <!-- No. Beneficiaria (auto) -->
+        <div>
+          <label class="field-title" for="numeroBeneficiario">No. Beneficiaria*</label>
+          <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+            <mat-icon matPrefix>numbers</mat-icon>
+            <input
+              matInput
+              id="numeroBeneficiario"
+              [(ngModel)]="numeroBeneficiario"
+              [ngModelOptions]="{ standalone: true }"
+              placeholder="Se asigna automáticamente"
+              readonly
+              tabindex="-1" />
+            <mat-icon matSuffix>lock</mat-icon>
+            <mat-hint>Este número se genera automáticamente al guardar.</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <div class="grid-empty"></div>
+
+        <!-- Forma de aplicación -->
+        <div>
+          <label class="field-title" for="formaAplicacion">Forma de aplicación*</label>
+          <mat-form-field appearance="outline" class="login-field with-separator full-width" floatLabel="always">
+            <mat-icon matPrefix>tune</mat-icon>
+            <mat-select
+              id="formaAplicacion"
+              name="formaAplicacion"
+              [(ngModel)]="formaAplicacion"
+              required
+              #formaAplicacionCtrl="ngModel">
+              <mat-option value="P">Factor</mat-option>
+              <mat-option value="F">Importe fijo</mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.submitted || (formaAplicacionCtrl.invalid && formaAplicacionCtrl.touched)">
+              Selecciona la forma de aplicación.
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Factor / Importe -->
+        <div>
+          <label class="field-title" for="factorImporte">Factor / Importe*</label>
+          <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+            <mat-icon matPrefix>attach_money</mat-icon>
+            <input
+              matInput
+              id="factorImporte"
+              name="factorImporte"
+              type="number"
+              [(ngModel)]="factorImporte"
+              placeholder="0.00 / 0%"
+              required
+              min="0" />
+            <mat-error *ngIf="f.submitted || (f.controls['factorImporte']?.invalid && f.controls['factorImporte']?.touched)">
+              Ingresa un valor válido (número mayor o igual a 0).
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="grid-empty"></div>
+
+        <!-- Banco -->
+        <div>
+          <label class="field-title" for="bancoSeleccionado">Buscar banco*</label>
+          <mat-form-field appearance="outline" class="login-field with-separator full-width" floatLabel="always">
+            <mat-icon matPrefix>account_balance</mat-icon>
+            <mat-select
+              id="bancoSeleccionado"
+              name="bancoSeleccionado"
+              [(ngModel)]="bancoSeleccionado"
+              required
+              #bancoSeleccionadoCtrl="ngModel">
+              <mat-option *ngFor="let bank of bancos" [value]="bank.id">
+                {{ bank.banco }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.submitted || (bancoSeleccionadoCtrl.invalid && bancoSeleccionadoCtrl.touched)">
+              Selecciona un banco.
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- CLABE -->
+        <div>
+          <label class="field-title" for="numeroDocumento">CLABE interbancaria*</label>
+          <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+            <mat-icon matPrefix>credit_card</mat-icon>
+            <input
+              matInput
+              id="numeroDocumento"
+              name="numeroDocumento"
+              type="text"
+              [(ngModel)]="numeroDocumento"
+              placeholder="18 dígitos"
+              maxlength="18"
+              required
+              pattern="^\d{18}$" />
+            <mat-error *ngIf="f.submitted || (f.controls['numeroDocumento']?.invalid && f.controls['numeroDocumento']?.touched)">
+              La CLABE debe tener exactamente 18 dígitos numéricos.
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="section-divider"></div>
+
+    <!-- VIGENCIA -->
+    <div class="section-header">
+      <h3>Vigencia de movimiento.</h3>
+    </div>
+
+    <mat-card class="form-card">
+      <mat-card-content class="form-grid">
+        <div class="vigencia-grid">
+          <!-- Inicio -->
+          <div>
+            <label class="field-title" for="vigenciaInicio">Inicio*</label>
+            <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+              <mat-icon matPrefix>calendar_today</mat-icon>
+              <input
+                matInput
+                id="vigenciaInicio"
+                name="vigenciaInicio"
+                type="number"
+                [(ngModel)]="vigenciaInicio"
+                placeholder="AAAA/QQ"
+                required
+                min="1" />
+              <mat-error *ngIf="f.submitted || (f.controls['vigenciaInicio']?.invalid && f.controls['vigenciaInicio']?.touched)">
+                Captura la vigencia de inicio.
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <!-- Hasta -->
+          <div>
+            <label class="field-title" for="vigenciaFin">Hasta*</label>
+            <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+              <mat-icon matPrefix>calendar_today</mat-icon>
+              <input
+                matInput
+                id="vigenciaFin"
+                name="vigenciaFin"
+                type="number"
+                [(ngModel)]="vigenciaFin"
+                placeholder="9999/99"
+                required
+                min="1" />
+              <mat-error *ngIf="f.submitted || (f.controls['vigenciaFin']?.invalid && f.controls['vigenciaFin']?.touched)">
+                Captura la vigencia de fin.
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </form>
+</div>
