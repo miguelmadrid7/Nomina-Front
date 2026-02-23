@@ -31,7 +31,7 @@ import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dia
     MatOptionModule,
     MatIconModule,
     MatDialogModule,
-    PensionAlimenDialog
+
   ],
   templateUrl: './pension-alimenticia.html',
   styleUrl: './pension-alimenticia.css'
