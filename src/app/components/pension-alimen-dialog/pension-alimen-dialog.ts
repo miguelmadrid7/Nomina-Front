@@ -20,8 +20,13 @@ export class PensionAlimenDialog {
 
    constructor(
     private ref: MatDialogRef<PensionAlimenDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: { title?: string; message?: string; type?: 'success'|'error'|'info' }
+    @Inject(MAT_DIALOG_DATA) public data: { 
+      title?: string; 
+      message?: string; 
+      type?: 'success'|'error'|'info' 
+    }
   ) {}
+
   close() { this.ref.close(); }
 
 }
