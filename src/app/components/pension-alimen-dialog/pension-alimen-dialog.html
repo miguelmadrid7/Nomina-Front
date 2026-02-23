@@ -1,15 +1,15 @@
 <div class="dialog-header">
   <div class="dialog-icon" 
-  [ngClass]="data?.type || 'success'">
+  [ngClass]="data.type || 'success'">
     <mat-icon aria-hidden="true">
-      {{ (data?.type === 'error' && 'close') || (data?.type === 'info' && 'info') || 'check' }}
+      {{ (data.type === 'error' && 'close') || (data.type === 'info' && 'info') || 'check' }}
     </mat-icon>
   </div>
-  <h2 mat-dialog-title>{{ data?.title || 'Éxito' }}</h2>
+  <h2 mat-dialog-title>{{ data.title || 'Éxito' }}</h2>
 </div>
 
 <div mat-dialog-content class="dialog-content">
-  {{ data?.message || 'Se guardó correctamente tus datos.' }}
+  {{ data.message || 'Se guardó correctamente tus datos.' }}
 </div>
 
 <div mat-dialog-actions align="end">
