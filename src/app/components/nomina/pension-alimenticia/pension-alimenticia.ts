@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Empleado } from '../../servicios/empleado';
 import { EmpleadoItem } from '../../../interfaces/Emplado-inter';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { PensionAlimenDialog } from '../../pension-alimen-dialog/pension-alimen-dialog';
+import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dialog';
 
 @Component({
   selector: 'app-pension-alimenticia',
