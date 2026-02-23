@@ -50,6 +50,8 @@ export class CalculoNominaComponent {
   { label: 'Calculando concepto 01', progress: 75 },           // cpto_01
   { label: 'Calculando concepto 02', progress: 80 },           // cpto_02
   { label: 'Calculando concepto 04', progress: 85 },           // cpto_04
+  { label: 'Calculando concepto 58', progress: 87 },           // cpto_58
+  { label: 'Calculando concepto 77', progress: 89 },           // cpto_77
   { label: 'Actualizando importes', progress: 90 },            // updateImportes
   { label: 'Preparando entregable', progress: 95 },            // preparar
   { label: 'Finalizando proceso', progress: 99 },              // complete (previo al 100)
