@@ -5,7 +5,7 @@ import { ListEmpleado } from '../app/components/catalogos/empleado/list-empleado
 import { Login } from '../app/components/login/login';
 import { NominaOrdinaria } from '../app/components/nomina/nomina-ordinaria/nomina-ordinaria';
 import { NominaExtraordinaria } from '../app/components/nomina-extraordinaria/nomina-extraordinaria';
-import { PensionAlimenticia } from '../app/components/pension-alimenticia/pension-alimenticia';
+import { PensionAlimenticia } from './components/nomina/pension-alimenticia/pension-alimenticia';
 import { AuthGuard } from './auth/auth.guard';
 import { CalculoNominaComponent } from './components/nomina/calculo-nomina/calculo-nomina.component';
 import { GenerarProductoComponent } from './components/nomina/generar-producto/generar-producto.component';
