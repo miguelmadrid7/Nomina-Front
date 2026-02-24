@@ -120,8 +120,11 @@
               id="rfc"
               name="rfc"
               [(ngModel)]="rfc"
+              (input)="onRfcInput()"
+              (keypress)="soloRFC($event)"
               placeholder="Ingresa RFC"
               required
+              maxlength="13"
               pattern="^[A-ZÑ&]{4}\d{6}[A-Z0-9]{3}$" />
             <mat-error *ngIf="f.submitted || (f.controls['rfc']?.invalid && f.controls['rfc']?.touched)">
               Ingresa un RFC válido (13 caracteres, mayúsculas y dígitos).
@@ -157,11 +160,12 @@
           <mat-form-field appearance="outline" class="login-field with-separator full-width" floatLabel="always">
             <mat-icon matPrefix>tune</mat-icon>
             <mat-select
-              id="formaAplicacion"
-              name="formaAplicacion"
-              [(ngModel)]="formaAplicacion"
-              required
-              #formaAplicacionCtrl="ngModel">
+                id="formaAplicacion"
+                name="formaAplicacion"
+                [(ngModel)]="formaAplicacion"
+                (selectionChange)="onFormaChange()"
+                required
+                #formaAplicacionCtrl="ngModel">
               <mat-option value="P">Factor</mat-option>
               <mat-option value="F">Importe fijo</mat-option>
             </mat-select>
@@ -175,18 +179,23 @@
         <div>
           <label class="field-title" for="factorImporte">Factor / Importe*</label>
           <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
-            <mat-icon matPrefix>attach_money</mat-icon>
-            <input
-              matInput
-              id="factorImporte"
-              name="factorImporte"
-              type="number"
-              [(ngModel)]="factorImporte"
-              placeholder="0.00 / 0%"
-              required
-              min="0" />
+            <!-- ICONO DINÁMICO -->
+            <mat-icon matPrefix>
+              {{ formaAplicacion === 'P' ? 'percent' : 'attach_money' }}
+            </mat-icon>
+              <input
+                matInput
+                id="factorImporte"
+                name="factorImporte"
+                [type]="formaAplicacion === 'P' ? 'text' : 'number'"
+                [(ngModel)]="factorImporte"
+                [placeholder]="formaAplicacion === 'P' ? '0 – 100%' : 'Ingrese importe'"
+                [attr.maxlength]="formaAplicacion === 'P' ? 3 : null"
+                (input)="onFactorImporteInput()"
+                required
+              />
             <mat-error *ngIf="f.submitted || (f.controls['factorImporte']?.invalid && f.controls['factorImporte']?.touched)">
-              Ingresa un valor válido (número mayor o igual a 0).
+              Ingresa un valor válido.
             </mat-error>
           </mat-form-field>
         </div>
@@ -256,13 +265,16 @@
                 matInput
                 id="vigenciaInicio"
                 name="vigenciaInicio"
-                type="number"
+                type="text"
                 [(ngModel)]="vigenciaInicio"
-                placeholder="AAAA/QQ"
+                placeholder="AAAAQQ"
                 required
-                min="1" />
+                maxlength="6"
+                pattern="^\d{6}$"
+                (input)="onVigenciaInput('inicio')"
+              />
               <mat-error *ngIf="f.submitted || (f.controls['vigenciaInicio']?.invalid && f.controls['vigenciaInicio']?.touched)">
-                Captura la vigencia de inicio.
+                Captura la vigencia de inicio, debe de ser menor a 6 números.
               </mat-error>
             </mat-form-field>
           </div>
@@ -276,13 +288,16 @@
                 matInput
                 id="vigenciaFin"
                 name="vigenciaFin"
-                type="number"
+                type="text"
                 [(ngModel)]="vigenciaFin"
-                placeholder="9999/99"
+                placeholder="AAAAQQ"
                 required
-                min="1" />
+                maxlength="6"
+                pattern="^\d{6}$"
+                (input)="onVigenciaInput('fin')"
+              />
               <mat-error *ngIf="f.submitted || (f.controls['vigenciaFin']?.invalid && f.controls['vigenciaFin']?.touched)">
-                Captura la vigencia de fin.
+                Captura la vigencia de fin, debe de ser menor a 6 números.
               </mat-error>
             </mat-form-field>
           </div>

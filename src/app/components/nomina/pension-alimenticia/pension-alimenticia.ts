@@ -176,123 +176,124 @@ export class PensionAlimenticia {
     })
   }
 
- guardar(form?: NgForm) {
-  if (this.guardando) return;
+  guardar(form?: NgForm) {
+    if (this.guardando) return;
 
-  // Forzar mayúsculas en campos de texto y limpiar CLABE a dígitos
-  this.rfc = this.toUpper(this.rfc);
-  this.apellidoPaterno = this.toUpper(this.apellidoPaterno);
-  this.apellidoMaterno = this.toUpper(this.apellidoMaterno);
-  this.nombreCompleto = this.toUpper(this.nombreCompleto);
-  this.searchText = this.toUpper(this.searchText);
-  this.numeroDocumento = String(this.numeroDocumento ?? '').replace(/\D+/g, '');
+    // Forzar mayúsculas en campos de texto y limpiar CLABE a dígitos
+    this.rfc = this.toUpper(this.rfc);
+    this.apellidoPaterno = this.toUpper(this.apellidoPaterno);
+    this.apellidoMaterno = this.toUpper(this.apellidoMaterno);
+    this.nombreCompleto = this.toUpper(this.nombreCompleto);
+    this.searchText = this.toUpper(this.searchText);
+    this.numeroDocumento = String(this.numeroDocumento ?? '').replace(/\D+/g, '');
 
-  if (form && form.invalid) {
-    Object.values(form.controls).forEach(c => c.markAsTouched());
-    return;
-  }
-  this.guardando = true;
+    if (form && form.invalid) {
+      Object.values(form.controls).forEach(c => c.markAsTouched());
+      return;
+    }
+    this.guardando = true;
 
-  const fail = (msg: string) => {
-    this.dialog.open(PensionAlimenDialog, {
-      width: '360px',
-      data: { title: 'Faltan datos', message: msg, type: 'error' } // <- X en validaciones
-    });
-    this.guardando = false;
-  };
-
-  if (!this.empleadoId) return fail('Selecciona un empleado antes de guardar.');
-  if (!['P','F'].includes(this.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
-  if (this.factorImporte == null) return fail('Captura Factor/Importe.');
-  if (!this.vigenciaInicio || !this.vigenciaFin) return fail('Captura la vigencia de inicio y fin.');
-
-  // Normalizar y validar CLABE (18 dígitos)
-  const clabe = String(this.numeroDocumento ?? '').trim();
-  if (!/^\d{18}$/.test(clabe)) return fail('La CLABE debe tener exactamente 18 dígitos numéricos.');
-
-  const beneficiarioAlimPayload = {
-    rfc: this.rfc,
-    primerApellido: this.apellidoPaterno,
-    segundoApellido: this.apellidoMaterno,
-    nombre: this.nombreCompleto
-  };
-
-  this.pensionAlimenticiaService.addBeneficiarioAlim(beneficiarioAlimPayload).subscribe({
-    next: (resp: any) => {
-      const beneficiarioAlimId = resp?.data?.id;
-      if (!beneficiarioAlimId) {
-        this.dialog.open(PensionAlimenDialog, {
-          width: '360px',
-          data: { title: 'Error', message: 'No se recibió ID del beneficiario base.', type: 'error' }
-        });
-        this.guardando = false;
-        return;
-      }
-
-      let factor = Number(this.factorImporte);
-      if (Number.isNaN(factor)) {
-        return fail('El campo Factor/Importe debe ser numérico.');
-      }
-      if (this.formaAplicacion === 'P') {
-        if (factor > 1) factor = factor / 100;
-        if (!(factor > 0 && factor <= 1)) {
-          return fail('Para Factor, usa un porcentaje válido (ej. 20 = 20%). Debe ser mayor a 0 y hasta 100%.');
-        }
-      } else {
-        if (factor < 0) {
-          return fail('El Importe fijo debe ser mayor o igual a 0.');
-        }
-      }
-
-      const beneficiarioPayload: any = {
-        tabEmpleadosId: this.empleadoId,
-        tabBeneficiariosAlimId: beneficiarioAlimId,
-        formaAplicacion: this.formaAplicacion,
-        factorImporte: factor,
-        qnaini: Number(this.vigenciaInicio),
-        qnafin: Number(this.vigenciaFin),
-        numeroDocumento: clabe
-        // bancoId: this.bancoSeleccionado // agrégalo si tu backend lo requiere
-      };
-
-      if (this.numeroBeneficiario != null && !Number.isNaN(Number(this.numeroBeneficiario))) {
-        beneficiarioPayload.numeroBenef = Number(this.numeroBeneficiario);
-      }
-
-      if ([beneficiarioPayload.factorImporte, beneficiarioPayload.qnaini, beneficiarioPayload.qnafin].some((v: any) => Number.isNaN(v))) {
-        return fail('Revisa que los campos numéricos tengan valores válidos.');
-      }
-
-      this.pensionAlimenticiaService.addBeneficario(beneficiarioPayload).subscribe({
-        next: () => {
-          this.dialog.open(PensionAlimenDialog, {
-            width: '360px',
-            data: { title: 'Éxito', message: 'Se guardó correctamente tus datos.', type: 'success' } // <- palomita
-          });
-          this.guardando = false;
-          // Limpiar formulario (manteniendo empleado seleccionado y búsqueda)
-          this.resetForm(form);
-        },
-        error: err => {
-          console.error('Error al guardar pensión alimenticia', err);
-          this.dialog.open(PensionAlimenDialog, {
-            width: '360px',
-            data: { title: 'Error', message: 'Error al guardar pensión alimenticia.', type: 'error' }
-          });
-          this.guardando = false;
-        }
-      });
-    },
-    error: err => {
-      console.error('Error al crear beneficiario base', err);
+    const fail = (msg: string) => {
       this.dialog.open(PensionAlimenDialog, {
         width: '360px',
-        data: { title: 'Error', message: 'No se pudo crear el beneficiario base.', type: 'error' }
+        data: { title: 'Faltan datos', message: msg, type: 'error' } // <- X en validaciones
       });
       this.guardando = false;
-    }
-  });
-}
+    };
+
+    if (!this.empleadoId) return fail('Selecciona un empleado antes de guardar.');
+    if (!['P','F'].includes(this.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
+    if (this.factorImporte == null) return fail('Captura Factor/Importe.');
+    if (!this.vigenciaInicio || !this.vigenciaFin) return fail('Captura la vigencia de inicio y fin.');
+
+    // Normalizar y validar CLABE (18 dígitos)
+    const clabe = String(this.numeroDocumento ?? '').trim();
+    if (!/^\d{18}$/.test(clabe)) return fail('La CLABE debe tener exactamente 18 dígitos numéricos.');
+
+    const beneficiarioAlimPayload = {
+      rfc: this.rfc,
+      primerApellido: this.apellidoPaterno,
+      segundoApellido: this.apellidoMaterno,
+      nombre: this.nombreCompleto
+    };
+
+    this.pensionAlimenticiaService.addBeneficiarioAlim(beneficiarioAlimPayload).subscribe({
+      next: (resp: any) => {
+        const beneficiarioAlimId = resp?.data?.id;
+        if (!beneficiarioAlimId) {
+          this.dialog.open(PensionAlimenDialog, {
+            width: '360px',
+            data: { title: 'Error', message: 'No se recibió ID del beneficiario base.', type: 'error' }
+          });
+          this.guardando = false;
+          return;
+        }
+
+        let factor = Number(this.factorImporte);
+        if (Number.isNaN(factor)) {
+          return fail('El campo Factor/Importe debe ser numérico.');
+        }
+        if (this.formaAplicacion === 'P') {
+          if (factor > 1) factor = factor / 100;
+
+          if (!(factor > 0 && factor <= 1)) {
+            return fail('Para Factor, usa un porcentaje válido (ej. 20 = 20%). Debe ser mayor a 0 y hasta 100%.');
+          }
+        } else {
+          if (factor < 0) {
+            return fail('El Importe fijo debe ser mayor o igual a 0.');
+          }
+        }
+
+        const beneficiarioPayload: any = {
+          tabEmpleadosId: this.empleadoId,
+          tabBeneficiariosAlimId: beneficiarioAlimId,
+          formaAplicacion: this.formaAplicacion,
+          factorImporte: factor,
+          qnaini: Number(this.vigenciaInicio),
+          qnafin: Number(this.vigenciaFin),
+          numeroDocumento: clabe
+          // bancoId: this.bancoSeleccionado // agrégalo si tu backend lo requiere
+        };
+
+        if (this.numeroBeneficiario != null && !Number.isNaN(Number(this.numeroBeneficiario))) {
+          beneficiarioPayload.numeroBenef = Number(this.numeroBeneficiario);
+        }
+
+        if ([beneficiarioPayload.factorImporte, beneficiarioPayload.qnaini, beneficiarioPayload.qnafin].some((v: any) => Number.isNaN(v))) {
+          return fail('Revisa que los campos numéricos tengan valores válidos.');
+        }
+
+        this.pensionAlimenticiaService.addBeneficario(beneficiarioPayload).subscribe({
+          next: () => {
+            this.dialog.open(PensionAlimenDialog, {
+              width: '360px',
+              data: { title: 'Éxito', message: 'Se guardó correctamente tus datos.', type: 'success' } // <- palomita
+            });
+            this.guardando = false;
+            // Limpiar formulario (manteniendo empleado seleccionado y búsqueda)
+            this.resetForm(form);
+          },
+          error: err => {
+            console.error('Error al guardar pensión alimenticia', err);
+            this.dialog.open(PensionAlimenDialog, {
+              width: '360px',
+              data: { title: 'Error', message: 'Error al guardar pensión alimenticia.', type: 'error' }
+            });
+            this.guardando = false;
+          }
+        });
+      },
+      error: err => {
+        console.error('Error al crear beneficiario base', err);
+        this.dialog.open(PensionAlimenDialog, {
+          width: '360px',
+          data: { title: 'Error', message: 'No se pudo crear el beneficiario base.', type: 'error' }
+        });
+        this.guardando = false;
+      }
+    });
+  }
 
   // Limpia los campos del formulario de captura (no toca la búsqueda/empleado)
   private resetForm(form?: NgForm) {
@@ -321,5 +322,123 @@ export class PensionAlimenticia {
     this.empleadoId = null;
     this.rfc = '';
     this.nombreCompleto = '';
+  }
+
+  formatearImporte() {
+    if (this.factorImporte == null) return;
+
+    let valor = Number(this.factorImporte);
+    if (isNaN(valor)) return;
+
+    if (this.formaAplicacion === 'F') {
+      if (valor < 0) valor = 0;
+      this.factorImporte = Number(valor.toFixed(2));
+    }
+  }
+
+  onFormaChange() {
+    // limpiar el valor al cambiar el tipo
+    this.factorImporte = undefined as any;
+  }
+
+  // Convierte a mayúsculas y elimina caracteres inválidos si se pegaron
+  onRfcInput() {
+    this.rfc = (this.rfc || '')
+      .toUpperCase()
+      .replace(/[^A-Z0-9Ñ&]/g, '');
+  }
+
+  // Bloquea teclas no permitidas
+  soloRFC(event: KeyboardEvent) {
+    const regex = /^[A-Za-z0-9ñÑ&]$/;
+
+    // Permitir teclas de control
+    const teclasPermitidas = [
+      'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'
+    ];
+
+    if (teclasPermitidas.includes(event.key)) return;
+
+    if (!regex.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  onFactorImporteInput() {
+
+    if (this.factorImporte == null) return;
+
+    // FACTOR (porcentaje)
+    if (this.formaAplicacion === 'P') {
+
+      let valor = this.factorImporte.toString();
+
+      // Solo números
+      valor = valor.replace(/\D/g, '');
+
+      // Máximo 3 dígitos
+      if (valor.length > 3) {
+        valor = valor.substring(0, 3);
+      }
+
+      let numero = Number(valor);
+
+      // Máximo 100%
+      if (numero > 100) {
+        numero = 100;
+      }
+
+      this.factorImporte = numero;
+    }
+
+    // IMPORTE FIJO
+    if (this.formaAplicacion === 'F') {
+      // Solo validar que sea número positivo
+      let numero = Number(this.factorImporte);
+
+      if (isNaN(numero)) {
+        this.factorImporte = undefined as any;
+        return;
+      }
+
+      if (numero < 0) {
+        this.factorImporte = 0;
+      }
+    }
+  }
+
+  onVigenciaInput(tipo: 'inicio' | 'fin') {
+
+    if (tipo === 'inicio') {
+      if (!this.vigenciaInicio) return;
+
+      let valor = this.vigenciaInicio.toString();
+
+      // Solo números
+      valor = valor.replace(/\D/g, '');
+
+      // Máximo 6 dígitos
+      if (valor.length > 6) {
+        valor = valor.substring(0, 6);
+      }
+
+      this.vigenciaInicio = valor as any;
+    }
+
+    if (tipo === 'fin') {
+      if (!this.vigenciaFin) return;
+
+      let valor = this.vigenciaFin.toString();
+
+      // Solo números
+      valor = valor.replace(/\D/g, '');
+
+      // Máximo 6 dígitos
+      if (valor.length > 6) {
+        valor = valor.substring(0, 6);
+      }
+
+      this.vigenciaFin = valor as any;
+    }
   }
 }
