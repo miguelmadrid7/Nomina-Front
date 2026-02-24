@@ -1,14 +1,14 @@
-import { Home } from '../app/components/home/home';
+import { Home } from './features/home/home';
 import { Routes } from '@angular/router';
-import { FormEmpleado } from '../app/components/catalogos/empleado/form-empleado/form-empleado';
-import { ListEmpleado } from '../app/components/catalogos/empleado/list-empleado/list-empleado';
+import { FormEmpleado } from '../app/features/catalogos/empleado/form-empleado/form-empleado';
+import { ListEmpleado } from '../app/features/catalogos/empleado/list-empleado/list-empleado';
 import { Login } from '../app/components/login/login';
 import { NominaOrdinaria } from '../app/components/nomina/nomina-ordinaria/nomina-ordinaria';
-import { NominaExtraordinaria } from './components/nomina/nomina-extraordinaria/nomina-extraordinaria';
+import { NominaExtraordinaria } from '../app/features/nomina/nomina-extraordinaria/nomina-extraordinaria';
 import { PensionAlimenticia } from './components/nomina/pension-alimenticia/pension-alimenticia';
 import { AuthGuard } from './core/guards/auth.guard';
-import { CalculoNominaComponent } from './components/nomina/calculo-nomina/calculo-nomina.component';
-import { GenerarProductoComponent } from './components/nomina/generar-producto/generar-producto.component';
+import { CalculoNominaComponent } from '../app/features/nomina/calculo-nomina/calculo-nomina.component';
+import { GenerarProductoComponent } from '../app/features/nomina/generar-producto/generar-producto.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
