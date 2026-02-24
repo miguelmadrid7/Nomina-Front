@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { LoginService } from '../../core/services/login.service';
-import { LoginPayload, LoginResponse } from '../../interfaces/login-inter';
+import { LoginPayload, LoginResponse } from '../../models/login-inter';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 
