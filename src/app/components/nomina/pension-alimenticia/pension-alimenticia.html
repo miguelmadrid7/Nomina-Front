@@ -45,7 +45,7 @@
   <form #f="ngForm" (ngSubmit)="guardar(f)" novalidate>
     <!-- AGREGAR BENEFICIARIO -->
     <div class="section-header">
-      <h3>Agregar Beneficiario.</h3>
+      <h3>Agregar Beneficiaria(o)</h3>
       <button mat-flat-button class="btn" type="submit" [disabled]="guardando">
         Guardar
       </button>
@@ -63,6 +63,8 @@
               id="apellidoPaterno"
               name="apellidoPaterno"
               [(ngModel)]="apellidoPaterno"
+              (keypress)="soloLetras($event)"
+              (input)="onNombreInput('paterno')"
               placeholder="Ingresar Apellido Paterno"
               required
               minlength="2" />
@@ -82,6 +84,8 @@
               id="apellidoMaterno"
               name="apellidoMaterno"
               [(ngModel)]="apellidoMaterno"
+              (keypress)="soloLetras($event)"
+              (input)="onNombreInput('materno')"
               placeholder="Ingresar Apellido Materno"
               required
               minlength="2" />
@@ -101,6 +105,8 @@
               id="nombreCompleto"
               name="nombreCompleto"
               [(ngModel)]="nombreCompleto"
+              (keypress)="soloLetras($event)"
+              (input)="onNombreInput('nombre')"
               placeholder="Ingresar Nombre(s)"
               required
               minlength="2" />
@@ -136,7 +142,7 @@
         
         <!-- No. Beneficiaria (auto) -->
         <div>
-          <label class="field-title" for="numeroBeneficiario">No. Beneficiaria*</label>
+          <label class="field-title" for="numeroBeneficiario">No. Beneficiaria(o)*</label>
           <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
             <mat-icon matPrefix>numbers</mat-icon>
             <input
@@ -144,11 +150,11 @@
               id="numeroBeneficiario"
               [(ngModel)]="numeroBeneficiario"
               [ngModelOptions]="{ standalone: true }"
-              placeholder="Se asigna automáticamente"
+              placeholder="Se asigna automatico"
               readonly
               tabindex="-1" />
             <mat-icon matSuffix>lock</mat-icon>
-            <mat-hint>Este número se genera automáticamente al guardar.</mat-hint>
+            <mat-hint>Este número se automatico al guardar.</mat-hint>
           </mat-form-field>
         </div>
 
@@ -274,7 +280,7 @@
                 (input)="onVigenciaInput('inicio')"
               />
               <mat-error *ngIf="f.submitted || (f.controls['vigenciaInicio']?.invalid && f.controls['vigenciaInicio']?.touched)">
-                Captura la vigencia de inicio, debe de ser menor a 6 números.
+                Captura la vigencia de inicio, debe de ser menor a 6 dígitos.
               </mat-error>
             </mat-form-field>
           </div>
@@ -297,7 +303,7 @@
                 (input)="onVigenciaInput('fin')"
               />
               <mat-error *ngIf="f.submitted || (f.controls['vigenciaFin']?.invalid && f.controls['vigenciaFin']?.touched)">
-                Captura la vigencia de fin, debe de ser menor a 6 números.
+                Captura la vigencia de fin, debe de ser menor a 6 dígitos.
               </mat-error>
             </mat-form-field>
           </div>

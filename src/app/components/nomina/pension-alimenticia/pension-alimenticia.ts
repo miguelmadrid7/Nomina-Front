@@ -368,6 +368,47 @@ export class PensionAlimenticia {
     }
   }
 
+  // Bloquea números y caracteres no válidos al escribir
+soloLetras(event: KeyboardEvent) {
+
+  // Permitir teclas de control
+  const teclasPermitidas = [
+    'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete', ' '
+  ];
+
+  if (teclasPermitidas.includes(event.key)) return;
+
+  // Solo letras (incluye acentos y Ñ)
+  const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]$/;
+
+  if (!regex.test(event.key)) {
+    event.preventDefault();
+  }
+}
+
+
+// Limpia números si se pegan en el input
+onNombreInput(tipo: 'paterno' | 'materno' | 'nombre') {
+
+  const limpiar = (valor: string) =>
+    valor
+      .replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '') // elimina números y símbolos
+      .replace(/\s+/g, ' ')                  // evita espacios dobles
+      .trimStart();                          // evita espacio inicial
+
+  if (tipo === 'paterno') {
+    this.apellidoPaterno = limpiar(this.apellidoPaterno);
+  }
+
+  if (tipo === 'materno') {
+    this.apellidoMaterno = limpiar(this.apellidoMaterno);
+  }
+
+  if (tipo === 'nombre') {
+    this.nombreCompleto = limpiar(this.nombreCompleto);
+  }
+}
+
   onFactorImporteInput() {
 
     if (this.factorImporte == null) return;
