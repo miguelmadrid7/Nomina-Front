@@ -340,8 +340,8 @@ export class PensionAlimenticia {
     }
   }
 
+  // limpiar el valor al cambiar el tipo
   onFormaChange() {
-    // limpiar el valor al cambiar el tipo
     this.factorImporte = null;
   }
 

@@ -4,7 +4,10 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { ApiResponse } from '../interfaces/api-response-inter';
-import { Banco, BeneficiarioAlimRequest, BeneficiarioRequest, IdResponse } from '../interfaces/pension-alimenticia-inter';
+import { Banco } from '../interfaces/banco-inter';
+import { BeneficiarioRequest } from '../interfaces/beneficiario-request-inter';
+import { IdResponse } from '../interfaces/id-response-inter';
+import { BeneficiarioAlimRequest } from '../interfaces/pension-alimenticia-inter';
 import { Empleado } from '../components/servicios/empleado';
 
 
