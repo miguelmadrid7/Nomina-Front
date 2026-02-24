@@ -301,8 +301,8 @@ export class PensionAlimenticia {
 
   // Limpia los campos del formulario de captura (no toca la búsqueda/empleado)
   private resetForm(form?: NgForm) {
-    try { 
-      form?.resetForm(); 
+    try {
+      form?.resetForm();
     } catch {
 
     }
