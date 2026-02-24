@@ -6,7 +6,6 @@ import { Banco } from '../../interfaces/banco-inter';
 import { BeneficiarioRequest } from '../../interfaces/beneficiario-request-inter';
 import { IdResponse } from '../../interfaces/id-response-inter';
 import { BeneficiarioAlimRequest } from '../../interfaces/pension-alimenticia-inter';
-
 import { Empleado } from '../../components/servicios/empleado';
 
 

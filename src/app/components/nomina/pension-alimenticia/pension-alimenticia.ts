@@ -6,18 +6,18 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatOption, MatSelectModule } from '@angular/material/select';
-import { PensionAlimenticiaService } from '../../../core/services/pension-alimenticia.service';
+import { PensionAlimenticiaService } from '../../../services/pension-alimenticia.service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Empleado } from '../../servicios/empleado';
-import { EmpleadoItem } from '../../../models/Emplado-inter';
+import { EmpleadoItem } from '../../../interfaces/Emplado-inter';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dialog';
-import { IdResponse } from '../../../models/id-response-inter';
-import { Banco } from '../../../models/banco-inter';
-import { BeneficiarioRequest } from '../../../models/beneficiario-request-inter';
-import { ApiResponse } from '../../../models/api-response-inter';
+import { IdResponse } from '../../../interfaces/id-response-inter';
+import { Banco } from '../../../interfaces/banco-inter';
+import { BeneficiarioRequest } from '../../../interfaces/beneficiario-request-inter';
+import { ApiResponse } from '../../../interfaces/api-response-inter';
 
 @Component({
   selector: 'app-pension-alimenticia',
