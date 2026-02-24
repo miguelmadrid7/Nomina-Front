@@ -3,6 +3,9 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { ApiResponse } from '../interfaces/api-response-inter';
+import { Banco, BeneficiarioAlimRequest, BeneficiarioRequest, IdResponse } from '../interfaces/pension-alimenticia-inter';
+import { Empleado } from '../components/servicios/empleado';
 
 
 @Injectable({ providedIn: 'root' })
@@ -10,64 +13,64 @@ export class PensionAlimenticiaService {
   private base = environment.apiUrl;
   private isBrowser: boolean;
 
-  constructor(private http: HttpClient, @Inject(PLATFORM_ID) platformId: Object) {
+  constructor(
+        private http: HttpClient, 
+        @Inject(PLATFORM_ID) platformId: Object
+    ) {
     this.isBrowser = isPlatformBrowser(platformId);
   }
 
-    // Busca por RFC/CURP/NOMBRE usando header targetValue
-    searchPorTarget(target: 'RFC' | 'CURP' | 'NOMBRE', value: string) {
+    private buildHeaders(
+        extraHeaderKey?: string,
+        extraHeaderValue?: string
+    ): HttpHeaders {
         let headers = new HttpHeaders();
         if (this.isBrowser) {
             const token = localStorage.getItem('token');
-            if (token) headers = headers.set('Authorization', `Bearer ${token}`);
+            if (token) {
+            headers = headers.set('Authorization', `Bearer ${token}`);
+            }
         }
-        headers = headers.set('targetValue', value);
-    return this.http.get(`${this.base}/employee/by/${target}`, { headers });
+        if (extraHeaderKey && extraHeaderValue) {
+            headers = headers.set(extraHeaderKey, extraHeaderValue);
+        }
+        return headers;
+    }
+
+    // Busca por RFC/CURP/NOMBRE usando header targetValue
+    searchPorTarget(target: 'RFC' | 'CURP' | 'NOMBRE', value: string): Observable<ApiResponse<Empleado>> {
+        return this.http.get<ApiResponse<Empleado>>(
+            `${this.base}/employee/by/${target}`, 
+            { headers: this.buildHeaders('targetValue', value) }
+        );
     }
 
     // Búsqueda libre (una sola caja)
-    searchEmpleadoLibre(search: string) {
-        let headers = new HttpHeaders();
-        if (this.isBrowser) {
-            const token = localStorage.getItem('token');
-            if (token) headers = headers.set('Authorization', `Bearer ${token}`);
-        }
-    return this.http.get(`${this.base}/employee/by/${encodeURIComponent(search)}/search`, { headers });
+    searchEmpleadoLibre(search: string): Observable<ApiResponse<Empleado>> {  
+        return this.http.get<ApiResponse<Empleado>>(
+            `${this.base}/employee/by/${encodeURIComponent(search)}/search`, 
+            { headers: this.buildHeaders() }
+        );
     }
 
-  //Se obtiene la lista de los banco que hay en la bd y los muestra el combobox
-  getBancos(): Observable<any> {
-    let headers = new HttpHeaders();
-    if(this.isBrowser) {
-        const token = localStorage.getItem('token');
-        if(token) {
-            headers = headers.set('Authorization', `Bearer ${token}`)
-        }
+    //Se obtiene la lista de los banco que hay en la bd y los muestra el combobox
+    getBancos(): Observable<ApiResponse<Banco[]>> {
+        return this.http.get<ApiResponse<Banco[]>>(
+            `${this.base}/catalogo/bancos`, 
+            { headers: this.buildHeaders() }
+        );
     }
-    return this.http.get(`${this.base}/catalogo/bancos`, { headers });
-  }
 
-  addBeneficiarioAlim(payload: any): Observable<any> {
-    let headers = new HttpHeaders();
-    if(this.isBrowser) {
-        const token = localStorage.getItem('token');
-        if(token) {
-            headers = headers.set('Authorization', `Bearer ${token}`)
-        }
+    addBeneficiarioAlim(payload: BeneficiarioAlimRequest): Observable<ApiResponse<IdResponse>> {
+        return this.http.post<ApiResponse<IdResponse>>(`${this.base}/beneficiarios/alim`, payload, 
+            { headers: this.buildHeaders() }
+        );
     }
-    return this.http.post(`${this.base}/beneficiarios/alim`, payload, { headers });
-  }
 
-  addBeneficario(payload: any): Observable<any>{
-    let headers = new HttpHeaders();
-    if(this.isBrowser) {
-        const token = localStorage.getItem('token');
-        if(token) {
-            headers = headers.set('Authorization', `Bearer ${token}`)
-            }
-        }
-        
-        return this.http.post(`${this.base}/beneficiarios`, payload, { headers });
-  }
+    addBeneficario(payload: BeneficiarioRequest): Observable<ApiResponse<any>> {
+        return this.http.post<ApiResponse<any>>(`${this.base}/beneficiarios`, payload, 
+            { headers: this.buildHeaders() }
+        );
+    }
 
 }
