@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatStepperModule } from '@angular/material/stepper';
-import { NominaService } from '../../../services/nomina-ordinaria.service';
+import { NominaService } from '../../../core/services/nomina-ordinaria.service';
 import { environment } from '../../../../environments/environment';
 import SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
