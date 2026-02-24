@@ -27,7 +27,7 @@
         id="buscarEmpleado"
         [(ngModel)]="searchText"
         [matAutocomplete]="auto"
-        (input)="searchEmployee()"
+        (keydown.enter)="$event.preventDefault(); searchEmployee()"
         placeholder="BUSCAR POR RFC, CURP O NOMBRE...">
       <mat-autocomplete
         #auto="matAutocomplete"
