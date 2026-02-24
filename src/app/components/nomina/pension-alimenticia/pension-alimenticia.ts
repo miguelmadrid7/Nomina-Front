@@ -14,6 +14,10 @@ import { Empleado } from '../../servicios/empleado';
 import { EmpleadoItem } from '../../../interfaces/Emplado-inter';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dialog';
+import { IdResponse } from '../../../interfaces/id-response-inter';
+import { Banco } from '../../../interfaces/banco-inter';
+import { BeneficiarioRequest } from '../../../interfaces/beneficiario-request-inter';
+import { ApiResponse } from '../../../interfaces/api-response-inter';
 
 @Component({
   selector: 'app-pension-alimenticia',
@@ -44,14 +48,14 @@ export class PensionAlimenticia {
 
   empleadoId: number | null = null;
   formaAplicacion: string = '';
-  factorImporte!: number;
-  numeroBeneficiario!: number;
-  vigenciaInicio!: number;
-  vigenciaFin!: number;
+  factorImporte: number | null = null;
+  numeroBeneficiario: number | null = null;
+  vigenciaInicio: string = '';
+  vigenciaFin: string = '';
   numeroDocumento: string = '';
 
-  bancos: any[] = [];
-  bancoSeleccionado: any;
+  bancos: Banco[] = [];
+  bancoSeleccionado: number | null = null;
 
   searchText: string = '';
   selectedEmpleado: EmpleadoItem | null = null;
@@ -75,13 +79,13 @@ export class PensionAlimenticia {
     return (String(v ?? '')).toUpperCase().trim();
   }
 
+  // RFC persona física común (simplificado, en mayúsculas)
   private esRFC(v: string) {
-    // RFC persona física común (simplificado, en mayúsculas)
     return /^[A-ZÑ&]{4}\d{6}[A-Z0-9]{3}$/.test(v);
   }
 
+  // CURP (simplificado)
   private esCURP(v: string) {
-    // CURP (simplificado)
     return /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/.test(v);
   }
 
@@ -127,10 +131,10 @@ export class PensionAlimenticia {
 
 
       obs.subscribe({
-        next: (resp: any) => {
+        next: (resp: ApiResponse<Empleado | Empleado[]>) => {
           const d = resp?.data;
           const arr = Array.isArray(d) ? d : (d ? [d] : []);
-          this.resultados = arr.map((emp: any) => {
+          this.resultados = arr.map((emp: EmpleadoItem) => {
             const pa = (emp?.primer_apellido ?? emp?.primerApellido ?? '').toString().trim();
             const sa = (emp?.segundo_apellido ?? emp?.segundoApellido ?? '').toString().trim();
             const no = (emp?.nombre ?? '').toString().trim();
@@ -143,7 +147,7 @@ export class PensionAlimenticia {
               nombreCompleto: nombre,
               rfc: (emp?.rfc ?? emp?.RFC ?? '').toString().trim(),
               curp: (emp?.curp ?? emp?.CURP ?? '').toString().trim()
-            } as Empleado;
+            } as EmpleadoItem;
           });
           this.cargandoBusqueda = false;
         },
@@ -167,7 +171,7 @@ export class PensionAlimenticia {
   cargarBancos(): void {
     this.pensionAlimenticiaService.getBancos()
     .subscribe({
-      next: (response: any) => {
+      next: (response: ApiResponse<Banco[]>) => {
         this.bancos = response.data;
       },
       error: (err: any) => {
@@ -218,7 +222,7 @@ export class PensionAlimenticia {
     };
 
     this.pensionAlimenticiaService.addBeneficiarioAlim(beneficiarioAlimPayload).subscribe({
-      next: (resp: any) => {
+      next: (resp: ApiResponse<IdResponse>) =>{
         const beneficiarioAlimId = resp?.data?.id;
         if (!beneficiarioAlimId) {
           this.dialog.open(PensionAlimenDialog, {
@@ -245,10 +249,10 @@ export class PensionAlimenticia {
           }
         }
 
-        const beneficiarioPayload: any = {
-          tabEmpleadosId: this.empleadoId,
+        const beneficiarioPayload: BeneficiarioRequest = {
+          tabEmpleadosId: this.empleadoId!,
           tabBeneficiariosAlimId: beneficiarioAlimId,
-          formaAplicacion: this.formaAplicacion,
+          formaAplicacion: this.formaAplicacion as 'P' | 'F',
           factorImporte: factor,
           qnaini: Number(this.vigenciaInicio),
           qnafin: Number(this.vigenciaFin),
@@ -260,7 +264,7 @@ export class PensionAlimenticia {
           beneficiarioPayload.numeroBenef = Number(this.numeroBeneficiario);
         }
 
-        if ([beneficiarioPayload.factorImporte, beneficiarioPayload.qnaini, beneficiarioPayload.qnafin].some((v: any) => Number.isNaN(v))) {
+        if ([beneficiarioPayload.factorImporte, beneficiarioPayload.qnaini, beneficiarioPayload.qnafin].some((v: number) => Number.isNaN(v))) {
           return fail('Revisa que los campos numéricos tengan valores válidos.');
         }
 
@@ -297,20 +301,20 @@ export class PensionAlimenticia {
 
   // Limpia los campos del formulario de captura (no toca la búsqueda/empleado)
   private resetForm(form?: NgForm) {
-    try { form?.resetForm(); } catch {}
+    try { 
+      form?.resetForm(); 
+    } catch {
+
+    }
     this.rfc = '';
     this.apellidoPaterno = '';
     this.apellidoMaterno = '';
     this.nombreCompleto = '';
     this.formaAplicacion = '';
-    // @ts-ignore - permitimos undefined tras reset
-    this.factorImporte = undefined;
-    // @ts-ignore - numero se reasigna automáticamente al guardar
-    this.numeroBeneficiario = undefined;
-    // @ts-ignore
-    this.vigenciaInicio = undefined;
-    // @ts-ignore
-    this.vigenciaFin = undefined;
+    this.factorImporte = null;
+    this.numeroBeneficiario = null;
+    this.vigenciaInicio = '';
+    this.vigenciaFin = '';
     this.numeroDocumento = '';
     this.bancoSeleccionado = null;
   }
@@ -338,7 +342,7 @@ export class PensionAlimenticia {
 
   onFormaChange() {
     // limpiar el valor al cambiar el tipo
-    this.factorImporte = undefined as any;
+    this.factorImporte = null;
   }
 
   // Convierte a mayúsculas y elimina caracteres inválidos si se pegaron
@@ -422,7 +426,7 @@ export class PensionAlimenticia {
         valor = valor.substring(0, 6);
       }
 
-      this.vigenciaInicio = valor as any;
+      this.vigenciaInicio = valor;
     }
 
     if (tipo === 'fin') {
@@ -438,7 +442,7 @@ export class PensionAlimenticia {
         valor = valor.substring(0, 6);
       }
 
-      this.vigenciaFin = valor as any;
+      this.vigenciaFin = valor;
     }
   }
 }
