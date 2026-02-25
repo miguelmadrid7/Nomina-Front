@@ -1,36 +1,53 @@
+/* Header fijo arriba, sin texto */
 .dialog-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
+  height: 56px;
+  background: #491D2A;
+  margin: 0;
 }
 
+/* Icono CENTRADO debajo del header, sin solape */
 .dialog-icon {
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   display: grid;
   place-items: center;
   color: #fff;
-  margin-top: 4px;
+  background: #5a2a35;     /* success */
+  margin: 12px auto 12px;  /* espacio arriba y abajo, todo positivo */
 }
-
 .dialog-icon mat-icon {
-  font-size: 32px;
-  width: 32px;
-  height: 32px;
+  font-size: 40px;
+  width: 40px; height: 40px; line-height: 40px;
 }
-
-/* Colores por tipo (ajusta a tu paleta) */
-.dialog-icon.success { background: #5a2a35; } /* tu tono vino */
+.dialog-icon.success { background: #5a2a35; }
 .dialog-icon.error   { background: #d32f2f; }
 .dialog-icon.info    { background: #1976d2; }
 
+/* Contenido ya no necesita compensar el icono */
 .dialog-content {
+  padding: 0 20px;
   text-align: center;
 }
+.dialog-title {
+  margin: 4px 0 8px 0;
+  font-weight: 600;
+  font-size: 20px;
+  color: #2c2c2c;
+}
+.dialog-content :not(.dialog-title) {
+  color: #263238;
+  font-size: 16px;
+}
 
-.btn {
-    background: #491D2A
+/* Acciones y botón */
+.dialog-actions { position: relative; padding: 12px 16px 16px 16px !important; }
+.dialog-actions::before {
+  content: ""; display: block; height: 1px; background: #491D2A; opacity: .6; margin: 12px 0;
+}
+.btn { border-radius: 20px; padding: 0 16px; background: #491D2A; color: #fff; }
+
+/* Contenedor con panelClass */
+.app-dialog .mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 12px; overflow: hidden; padding: 0; box-shadow: 0 10px 24px rgba(0,0,0,.18);
 }
