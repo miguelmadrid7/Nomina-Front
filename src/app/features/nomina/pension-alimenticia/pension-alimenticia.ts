@@ -7,6 +7,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatOption, MatSelectModule } from '@angular/material/select';
 import { PensionAlimenticiaService } from '../../../core/services/pension-alimenticia.service';
+
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { ViewChild } from '@angular/core';
+
+
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -40,6 +45,8 @@ import { ApiResponse } from '../../../models/api-Response.model';
   styleUrl: './pension-alimenticia.css'
 })
 export class PensionAlimenticia {
+
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
 
   rfc: string = '';
   apellidoPaterno: string = '';
@@ -90,19 +97,17 @@ export class PensionAlimenticia {
   }
 
   displayEmpleado(emp: EmpleadoItem | string | null): string {
-      if (!emp) return '';
-      if (typeof emp === 'string') return emp; // mientras escribes
-      const rfc  = (emp.rfc ?? emp.RFC ?? '').toString().trim() || '—';
-      const curp = (emp.curp ?? emp.CURP ?? '').toString().trim() || '—';
-      const pa = (emp.primer_apellido ?? emp.primerApellido ?? '').toString().trim();
-      const sa = (emp.segundo_apellido ?? emp.segundoApellido ?? '').toString().trim();
-      const no = (emp.nombre ?? '').toString().trim();
-      const concatenado = (emp.empleado ?? '').toString().trim();
-      const nombre = (concatenado || [pa, sa, no].filter(Boolean).join(' '))
-        .replace(/\s+/g,' ')
-        .trim() || '—';
-      return `${rfc} · ${curp} · ${nombre}`;
-  }
+  if (!emp) return '';
+  if (typeof emp === 'string') return emp;
+
+  const rfc  = (emp.rfc ?? emp.RFC ?? '').toString().trim() || '—';
+  const curp = (emp.curp ?? emp.CURP ?? '').toString().trim() || '—';
+
+  // Usar SOLO el nombre ya normalizado (evita duplicados)
+  const nombre = (emp.nombreCompleto ?? '').toString().trim() || '—';
+
+  return `${rfc} · ${curp} · ${nombre}`;
+}
 
   onOptionSelected(emp: EmpleadoItem) {
     this.selectEmpleado(emp);
@@ -111,7 +116,10 @@ export class PensionAlimenticia {
 
   searchEmployee() {
   const q = (this.searchText || '').trim().toUpperCase();
-  if (!q) { this.resultados = []; return; }
+  if (!q) { 
+    this.resultados = []; 
+    return; 
+  }
   this.cargandoBusqueda = true;
 
   // deja pasar si es RFC/CURP parcial con >=3
@@ -130,32 +138,59 @@ export class PensionAlimenticia {
                                                        this.pensionAlimenticiaService.searchEmpleadoLibre(q);
 
 
-      obs.subscribe({
-        next: (resp: ApiResponse<Empleado | Empleado[]>) => {
-          const d = resp?.data;
-          const arr = Array.isArray(d) ? d : (d ? [d] : []);
-          this.resultados = arr.map((emp: EmpleadoItem) => {
-            const pa = (emp?.primer_apellido ?? emp?.primerApellido ?? '').toString().trim();
-            const sa = (emp?.segundo_apellido ?? emp?.segundoApellido ?? '').toString().trim();
-            const no = (emp?.nombre ?? '').toString().trim();
-            const concatenado = (emp?.empleado ?? '').toString().trim();
-            const nombre = (concatenado || [pa, sa, no].filter(Boolean).join(' '))
-              .replace(/\s+/g, ' ')
-              .trim();
-            return {
-              ...emp,
-              nombreCompleto: nombre,
-              rfc: (emp?.rfc ?? emp?.RFC ?? '').toString().trim(),
-              curp: (emp?.curp ?? emp?.CURP ?? '').toString().trim()
-            } as EmpleadoItem;
-          });
-          this.cargandoBusqueda = false;
-        },
-        error: () => {
-          this.resultados = [];
-          this.cargandoBusqueda = false;
-        }
-      });
+  obs.subscribe({
+    next: (resp: ApiResponse<Empleado | Empleado[]>) => {
+      const d = resp?.data;
+      const arr = Array.isArray(d) ? d : (d ? [d] : []);
+
+      this.resultados = arr.map((emp: EmpleadoItem) => {
+          let rfc = (emp?.rfc ?? emp?.RFC ?? '').toString().trim();
+          let curp = (emp?.curp ?? emp?.CURP ?? '').toString().trim();
+          const concatenado = (emp?.empleado ?? '').toString().trim();
+
+          // Si el backend mandó todo en "empleado"
+          if ((!rfc || !curp) && concatenado.includes('-')) {
+            const partes = concatenado.split('-').map(p => p.trim());
+            if (partes.length >= 3) {
+              rfc = rfc || partes[0];
+              curp = curp || partes[1];
+            }
+          }
+
+          const pa = (emp?.primer_apellido ?? emp?.primerApellido ?? '').toString().trim();
+          const sa = (emp?.segundo_apellido ?? emp?.segundoApellido ?? '').toString().trim();
+          const no = (emp?.nombre ?? '').toString().trim();
+          const nombre = (
+              [pa, sa, no].filter(Boolean).join(' ') ||
+              (concatenado.includes('-') ? concatenado.split('-').slice(2).join('-').trim() : concatenado)
+            )
+            .replace(/\s+/g, ' ')
+            .trim();
+
+          return {
+            ...emp,
+            rfc,
+            curp,
+            nombreCompleto: nombre
+          } as EmpleadoItem;
+        });
+
+      this.cargandoBusqueda = false;
+      setTimeout(() => {
+        if (!this.autocompleteTrigger) return;
+          if (this.resultados.length > 0) {
+            this.autocompleteTrigger.openPanel();
+          } else {
+            this.autocompleteTrigger.closePanel();
+          }
+        });
+      },
+      error: () => {
+        this.resultados = [];
+        this.cargandoBusqueda = false;
+        this.autocompleteTrigger?.closePanel();
+      }
+    });
   }
 
   selectEmpleado(emp: EmpleadoItem) {
@@ -369,45 +404,45 @@ export class PensionAlimenticia {
   }
 
   // Bloquea números y caracteres no válidos al escribir
-soloLetras(event: KeyboardEvent) {
+  soloLetras(event: KeyboardEvent) {
 
-  // Permitir teclas de control
-  const teclasPermitidas = [
-    'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete', ' '
-  ];
+    // Permitir teclas de control
+    const teclasPermitidas = [
+      'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete', ' '
+    ];
 
-  if (teclasPermitidas.includes(event.key)) return;
+    if (teclasPermitidas.includes(event.key)) return;
 
-  // Solo letras (incluye acentos y Ñ)
-  const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]$/;
+    // Solo letras (incluye acentos y Ñ)
+    const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]$/;
 
-  if (!regex.test(event.key)) {
-    event.preventDefault();
-  }
-}
-
-
-// Limpia números si se pegan en el input
-onNombreInput(tipo: 'paterno' | 'materno' | 'nombre') {
-
-  const limpiar = (valor: string) =>
-    valor
-      .replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '') // elimina números y símbolos
-      .replace(/\s+/g, ' ')                  // evita espacios dobles
-      .trimStart();                          // evita espacio inicial
-
-  if (tipo === 'paterno') {
-    this.apellidoPaterno = limpiar(this.apellidoPaterno);
+    if (!regex.test(event.key)) {
+      event.preventDefault();
+    }
   }
 
-  if (tipo === 'materno') {
-    this.apellidoMaterno = limpiar(this.apellidoMaterno);
-  }
 
-  if (tipo === 'nombre') {
-    this.nombreCompleto = limpiar(this.nombreCompleto);
+  // Limpia números si se pegan en el input
+  onNombreInput(tipo: 'paterno' | 'materno' | 'nombre') {
+
+    const limpiar = (valor: string) =>
+      valor
+        .replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '') // elimina números y símbolos
+        .replace(/\s+/g, ' ')                  // evita espacios dobles
+        .trimStart();                          // evita espacio inicial
+
+    if (tipo === 'paterno') {
+      this.apellidoPaterno = limpiar(this.apellidoPaterno);
+    }
+
+    if (tipo === 'materno') {
+      this.apellidoMaterno = limpiar(this.apellidoMaterno);
+    }
+
+    if (tipo === 'nombre') {
+      this.nombreCompleto = limpiar(this.nombreCompleto);
+    }
   }
-}
 
   onFactorImporteInput() {
 
@@ -484,6 +519,14 @@ onNombreInput(tipo: 'paterno' | 'materno' | 'nombre') {
       }
 
       this.vigenciaFin = valor;
+    }
+  }
+
+  onSearchInputChange() {
+    if (!this.searchText || this.searchText.trim().length === 0) {
+      this.resultados = [];
+      this.autocompleteTrigger?.closePanel();
+      this.empleadoId = null;
     }
   }
 }
