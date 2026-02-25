@@ -8,7 +8,7 @@ import SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
-import { CalculationNomina } from '../../../interfaces/nomina-ordinaria-inter';
+import { CalculationNomina } from '../../../models/nomina-ordinaria-inter';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
