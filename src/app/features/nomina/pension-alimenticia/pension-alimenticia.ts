@@ -11,13 +11,13 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Empleado } from '../../servicios/empleado';
-import { EmpleadoItem } from '../../../models/Emplado-inter';
+import { EmpleadoItem } from '../../../models/emplado.model';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dialog';
-import { IdResponse } from '../../../models/id-response-inter';
-import { Banco } from '../../../models/banco-inter';
-import { BeneficiarioRequest } from '../../../models/beneficiario-request-inter';
-import { ApiResponse } from '../../../models/api-response-inter';
+import { IdResponse } from '../../../models/id-Response.model';
+import { Banco } from '../../../models/banco.model';
+import { BeneficiarioRequest } from '../../../models/beneficiario.model';
+import { ApiResponse } from '../../../models/api-Response.model';
 
 @Component({
   selector: 'app-pension-alimenticia',

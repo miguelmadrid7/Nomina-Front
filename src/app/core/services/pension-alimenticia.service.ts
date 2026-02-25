@@ -1,11 +1,11 @@
 import { Injectable} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../../models/api-response-inter';
-import { Banco } from '../../models/banco-inter';
-import { BeneficiarioRequest } from '../../models/beneficiario-request-inter';
-import { IdResponse } from '../../models/id-response-inter';
-import { BeneficiarioAlimRequest } from '../../models/pension-alimenticia-inter';
+import { ApiResponse } from '../../models/api-Response.model';
+import { Banco } from '../../models/banco.model';
+import { BeneficiarioRequest } from '../../models/beneficiario.model';
+import { IdResponse } from '../../models/id-Response.model';
+import { BeneficiarioAlimRequest } from '../../models/pension-Alimenticia-model';
 import { Empleado } from '../../features/servicios/empleado';
 
 

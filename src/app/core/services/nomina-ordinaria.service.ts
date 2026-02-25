@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
-import { CalculationNomina } from '../../models/nomina-ordinaria-inter';
+import { CalculationNomina } from '../../models/nomina-Ordinaria.model';
 
 @Injectable({ providedIn: 'root' })
 export class NominaService {
