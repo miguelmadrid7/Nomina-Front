@@ -1,7 +1,7 @@
 import { Injectable} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../../models/api-Response.model';
+import { ApiResponse } from '../../models/api-response.model';
 import { Banco } from '../../models/banco.model';
 import { BeneficiarioRequest } from '../../models/beneficiario.model';
 import { IdResponse } from '../../models/id-Response.model';
