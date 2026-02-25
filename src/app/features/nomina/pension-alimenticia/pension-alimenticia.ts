@@ -97,17 +97,17 @@ export class PensionAlimenticia {
   }
 
   displayEmpleado(emp: EmpleadoItem | string | null): string {
-  if (!emp) return '';
-  if (typeof emp === 'string') return emp;
+    if (!emp) return '';
+    if (typeof emp === 'string') return emp;
 
-  const rfc  = (emp.rfc ?? emp.RFC ?? '').toString().trim() || '—';
-  const curp = (emp.curp ?? emp.CURP ?? '').toString().trim() || '—';
+    const rfc  = (emp.rfc ?? emp.RFC ?? '').toString().trim() || '—';
+    const curp = (emp.curp ?? emp.CURP ?? '').toString().trim() || '—';
 
-  // Usar SOLO el nombre ya normalizado (evita duplicados)
-  const nombre = (emp.nombreCompleto ?? '').toString().trim() || '—';
+    // Usar SOLO el nombre ya normalizado (evita duplicados)
+    const nombre = (emp.nombreCompleto ?? '').toString().trim() || '—';
 
-  return `${rfc} · ${curp} · ${nombre}`;
-}
+    return `${rfc} · ${curp} · ${nombre}`;
+  }
 
   onOptionSelected(emp: EmpleadoItem) {
     this.selectEmpleado(emp);
@@ -116,9 +116,9 @@ export class PensionAlimenticia {
 
   searchEmployee() {
   const q = (this.searchText || '').trim().toUpperCase();
-  if (!q) { 
-    this.resultados = []; 
-    return; 
+  if (!q) {
+    this.resultados = [];
+    return;
   }
   this.cargandoBusqueda = true;
 
