@@ -4,71 +4,52 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
 import { CalculationNomina } from '../../models/nomina-Ordinaria.model';
+import { ApiResponse } from '../../models/api-Response.model';
 
 @Injectable({ providedIn: 'root' })
 export class NominaService {
   private base = environment.apiUrl;
 
-  constructor(private http: HttpClient, @Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(private http: HttpClient) {}
 
 
 
-  getNominaCheque(): Observable<any> {
-  const token = isPlatformBrowser(this.platformId)
-    ? localStorage.getItem('token')
-    : null;
-
-  let headers = new HttpHeaders();
-
-  if (token) {
-    headers = headers.set('Authorization', `Bearer ${token}`);
+  getNominaCheque(): Observable<ApiResponse<any[]>> {
+    return this.http.get<ApiResponse<any[]>>(`${this.base}/calculation/nomina-cheque`);
   }
 
-  return this.http.get(`${this.base}/calculation/nomina-cheque`, { headers });
+  executePayrollProcess(qnaProceso: number): Observable<ApiResponse<number>> {
+    return this.http.post<ApiResponse<number>>(`${this.base}/calculation/execute`, { qnaProceso });
   }
 
-  executePayrollProcess(qnaProceso: number): Observable<any> {
-    return this.http.post(`${this.base}/calculation/execute`, { qnaProceso });
-  }
-
-  getJobStatus(id: number): Observable<any> {
-    return this.http.get(`${this.base}/calculation/status/${id}`);
+  getJobStatus(id: number): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`${this.base}/calculation/status/${id}`);
   }
 
   downloadCalculoCsv(request: CalculationNomina) {
-  const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
-  let headers = new HttpHeaders().set('Accept', 'text/csv');
-  if (token) headers = headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post(
+      `${this.base}/calculation/excel/csv`,
+      request,
+      {
+        responseType: 'blob',
+        observe: 'response'
+      }
+    );
+  }
 
-  return this.http.post(
-    `${this.base}/calculation/excel/csv`,
-    request,
-    { headers, responseType: 'blob', observe: 'response' }
-  );
-}
+  exportarAnexoV() {
+    return this.http.post(
+      `${this.base}/calculation/export-anexo-v`,
+      null,
+      { responseType: 'blob' }
+    );
+  }
 
-exportarAnexoV(): Observable<Blob> {
-  const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
-  let headers = new HttpHeaders().set('Accept', 'text/csv');
-  if (token) headers = headers.set('Authorization', `Bearer ${token}`);
-  return this.http.post(`${this.base}/calculation/export-anexo-v`, null, {
-    headers,
-    responseType: 'blob'
-  });
-}
-
-
-  exportarAnexoVI(): Observable<Blob> {
-  const token = isPlatformBrowser(this.platformId) ? localStorage.getItem('token') : null;
-  let headers = new HttpHeaders().set('Accept', 'text/csv');
-  if (token) headers = headers.set('Authorization', `Bearer ${token}`);
-  return this.http.post(`${this.base}/calculation/export-anexo-VI`, null, {
-    headers,
-    responseType: 'blob'
-  });
-}
-
-
-
-
+  exportarAnexoVI() {
+    return this.http.post(
+      `${this.base}/calculation/export-anexo-VI`,
+      null,
+      { responseType: 'blob' }
+    );
+  }
 }

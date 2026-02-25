@@ -203,9 +203,13 @@ filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
 
   this.nominaService.getNominaCheque().subscribe({
     next: (response) => {
+      if (!response.success) {
+        this.showSnack(response.message || 'Error', 'Cerrar', 4000);
+        this.isRefreshing = false; // IMPORTANTE
+        return;
+      }
 
       const raw = response?.data ?? [];
-
       const mapped: NominaRow[] = raw.map((row: any[]) => ({
         noComprobante: row[0],
         ur: row[1],
