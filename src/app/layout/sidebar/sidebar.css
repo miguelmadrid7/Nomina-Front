@@ -1,9 +1,14 @@
 /* Contenedor base */
 .sidebar-shell {
-  background-color: #202532;             /* fondo del sidebar */
-  color: #e6e6e6;                         /* texto base */
+  background-color: #202532;
+  color: #e6e6e6;
   min-height: 100vh;
   border-right: 1px solid rgba(255,255,255,0.06);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.12);
 }
 
 /* Marca */
@@ -12,8 +17,8 @@
   border-color: rgba(255,255,255,0.06) !important;
 }
 
-.sidebar-shell .brand:hover { 
-    color: #fff; 
+.sidebar-shell .brand:hover {
+    color: #fff;
 }
 
 /* Botón de sección (acordeón) */
@@ -49,52 +54,44 @@
   text-decoration: none;
 }
 
-.sidebar-shell 
+.sidebar-shell
 .nav-link.active,
-.sidebar-shell 
+.sidebar-shell
 .nav-link.router-link-active {
   color: #ffffff !important;
-  background-color: #2f3847;             /* activo */
+  background-color: #2f3847;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
 }
 
 /* Divisores/secciones */
-.sidebar-shell 
-.mb-1 { 
-    margin-bottom: .75rem !important; 
+.sidebar-shell
+.mb-1 {
+    margin-bottom: .75rem !important;
 }
 
-.sidebar-shell 
-.collapse.show { 
-    margin-top: .25rem; 
+.sidebar-shell
+.collapse.show {
+    margin-top: .25rem;
 }
 
 /* Íconos */
-.sidebar-shell i { 
-    color: #a3a9b3; 
+.sidebar-shell i {
+    color: #a3a9b3;
 }
 
-.sidebar-shell 
+.sidebar-shell
 .nav-link:hover i,
-.sidebar-shell 
-.nav-link.active i { 
-    color: #ffffff; 
-}
-
-/* Scrollbar delgado (opcional) */
-.sidebar-shell {
-  overflow-y: auto;
-}
-.sidebar-shell::-webkit-scrollbar { 
-    width: 8px; 
+.sidebar-shell
+.nav-link.active i {
+    color: #ffffff;
 }
 
 .sidebar-shell::-webkit-scrollbar-thumb {
   background: rgba(255,255,255,0.12);
   border-radius: 8px;
 }
-.sidebar-shell::-webkit-scrollbar-thumb:hover { 
-    background: rgba(255,255,255,0.2); 
+.sidebar-shell::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.2);
 }
 
 .sidebar-shell .link-body-emphasis {
@@ -116,7 +113,7 @@
 
 /* Botón de sección (acordeón) */
 .sidebar-shell .btn-toggle {
-  color: #e6e6e6 !important;   /* texto claro */
+  color: #e6e6e6 !important;
   background: transparent;
   padding: .5rem .75rem;
   border-radius: .5rem;
@@ -128,10 +125,10 @@
 
 /* Ícono (caret) a la derecha y blanco */
 .sidebar-shell .btn-toggle .caret {
-  color: #ffffff;              /* blanco */
+  color: #ffffff;
   opacity: .9;
   transition: transform .2s ease, opacity .2s ease;
-  margin-left: .75rem;         /* un poco de espacio con el texto */
+  margin-left: .75rem;
 }
 
 /* Rotación cuando está expandido (Bootstrap cambia aria-expanded) */
@@ -160,7 +157,7 @@
 .sidebar-shell .btn-toggle {
   background-image: none !important;
   box-shadow: none;
-  color: #e6e6e6 !important;  /* texto claro */
+  color: #e6e6e6 !important;
   background: transparent;
   padding: .5rem .75rem;
   border-radius: .5rem;
@@ -215,4 +212,27 @@
 .sidebar-shell .nav-link:hover i,
 .sidebar-shell .nav-link.active i {
   color: #ffffff;
+}
+
+/* Modo colapsado (desktop mini sidebar) */
+.sidebar-shell.collapsed {
+  width: 72px !important;
+  padding-left: .5rem !important;
+  padding-right: .5rem !important;
+}
+.sidebar-shell.collapsed .label {
+  display: none !important;
+}
+.sidebar-shell.collapsed .btn-toggle {
+  justify-content: center !important;
+}
+.sidebar-shell.collapsed .caret {
+  display: none !important;
+}
+.sidebar-shell.collapsed .nav-link,
+.sidebar-shell.collapsed .link-body-emphasis {
+  justify-content: center !important;
+}
+.sidebar-shell.collapsed i {
+  margin-right: 0 !important;
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import {RouterLink} from '@angular/router';
 import { LoginService } from '../../core/services/login.service';
 import { CommonModule } from '@angular/common';
@@ -12,9 +12,11 @@ import { CommonModule } from '@angular/common';
     RouterLink
   ],
   templateUrl: './sidebar.html',
-  styleUrl: './sidebar.css'
+  styleUrls: ['./sidebar.css']
 })
 export class Sidebar {
+
+  @Input() collapsed = false;
 
   constructor(private loginService: LoginService) {}
   
