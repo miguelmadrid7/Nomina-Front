@@ -1,0 +1,218 @@
+/* Contenedor base */
+.sidebar-shell {
+  background-color: #202532;             /* fondo del sidebar */
+  color: #e6e6e6;                         /* texto base */
+  min-height: 100vh;
+  border-right: 1px solid rgba(255,255,255,0.06);
+}
+
+/* Marca */
+.sidebar-shell .brand {
+  color: #e6e6e6;
+  border-color: rgba(255,255,255,0.06) !important;
+}
+
+.sidebar-shell .brand:hover { 
+    color: #fff; 
+}
+
+/* Botón de sección (acordeón) */
+.sidebar-shell .btn-toggle {
+  color: #c8cdd7;
+  background: transparent;
+  padding: .5rem .75rem;
+  border-radius: .5rem;
+}
+
+.sidebar-shell .btn-toggle:hover {
+  background: #2a3240;
+  color: #ffffff;
+}
+
+/* Lista de enlaces */
+.sidebar-shell .nav-list {
+  margin-top: .25rem;
+}
+
+.sidebar-shell .nav-link {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  color: #a3a9b3;
+  padding: .4rem .6rem;
+  border-radius: .5rem;
+}
+
+.sidebar-shell .nav-link:hover {
+  color: #ffffff;
+  background-color: #2a3240;
+  text-decoration: none;
+}
+
+.sidebar-shell 
+.nav-link.active,
+.sidebar-shell 
+.nav-link.router-link-active {
+  color: #ffffff !important;
+  background-color: #2f3847;             /* activo */
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+/* Divisores/secciones */
+.sidebar-shell 
+.mb-1 { 
+    margin-bottom: .75rem !important; 
+}
+
+.sidebar-shell 
+.collapse.show { 
+    margin-top: .25rem; 
+}
+
+/* Íconos */
+.sidebar-shell i { 
+    color: #a3a9b3; 
+}
+
+.sidebar-shell 
+.nav-link:hover i,
+.sidebar-shell 
+.nav-link.active i { 
+    color: #ffffff; 
+}
+
+/* Scrollbar delgado (opcional) */
+.sidebar-shell {
+  overflow-y: auto;
+}
+.sidebar-shell::-webkit-scrollbar { 
+    width: 8px; 
+}
+
+.sidebar-shell::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.12);
+  border-radius: 8px;
+}
+.sidebar-shell::-webkit-scrollbar-thumb:hover { 
+    background: rgba(255,255,255,0.2); 
+}
+
+.sidebar-shell .link-body-emphasis {
+  color: #a3a9b3 !important;
+  padding: .4rem .6rem;
+  border-radius: .5rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  text-decoration: none;
+}
+.sidebar-shell .link-body-emphasis:hover,
+.sidebar-shell .link-body-emphasis.active,
+.sidebar-shell .link-body-emphasis.router-link-active {
+  color: #ffffff !important;
+  background-color: #2a3240;
+}
+
+
+/* Botón de sección (acordeón) */
+.sidebar-shell .btn-toggle {
+  color: #e6e6e6 !important;   /* texto claro */
+  background: transparent;
+  padding: .5rem .75rem;
+  border-radius: .5rem;
+}
+.sidebar-shell .btn-toggle:hover {
+  background: #2a3240;
+  color: #ffffff !important;
+}
+
+/* Ícono (caret) a la derecha y blanco */
+.sidebar-shell .btn-toggle .caret {
+  color: #ffffff;              /* blanco */
+  opacity: .9;
+  transition: transform .2s ease, opacity .2s ease;
+  margin-left: .75rem;         /* un poco de espacio con el texto */
+}
+
+/* Rotación cuando está expandido (Bootstrap cambia aria-expanded) */
+.sidebar-shell .btn-toggle[aria-expanded="true"] .caret {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* Estado colapsado (opcional, ligeramente más tenue) */
+.sidebar-shell .btn-toggle.collapsed .caret {
+  opacity: .8;
+}
+
+
+/* Elimina chevron heredado a la izquierda (pseudo-elementos) */
+.sidebar-shell .btn-toggle::before,
+.sidebar-shell .btn-toggle::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  mask-image: none !important;
+  -webkit-mask-image: none !important;
+}
+
+/* Limpia posibles fondos/decoraciones */
+.sidebar-shell .btn-toggle {
+  background-image: none !important;
+  box-shadow: none;
+  color: #e6e6e6 !important;  /* texto claro */
+  background: transparent;
+  padding: .5rem .75rem;
+  border-radius: .5rem;
+}
+.sidebar-shell .btn-toggle:hover {
+  background: #2a3240;
+  color: #ffffff !important;
+}
+
+/* Ícono caret a la derecha (blanco) y animación */
+.sidebar-shell .btn-toggle .caret {
+  color: #ffffff;
+  opacity: .9;
+  transition: transform .2s ease, opacity .2s ease;
+  margin-left: .75rem;
+}
+
+/* Rotación cuando está expandido (según aria-expanded) */
+.sidebar-shell .btn-toggle[aria-expanded="true"] .caret {
+  transform: rotate(180deg);
+  opacity: 1;
+}
+
+/* Estado colapsado (ligeramente más tenue) */
+.sidebar-shell .btn-toggle.collapsed .caret {
+  opacity: .8;
+}
+
+/* Estilo de enlaces en lista (si usas nav-link) */
+.sidebar-shell .nav-link {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  color: #a3a9b3;
+  padding: .4rem .6rem;
+  border-radius: .5rem;
+}
+.sidebar-shell .nav-link:hover {
+  color: #ffffff;
+  background-color: #2a3240;
+  text-decoration: none;
+}
+.sidebar-shell .nav-link.active,
+.sidebar-shell .nav-link.router-link-active {
+  color: #ffffff !important;
+  background-color: #2f3847;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+}
+.sidebar-shell i {
+  color: #a3a9b3;
+}
+.sidebar-shell .nav-link:hover i,
+.sidebar-shell .nav-link.active i {
+  color: #ffffff;
+}

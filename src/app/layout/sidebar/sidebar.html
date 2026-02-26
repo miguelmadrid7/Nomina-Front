@@ -1,50 +1,54 @@
-<div class="flex-shrink-0 p-3" style="width: 280px">
-        <a href="/" class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
-  <i class="bi bi-speedometer2 me-2"></i>
-  <span class="fs-5 fw-semibold">SIINOM</span>
-</a>
+<div class="sidebar-shell p-3" style="width: 280px">
+  <a routerLink="/home" 
+    class="brand d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom">
+  </a>
 
-        <ul class="list-unstyled ps-0">
-
-          <li class="mb-1">
-            <button
-              class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-              data-bs-toggle="collapse"
-              data-bs-target="#catalogos-collapse"
-              aria-expanded="true"
-              >Catálogos
-            </button>
-            <div class="collapse show" id="catalogos-collapse">
-              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                <li>
-                  <a routerLink="/empleados/list" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                    <i class="bi bi-people me-2"></i> Empleado
+  <ul class="list-unstyled ps-0">
+     <li class="mb-1">
+        <button
+          class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
+          data-bs-toggle="collapse"
+          data-bs-target="#catalogos-collapse"
+          aria-expanded="true">
+            <span>Catálogos</span>
+              <i class="bi bi-chevron-down caret"></i>
+        </button>
+            
+          <div class="collapse show" id="catalogos-collapse">
+            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+              <li>
+                 <a 
+                    routerLink="/empleados/list" 
+                    class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                      <i class="bi bi-people me-2"></i> Empleado
                   </a>
-                </li>
+              </li>
 
-                <li>
+               <li>
                   <a routerLink="" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-person-plus me-2"></i> Nuevo Ingreso
                   </a>
                 </li>
 
-               <li>
-                  <a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                    <i class="bi bi-plus-square me-2"></i> Alta plaza adicional
-                  </a>
+                <li>
+                    <a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                      <i class="bi bi-plus-square me-2"></i> Alta plaza adicional
+                    </a>
                 </li>
-              </ul>
-            </div>
-          </li>
+            </ul>
+          </div>      
+      </li>
+        
 
-          <li class="mb-1">
-            <button
-              class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-              data-bs-toggle="collapse"
-              data-bs-target="#movimientos-collapse"
-              aria-expanded="true"
-              >Movimientos
-            </button>
+       <li class="mb-1">
+          <button
+            class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
+            data-bs-toggle="collapse"
+            data-bs-target="#movimientos-collapse"
+            aria-expanded="true">
+              <span>Movimientos</span>
+              <i class="bi bi-chevron-down caret"></i>
+          </button>
             <div class="collapse show" id="movimientos-collapse">
               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                  <li>
@@ -66,16 +70,18 @@
                   </li>
               </ul>
             </div>
-          </li>
+        </li>
 
-          <li class="mb-1">
-            <button
-              class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
-              data-bs-toggle="collapse"
-              data-bs-target="#nomina-collapse"
-              aria-expanded="true"
-              >Cálculo de nómina
-            </button>
+        <!-- Nómina -->
+        <li class="mb-1">
+          <button
+            class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
+            data-bs-toggle="collapse"
+            data-bs-target="#nomina-collapse"
+            aria-expanded="true">
+              <span>Nómina</span>
+                <i class="bi bi-chevron-down caret"></i>
+          </button>
             <div class="collapse show" id="nomina-collapse">
               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                 <li>
@@ -127,47 +133,43 @@
                 </li>
               </ul>
             </div>
+        </li>
+
+          <!-- Pension -->
+          <li>
+            <a *ngIf="hasAnyRole([1, 2])"
+              routerLink="pension/alimenticia"
+              routerLinkActive="active"
+              class="nav-link d-inline-flex text-decoration-none rounded">
+              <i class="bi bi-heart-pulse me-2"></i> Pensión Alimenticia
+            </a>
           </li>
 
-          <a *ngIf="hasAnyRole([1, 2])"
-            routerLink="pension/alimenticia"
-            class="link-body-emphasis d-inline-flex text-decoration-none rounded btn">
-            <i class="bi bi-heart-pulse me-2"></i> Pensión Alimenticia
-          </a>
-
+          <!-- Dashboard -->
           <li class="mb-1">
-            <button class="btn btn d-inline-flex align-items-center rounded border-0 collapsed">
+            <a routerLink="/home"
+              routerLinkActive="active"
+              class="nav-link d-inline-flex align-items-center text-decoration-none rounded">
               <i class="bi bi-speedometer2 me-2"></i> Dashboard
-            </button>
+            </a>
           </li>
-        </ul>
+  </ul>
 
-        <div class="dropdown position-fixed bottom-0 mb-3">
-          <a
-            href="#"
-            class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            <img
-              src="https://github.com/mdo.png"
-              alt=""
-              width="32"
-              height="32"
-              class="rounded-circle me-2"
-            />
+  <div class="dropdown position-fixed bottom-0 mb-3">
+    <a
+      href="#"
+      class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-expanded="false">
+        <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2"/>
             <strong>mdo</strong>
-          </a>
-          <ul class="dropdown-menu text-small shadow">
-            <li><a class="dropdown-item" href="#">New project...</a></li>
-            <li><a class="dropdown-item" href="#">Settings</a></li>
-            <li><a class="dropdown-item" href="#">Profile</a></li>
-            <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item" href="#">Sign out</a></li>
-          </ul>
-        </div>
-
-
-
-
-      </div>
+    </a>
+    <ul class="dropdown-menu text-small shadow">
+      <li><a class="dropdown-item" href="#">New project...</a></li>
+      <li><a class="dropdown-item" href="#">Settings</a></li>
+      <li><a class="dropdown-item" href="#">Profile</a></li>
+      <li><hr class="dropdown-divider" /></li>
+      <li><a class="dropdown-item" href="#">Sign out</a></li>
+    </ul>
+  </div>
+</div>
