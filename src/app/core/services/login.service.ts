@@ -57,8 +57,22 @@ export class LoginService {
     return roles ? JSON.parse(roles) : [];
   }
 
-  hasRole(roleId: number): boolean {
-    return this.getRoles().includes(roleId);
+  hasRole(role: number): boolean {
+    return this.getRoles().includes(role);
+  }
+
+  hasAnyRole(roles: number[]): boolean {
+    const userRoles = this.getRoles();
+    return roles.some(r => userRoles.includes(r));
+  }
+
+  hasPermiso(nombre: string): boolean {
+    const permisos = this.getPermisos();
+    return permisos && permisos[nombre] !== undefined;
+  }
+
+  hasModule(moduleId: number): boolean {
+  return this.getModules().includes(moduleId);
   }
 
   clearSession() {
@@ -72,6 +86,7 @@ export class LoginService {
   setSession(data: any) {
   if (!this.isBrowser()) return;
     localStorage.setItem('roles', JSON.stringify(data.roles));
+    localStorage.setItem('modules', JSON.stringify(data.config?.extras || []));
     localStorage.setItem('permisos', JSON.stringify(data.permisos));
     localStorage.setItem('userId', data.userId);
     localStorage.setItem('config', JSON.stringify(data.config));
@@ -92,6 +107,18 @@ export class LoginService {
     } catch {
       return '/home';
     }
+  }
+
+  getPermisos(): any {
+  if (!this.isBrowser()) return {};
+    const permisos = localStorage.getItem('permisos');
+    return permisos ? JSON.parse(permisos) : {};
+  }
+
+  getModules(): number[] {
+    if (!this.isBrowser()) return [];
+    const modules = localStorage.getItem('modules');
+    return modules ? JSON.parse(modules) : [];
   }
 
   logout() {
