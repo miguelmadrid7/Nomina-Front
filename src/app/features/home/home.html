@@ -11,18 +11,8 @@
 
   <!-- Contenido -->
   <div class="container-fluid content-shell">
-    <app-header></app-header>
-    <div class="d-flex align-items-center gap-2 py-2">
-      <!-- Botón hamburguesa (móvil) -->
-      <button class="btn btn-outline-secondary d-inline-flex d-lg-none" type="button"
-              data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar" aria-controls="mobileSidebar">
-        <i class="bi bi-list"></i>
-      </button>
-      <!-- Botón colapsar (desktop) -->
-      <button class="btn btn-outline-secondary d-none d-lg-inline-flex" type="button" (click)="toggleSidebar()">
-        <i class="bi" [ngClass]="collapsed ? 'bi-arrow-bar-right' : 'bi-arrow-bar-left'"></i>
-      </button>
-    </div>
+    <app-header (toggleSidebarClick)="toggleSidebar()"></app-header>
+
     <router-outlet></router-outlet>
   </div>
 

@@ -20,16 +20,16 @@ export const routes: Routes = [
             canActivate: [AuthGuard],
             canActivateChild: [AuthGuard],
                 children: [
-    
-                    { 
-                        path: 'empleados/list', 
-                        loadComponent: () => 
+
+                    {
+                        path: 'empleados/list',
+                        loadComponent: () =>
                         import('./features/catalogos/empleado/list-empleado/list-empleado')
                             .then(m => m.ListEmpleado)
                     },
 
-                    { 
-                        path: 'empleados/form', 
+                    {
+                        path: 'empleados/form',
                         loadComponent: () =>
                         import('./features/catalogos/empleado/form-empleado/form-empleado')
                             .then(m => m.FormEmpleado)
@@ -49,7 +49,7 @@ export const routes: Routes = [
                         import('./features/nomina/nomina-ordinaria/nomina-ordinaria')
                             .then(m => m.NominaOrdinaria),
                             data: { roles: [1] }
-                
+
                     },
 
                     {
@@ -83,7 +83,7 @@ export const routes: Routes = [
 
                 ]
         },
-        
+
       { path: '**', redirectTo: 'login' }
 ];
 

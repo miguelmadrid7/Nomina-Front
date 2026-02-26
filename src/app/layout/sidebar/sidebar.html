@@ -1,5 +1,8 @@
 <div class="sidebar-shell p-3" style="width: 280px" [class.collapsed]="collapsed">
-  <a routerLink="/home" 
+  <a class="navbar-brand d-flex align-items-center gap-3" routerLink="/home">
+    <span class="brand-title fw-semibold">SIINOM</span>
+  </a>
+  <a routerLink="/home"
     class="brand d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom">
   </a>
 
@@ -13,12 +16,12 @@
             <span class="label">Catálogos</span>
               <i class="bi bi-chevron-down caret"></i>
         </button>
-            
+
           <div class="collapse show" id="catalogos-collapse">
             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
               <li>
-                 <a 
-                    routerLink="/empleados/list" 
+                 <a
+                    routerLink="/empleados/list"
                     class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                       <i class="bi bi-people me-2"></i> <span class="label">Empleado</span>
                   </a>
@@ -36,9 +39,9 @@
                     </a>
                 </li>
             </ul>
-          </div>      
+          </div>
       </li>
-        
+
 
        <li class="mb-1">
           <button
@@ -85,32 +88,32 @@
             <div class="collapse show" id="nomina-collapse">
               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                 <li>
-                  <a *ngIf="hasAnyRole([1, 2])" 
-                      routerLink="nomina/calculo-nomina-ordinaria" 
+                  <a *ngIf="hasAnyRole([1, 2])"
+                      routerLink="nomina/calculo-nomina-ordinaria"
                       class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-calculator me-2"></i> <span class="label">Cálculo nómina ordinaria</span>
                   </a>
                 </li>
 
                 <li>
-                  <a *ngIf="hasAnyRole([1, 2])" 
-                    routerLink="nomina/ordinaria" 
+                  <a *ngIf="hasAnyRole([1, 2])"
+                    routerLink="nomina/ordinaria"
                     class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-list-check me-2"></i> <span class="label">Visualizar nómina ordinaria</span>
                   </a>
                 </li>
 
                  <li>
-                    <a *ngIf="hasAnyRole([1, 2])" 
-                      routerLink="nomina/extraordinaria" 
+                    <a *ngIf="hasAnyRole([1, 2])"
+                      routerLink="nomina/extraordinaria"
                       class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                       <i class="bi bi-stars me-2"></i> <span class="label">Visualizar nómina extraordinaria</span>
                     </a>
                   </li>
 
                 <li>
-                  <a *ngIf="hasAnyRole([1, 2])" 
-                    routerLink="nomina/aguinaldo" 
+                  <a *ngIf="hasAnyRole([1, 2])"
+                    routerLink="nomina/aguinaldo"
                     class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-gift me-2"></i> <span class="label">Calcular aguinaldo</span>
                   </a>
@@ -118,7 +121,7 @@
 
                 <li>
                   <a *ngIf="hasAnyRole([1, 2])"
-                      routerLink="nomina/extraordinaria" 
+                      routerLink="nomina/extraordinaria"
                       class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-graph-up-arrow me-2"></i> <span class="label">Calcular incremento</span>
                   </a>
@@ -126,7 +129,7 @@
 
                 <li>
                   <a *ngIf="hasAnyRole([1, 2])"
-                      routerLink="nomina/generar-producto" 
+                      routerLink="nomina/generar-producto"
                       class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-file-earmark-arrow-down me-2"></i> <span class="label">Generar entregables</span>
                   </a>
