@@ -10,11 +10,11 @@
             <button
               class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
               data-bs-toggle="collapse"
-              data-bs-target="#home-collapse"
+              data-bs-target="#catalogos-collapse"
               aria-expanded="true"
               >Catálogos
             </button>
-            <div class="collapse show" id="home-collapse">
+            <div class="collapse show" id="catalogos-collapse">
               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                 <li>
                   <a routerLink="/empleados/list" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
@@ -41,11 +41,11 @@
             <button
               class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
               data-bs-toggle="collapse"
-              data-bs-target="#home-collapse"
+              data-bs-target="#movimientos-collapse"
               aria-expanded="true"
               >Movimientos
             </button>
-            <div class="collapse show" id="home-collapse">
+            <div class="collapse show" id="movimientos-collapse">
               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                  <li>
                     <a routerLink="/contact" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
@@ -72,44 +72,56 @@
             <button
               class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
               data-bs-toggle="collapse"
-              data-bs-target="#home-collapse"
+              data-bs-target="#nomina-collapse"
               aria-expanded="true"
               >Cálculo de nómina
             </button>
-            <div class="collapse show" id="home-collapse">
+            <div class="collapse show" id="nomina-collapse">
               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                 <li>
-                  <a routerLink="nomina/calculo" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <a *ngIf="hasRole(1)" 
+                      routerLink="nomina/calculo-nomina-ordinaria" 
+                      class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-calculator me-2"></i> Cálculo nómina ordinaria
                   </a>
                 </li>
 
                 <li>
-                  <a routerLink="nomina/ordinaria" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <a *ngIf="hasRole(1)" 
+                    routerLink="nomina/ordinaria" 
+                    class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-list-check me-2"></i> Visualizar nómina ordinaria
                   </a>
                 </li>
 
                  <li>
-                    <a routerLink="nomina/extraordinaria" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                    <a *ngIf="hasRole(1)" 
+                      routerLink="nomina/extraordinaria" 
+                      class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                       <i class="bi bi-stars me-2"></i> Visualizar nómina extraordinaria
                     </a>
                   </li>
 
                 <li>
-                  <a routerLink="nomina/extraordinaria" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <a *ngIf="hasRole(1)" 
+                    routerLink="nomina/aguinaldo" 
+                    class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-gift me-2"></i> Calcular aguinaldo
                   </a>
                 </li>
 
                 <li>
-                  <a routerLink="nomina/extraordinaria" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <a *ngIf="hasRole(1)"
+                      routerLink="nomina/extraordinaria" 
+                      class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-graph-up-arrow me-2"></i> Calcular incremento
                   </a>
                 </li>
 
                 <li>
-                  <a routerLink="nomina/generar-producto" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <a *ngIf="hasRole(1)"
+                      routerLink="nomina/generar-producto" 
+                      class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-file-earmark-arrow-down me-2"></i> Generar entregables
                   </a>
                 </li>
@@ -117,8 +129,9 @@
             </div>
           </li>
 
-          <a routerLink="pension/alimenticia"
-            class="link-body-emphasis d-inline-flex text-decoration-none rounded btn d-inline-flex align-items-center rounded border-0 collapsed">
+          <a *ngIf="hasRole(1)"
+            routerLink="pension/alimenticia"
+            class="link-body-emphasis d-inline-flex text-decoration-none rounded btn">
             <i class="bi bi-heart-pulse me-2"></i> Pensión Alimenticia
           </a>
 
