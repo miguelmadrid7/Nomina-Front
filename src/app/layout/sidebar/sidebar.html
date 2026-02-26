@@ -79,7 +79,7 @@
             <div class="collapse show" id="nomina-collapse">
               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                 <li>
-                  <a *ngIf="hasRole(1)" 
+                  <a *ngIf="hasAnyRole([1, 2])" 
                       routerLink="nomina/calculo-nomina-ordinaria" 
                       class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-calculator me-2"></i> Cálculo nómina ordinaria
@@ -87,7 +87,7 @@
                 </li>
 
                 <li>
-                  <a *ngIf="hasRole(1)" 
+                  <a *ngIf="hasAnyRole([1, 2])" 
                     routerLink="nomina/ordinaria" 
                     class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-list-check me-2"></i> Visualizar nómina ordinaria
@@ -95,7 +95,7 @@
                 </li>
 
                  <li>
-                    <a *ngIf="hasRole(1)" 
+                    <a *ngIf="hasAnyRole([1, 2])" 
                       routerLink="nomina/extraordinaria" 
                       class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                       <i class="bi bi-stars me-2"></i> Visualizar nómina extraordinaria
@@ -103,7 +103,7 @@
                   </li>
 
                 <li>
-                  <a *ngIf="hasRole(1)" 
+                  <a *ngIf="hasAnyRole([1, 2])" 
                     routerLink="nomina/aguinaldo" 
                     class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-gift me-2"></i> Calcular aguinaldo
@@ -111,7 +111,7 @@
                 </li>
 
                 <li>
-                  <a *ngIf="hasRole(1)"
+                  <a *ngIf="hasAnyRole([1, 2])"
                       routerLink="nomina/extraordinaria" 
                       class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-graph-up-arrow me-2"></i> Calcular incremento
@@ -119,7 +119,7 @@
                 </li>
 
                 <li>
-                  <a *ngIf="hasRole(1)"
+                  <a *ngIf="hasAnyRole([1, 2])"
                       routerLink="nomina/generar-producto" 
                       class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="bi bi-file-earmark-arrow-down me-2"></i> Generar entregables
@@ -129,7 +129,7 @@
             </div>
           </li>
 
-          <a *ngIf="hasRole(1)"
+          <a *ngIf="hasAnyRole([1, 2])"
             routerLink="pension/alimenticia"
             class="link-body-emphasis d-inline-flex text-decoration-none rounded btn">
             <i class="bi bi-heart-pulse me-2"></i> Pensión Alimenticia

@@ -17,9 +17,17 @@ import { CommonModule } from '@angular/common';
 export class Sidebar {
 
   constructor(private loginService: LoginService) {}
+  
+  hasAnyRole(roles: number[]): boolean {
+    return this.loginService.hasAnyRole(roles);
+  }
 
-  hasRole(role: number): boolean {
-    return this.loginService.hasRole(role);
+  hasPermiso(nombre: string): boolean {
+    return this.loginService.hasPermiso(nombre);
+  }
+
+  hasModule(moduleId: number): boolean {
+    return this.loginService.hasModule(moduleId);
   }
 
 }
