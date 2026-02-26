@@ -1,4 +1,3 @@
-// src/app/services/login.service.ts
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
@@ -52,8 +51,50 @@ export class LoginService {
     return localStorage.getItem('token'); // Devuelve el JWT crudo
   }
 
-  logout() {
-    if (!this.isBrowser()) return;
+  getRoles(): number[] {
+  if (!this.isBrowser()) return [];
+    const roles = localStorage.getItem('roles');
+    return roles ? JSON.parse(roles) : [];
+  }
+
+  hasRole(roleId: number): boolean {
+    return this.getRoles().includes(roleId);
+  }
+
+  clearSession() {
+  if (!this.isBrowser()) return;
     localStorage.removeItem('token');
+    localStorage.removeItem('roles');
+    localStorage.removeItem('permisos');
+    localStorage.removeItem('userId');
+  }
+
+  setSession(data: any) {
+  if (!this.isBrowser()) return;
+    localStorage.setItem('roles', JSON.stringify(data.roles));
+    localStorage.setItem('permisos', JSON.stringify(data.permisos));
+    localStorage.setItem('userId', data.userId);
+    localStorage.setItem('config', JSON.stringify(data.config));
+  }
+
+  getPrincipalRoute(): string {
+  if (!this.isBrowser()) return '/home';
+    const configStr = localStorage.getItem('config');
+    if (!configStr) return '/home';
+    try {
+      const config = JSON.parse(configStr);
+      switch (config.principal) {
+        case 'pages/Inicio/General':
+          return '/home';
+        default:
+          return '/home';
+      }
+    } catch {
+      return '/home';
+    }
+  }
+
+  logout() {
+     this.clearSession();
   }
 }
