@@ -16,7 +16,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   }
 
   private checkAccess(route: ActivatedRouteSnapshot): boolean | UrlTree {
-  // 1. Validar autenticación
   if (!this.loginService.isAuthenticated()) {
     return this.router.createUrlTree(['/login'], {
       queryParams: {
@@ -24,9 +23,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         }
       });
     }
-
-    // 2. Validar roles si la ruta los define
-    const requiredRoles = route.data['roles'] as number[] | undefined;
+  const requiredRoles = route.data['roles'] as number[] | undefined;
     if (requiredRoles && requiredRoles.length > 0) {
       const userRoles = this.loginService.getRoles();
       const hasAccess = requiredRoles.some(role =>
@@ -38,7 +35,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
         return this.router.createUrlTree(['/home']);
       }
     }
-
     return true;
   }
 }
