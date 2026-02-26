@@ -22,7 +22,7 @@ import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dia
 import { IdResponse } from '../../../models/id-Response.model';
 import { Banco } from '../../../models/banco.model';
 import { BeneficiarioRequest } from '../../../models/beneficiario.model';
-import { ApiResponse } from '../../../models/api-Response.model';
+import { ApiResponse } from '../../../models/api-response.model';
 
 @Component({
   selector: 'app-pension-alimenticia',
