@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { Sidebar } from '../../layout/sidebar/sidebar';
@@ -20,9 +20,9 @@ import { Header } from '../../layout/header/header';
 })
 export class Home {
 
-  collapsed = false;
+  @ViewChild(Sidebar) sidebar!: Sidebar;
 
-  toggleSidebar() {
-    this.collapsed = !this.collapsed;
+  toggleSidebar(): void {
+    this.sidebar.toggle();
   }
 }

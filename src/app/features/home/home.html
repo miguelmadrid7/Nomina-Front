@@ -1,29 +1,14 @@
 <theme-selector></theme-selector>
 
 <main class="d-flex flex-nowrap home-shell">
-  <!-- Sidebar Desktop -->
   <div class="d-none d-lg-block">
-    <sidebar [collapsed]="collapsed"></sidebar>
+    <sidebar></sidebar>
   </div>
 
-  <!-- Divider Desktop -->
   <div class="b-example-divider b-example-vr d-none d-lg-block"></div>
 
-  <!-- Contenido -->
   <div class="container-fluid content-shell">
     <app-header (toggleSidebarClick)="toggleSidebar()"></app-header>
-
     <router-outlet></router-outlet>
-  </div>
-
-  <!-- Offcanvas Móvil -->
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title" id="mobileSidebarLabel">Menú</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body p-0">
-      <sidebar></sidebar>
-    </div>
   </div>
 </main>
