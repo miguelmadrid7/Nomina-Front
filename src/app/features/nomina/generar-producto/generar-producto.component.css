@@ -1,17 +1,33 @@
-.gp-wrapper {
-  background-color: transparent;  /* sin fondo gris */
-  border-radius: 0;               /* opcional: sin bordes redondeados */
-  margin-left: auto;              /* mantiene alineación a la derecha */
-  max-width: 960px;               /* controla el ancho del bloque */
-  width: 100%;
-  padding: 0;                     /* quita relleno del contenedor (opcional) */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 5px; /* igual que en la otra pantalla */
 }
 
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  margin: 0;
+  padding: 8px 12px;  /* mismo margen visual */
+  flex: 1;
+  min-height: 0;      /* clave para permitir scroll interno */
+}
 
-.page-title { font-weight: 700; }
+/* Título con el mismo look & feel que Cálculo de nómina */
+.page-title { 
+  margin: 0; 
+  font-weight: 800; 
+  letter-spacing: .3px; 
+  
+}
 
+/* Tarjeta (puedes conservar tu gp-card si prefieres) */
 .gp-card {
   background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.06);
   border-radius: 12px;
   padding: 14px 16px;
   box-shadow: 0 1px 3px rgba(16,24,40,0.08);
@@ -21,11 +37,9 @@
   min-height: 72px;
 }
 
-.gp-title { 
-    font-weight: 600; 
-}
+.gp-title { font-weight: 600; margin: 0; }
 
-/* Define un único color para todos los estados */
+/* Botón (tu estilo actual) */
 .btn-burgundy {
   background-color: #491D2A;
   color: #fff;
@@ -33,20 +47,16 @@
   border-radius: 16px;
   padding: 6px 14px;
 }
-
-/* Hover/Focus/Active */
 .btn-burgundy:hover,
 .btn-burgundy:focus,
-.btn-burgundy:active {
-  background-color: #491D2A;
-  color: #fff;
-}
-
-/* Disabled: fuerza el mismo color y sin opacidad */
+.btn-burgundy:active { background-color: #491D2A; color: #fff; }
 .btn-burgundy:disabled,
-.btn-burgundy.disabled {
-  background-color: #491D2A !important;
-  color: #fff !important;
-  opacity: 1 !important;
-  cursor: not-allowed;
+.btn-burgundy.disabled { background-color: #491D2A !important; color: #fff !important; opacity: 1 !important; cursor: not-allowed; }
+
+/* Fijar gutter y neutralizar márgenes negativos del row dentro de la página */
+.page > .row {
+  --bs-gutter-x: 0.75rem; /* o 1rem si quieres más separación */
+  --bs-gutter-y: 0.75rem;
+  margin-left: 0;
+  margin-right: 0;
 }
