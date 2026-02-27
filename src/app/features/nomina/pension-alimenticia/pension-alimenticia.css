@@ -5,14 +5,16 @@
   --line: #e5e7eb;
   --bg: #ffffff;
   --card: #f6f6f7;
-  display: block;
-  height: 100%;
+   display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
 }
 
 /* Página */
 .page-container { 
-  padding: 8px 0 24px; 
-  max-height: calc(100vh - 24px);
+  padding: 8px 12px 24px 12px;
+  
   overflow-y: auto;
 }
 
@@ -24,10 +26,22 @@
 }
 
 .page-title { 
-  font-size: 22px; 
-  font-weight: 700; 
-  margin: 0 0 16px; 
-  color: var(--ink-900); 
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: .3px;
+  font-size: 28px;
+  line-height: 1.25;
+}
+
+@media (max-width: 576px) {
+  .page-title { font-size: 22px; }
+}
+
+/* Encabezado de página */
+.page-header { 
+  display: grid; 
+  gap: 6px; 
+
 }
 
 /* Separador */
