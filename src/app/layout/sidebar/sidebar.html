@@ -147,15 +147,39 @@
             </div>
         </li>
 
-          <!-- Pension -->
-          <li>
-            <a *ngIf="hasAnyRole([1, 2])"
-              routerLink="pension/alimenticia"
-              routerLinkActive="active"
-              class="nav-link d-flex text-decoration-none rounded">
-              <i class="bi bi-heart-pulse me-2"></i> <span class="label">Pensión Alimenticia</span>
-            </a>
-          </li>
+        <li class="mb-1">
+          <button
+            class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
+            data-bs-toggle="collapse"
+            data-bs-target="#otros-registros-collapse">
+              <span class="d-flex align-items-center">
+                <i class="bi bi-folder me-2"></i>
+                <span class="label">Otros registros</span>
+              </span>
+            <i class="bi bi-chevron-down caret"></i>
+          </button>
+
+          <div class="collapse show" id="otros-registros-collapse">
+            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+              <li>
+                <a
+                  routerLink="pension/alimenticia"
+                  routerLinkActive="active"
+                  class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <i class="bi bi-people me-2"></i> <span class="label">Pension alimenticia</span>
+                </a>
+              </li>
+
+              <li>
+                <a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <i class="bi bi-plus-square me-2"></i> <span class="label">Juicios mercantiles</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+
+
 
           <!-- Dashboard -->
           <li class="mb-1">
