@@ -1,7 +1,7 @@
 export interface BeneficiarioRequest {
   tabEmpleadosId: number;
   tabBeneficiariosAlimId: number;
-  formaAplicacion: 'P' | 'F';
+  formaAplicacion: 'P' | 'C';
   factorImporte: number;
   qnaini: number;
   qnafin: number;

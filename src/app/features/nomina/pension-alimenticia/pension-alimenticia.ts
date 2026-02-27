@@ -241,7 +241,7 @@ export class PensionAlimenticia {
     };
 
     if (!this.empleadoId) return fail('Selecciona un empleado antes de guardar.');
-    if (!['P','F'].includes(this.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
+    if (!['P','C'].includes(this.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
     if (this.factorImporte == null) return fail('Captura Factor/Importe.');
     if (!this.vigenciaInicio || !this.vigenciaFin) return fail('Captura la vigencia de inicio y fin.');
 
@@ -287,7 +287,7 @@ export class PensionAlimenticia {
         const beneficiarioPayload: BeneficiarioRequest = {
           tabEmpleadosId: this.empleadoId!,
           tabBeneficiariosAlimId: beneficiarioAlimId,
-          formaAplicacion: this.formaAplicacion as 'P' | 'F',
+          formaAplicacion: this.formaAplicacion as 'P' | 'C',
           factorImporte: factor,
           qnaini: Number(this.vigenciaInicio),
           qnafin: Number(this.vigenciaFin),
@@ -369,7 +369,7 @@ export class PensionAlimenticia {
     let valor = Number(this.factorImporte);
     if (isNaN(valor)) return;
 
-    if (this.formaAplicacion === 'F') {
+    if (this.formaAplicacion === 'C') {
       if (valor < 0) valor = 0;
       this.factorImporte = Number(valor.toFixed(2));
     }
@@ -472,7 +472,7 @@ export class PensionAlimenticia {
     }
 
     // IMPORTE FIJO
-    if (this.formaAplicacion === 'F') {
+    if (this.formaAplicacion === 'C') {
       // Solo validar que sea número positivo
       let numero = Number(this.factorImporte);
 
