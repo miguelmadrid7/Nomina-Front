@@ -1,4 +1,4 @@
-<div class="sidebar-shell p-3" style="width: 280px" [class.collapsed]="collapsed">
+<div class="sidebar-shell p-3" [class.collapsed]="collapsed">
   <a class="navbar-brand d-flex align-items-center gap-3" routerLink="/home">
     <span class="brand-title fw-semibold">SIINOM</span>
   </a>
@@ -11,10 +11,12 @@
         <button
           class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
           data-bs-toggle="collapse"
-          data-bs-target="#catalogos-collapse"
-          aria-expanded="true">
+          data-bs-target="#catalogos-collapse">
+          <span class="d-flex align-items-center">
+            <i class="bi bi-folder me-2"></i>
             <span class="label">Catálogos</span>
-              <i class="bi bi-chevron-down caret"></i>
+          </span>
+          <i class="bi bi-chevron-down caret"></i>
         </button>
 
           <div class="collapse show" id="catalogos-collapse">
@@ -49,7 +51,10 @@
             data-bs-toggle="collapse"
             data-bs-target="#movimientos-collapse"
             aria-expanded="true">
-              <span class="label">Movimientos</span>
+              <span class="d-flex align-items-center">
+                <i class="bi bi-arrows-move me-2"></i>
+                <span class="label">Movimientos</span>
+              </span>
               <i class="bi bi-chevron-down caret"></i>
           </button>
             <div class="collapse show" id="movimientos-collapse">
@@ -82,8 +87,12 @@
             data-bs-toggle="collapse"
             data-bs-target="#nomina-collapse"
             aria-expanded="true">
+
+            <span class="d-flex align-items-center">
+              <i class="bi bi-cash-stack me-2"></i>
               <span class="label">Nómina</span>
-                <i class="bi bi-chevron-down caret"></i>
+            </span>
+            <i class="bi bi-chevron-down caret"></i>
           </button>
             <div class="collapse show" id="nomina-collapse">
               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
@@ -143,7 +152,7 @@
             <a *ngIf="hasAnyRole([1, 2])"
               routerLink="pension/alimenticia"
               routerLinkActive="active"
-              class="nav-link d-inline-flex text-decoration-none rounded">
+              class="nav-link d-flex text-decoration-none rounded">
               <i class="bi bi-heart-pulse me-2"></i> <span class="label">Pensión Alimenticia</span>
             </a>
           </li>
@@ -152,7 +161,7 @@
           <li class="mb-1">
             <a routerLink="/home"
               routerLinkActive="active"
-              class="nav-link d-inline-flex align-items-center text-decoration-none rounded">
+              class="nav-link d-flex align-items-center text-decoration-none rounded">
               <i class="bi bi-speedometer2 me-2"></i> <span class="label">Dashboard</span>
             </a>
           </li>

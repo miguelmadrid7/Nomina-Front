@@ -16,10 +16,20 @@ import { CommonModule } from '@angular/common';
 })
 export class Sidebar {
 
-  @Input() collapsed = false;
+  collapsed = false;
 
   constructor(private loginService: LoginService) {}
   
+   ngOnInit(): void {
+    const saved = localStorage.getItem('sidebar-collapsed');
+    this.collapsed = saved === 'true';
+  }
+
+  toggle(): void {
+    this.collapsed = !this.collapsed;
+    localStorage.setItem('sidebar-collapsed', String(this.collapsed));
+  }
+
   hasAnyRole(roles: number[]): boolean {
     return this.loginService.hasAnyRole(roles);
   }

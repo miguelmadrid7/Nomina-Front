@@ -1,238 +1,157 @@
+html, body { height: 100%; margin: 0; }
+body { min-height: 100vh; }
+main { min-height: 100vh; height: auto; overflow-y: auto; overflow-x: hidden; }
+.home-shell { min-height: 100vh; }
+.content-shell { flex: 1 1 auto; min-width: 0; width: 100%; transition: margin-left .2s ease, padding-left .2s ease; }
+
 /* Contenedor base */
 .sidebar-shell {
   background-color: #202532;
   color: #e6e6e6;
   min-height: 100vh;
-  border-right: 1px solid rgba(255,255,255,0.06);
+  height: 100vh;
+  width: 280px;
   position: sticky;
   top: 0;
-  height: 100vh;
   overflow-y: auto;
+  border-right: 1px solid rgba(255,255,255,0.06);
   box-shadow: 4px 0 12px rgba(0, 0, 0, 0.12);
+  transition: width 0.25s ease, opacity .2s ease;
 }
 
-/* Marca */
-.sidebar-shell .brand {
-  color: #e6e6e6;
-  border-color: rgba(255,255,255,0.06) !important;
-}
+/* Scroll */
+.sidebar-shell::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 8px; }
+.sidebar-shell::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
-.sidebar-shell .brand:hover {
-    color: #fff;
-}
+/* Brand */
+.sidebar-shell .brand { color: #e6e6e6; border-color: rgba(255,255,255,0.06) !important; }
+.sidebar-shell .brand:hover { color: #ffffff; }
 
-/* Botón de sección (acordeón) */
+/* Botones de sección */
 .sidebar-shell .btn-toggle {
-  color: #c8cdd7;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  color: #e6e6e6;
   background: transparent;
   padding: .5rem .75rem;
   border-radius: .5rem;
+  box-shadow: none;
+  background-image: none !important;
 }
+.sidebar-shell .btn-toggle:hover { background: #2a3240; color: #ffffff; }
+.sidebar-shell .btn-toggle::before,
+.sidebar-shell .btn-toggle::after { content: none !important; display: none !important; }
+.sidebar-shell .btn-toggle .caret { color: #ffffff; opacity: .9; margin-left: .75rem; transition: transform .2s ease, opacity .2s ease; }
+.sidebar-shell .btn-toggle[aria-expanded="true"] .caret { transform: rotate(180deg); opacity: 1; }
+.sidebar-shell .btn-toggle.collapsed .caret { opacity: .8; }
 
-.sidebar-shell .btn-toggle:hover {
-  background: #2a3240;
-  color: #ffffff;
-}
-
-/* Lista de enlaces */
-.sidebar-shell .nav-list {
-  margin-top: .25rem;
-}
-
-.sidebar-shell .nav-link {
-  display: flex;
+/* Listas y links */
+.sidebar-shell .nav-list { margin-top: .25rem; }
+.sidebar-shell .nav-link,
+.sidebar-shell .link-body-emphasis {
+  display: flex !important;
+  width: 100% !important;
   align-items: center;
   gap: .5rem;
   color: #a3a9b3;
   padding: .4rem .6rem;
   border-radius: .5rem;
-}
-
-.sidebar-shell .nav-link:hover {
-  color: #ffffff;
-  background-color: #2a3240;
   text-decoration: none;
 }
-
-.sidebar-shell
-.nav-link.active,
-.sidebar-shell
-.nav-link.router-link-active {
-  color: #ffffff !important;
-  background-color: #2f3847;
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
-}
-
-/* Divisores/secciones */
-.sidebar-shell
-.mb-1 {
-    margin-bottom: .75rem !important;
-}
-
-.sidebar-shell
-.collapse.show {
-    margin-top: .25rem;
-}
-
-/* Íconos */
-.sidebar-shell i {
-    color: #a3a9b3;
-}
-
-.sidebar-shell
-.nav-link:hover i,
-.sidebar-shell
-.nav-link.active i {
-    color: #ffffff;
-}
-
-.sidebar-shell::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.12);
-  border-radius: 8px;
-}
-.sidebar-shell::-webkit-scrollbar-thumb:hover {
-    background: rgba(255,255,255,0.2);
-}
-
-.sidebar-shell .link-body-emphasis {
-  color: #a3a9b3 !important;
-  padding: .4rem .6rem;
-  border-radius: .5rem;
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-  text-decoration: none;
-}
-.sidebar-shell .link-body-emphasis:hover,
+.sidebar-shell .nav-link:hover,
+.sidebar-shell .link-body-emphasis:hover { color: #ffffff; background-color: #2a3240; }
+.sidebar-shell .nav-link.active,
+.sidebar-shell .nav-link.router-link-active,
 .sidebar-shell .link-body-emphasis.active,
 .sidebar-shell .link-body-emphasis.router-link-active {
   color: #ffffff !important;
-  background-color: #2a3240;
-}
-
-
-/* Botón de sección (acordeón) */
-.sidebar-shell .btn-toggle {
-  color: #e6e6e6 !important;
-  background: transparent;
-  padding: .5rem .75rem;
-  border-radius: .5rem;
-}
-.sidebar-shell .btn-toggle:hover {
-  background: #2a3240;
-  color: #ffffff !important;
-}
-
-/* Ícono (caret) a la derecha y blanco */
-.sidebar-shell .btn-toggle .caret {
-  color: #ffffff;
-  opacity: .9;
-  transition: transform .2s ease, opacity .2s ease;
-  margin-left: .75rem;
-}
-
-/* Rotación cuando está expandido (Bootstrap cambia aria-expanded) */
-.sidebar-shell .btn-toggle[aria-expanded="true"] .caret {
-  transform: rotate(180deg);
-  opacity: 1;
-}
-
-/* Estado colapsado (opcional, ligeramente más tenue) */
-.sidebar-shell .btn-toggle.collapsed .caret {
-  opacity: .8;
-}
-
-
-/* Elimina chevron heredado a la izquierda (pseudo-elementos) */
-.sidebar-shell .btn-toggle::before,
-.sidebar-shell .btn-toggle::after {
-  content: none !important;
-  display: none !important;
-  background: none !important;
-  mask-image: none !important;
-  -webkit-mask-image: none !important;
-}
-
-/* Limpia posibles fondos/decoraciones */
-.sidebar-shell .btn-toggle {
-  background-image: none !important;
-  box-shadow: none;
-  color: #e6e6e6 !important;
-  background: transparent;
-  padding: .5rem .75rem;
-  border-radius: .5rem;
-}
-.sidebar-shell .btn-toggle:hover {
-  background: #2a3240;
-  color: #ffffff !important;
-}
-
-/* Ícono caret a la derecha (blanco) y animación */
-.sidebar-shell .btn-toggle .caret {
-  color: #ffffff;
-  opacity: .9;
-  transition: transform .2s ease, opacity .2s ease;
-  margin-left: .75rem;
-}
-
-/* Rotación cuando está expandido (según aria-expanded) */
-.sidebar-shell .btn-toggle[aria-expanded="true"] .caret {
-  transform: rotate(180deg);
-  opacity: 1;
-}
-
-/* Estado colapsado (ligeramente más tenue) */
-.sidebar-shell .btn-toggle.collapsed .caret {
-  opacity: .8;
-}
-
-/* Estilo de enlaces en lista (si usas nav-link) */
-.sidebar-shell .nav-link {
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-  color: #a3a9b3;
-  padding: .4rem .6rem;
-  border-radius: .5rem;
-}
-.sidebar-shell .nav-link:hover {
-  color: #ffffff;
-  background-color: #2a3240;
-  text-decoration: none;
-}
-.sidebar-shell .nav-link.active,
-.sidebar-shell .nav-link.router-link-active {
-  color: #ffffff !important;
   background-color: #2f3847;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
 }
-.sidebar-shell i {
-  color: #a3a9b3;
-}
-.sidebar-shell .nav-link:hover i,
-.sidebar-shell .nav-link.active i {
-  color: #ffffff;
-}
 
-/* Modo colapsado (desktop mini sidebar) */
+/* Iconos */
+.sidebar-shell i { color: #a3a9b3; line-height: 1; font-size: 1.1rem; }
+.sidebar-shell .nav-link:hover i,
+.sidebar-shell .nav-link.active i { color: #ffffff; }
+
+/* Separaciones y collapses */
+.sidebar-shell .mb-1 { margin-bottom: .75rem !important; }
+.sidebar-shell .collapse.show { margin-top: .25rem; }
+
+/* Modo colapsado (mini) */
 .sidebar-shell.collapsed {
-  width: 72px !important;
-  padding-left: .5rem !important;
-  padding-right: .5rem !important;
+  width: 72px;
+  padding-left: .5rem;
+  padding-right: .5rem;
 }
-.sidebar-shell.collapsed .label {
-  display: none !important;
-}
-.sidebar-shell.collapsed .btn-toggle {
-  justify-content: center !important;
-}
-.sidebar-shell.collapsed .caret {
-  display: none !important;
-}
+.sidebar-shell.collapsed .label,
+.sidebar-shell.collapsed .brand-title { display: none !important; }
+.sidebar-shell.collapsed .btn-toggle,
 .sidebar-shell.collapsed .nav-link,
 .sidebar-shell.collapsed .link-body-emphasis {
   justify-content: center !important;
+  gap: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  text-align: center;
 }
-.sidebar-shell.collapsed i {
-  margin-right: 0 !important;
+.sidebar-shell.collapsed .caret { display: none !important; }
+.sidebar-shell.collapsed .collapse { display: none !important; }
+.sidebar-shell.collapsed i { margin-right: 0 !important; }
+.sidebar-shell.collapsed ul,
+.sidebar-shell.collapsed li { padding-left: 0 !important; }
+
+/* Forzar texto blanco (si tu paleta lo requiere) */
+.sidebar-shell,
+.sidebar-shell .label,
+.sidebar-shell .nav-link,
+.sidebar-shell .link-body-emphasis,
+.sidebar-shell .btn-toggle,
+.sidebar-shell a,
+.sidebar-shell span,
+.sidebar-shell strong { color: #ffffff !important; }
+.sidebar-shell .nav-link:hover,
+.sidebar-shell .link-body-emphasis:hover,
+.sidebar-shell .btn-toggle:hover { color: #ffffff !important; }
+.sidebar-shell i { color: #ffffff !important; }
+
+/* Submenú sin negritas y tamaño */
+.sidebar-shell .btn-toggle-nav,
+.sidebar-shell .btn-toggle-nav li,
+.sidebar-shell .btn-toggle-nav a,
+.sidebar-shell .btn-toggle-nav .label { font-weight: 400 !important; }
+.sidebar-shell .btn-toggle-nav { font-size: 0.9rem; }
+
+/* Estado oculto completo (opcional si implementas hidden) */
+.sidebar-shell.hidden {
+  width: 0;
+  opacity: 0;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+/* Evita que padding sume fuera del ancho y provoque overflow */
+.sidebar-shell,
+.sidebar-shell * {
+  box-sizing: border-box;
+}
+
+/* Oculta overflow horizontal del contenedor */
+.sidebar-shell {
+  overflow-x: hidden;
+}
+
+/* Los items ocupan 100% sin desbordar al sumar padding */
+.sidebar-shell .nav-link,
+.sidebar-shell .link-body-emphasis,
+.sidebar-shell .btn-toggle {
+  width: 100%;
+  box-sizing: border-box; /* redundante por el * de arriba, pero explícito */
+}
+
+/* Microajuste: evita que el “caret” empuje de más en expandido */
+.sidebar-shell .btn-toggle .caret {
+  flex: 0 0 auto; /* no crece */
 }
