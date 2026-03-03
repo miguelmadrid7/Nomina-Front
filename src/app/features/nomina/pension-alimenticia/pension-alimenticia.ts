@@ -7,13 +7,16 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatOption, MatSelectModule } from '@angular/material/select';
 import { PensionAlimenticiaService } from '../../../core/services/pension-alimenticia.service';
+
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { ViewChild } from '@angular/core';
+
+
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Empleado } from '../../servicios/empleado';
-import { EmpleadoItem } from '../../../models/empleado.model';
+import { EmpleadoItem } from '../../../models/emplado.model';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dialog';
 import { IdResponse } from '../../../models/id-Response.model';
