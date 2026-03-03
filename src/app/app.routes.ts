@@ -81,6 +81,14 @@ export const routes: Routes = [
                         data: { roles: [1] }
                     },
 
+                    {
+                        path: 'juicios/juicios-mercantiles',
+                        loadComponent: () =>
+                        import('./features/juicios-mercantiles/juicios-mercantiles')
+                            .then(m => m.JuiciosMercantiles),
+                        data: { roles: [1] }
+                    },
+
                 ]
         },
 
