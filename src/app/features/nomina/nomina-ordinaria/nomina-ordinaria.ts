@@ -286,7 +286,7 @@ filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
       maxWidth: '95vw',
       maxHeight: '90vh',
       autoFocus: false,
-      panelClass: 'brand-dialog',
+      //panelClass: 'brand-dialog',
       data: {
         empleadoId: row.empleadoId,
         nombreEmpleado: row.nombreEmpleado,
