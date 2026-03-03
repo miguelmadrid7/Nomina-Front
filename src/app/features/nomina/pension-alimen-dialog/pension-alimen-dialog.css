@@ -13,14 +13,14 @@
   display: grid;
   place-items: center;
   color: #fff;
-  background: #5a2a35;     /* success */
+  background: #491D2A;     /* success */
   margin: 12px auto 12px;  /* espacio arriba y abajo, todo positivo */
 }
 .dialog-icon mat-icon {
   font-size: 40px;
   width: 40px; height: 40px; line-height: 40px;
 }
-.dialog-icon.success { background: #5a2a35; }
+.dialog-icon.success { background: #491D2A; }
 .dialog-icon.error   { background: #d32f2f; }
 .dialog-icon.info    { background: #1976d2; }
 
