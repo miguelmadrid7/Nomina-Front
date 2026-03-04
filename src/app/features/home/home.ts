@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Sidebar } from '../core/sidebar/sidebar';
-import { ThemeSelector } from '../core/theme-selector/theme-selector';
+import { Sidebar } from '../../layout/sidebar/sidebar';
+import { ThemeSelector } from '../../layout/theme-selector/theme-selector';
 
 @Component({
   selector: 'app-home',
