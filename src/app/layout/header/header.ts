@@ -1,11 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'header',
-  imports: [],
+  selector: 'app-header',
+  standalone: true,
+  imports: [
+    CommonModule, 
+  ],
   templateUrl: './header.html',
-  styleUrl: './header.css'
+  styleUrls: ['./header.css']
 })
 export class Header {
+
+  @Output() toggleSidebarClick = new EventEmitter<void>();
+  
+  onToggleClick() { 
+    this.toggleSidebarClick.emit(); 
+  }
 
 }
