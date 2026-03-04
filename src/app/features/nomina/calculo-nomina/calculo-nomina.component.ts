@@ -39,19 +39,20 @@ export class CalculoNominaComponent {
 
 
   steps = [
-  { label: 'Inicializando proceso', progress: 10 },            // truncate
-  { label: 'Insertando nómina cheque plaza', progress: 20 },   // insertNomChequePza
-  { label: 'Insertando nómina cheque concepto', progress: 30 },// insertNomChequeCptoTab
-  { label: 'Calculando concepto H0', progress: 40 },           // cpto_ho
-  { label: 'Calculando concepto informados', progress: 50 },   // cpto_informados
-  { label: 'Calculando concepto quinquenios', progress: 60 },  // cpto_quinquenios
-  { label: 'Calculando nómina cheque concepto primas', progress: 65 }, // nom_cheque_cpto_primas
+  { label: 'Inicializando proceso', progress: 5 },            // truncate
+  { label: 'Insertando nómina cheque plaza', progress: 10 },   // insertNomChequePza
+  { label: 'Insertando nómina cheque concepto', progress: 15},// insertNomChequeCptoTab
+  { label: 'Calculando concepto H0', progress: 30 },           // cpto_ho
+  { label: 'Calculando concepto informados', progress: 35 },   // cpto_informados
+  { label: 'Calculando concepto quinquenios', progress: 40 },  // cpto_quinquenios
+  { label: 'Calculando nómina cheque concepto primas', progress: 50 }, // nom_cheque_cpto_primas
   //{ label: 'Calculando nómina cheque plaza sueldos gravables', progress: 70 }, // nom_cheque_pza_sueldogravable
-  { label: 'Calculando concepto 01', progress: 70 },           // cpto_01
-  { label: 'Calculando concepto 02', progress: 75 },           // cpto_02
-  { label: 'Calculando concepto 04', progress: 80 },           // cpto_04
-  { label: 'Calculando concepto 58', progress: 85 },           // cpto_58
-  { label: 'Calculando concepto 77', progress: 89 },           // cpto_77
+  { label: 'Calculando concepto 01', progress: 60 },           // cpto_01
+  { label: 'Calculando concepto 02', progress: 70 },           // cpto_02
+  { label: 'Calculando concepto 04', progress: 75 },           // cpto_04
+  { label: 'Calculando concepto 58', progress: 80 },           // cpto_58
+  { label: 'Calculando concepto 77', progress: 85 },           // cpto_77
+  { label: 'Calculando concepto 62', progress: 89 },           // cpto_77
   { label: 'Actualizando importes', progress: 90 },            // updateImportes
   { label: 'Preparando entregable', progress: 95 },            // preparar
   { label: 'Finalizando proceso', progress: 99 },              // complete (previo al 100)
