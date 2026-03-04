@@ -6,12 +6,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatOption, MatSelectModule } from '@angular/material/select';
-import { PensionAlimenticiaService } from '../../services/pension-alimenticia.service';
+import { PensionAlimenticiaService } from '../../core/services/pension-alimenticia.service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Empleado } from '../servicios/empleado';
-import { EmpleadoItem } from '../../interfaces/Emplado-inter';
+import { EmpleadoItem } from '../../models/Emplado-inter';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dialog';
 
@@ -31,7 +31,6 @@ import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dia
     MatOptionModule,
     MatIconModule,
     MatDialogModule,
-    PensionAlimenDialog
   ],
   templateUrl: './pension-alimenticia.html',
   styleUrl: './pension-alimenticia.css'
