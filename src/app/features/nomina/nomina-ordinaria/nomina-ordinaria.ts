@@ -7,12 +7,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
-import { NominaService } from '../../../services/nomina-ordinaria.service';
+import { NominaService } from '../../../core/services/nomina-ordinaria.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NominaordConceptoDialog } from '../../nomina/nominaord-concepto-dialog/nominaord-concepto-dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { NominaRow } from '../../../interfaces/nomina-row-inter';
+import { NominaRow } from '../../../models/nomina-Row.model';
 
 @Component({
   selector: 'app-nomina-ordinaria',
@@ -203,9 +203,13 @@ filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
 
   this.nominaService.getNominaCheque().subscribe({
     next: (response) => {
+      if (!response.success) {
+        this.showSnack(response.message || 'Error', 'Cerrar', 4000);
+        this.isRefreshing = false; // IMPORTANTE
+        return;
+      }
 
       const raw = response?.data ?? [];
-
       const mapped: NominaRow[] = raw.map((row: any[]) => ({
         noComprobante: row[0],
         ur: row[1],
@@ -282,7 +286,7 @@ filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
       maxWidth: '95vw',
       maxHeight: '90vh',
       autoFocus: false,
-      panelClass: 'brand-dialog',
+      //panelClass: 'brand-dialog',
       data: {
         empleadoId: row.empleadoId,
         nombreEmpleado: row.nombreEmpleado,
