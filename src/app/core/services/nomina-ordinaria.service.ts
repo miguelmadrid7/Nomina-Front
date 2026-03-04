@@ -1,9 +1,9 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
-import { CalculationNomina } from '../interfaces/nomina-ordinaria-inter';
+import { CalculationNomina } from '../../models/nomina-ordinaria-inter';
 
 @Injectable({ providedIn: 'root' })
 export class NominaService {
