@@ -12,7 +12,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NominaordConceptoDialog } from '../../nomina/nominaord-concepto-dialog/nominaord-concepto-dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { NominaRow } from '../../../models/nomina-row-inter';
+import { NominaRow } from '../../../models/nomina-Row.model';
 
 @Component({
   selector: 'app-nomina-ordinaria',
