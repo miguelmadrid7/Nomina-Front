@@ -1,11 +1,11 @@
-import { Home } from '../app/components/home/home';
+import { Home } from './features/home/home';
 import { Routes } from '@angular/router';
 import { FormEmpleado } from '../app/features/catalogos/empleado/form-empleado/form-empleado';
 import { ListEmpleado } from '../app/features/catalogos/empleado/list-empleado/list-empleado';
 import { Login } from '../app/features/login/login';
 import { NominaOrdinaria } from '../app/features/nomina/nomina-ordinaria/nomina-ordinaria';
-import { NominaExtraordinaria } from '../app/components/nomina-extraordinaria/nomina-extraordinaria';
-import { PensionAlimenticia } from '../app/components/pension-alimenticia/pension-alimenticia';
+import { NominaExtraordinaria } from '../app/features/nomina/nomina-extraordinaria/nomina-extraordinaria';
+import { PensionAlimenticia } from '../app/features/nomina/pension-alimenticia/pension-alimenticia';
 import { AuthGuard } from './core/auth/auth.guard';
 import { CalculoNominaComponent } from '../app/features/nomina/calculo-nomina/calculo-nomina.component';
 import { GenerarProductoComponent } from '../app/features/nomina/generar-producto/generar-producto.component';
