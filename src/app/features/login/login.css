@@ -45,7 +45,6 @@
 /* Título responsive y centrado */
 .header-title,
 .header-subtitle {
- 
   margin: 0;
   font-weight: 800;
   text-transform: uppercase;
@@ -83,6 +82,27 @@
   text-align: center;
   white-space: normal;
   overflow: hidden;
+}
+
+.header-top {
+  position: relative;          /* referencia para posicionar el logo */
+  display: flex;
+  align-items: center;
+  justify-content: center;     /* centra título e ícono */
+  gap: clamp(8px, 2vw, 24px);
+  padding: clamp(14px, 2.8vw, 28px) clamp(12px, 2vw, 24px);
+  color: #d6c49e;
+  background: transparent;
+}
+
+.brand-logo {
+  position: absolute;
+  right: clamp(12px, 2vw, 24px); /* pega el logo a la derecha con respiro */
+  top: 50%;
+  transform: translateY(-50%);   /* centra verticalmente respecto a la franja */
+  max-height: 70px;              /* ajusta a tu gusto */
+  height: auto;
+  width: auto;
 }
 
 /* Bloque de pie al fondo */
