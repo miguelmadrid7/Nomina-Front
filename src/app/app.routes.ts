@@ -1,14 +1,8 @@
 import { Home } from './features/home/home';
 import { Routes } from '@angular/router';
-import { FormEmpleado } from '../app/features/catalogos/empleado/form-empleado/form-empleado';
-import { ListEmpleado } from '../app/features/catalogos/empleado/list-empleado/list-empleado';
 import { Login } from '../app/features/login/login';
-import { NominaOrdinaria } from '../app/features/nomina/nomina-ordinaria/nomina-ordinaria';
 import { NominaExtraordinaria } from '../app/features/nomina/nomina-extraordinaria/nomina-extraordinaria';
-import { PensionAlimenticia } from './features/nomina/pension-alimenticia/pension-alimenticia';
 import { AuthGuard } from './core/guards/auth.guard';
-import { CalculoNominaComponent } from '../app/features/nomina/calculo-nomina/calculo-nomina.component';
-import { GenerarProductoComponent } from '../app/features/nomina/generar-producto/generar-producto.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full'},
@@ -78,6 +72,14 @@ export const routes: Routes = [
                         loadComponent: () =>
                         import('./features/nomina/pension-alimenticia/pension-alimenticia')
                             .then(m => m.PensionAlimenticia),
+                        data: { roles: [1] }
+                    },
+
+                    {
+                        path: 'juicios/juicios-mercantiles',
+                        loadComponent: () =>
+                        import('./features/juicios/juicios-mercantiles/juicios-mercantiles')
+                            .then(m => m.JuiciosMercantiles),
                         data: { roles: [1] }
                     },
 
