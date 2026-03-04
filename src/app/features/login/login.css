@@ -97,7 +97,7 @@
 
 .brand-logo {
   position: absolute;
-  right: clamp(12px, 2vw, 24px); /* pega el logo a la derecha con respiro */
+  left: clamp(12px, 2vw, 24px); /* pega el logo a la derecha con respiro */
   top: 50%;
   transform: translateY(-50%);   /* centra verticalmente respecto a la franja */
   max-height: 70px;              /* ajusta a tu gusto */
@@ -218,4 +218,14 @@ mat-form-field {
 
 .aux-links a:hover {
   text-decoration: underline;
+}
+
+/* Mismo estilo y tamaño para ambas franjas de texto */
+.header-bottom,
+.footer-brand {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: clamp(14px, 1.4vw, 18px); /* ajusta estos límites si lo quieres más grande/pequeño */
+  line-height: 1.2;
 }
