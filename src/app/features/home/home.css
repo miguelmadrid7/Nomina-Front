@@ -1,0 +1,19 @@
+.home-shell {
+  min-height: 100vh;
+  --header-height: 64px;
+}
+
+.content-shell {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: auto;
+  padding-top: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Evita cualquier separación visual del header respecto al divider */
+.content-shell > header.navbar {
+  margin: 0;
+  border-radius: 0;
+}

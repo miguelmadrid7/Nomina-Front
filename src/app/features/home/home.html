@@ -1,13 +1,14 @@
 <theme-selector></theme-selector>
 
-<main class="d-flex flex-nowrap">
+<main class="d-flex flex-nowrap home-shell">
+  <div class="d-none d-lg-block">
+    <sidebar></sidebar>
+  </div>
 
-<sidebar></sidebar>
+  <div class="b-example-divider b-example-vr d-none d-lg-block"></div>
 
-    <div class="b-example-divider b-example-vr"></div>
-    <div class="container-fluid">
-
-        <router-outlet></router-outlet>
-
-    </div>
+  <div class="container-fluid content-shell">
+    <app-header (toggleSidebarClick)="toggleSidebar()"></app-header>
+    <router-outlet></router-outlet>
+  </div>
 </main>
