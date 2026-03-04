@@ -1,8 +1,7 @@
-// src/app/interceptors/auth.interceptor.ts
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { LoginService } from '../services/login.service';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
