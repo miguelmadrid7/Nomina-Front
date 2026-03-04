@@ -2,13 +2,13 @@ import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatStepperModule } from '@angular/material/stepper';
-import { NominaService } from '../../../services/nomina-ordinaria.service';
+import { NominaService } from '../../../core/services/nomina-ordinaria.service';
 import { environment } from '../../../../environments/environment';
 import SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
-import { CalculationNomina } from '../../../interfaces/nomina-ordinaria-inter';
+import { CalculationNomina } from '../../../models/nomina-Ordinaria.model';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -46,10 +46,12 @@ export class CalculoNominaComponent {
   { label: 'Calculando concepto informados', progress: 50 },   // cpto_informados
   { label: 'Calculando concepto quinquenios', progress: 60 },  // cpto_quinquenios
   { label: 'Calculando nómina cheque concepto primas', progress: 65 }, // nom_cheque_cpto_primas
-  { label: 'Calculando nómina cheque plaza sueldos gravables', progress: 70 }, // nom_cheque_pza_sueldogravable
-  { label: 'Calculando concepto 01', progress: 75 },           // cpto_01
-  { label: 'Calculando concepto 02', progress: 80 },           // cpto_02
-  { label: 'Calculando concepto 04', progress: 85 },           // cpto_04
+  //{ label: 'Calculando nómina cheque plaza sueldos gravables', progress: 70 }, // nom_cheque_pza_sueldogravable
+  { label: 'Calculando concepto 01', progress: 70 },           // cpto_01
+  { label: 'Calculando concepto 02', progress: 75 },           // cpto_02
+  { label: 'Calculando concepto 04', progress: 80 },           // cpto_04
+  { label: 'Calculando concepto 58', progress: 85 },           // cpto_58
+  { label: 'Calculando concepto 77', progress: 89 },           // cpto_77
   { label: 'Actualizando importes', progress: 90 },            // updateImportes
   { label: 'Preparando entregable', progress: 95 },            // preparar
   { label: 'Finalizando proceso', progress: 99 },              // complete (previo al 100)
