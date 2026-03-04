@@ -1,9 +1,9 @@
 // src/app/services/login.service.ts
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { LoginPayload } from '../interfaces/login-inter';
+import { LoginPayload } from '../../models/login-inter';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
