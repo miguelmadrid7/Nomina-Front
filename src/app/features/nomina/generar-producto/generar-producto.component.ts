@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NominaService } from '../../../services/nomina-ordinaria.service';
+import { NominaService } from '../../../core/services/nomina-ordinaria.service';
 
 @Component({
   selector: 'app-generar-producto',
