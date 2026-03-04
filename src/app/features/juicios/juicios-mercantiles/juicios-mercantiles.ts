@@ -1,0 +1,535 @@
+import { Component, ViewChild } from '@angular/core';
+import { EmpleadoItem } from '../../../models/emplado.model';
+import { PensionAlimenticiaService } from '../../../core/services/pension-alimenticia.service';
+import { ApiResponse } from '../../../models/api-Response.model';
+import { Empleado } from '../../servicios/empleado';
+import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { CommonModule } from '@angular/common';
+import { FormsModule, NgForm } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { BeneficiarioRequest } from '../../../models/beneficiario.model';
+import { IdResponse } from '../../../models/id-Response.model';
+import { PensionAlimenDialog } from '../../nomina/pension-alimen-dialog/pension-alimen-dialog';
+import { MatDialog } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
+import { Banco } from '../../../models/banco.model';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+
+@Component({
+  selector: 'app-juicios-mercantiles',
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    MatCardModule,
+    MatSelectModule,
+    MatInputModule,
+    MatIconModule,
+    MatButtonModule,
+  ],
+  templateUrl: './juicios-mercantiles.html',
+  styleUrl: './juicios-mercantiles.css'
+})
+export class JuiciosMercantiles {
+    
+  constructor(private pensionAlimenticiaService: PensionAlimenticiaService,  private dialog: MatDialog) {}
+
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
+  
+  rfc: string = '';
+  nombreCompleto: string = '';
+  apellidoPaterno: string = '';
+  apellidoMaterno: string = '';
+
+  empleadoId: number | null = null;
+  formaAplicacion: string = '';
+  factorImporte: number | null = null;
+  vigenciaInicio: string = '';
+  vigenciaFin: string = '';
+  numeroDocumento: string = '';
+  numeroBeneficiario: number | null = null;
+
+  bancos: Banco[] = [];
+  bancoSeleccionado: number | null = null;
+  importeTotal: any;
+  citaBancaria: any;
+
+  searchText: string = '';
+  resultados: EmpleadoItem[] = [];
+  cargandoBusqueda = false;
+  guardando = false;
+
+  // RFC persona física común (simplificado, en mayúsculas)
+  private esRFC(v: string) {
+    return /^[A-ZÑ&]{4}\d{6}[A-Z0-9]{3}$/.test(v);
+  }
+
+  // CURP (simplificado)
+  private esCURP(v: string) {
+    return /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/.test(v);
+  }
+
+  // Normaliza a MAYÚSCULAS y trim seguro
+  private toUpper(v: any): string {
+    return (String(v ?? '')).toUpperCase().trim();
+  }
+
+  // Convierte a mayúsculas y elimina caracteres inválidos si se pegaron
+  onRfcInput() {
+    this.rfc = (this.rfc || '')
+      .toUpperCase()
+      .replace(/[^A-Z0-9Ñ&]/g, '');
+  }
+
+  // Bloquea teclas no permitidas
+  soloRFC(event: KeyboardEvent) {
+    const regex = /^[A-Za-z0-9ñÑ&]$/;
+
+    // Permitir teclas de control
+    const teclasPermitidas = [
+      'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'
+    ];
+
+    if (teclasPermitidas.includes(event.key)) return;
+
+    if (!regex.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  onSearchInputChange() {
+    if (!this.searchText || this.searchText.trim().length === 0) {
+      this.resultados = [];
+      this.autocompleteTrigger?.closePanel();
+      this.empleadoId = null;
+    }
+  }
+
+  onOptionSelected(emp: EmpleadoItem) {
+    this.selectEmpleado(emp);
+    this.searchText = this.displayEmpleado(emp);
+  }
+
+  // Bloquea números y caracteres no válidos al escribir
+  soloLetras(event: KeyboardEvent) {
+
+    // Permitir teclas de control
+    const teclasPermitidas = [
+      'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete', ' '
+    ];
+
+    if (teclasPermitidas.includes(event.key)) return;
+
+    // Solo letras (incluye acentos y Ñ)
+    const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]$/;
+
+    if (!regex.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  // Limpia números si se pegan en el input
+  onNombreInput(tipo: 'paterno' | 'materno' | 'nombre') {
+
+    const limpiar = (valor: string) =>
+      valor
+        .replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '') // elimina números y símbolos
+        .replace(/\s+/g, ' ')                  // evita espacios dobles
+        .trimStart();                          // evita espacio inicial
+
+    if (tipo === 'paterno') {
+      this.apellidoPaterno = limpiar(this.apellidoPaterno);
+    }
+
+    if (tipo === 'materno') {
+      this.apellidoMaterno = limpiar(this.apellidoMaterno);
+    }
+
+    if (tipo === 'nombre') {
+      this.nombreCompleto = limpiar(this.nombreCompleto);
+    }
+  }
+
+  // Limpia los campos del formulario de captura (no toca la búsqueda/empleado)
+  private resetForm(form?: NgForm) {
+        try {
+          form?.resetForm();
+        } catch {
+    
+        }
+        this.rfc = '';
+        this.apellidoPaterno = '';
+        this.apellidoMaterno = '';
+        this.nombreCompleto = '';
+        this.formaAplicacion = '';
+        this.factorImporte = null;
+        this.numeroBeneficiario = null;
+        this.vigenciaInicio = '';
+        this.vigenciaFin = '';
+        this.numeroDocumento = '';
+        this.bancoSeleccionado = null;
+  }
+
+  onVigenciaInput(tipo: 'inicio' | 'fin') {
+
+    if (tipo === 'inicio') {
+      if (!this.vigenciaInicio) return;
+
+      let valor = this.vigenciaInicio.toString();
+
+      // Solo números
+      valor = valor.replace(/\D/g, '');
+
+      // Máximo 6 dígitos
+      if (valor.length > 6) {
+        valor = valor.substring(0, 6);
+      }
+
+      this.vigenciaInicio = valor;
+    }
+
+    if (tipo === 'fin') {
+      if (!this.vigenciaFin) return;
+
+      let valor = this.vigenciaFin.toString();
+
+      // Solo números
+      valor = valor.replace(/\D/g, '');
+
+      // Máximo 6 dígitos
+      if (valor.length > 6) {
+        valor = valor.substring(0, 6);
+      }
+
+      this.vigenciaFin = valor;
+    }
+  }
+
+  onFactorImporteInput() {
+
+    if (this.factorImporte == null) return;
+
+    // FACTOR (porcentaje)
+    if (this.formaAplicacion === 'P') {
+
+      let valor = this.factorImporte.toString();
+
+      // Solo números
+      valor = valor.replace(/\D/g, '');
+
+      // Máximo 3 dígitos
+      if (valor.length > 3) {
+        valor = valor.substring(0, 3);
+      }
+
+      let numero = Number(valor);
+
+      // Máximo 100%
+      if (numero > 100) {
+        numero = 100;
+      }
+
+      this.factorImporte = numero;
+    }
+
+    // IMPORTE FIJO
+    if (this.formaAplicacion === 'C') {
+      // Solo validar que sea número positivo
+      let numero = Number(this.factorImporte);
+
+      if (isNaN(numero)) {
+        this.factorImporte = undefined as any;
+        return;
+      }
+
+      if (numero < 0) {
+        this.factorImporte = 0;
+      }
+    }
+  }
+
+  // limpiar el valor al cambiar el tipo
+  onFormaChange() {
+    this.factorImporte = null;
+  }
+
+  searchEmployee() {
+    const q = (this.searchText || '').trim().toUpperCase();
+    if (!q) {
+      this.resultados = [];
+      return;
+    }
+    this.cargandoBusqueda = true;
+  
+    // deja pasar si es RFC/CURP parcial con >=3
+    const targetRFC  = this.esRFC(q)  ? 'RFC'  : null;
+    const targetCURP = this.esCURP(q) ? 'CURP' : null;
+  
+    if (q.length < 3 && !this.esRFC(q) && !this.esCURP(q)) {
+      this.resultados = [];
+      this.cargandoBusqueda = false;
+      return;
+    }
+  
+    const obs =
+      (this.esRFC(q) || (targetRFC && q.length >= 3))  ? this.pensionAlimenticiaService.searchPorTarget('RFC', q)  :
+      (this.esCURP(q) || (targetCURP && q.length >= 3))? this.pensionAlimenticiaService.searchPorTarget('CURP', q) :
+                                                         this.pensionAlimenticiaService.searchEmpleadoLibre(q);
+  
+  
+    obs.subscribe({
+      next: (resp: ApiResponse<Empleado | Empleado[]>) => {
+        const d = resp?.data;
+        const arr = Array.isArray(d) ? d : (d ? [d] : []);
+  
+        this.resultados = arr.map((emp: EmpleadoItem) => {
+            let rfc = (emp?.rfc ?? emp?.RFC ?? '').toString().trim();
+            let curp = (emp?.curp ?? emp?.CURP ?? '').toString().trim();
+            const concatenado = (emp?.empleado ?? '').toString().trim();
+  
+            // Si el backend mandó todo en "empleado"
+            if ((!rfc || !curp) && concatenado.includes('-')) {
+              const partes = concatenado.split('-').map(p => p.trim());
+              if (partes.length >= 3) {
+                rfc = rfc || partes[0];
+                curp = curp || partes[1];
+              }
+            }
+  
+            const pa = (emp?.primer_apellido ?? emp?.primerApellido ?? '').toString().trim();
+            const sa = (emp?.segundo_apellido ?? emp?.segundoApellido ?? '').toString().trim();
+            const no = (emp?.nombre ?? '').toString().trim();
+            const nombre = (
+                [pa, sa, no].filter(Boolean).join(' ') ||
+                (concatenado.includes('-') ? concatenado.split('-').slice(2).join('-').trim() : concatenado)
+              )
+              .replace(/\s+/g, ' ')
+              .trim();
+  
+            return {
+              ...emp,
+              rfc,
+              curp,
+              nombreCompleto: nombre
+            } as EmpleadoItem;
+          });
+  
+        this.cargandoBusqueda = false;
+        setTimeout(() => {
+          if (!this.autocompleteTrigger) return;
+            if (this.resultados.length > 0) {
+              this.autocompleteTrigger.openPanel();
+            } else {
+              this.autocompleteTrigger.closePanel();
+            }
+          });
+        },
+        error: () => {
+          this.resultados = [];
+          this.cargandoBusqueda = false;
+          this.autocompleteTrigger?.closePanel();
+        }
+      });
+  }
+
+  clearSearch() {
+    this.searchText = '';
+    this.resultados = [];
+    this.cargandoBusqueda = false;
+    this.empleadoId = null;
+    this.rfc = '';
+    this.nombreCompleto = '';
+  }
+
+  selectEmpleado(emp: EmpleadoItem) {
+  if (emp?.id == null) {
+    console.warn('Empleado sin id');
+    this.empleadoId = null;
+    return;
+  }
+
+  // ID del empleado
+  this.empleadoId = Number(emp.id);
+
+   // RFC
+  const rfc = (emp.rfc ?? (emp as any).RFC ?? '').toString().trim();
+  this.rfc = this.toUpper(rfc);
+
+   // Intenta tomar apellidos y nombre sueltos
+  let paterno = (emp.primer_apellido ?? (emp as any).primerApellido ?? '').toString().trim();
+  let materno = (emp.segundo_apellido ?? (emp as any).segundoApellido ?? '').toString().trim();
+  let nombre  = (emp.nombre ?? '').toString().trim();
+
+   // Si viene ya armado, úsalo (tu mapeo en search ya genera nombreCompleto)
+  const nombreCompletoCalc =
+    (emp as any).nombreCompleto?.toString().trim() ||
+    [paterno, materno, nombre].filter(Boolean).join(' ');
+
+  // Fallback: si no llegaron apellidos sueltos, parsea nombreCompleto: [PATERNO] [MATERNO] [NOMBRES...]
+  if ((!paterno || !materno) && nombreCompletoCalc) {
+    const parts = nombreCompletoCalc.split(/\s+/).filter(Boolean);
+    if (parts.length >= 3) {
+      paterno = paterno || parts[0];
+      materno = materno || parts[1];
+      nombre  = nombre  || parts.slice(2).join(' ');
+    } else if (parts.length === 2) {
+      // Caso raro: reparte lo posible
+      paterno = paterno || parts[0];
+      nombre  = nombre  || parts[1];
+    } else if (parts.length === 1) {
+      nombre  = nombre  || parts[0];
+    }
+  }
+
+  this.apellidoPaterno = this.toUpper(paterno);
+  this.apellidoMaterno = this.toUpper(materno);
+  this.nombreCompleto  = this.toUpper(nombre || nombreCompletoCalc);
+
+
+
+  // Mostrar en el input del autocomplete
+  this.searchText = this.displayEmpleado(emp);
+
+  // Cierra el panel si está abierto (opcional)
+  this.autocompleteTrigger?.closePanel();
+
+
+  }
+
+  displayEmpleado(emp: EmpleadoItem | string | null): string {
+    if (!emp) return '';
+    if (typeof emp === 'string') return emp;
+
+    const rfc  = (emp.rfc ?? emp.RFC ?? '').toString().trim() || '—';
+    const curp = (emp.curp ?? emp.CURP ?? '').toString().trim() || '—';
+
+    // Usar SOLO el nombre ya normalizado (evita duplicados)
+    const nombre = (emp.nombreCompleto ?? '').toString().trim() || '—';
+
+    return `${rfc} · ${curp} · ${nombre}`;
+  }
+
+  guardar(form?: NgForm) {
+      if (this.guardando) return;
+  
+      // Forzar mayúsculas en campos de texto y limpiar CLABE a dígitos
+      this.rfc = this.toUpper(this.rfc);
+      this.apellidoPaterno = this.toUpper(this.apellidoPaterno);
+      this.apellidoMaterno = this.toUpper(this.apellidoMaterno);
+      this.nombreCompleto = this.toUpper(this.nombreCompleto);
+      this.searchText = this.toUpper(this.searchText);
+      this.numeroDocumento = String(this.numeroDocumento ?? '').replace(/\D+/g, '');
+  
+      if (form && form.invalid) {
+        Object.values(form.controls).forEach(c => c.markAsTouched());
+        return;
+      }
+      this.guardando = true;
+  
+      const fail = (msg: string) => {
+        this.dialog.open(PensionAlimenDialog, {
+          width: '360px',
+          data: { title: 'Faltan datos', message: msg, type: 'error' } // <- X en validaciones
+        });
+        this.guardando = false;
+      };
+  
+      if (!this.empleadoId) return fail('Selecciona un empleado antes de guardar.');
+      if (!['P','C'].includes(this.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
+      if (this.factorImporte == null) return fail('Captura Factor/Importe.');
+      if (!this.vigenciaInicio || !this.vigenciaFin) return fail('Captura la vigencia de inicio y fin.');
+  
+      // Normalizar y validar CLABE (18 dígitos)
+      const clabe = String(this.numeroDocumento ?? '').trim();
+      if (!/^\d{18}$/.test(clabe)) return fail('La CLABE debe tener exactamente 18 dígitos numéricos.');
+  
+      const beneficiarioAlimPayload = {
+        rfc: this.rfc,
+        primerApellido: this.apellidoPaterno,
+        segundoApellido: this.apellidoMaterno,
+        nombre: this.nombreCompleto
+      };
+  
+      this.pensionAlimenticiaService.addBeneficiarioAlim(beneficiarioAlimPayload).subscribe({
+        next: (resp: ApiResponse<IdResponse>) =>{
+          const beneficiarioAlimId = resp?.data?.id;
+          if (!beneficiarioAlimId) {
+            this.dialog.open(PensionAlimenDialog, {
+              width: '360px',
+              data: { title: 'Error', message: 'No se recibió ID del beneficiario base.', type: 'error' }
+            });
+            this.guardando = false;
+            return;
+          }
+  
+          let factor = Number(this.factorImporte);
+          if (Number.isNaN(factor)) {
+            return fail('El campo Factor/Importe debe ser numérico.');
+          }
+          if (this.formaAplicacion === 'P') {
+            if (factor > 1) factor = factor / 100;
+  
+            if (!(factor > 0 && factor <= 1)) {
+              return fail('Para Factor, usa un porcentaje válido (ej. 20 = 20%). Debe ser mayor a 0 y hasta 100%.');
+            }
+          } else {
+            if (factor < 0) {
+              return fail('El Importe fijo debe ser mayor o igual a 0.');
+            }
+          }
+  
+          const beneficiarioPayload: BeneficiarioRequest = {
+            tabEmpleadosId: this.empleadoId!,
+            tabBeneficiariosAlimId: beneficiarioAlimId,
+            formaAplicacion: this.formaAplicacion as 'P' | 'C',
+            factorImporte: factor,
+            qnaini: Number(this.vigenciaInicio),
+            qnafin: Number(this.vigenciaFin),
+            numeroDocumento: clabe
+            // bancoId: this.bancoSeleccionado // agrégalo si tu backend lo requiere
+          };
+  
+          if (this.numeroBeneficiario != null && !Number.isNaN(Number(this.numeroBeneficiario))) {
+            beneficiarioPayload.numeroBenef = Number(this.numeroBeneficiario);
+          }
+  
+          if ([beneficiarioPayload.factorImporte, beneficiarioPayload.qnaini, beneficiarioPayload.qnafin].some((v: number) => Number.isNaN(v))) {
+            return fail('Revisa que los campos numéricos tengan valores válidos.');
+          }
+  
+          this.pensionAlimenticiaService.addBeneficario(beneficiarioPayload).subscribe({
+            next: () => {
+              this.dialog.open(PensionAlimenDialog, {
+                width: '360px',
+                data: { title: 'Éxito', message: 'Se guardó correctamente tus datos.', type: 'success' } // <- palomita
+              });
+              this.guardando = false;
+              // Limpiar formulario (manteniendo empleado seleccionado y búsqueda)
+              this.resetForm(form);
+            },
+            error: err => {
+              console.error('Error al guardar pensión alimenticia', err);
+              this.dialog.open(PensionAlimenDialog, {
+                width: '360px',
+                data: { title: 'Error', message: 'Error al guardar pensión alimenticia.', type: 'error' }
+              });
+              this.guardando = false;
+            }
+          });
+        },
+        error: err => {
+          console.error('Error al crear beneficiario base', err);
+          this.dialog.open(PensionAlimenDialog, {
+            width: '360px',
+            data: { title: 'Error', message: 'No se pudo crear el beneficiario base.', type: 'error' }
+          });
+          this.guardando = false;
+        }
+      });
+  }
+}
