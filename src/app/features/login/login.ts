@@ -5,8 +5,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
-import { LoginService } from '../../services/login.service';
-import { LoginPayload, LoginResponse } from '../../interfaces/login-inter';
+import { LoginService } from '../../core/services/login.service';
+import { LoginPayload, LoginResponse } from '../../models/login.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 
@@ -43,28 +43,34 @@ export class Login {
 
   login(form?: NgForm) {
   this.error = '';
-  if (form && form.invalid) {
-    Object.values(form.controls).forEach(c => c.markAsTouched());
-    return;
-  }
+    if (form && form.invalid) {
+      Object.values(form.controls).forEach(c => c.markAsTouched());
+      return;
+    }
 
   this.loading = true;
   this.loginService.login(this.credentials).subscribe({
     next: (resp) => {
-      const token = resp.headers.get('Authorization');
-      if (token) {
+      const authHeader = resp.headers.get('Authorization');
+      if (authHeader) {
+        const token = authHeader.replace('Bearer ', ''); // <- IMPORTANTE
         this.loginService.setToken(token);
-        this.router.navigate(['/home']);
-      } else {
-        this.error = 'No se recibió token de autenticación';
-      }
-      this.loading = false;
+        // Guardar roles y permisos del body
+        if (resp.body?.data) {
+          this.loginService.setSession(resp.body.data);
+        }
+            const returnUrl = this.router.routerState.snapshot.root.queryParams['returnUrl'];
+            this.router.navigate([returnUrl || this.loginService.getPrincipalRoute()]);
+            
+          } else {
+            this.error = 'No se recibió token de autenticación';
+          }
+            this.loading = false;
     },
     error: () => {
       this.error = 'Acceso denegado, verifique su usuario y contraseña';
       this.loading = false;
-    }
-  });
-}
-
+      }
+    });
+  }
 }
