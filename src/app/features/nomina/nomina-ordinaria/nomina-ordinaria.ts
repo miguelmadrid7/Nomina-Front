@@ -59,12 +59,12 @@ filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
   tipoConcepto?: string;
   totalElements = 0;
 
-  showRecords = false;
+  showRecords = true;
 
 
   // Control de refrescos y QNA
   private isRefreshing = false;
-  private filtersReady = false;
+  private filtersReady = true;
   private lastQnaKey: string | null = null;
   private qnaDebounceId: any;
 
@@ -90,6 +90,7 @@ filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
         rfc.includes(search.rfc)
       );
     };
+    this.refresh()
   }
 
   ngAfterViewInit(): void {
@@ -120,20 +121,6 @@ filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
     }, 0);
   }
 
-  showRecordsTable(): void {
-    this.showRecords = true;
-    this.ensurePaginatorBoundSoon();
-    this.filtersReady = false;
-    setTimeout(() => {
-      this.filtersReady = true;
-      this.refresh();
-    }, 0);
-  }
-
-  hideRecordsTable(): void {
-    this.showRecords = false;
-    this.clearTable();
-  }
 
   private refreshIfQnaChanged(): void {
     const key = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
