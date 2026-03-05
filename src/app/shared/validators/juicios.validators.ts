@@ -1,53 +1,61 @@
-import { AbstractControl, ValidationErrors, ValidatorFn, FormGroup } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 
-// RFC (simplificado persona física): 13 caracteres
 export function rfcValidator(control: AbstractControl): ValidationErrors | null {
-  const v = String(control.value ?? '').toUpperCase().trim();
-  if (!v) return null; // dejar que 'required' lo marque cuando aplique
-  const ok = /^[A-ZÑ&]{4}\d{6}[A-Z0-9]{3}$/.test(v);
-  return ok ? null : { rfc: true };
+  const regex = /^[A-ZÑ&]{4}\d{6}[A-Z0-9]{3}$/;
+  if (!control.value) return null;
+  return regex.test(control.value) ? null : { rfcInvalido: true };
 }
 
-// CLABE: exactamente 18 dígitos numéricos
 export function clabeValidator(control: AbstractControl): ValidationErrors | null {
-  const v = String(control.value ?? '').trim();
-  if (!v) return null; // dejar que 'required' lo marque cuando aplique
-  const ok = /^\d{18}$/.test(v);
-  return ok ? null : { clabe: true };
+  const value = (control.value || '').replace(/\D/g, '');
+  if (value.length !== 18) return { clabeInvalida: true };
+
+  const pesos = [3,7,1];
+  let suma = 0;
+
+  for (let i = 0; i < 17; i++) {
+    suma += (Number(value[i]) * pesos[i % 3]) % 10;
+  }
+
+  const digito = (10 - (suma % 10)) % 10;
+
+  return digito === Number(value[17]) ? null : { clabeInvalida: true };
 }
 
-// Valida coherencia entre formaAplicacion y factorImporte dentro del grupo 'descuento'
 export function factorImporteValidator(): ValidatorFn {
-  return (group: AbstractControl): ValidationErrors | null => {
-    const fg = group as FormGroup;
-    const forma = fg.get('descuento.formaAplicacion')?.value ?? fg.get('formaAplicacion')?.value;
-    const factorRaw = fg.get('descuento.factorImporte')?.value ?? fg.get('factorImporte')?.value;
-    if (forma == null) return null;
-    const num = Number(factorRaw);
-    if (isNaN(num)) return { factorImporte: true };
+  return (form: AbstractControl): ValidationErrors | null => {
+    const forma = form.get('descuento.formaAplicacion')?.value;
+    const factor = form.get('descuento.factorImporte')?.value;
+
+    if (!forma || factor == null) return null;
+
+    const numero = Number(factor);
+    if (isNaN(numero)) return { factorNoNumerico: true };
 
     if (forma === 'P') {
-      // porcentaje 0 < x <= 100
-      if (!(num > 0 && num <= 100)) return { factorImporte: true };
-    } else if (forma === 'C') {
-      if (num < 0) return { factorImporte: true };
+      if (!(numero > 0 && numero <= 100)) {
+        return { porcentajeInvalido: true };
+      }
     }
+
+    if (forma === 'C') {
+      if (numero < 0) {
+        return { importeNegativo: true };
+      }
+    }
+
     return null;
   };
 }
 
-// Valida rango AAAAQQ: inicio <= fin
 export function vigenciaRangoValidator(): ValidatorFn {
-  return (group: AbstractControl): ValidationErrors | null => {
-    const fg = group as FormGroup;
-    const ini = String(fg.get('vigencia.inicio')?.value ?? fg.get('inicio')?.value ?? '').trim();
-    const fin = String(fg.get('vigencia.fin')?.value ?? fg.get('fin')?.value ?? '').trim();
-    if (!ini || !fin) return null; // otros validators de required aplican
-    const rx = /^\d{6}$/;
-    if (!rx.test(ini) || !rx.test(fin)) return { vigenciaFormato: true };
-    const nIni = Number(ini);
-    const nFin = Number(fin);
-    return nIni <= nFin ? null : { vigenciaRango: true };
+  return (form: AbstractControl): ValidationErrors | null => {
+    const inicio = Number(form.get('vigencia.inicio')?.value);
+    const fin = Number(form.get('vigencia.fin')?.value);
+
+    if (!inicio || !fin) return null;
+
+    return inicio <= fin ? null : { vigenciaInvalida: true };
   };
 }
 
