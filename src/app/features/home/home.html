@@ -1,14 +1,49 @@
 <theme-selector></theme-selector>
 
-<main class="d-flex flex-nowrap home-shell">
-  <div class="d-none d-lg-block">
+<!-- HEADER -->
+<app-header (toggleSidebarClick)="toggleSidebar()"></app-header>
+
+<main class="home-shell d-flex"  [class.sidebar-collapsed]="isSidebarCollapsed">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar-wrapper d-none d-lg-block">
     <sidebar></sidebar>
   </div>
 
-  <div class="b-example-divider b-example-vr d-none d-lg-block"></div>
+  <!-- CONTENIDO -->
+  <div class="content-shell">
 
-  <div class="container-fluid content-shell">
-    <app-header (toggleSidebarClick)="toggleSidebar()"></app-header>
-    <router-outlet></router-outlet>
+    <!-- PAGE HEADER -->
+    <div class="page-header container-fluid py-3 px-4">
+
+      <h4 class="page-title mb-1">
+        {{ breadcrumbs[breadcrumbs.length - 1]?.label }}
+      </h4>
+
+      <nav>
+        <ol class="breadcrumb mb-0">
+          <li class="breadcrumb-item"
+              *ngFor="let breadcrumb of breadcrumbs; let last = last">
+
+            <a *ngIf="!last" [routerLink]="breadcrumb.url">
+              {{ breadcrumb.label }}
+            </a>
+
+            <span *ngIf="last">
+              {{ breadcrumb.label }}
+            </span>
+
+          </li>
+        </ol>
+      </nav>
+
+    </div>
+
+    <!-- CONTENIDO DE RUTAS -->
+    <div class="container-fluid p-4">
+      <router-outlet></router-outlet>
+    </div>
+
   </div>
+
 </main>
