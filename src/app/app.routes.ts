@@ -13,20 +13,23 @@ export const routes: Routes = [
             component: Home,
             canActivate: [AuthGuard],
             canActivateChild: [AuthGuard],
+            data: { breadcrumb: 'Home' },
                 children: [
 
                     {
                         path: 'empleados/list',
                         loadComponent: () =>
                         import('./features/catalogos/empleado/list-empleado/list-empleado')
-                            .then(m => m.ListEmpleado)
+                            .then(m => m.ListEmpleado),
+                        data: { breadcrumb: 'Empleados lista' }
                     },
 
                     {
                         path: 'empleados/form',
                         loadComponent: () =>
                         import('./features/catalogos/empleado/form-empleado/form-empleado')
-                            .then(m => m.FormEmpleado)
+                            .then(m => m.FormEmpleado),
+                        data: { breadcrumb: 'Empleados formulario' }
                     },
 
                     {
@@ -34,7 +37,7 @@ export const routes: Routes = [
                         loadComponent: () =>
                         import('./features/nomina/calculo-nomina/calculo-nomina.component')
                             .then(m => m.CalculoNominaComponent),
-                            data: { roles: [1] }
+                            data: { roles: [1], breadcrumb: 'Calculo nómina ordinaria'  }
                     },
 
                     {
@@ -42,7 +45,7 @@ export const routes: Routes = [
                         loadComponent: () =>
                         import('./features/nomina/nomina-ordinaria/nomina-ordinaria')
                             .then(m => m.NominaOrdinaria),
-                            data: { roles: [1] }
+                            data: { roles: [1],  breadcrumb: 'Vizualizar calculo ordinaria'}
 
                     },
 
@@ -51,7 +54,7 @@ export const routes: Routes = [
                         loadComponent: () =>
                         import('./features/nomina/nomina-extraordinaria/nomina-extraordinaria')
                             .then(m => m.NominaExtraordinaria),
-                            data: { roles: [1] }
+                            data: { roles: [1], breadcrumb: 'Calculo nómina extraordinaria'  }
                     },
 
                     {
@@ -64,7 +67,7 @@ export const routes: Routes = [
                         loadComponent: () =>
                         import('./features/nomina/generar-producto/generar-producto.component')
                             .then(m => m.GenerarProductoComponent),
-                            data: { roles: [1] }
+                            data: { roles: [1], breadcrumb: 'Generar producto'  }
                     },
 
                     {
@@ -72,7 +75,7 @@ export const routes: Routes = [
                         loadComponent: () =>
                         import('./features/nomina/pension-alimenticia/pension-alimenticia')
                             .then(m => m.PensionAlimenticia),
-                        data: { roles: [1] }
+                        data: { roles: [1], breadcrumb: 'Pension alimenticia'  }
                     },
 
                     {
@@ -80,7 +83,7 @@ export const routes: Routes = [
                         loadComponent: () =>
                         import('./features/juicios/juicios-mercantiles/juicios-mercantiles')
                             .then(m => m.JuiciosMercantiles),
-                        data: { roles: [1] }
+                        data: { roles: [1], breadcrumb: 'Juicios mercantiles'  }
                     },
 
                 ]
