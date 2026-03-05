@@ -10,8 +10,8 @@ header.navbar {
   align-items: center;
 }
 
-.navbar-brand { 
-  color: #fff !important; 
+.navbar-brand {
+  color: #fff !important;
 }
 
 .navbar-brand .brand-logo {
@@ -28,22 +28,47 @@ header.navbar {
 }
 
 /* Resto */
-.nav .nav-link { 
-  color: #fff !important; 
-  opacity: .9; 
+.nav .nav-link {
+  color: #fff !important;
+  opacity: .9;
 }
 
-.nav .nav-link.active, 
-.nav .nav-link:hover { 
-  color: #fff !important; 
-  opacity: 1; 
+.nav .nav-link.active,
+.nav .nav-link:hover {
+  color: #fff !important;
+  opacity: 1;
 }
 
-.btn.btn-link { 
-  color: #fff !important; 
-  opacity: .85; 
+.btn.btn-link {
+  color: #fff !important;
+  opacity: .85;
 }
 
-.btn.btn-link:hover { 
-  opacity: 1; 
+.btn.btn-link:hover {
+  opacity: 1;
+}
+
+
+.page-header{
+  background:#f6f7fb;
+  border-bottom:1px solid #e5e7eb;
+}
+
+.page-title{
+  font-size:22px;
+  font-weight:600;
+}
+
+.breadcrumb{
+  margin-bottom:0;
+  font-size:14px;
+}
+
+.breadcrumb a{
+  text-decoration:none;
+  color:#6c757d;
+}
+
+.breadcrumb a:hover{
+  text-decoration:underline;
 }
