@@ -15,6 +15,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-calculo-nomina',
+  standalone: true,
   imports: [
     CommonModule,
     MatButtonModule,
