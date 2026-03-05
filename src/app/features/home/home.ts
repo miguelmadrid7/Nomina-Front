@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, ActivatedRoute, NavigationEnd, RouterModule } from '@angular/router';
 import { filter } from 'rxjs/operators';
@@ -16,6 +16,7 @@ import { Header } from '../../layout/header/header';
     ThemeSelector,
     Header,
     RouterModule,
+    
   ],
   templateUrl: './home.html',
   styleUrls: ['./home.css']
@@ -28,7 +29,8 @@ export class Home {
 
     constructor(
       private router: Router,
-      private route: ActivatedRoute
+      private route: ActivatedRoute,
+      private cd: ChangeDetectorRef
     ) {
 
       this.router.events
@@ -39,9 +41,9 @@ export class Home {
 
     }
 
-  ngAfterViewInit(): void {
-      // Inicializa el estado del sidebar según el componente Sidebar
+    ngAfterViewInit(): void {
       this.isSidebarCollapsed = this.sidebar.collapsed;
+      this.cd.detectChanges(); // fuerza a Angular a actualizar
     }
 
     buildBreadCrumb(
