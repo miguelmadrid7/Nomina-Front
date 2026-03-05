@@ -17,6 +17,7 @@
         </div>
     </div>
 
+    <div *ngIf="form" [formGroup]="form">
     <div formGroupName="busqueda" class="search-card">
         <mat-form-field appearance="outline" class="login-field with-separator search-input" floatLabel="always">
         <mat-icon matPrefix>search</mat-icon>
@@ -39,61 +40,9 @@
         </mat-autocomplete>
         </mat-form-field>
     </div>
+    </div>
 
-    <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
-        <mat-card class="form-card" formGroupName="beneficiario">
-        <mat-card-content class="form-grid">
-            <!-- Apellido paterno -->
-            <div class="span-1">
-                <label class="field-title" for="apellidoPaterno">Apellido paterno*</label>
-                <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
-                    <mat-icon matPrefix>person</mat-icon>
-                    <input
-                        name="apellidoPaterno"
-                        required
-                        minlength="2" />
-                    <mat-error *ngIf="form.get('beneficiario.apellidoPaterno')?.invalid && form.get('beneficiario.apellidoPaterno')?.touched">
-                    Ingresa el apellido paterno (mín. 2 caracteres).
-                    </mat-error>
-                </mat-form-field>
-            </div>
-
-
-            <!-- Apellido materno -->
-            <div>
-                <label class="field-title" for="apellidoMaterno">Apellido materno*</label>
-                <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
-                    <mat-icon matPrefix>person</mat-icon>
-                    <input
-                        name="apellidoMaterno"
-                        required
-                        minlength="2"/>
-                    <mat-error *ngIf="form.get('beneficiario.apellidoMaterno')?.invalid && form.get('beneficiario.apellidoMaterno')?.touched">
-                    Ingresa el apellido materno (mín. 2 caracteres).
-                    </mat-error>
-                </mat-form-field>
-            </div>
-
-
-            <!-- Nombre completo -->
-            <div>
-                <label class="field-title" for="nombreCompleto">Nombre completo*</label>
-                <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
-                    <mat-icon matPrefix>person</mat-icon>
-                    <input
-                        name="nombreCompleto"
-                        required
-                        minlength="2"/>
-                
-                    <mat-error *ngIf="form.get('beneficiario.nombreCompleto')?.invalid && form.get('beneficiario.nombreCompleto')?.touched">
-                    
-                    Ingresa el nombre (mín. 2 caracteres).
-                    </mat-error>
-                </mat-form-field>
-                </div>  
-            </mat-card-content>
-        </mat-card>
-    </form>
+    
 
      <div class="section-divider"></div>
 
@@ -103,7 +52,8 @@
         <button mat-flat-button class="btn" type="submit" [disabled]="guardando">Guardar</button>
     </div>
 
-    <mat-card class="form-card">
+    <div *ngIf="form" [formGroup]="form">
+    <mat-card class="form-card" formGroupName="beneficiario">
         <mat-card-content class="form-grid">
 
             <!-- FILA 1 → RFC ocupa 3 columnas -->
@@ -147,7 +97,11 @@
                     <input matInput formControlName="nombreCompleto" placeholder="Ingresar Nombre Completo" />
                 </mat-form-field>
             </div>
-            
+        </mat-card-content>
+    </mat-card>
+
+    <mat-card class="form-card" formGroupName="descuento">
+        <mat-card-content class="form-grid">
 
             <!-- Importe total -->
             <div>
@@ -234,6 +188,8 @@
             </div>
         </mat-card-content>
     </mat-card>
+    </div>
+    </div>
 
     <div class="section-divider"></div>
 
@@ -242,6 +198,7 @@
       <h3>Vigencia de movimiento.</h3>
     </div>
 
+    <div *ngIf="form" [formGroup]="form">
     <mat-card class="form-card" formGroupName="vigencia">
         <mat-card-content class="form-grid vigencia-grid">
             <div>

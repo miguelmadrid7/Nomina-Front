@@ -37,14 +37,14 @@ import { rfcValidator, clabeValidator, factorImporteValidator, vigenciaRangoVali
   styleUrls: ['./juicios-mercantiles.css']
 })
 export class JuiciosMercantiles {
-    
+
   constructor(
     private fb: FormBuilder,
-    private pensionAlimenticiaService: PensionAlimenticiaService,  
+    private pensionAlimenticiaService: PensionAlimenticiaService,
     private dialog: MatDialog) {}
 
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
-  
+
   form!: FormGroup;
   submitted = false;
   resultados: EmpleadoItem[] = [];
@@ -68,15 +68,15 @@ export class JuiciosMercantiles {
         bancoId: [null],
         clabe: ['', [clabeValidator]],
         importeTotal: [null],
-        citaBancaria: [''] 
+        citaBancaria: ['']
       }),
 
       vigencia: this.fb.group({
         inicio: [''],
         fin: ['']
       }),
-      
-      busqueda: this.fb.group({           
+
+      busqueda: this.fb.group({
         searchText: [''],
         empleadoId: [null]
       })
@@ -90,22 +90,22 @@ export class JuiciosMercantiles {
     });
   }
 
- 
 
-  get gBenef() { 
-    return this.form.get('beneficiario') as FormGroup; 
+
+  get gBenef() {
+    return this.form.get('beneficiario') as FormGroup;
   }
 
-  get gDesc()  { 
-    return this.form.get('descuento') as FormGroup; 
+  get gDesc()  {
+    return this.form.get('descuento') as FormGroup;
   }
 
-  get gVig()   { 
-    return this.form.get('vigencia') as FormGroup; 
+  get gVig()   {
+    return this.form.get('vigencia') as FormGroup;
   }
 
-  get gBusq()  { 
-    return this.form.get('busqueda') as FormGroup; 
+  get gBusq()  {
+    return this.form.get('busqueda') as FormGroup;
   }
 
   get formaAplicacion(): 'P' | 'C' | '' {
@@ -313,8 +313,8 @@ export class JuiciosMercantiles {
   }
 
   // Alias para (ngSubmit)="guardar()"
-  guardar() { 
-    this.onSubmit(); 
+  guardar() {
+    this.onSubmit();
   }
 
 }
