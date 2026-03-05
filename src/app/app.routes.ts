@@ -46,7 +46,7 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/nomina/nomina-ordinaria/nomina-ordinaria')
                 .then(m => m.NominaOrdinaria),
-            data: { roles: [1], breadcrumb: 'Visualizar cálculo ordinaria' }
+            data: { roles: [1], breadcrumb: 'Visualizar nómina ordinaria' }
           },
           {
             path: 'extraordinaria',
