@@ -30,8 +30,8 @@
             (input)="onSearchInputChange()"
             (keydown.enter)="$event.preventDefault(); searchEmployee()"
             placeholder="BUSCAR POR RFC, CURP O NOMBRE...">
-        <mat-autocomplete 
-                #auto="matAutocomplete" 
+        <mat-autocomplete
+                #auto="matAutocomplete"
                 [displayWith]="displayEmpleado"
                 (optionSelected)="onOptionSelected($event.option.value)">
             <mat-option *ngFor="let emp of resultados" [value]="emp">
@@ -42,7 +42,7 @@
     </div>
     </div>
 
-    
+
 
      <div class="section-divider"></div>
 
@@ -61,7 +61,7 @@
             <label class="field-title" for="rfc">RFC*</label>
                 <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
                     <mat-icon matPrefix>badge</mat-icon>
-                    <input matInput formControlName="rfc" maxlength="13" />
+                    <input matInput formControlName="rfc" maxlength="13" placeholder="Ingresar RFC del beneficiario"/>
                     <mat-error *ngIf="form.get('beneficiario.rfc')?.invalid && form.get('beneficiario.rfc')?.touched">
                         RFC inválido
                     </mat-error>
@@ -73,7 +73,7 @@
                 <label class="field-title" for="apellidoPaterno">Apellido paterno*</label>
                 <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
                 <mat-icon matPrefix>person</mat-icon>
-                <input matInput formControlName="apellidoPaterno" />
+                <input matInput formControlName="apellidoPaterno" placeholder="Ingresar Apellido Paterno"/>
                 <mat-error *ngIf="gBenef.get('apellidoPaterno')?.invalid && (gBenef.get('apellidoPaterno')?.touched || submitted)">
                     Ingresa el apellido paterno (mín. 2 caracteres).
                 </mat-error>
@@ -134,7 +134,7 @@
                 <label class="field-title" for="formaAplicacion">Forma de aplicación*</label>
                 <mat-form-field appearance="outline" class="login-field with-separator full-width" floatLabel="always">
                         <mat-icon matPrefix>tune</mat-icon>
-                            <mat-select formControlName="formaAplicacion">
+                            <mat-select formControlName="formaAplicacion" placeholder="Seleccionar forma">
                                 <mat-option value="P">Factor</mat-option>
                                 <mat-option value="C">Importe fijo</mat-option>
                             </mat-select>
@@ -152,13 +152,14 @@
                     formControlName="factorImporte"
                     [type]="formaAplicacion === 'P' ? 'text' : 'number'"
                     [attr.maxlength]="formaAplicacion === 'P' ? 3 : null"
+                    placeholder="Ingresar cantidad"
                     (input)="onFactorImporteInput()" />
                     <mat-error *ngIf="gDesc.get('factorImporte')?.invalid && (gDesc.get('factorImporte')?.touched || submitted)">
                     Campo obligatorio
                     </mat-error>
                 </mat-form-field>
             </div>
-                
+
 
             <div class="grid-empty"></div>
             <!-- Banco -->
@@ -166,7 +167,7 @@
                 <label class="field-title" for="bancoId">Buscar banco*</label>
                 <mat-form-field appearance="outline" class="login-field with-separator full-width" floatLabel="always">
                     <mat-icon matPrefix>account_balance</mat-icon>
-                    <mat-select id="bancoId" formControlName="bancoId" required>
+                    <mat-select id="bancoId" formControlName="bancoId" required placeholder="Seleccionar banco">
                     <mat-option *ngFor="let bank of bancos" [value]="bank.id">{{ bank.banco }}</mat-option>
                     </mat-select>
                     <mat-error *ngIf="gDesc.get('bancoId')?.invalid && (gDesc.get('bancoId')?.touched || submitted)">
