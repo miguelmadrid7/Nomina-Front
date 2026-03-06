@@ -1,8 +1,22 @@
 :host {
+   --brand: #491D2A;
+  --ink-900: #1a1a1a;
+  --ink-700: #343a40;
+  --line: #e5e7eb;
+  --bg: #ffffff;
+  --card: #f6f6f7;
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  padding: 5px; /* igual que en la otra pantalla */
+  padding: 5px; 
+}
+
+/* Separador */
+.section-divider { 
+  height: 2px; 
+  background: var(--brand); 
+  opacity: 0.15; 
+  margin: 18px 0 16px; 
 }
 
 .page {
@@ -11,9 +25,9 @@
   gap: 20px;
   width: 100%;
   margin: 0;
-  padding: 8px 12px;  /* mismo margen visual */
+  padding: 8px 12px;  
   flex: 1;
-  min-height: 0;      /* clave para permitir scroll interno */
+  min-height: 0;     
 }
 
 /* Título con el mismo look & feel que Cálculo de nómina */
