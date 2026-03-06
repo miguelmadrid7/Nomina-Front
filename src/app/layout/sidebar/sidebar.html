@@ -13,10 +13,10 @@
           data-bs-toggle="collapse"
           data-bs-target="#catalogos-collapse">
           <span class="d-flex align-items-center">
-            <i class="bi bi-folder me-2"></i>
+           <i class="fa-solid fa-folder me-2"></i>
             <span class="label">Catálogos</span>
           </span>
-          <i class="bi bi-chevron-down caret"></i>
+         <i class="bi bi-chevron-down caret"></i>
         </button>
 
           <div class="collapse show" id="catalogos-collapse">
@@ -25,19 +25,22 @@
                  <a
                     routerLink="/empleados/list"
                     class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                      <i class="bi bi-people me-2"></i> <span class="label">Empleado</span>
+                     <i class="fa-solid fa-folder me-2"></i>
+                     <span class="label">Empleado</span>
                   </a>
               </li>
 
                <li>
                   <a routerLink="" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                    <i class="bi bi-person-plus me-2"></i> <span class="label">Nuevo Ingreso</span>
+                    <i class="fa-solid fa-user-plus me-2"></i>
+                    <span class="label">Nuevo Ingreso</span>
                   </a>
                 </li>
 
                 <li>
                     <a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                      <i class="bi bi-plus-square me-2"></i> <span class="label">Alta plaza adicional</span>
+                      <i class="fa-solid fa-square-plus me-2"></i>
+                      <span class="label">Alta plaza adicional</span>
                     </a>
                 </li>
             </ul>
@@ -52,7 +55,7 @@
             data-bs-target="#movimientos-collapse"
             aria-expanded="true">
               <span class="d-flex align-items-center">
-                <i class="bi bi-arrows-move me-2"></i>
+                <i class="fa-solid fa-arrows-up-down-left-right me-2"></i>
                 <span class="label">Movimientos</span>
               </span>
               <i class="bi bi-chevron-down caret"></i>
@@ -61,19 +64,22 @@
               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                  <li>
                     <a routerLink="/contact" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                      <i class="bi bi-inbox me-2"></i> <span class="label">Bandeja</span>
+                      <i class="fa-solid fa-inbox me-2"></i>
+                      <span class="label">Bandeja</span>
                     </a>
                   </li>
 
                   <li>
                     <a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                      <i class="bi bi-person-plus me-2"></i> <span class="label">Nuevo Ingreso</span>
+                       <i class="fa-solid fa-user-plus me-2"></i>
+                      <span class="label">Nuevo Ingreso</span>
                     </a>
                   </li>
 
                  <li>
                     <a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                      <i class="bi bi-plus-square me-2"></i> <span class="label">Alta plaza adicional</span>
+                       <i class="fa-solid fa-square-plus me-2"></i>
+                      <span class="label">Alta plaza adicional</span>
                     </a>
                   </li>
               </ul>
@@ -100,7 +106,8 @@
                   <a *ngIf="hasAnyRole([1, 2])"
                       routerLink="nomina/calculo-nomina-ordinaria"
                       class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                    <i class="bi bi-calculator me-2"></i> <span class="label">Cálculo nómina ordinaria</span>
+                    <i class="fa-solid fa-calculator me-2"></i>
+                    <span class="label">Cálculo nómina ordinaria</span>
                   </a>
                 </li>
 
@@ -108,7 +115,8 @@
                   <a *ngIf="hasAnyRole([1, 2])"
                     routerLink="nomina/ordinaria"
                     class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                    <i class="bi bi-list-check me-2"></i> <span class="label">Visualizar nómina ordinaria</span>
+                    <i class="fa-solid fa-list-check me-2"></i>
+                    <span class="label">Visualizar nómina ordinaria</span>
                   </a>
                 </li>
 
@@ -116,7 +124,8 @@
                     <a *ngIf="hasAnyRole([1, 2])"
                       routerLink="nomina/extraordinaria"
                       class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                      <i class="bi bi-stars me-2"></i> <span class="label">Visualizar nómina extraordinaria</span>
+                      <i class="fa-solid fa-star me-2"></i> 
+                      <span class="label">Visualizar nómina extraordinaria</span>
                     </a>
                   </li>
 
@@ -124,7 +133,8 @@
                   <a *ngIf="hasAnyRole([1, 2])"
                     routerLink="nomina/aguinaldo"
                     class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                    <i class="bi bi-gift me-2"></i> <span class="label">Calcular aguinaldo</span>
+                    <i class="fa-solid fa-gift me-2"></i> 
+                    <span class="label">Calcular aguinaldo</span>
                   </a>
                 </li>
 
@@ -132,7 +142,8 @@
                   <a *ngIf="hasAnyRole([1, 2])"
                       routerLink="nomina/extraordinaria"
                       class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                    <i class="bi bi-graph-up-arrow me-2"></i> <span class="label">Calcular incremento</span>
+                    <i class="fa-solid fa-arrow-trend-up me-2"></i>
+                    <span class="label">Calcular incremento</span>
                   </a>
                 </li>
 
@@ -140,7 +151,8 @@
                   <a *ngIf="hasAnyRole([1, 2])"
                       routerLink="nomina/generar-producto"
                       class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                    <i class="bi bi-file-earmark-arrow-down me-2"></i> <span class="label">Generar entregables</span>
+                    <i class="fa-solid fa-file-arrow-down me-2"></i>
+                    <span class="label">Generar entregables</span>
                   </a>
                 </li>
               </ul>
@@ -153,7 +165,7 @@
             data-bs-toggle="collapse"
             data-bs-target="#otros-registros-collapse">
               <span class="d-flex align-items-center">
-                <i class="bi bi-folder me-2"></i>
+                <i class="fa-solid fa-folder me-2"></i>
                 <span class="label">Otros registros</span>
               </span>
             <i class="bi bi-chevron-down caret"></i>
@@ -166,15 +178,18 @@
                   routerLink="pension/alimenticia"
                   routerLinkActive="active"
                   class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                  <i class="bi bi-people me-2"></i> <span class="label">Pension alimenticia</span>
+                  <i class="fa-solid fa-users me-2"></i>
+                  <span class="label">Pension alimenticia</span>
                 </a>
               </li>
 
               <li>
                 <a
-                     routerLink="juicios/juicios-mercantiles"
-                     routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                  <i class="bi bi-plus-square me-2"></i> <span class="label">Juicios mercantiles</span>
+                    routerLink="juicios/juicios-mercantiles"
+                    routerLinkActive="active" 
+                    class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <i class="fa-solid fa-square-plus me-2"></i>
+                  <span class="label">Juicios mercantiles</span>
                 </a>
               </li>
             </ul>
@@ -188,7 +203,18 @@
             <a routerLink="/home"
               routerLinkActive="active"
               class="nav-link d-flex align-items-center text-decoration-none rounded">
-              <i class="bi bi-speedometer2 me-2"></i> <span class="label">Dashboard</span>
+               <i class="fa-solid fa-gauge me-2"></i>
+              <span class="label">Dashboard</span>
+            </a>
+          </li>
+
+
+           <!-- Dashboard -->
+          <li class="mb-1">
+            <a routerLink="/login"
+              routerLinkActive="active"
+              class="nav-link d-flex align-items-center text-decoration-none rounded">
+              <i class="fas fa-sign-out-alt"></i><span class="label">Salir</span>
             </a>
           </li>
   </ul>
