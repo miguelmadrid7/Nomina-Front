@@ -1,54 +1,60 @@
 <div class="dlg-bar"></div>
 
  <mat-dialog-content class="dlg-content">
-  <!-- Info del empleado -->
-    <div class="employee-field">
-      <div class="dlg-bar-title">Entidad federativa: HIDALGO</div>
-    </div>
+  <div class="employee-info">
 
-    <div class="employee-field">
-      <span class="label">Nombre:</span>
-      <span class="value">{{ data.nombreEmpleado }}</span>
-    </div>
+  <!-- Entidad -->
+  <div class="employee-field full">
+    <div class="dlg-bar-title">Entidad Federativa: HIDALGO</div>
+  </div>
 
-    <div class="employee-field">
-      <span class="label">CURP:</span>
-      <span class="value">{{ data.curp }}</span>
+  <!-- fila 1 -->
+  <div class="employee-field">
+    <span class="label">Nombre:</span>
+    <span class="value">{{ data.nombreEmpleado }}</span>
+  </div>
 
-      <span class="label">RFC:</span>
-      <span class="value">{{ data.rfc }}</span>
-    </div>
+  <div class="employee-field">
+    <span class="label">Clave:</span>
+    <span class="value">{{ data.plaza }}</span>
+  </div>
 
-    <div class="employee-field">
-      <span class="label">Clave:</span>
-      <span class="value">{{ data.plaza }}</span>
-    </div>
+  <!-- fila 2 -->
+  <div class="employee-field">
+    <span class="label">RFC:</span>
+    <span class="value">{{ data.rfc }}</span>
+  </div>
 
-    <div class="employee-field">
-      <span class="label">QNA:</span>
-      <span class="value">{{ data.qnaTexto }}</span>
+  <div class="employee-field">
+    <span class="label">QNA:</span>
+    <span class="value">{{ data.qnaTexto }}</span>
+  </div>
 
-      <span class="label">Nómina (ordinaria, extraoirdinaria):</span>
-      <span class="value"></span>
-    </div>
+  <!-- fila 3 -->
+  <div class="employee-field">
+    <span class="label">CURP:</span>
+    <span class="value">{{ data.curp }}</span>
+  </div>
 
-    <div class="employee-field">
-      <span class="label">No. Comprobante:</span>
-      <span class="value">{{ noComprobanteCab }}</span>
-    </div>
+  <div class="employee-field">
+    <span class="label">No. Comprobante:</span>
+    <span class="value">{{ noComprobanteCab }}</span>
+  </div>
 
-    <div class="employee-field">
-      <span class="label">Percepciones:</span>
-      <span class="value">$ {{ totalPercepciones | number:'1.2-2' }}</span>
+  <div class="employee-field">
+    <span class="label">Nómina (ordinaria, extraoirdinaria):</span>
+    <span class="value"></span>
+  </div>
 
-      <span class="label">Deducciones:</span>
-      <span class="value">$ {{ totalDeducciones | number:'1.2-2' }}</span>
-    </div>
 
-    <div class="employee-field">
-      <span class="label">Líquido:</span>
-      <span class="value">${{ liquido | number:'1.2-2' }}</span>
-    </div>
+  <!-- totales -->
+  <div class="employee-totals">
+    <div>Percepciones: $ {{ totalPercepciones | number:'1.2-2' }}</div>
+    <div>Deducciones: $ {{ totalDeducciones | number:'1.2-2' }}</div>
+    <div>Líquido: $ {{ liquido | number:'1.2-2' }}</div>
+  </div>
+
+</div>
 
 
 

@@ -19,6 +19,7 @@
   color: #fff;
   padding: 35px 50px;
 }
+
 .dlg-bar-title {
   font-weight: 700;
   letter-spacing: .3px;
@@ -39,11 +40,13 @@
   border-top: 1px solid var(--line);
   background: #fff;
 }
+
 .dlg-actions button[mat-stroked-button] {
   border-color: var(--brand);
   color: var(--brand);
   font-weight: 600;
 }
+
 .dlg-actions button[mat-stroked-button]:hover {
   background: rgba(73,29,42,0.06); /* sutil, no tapa el texto */
 }
@@ -51,10 +54,15 @@
 /* Info de empleado */
 .employee-info {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 6px 12px;
-  margin-bottom: 8px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 25px;
+  margin-bottom: 10px;
 }
+
+.full {
+  grid-column: span 2;
+}
+
 .employee-field {
   display: flex;
   gap: 8px;
@@ -68,6 +76,22 @@
   font-weight: 700;
   color: var(--ink-900);
 }
+
+.employee-totals {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  font-weight: 700;
+  padding: 8px 10px;
+  background: var(--brand-100);
+  border-radius: 6px;
+}
+
+.view-toggle{
+  margin: 12px 0 6px 0;
+}
+
 .grid-empty {
   height: 0;
   border-top: 1px solid var(--line);
