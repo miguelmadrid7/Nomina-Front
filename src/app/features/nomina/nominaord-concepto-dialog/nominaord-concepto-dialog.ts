@@ -44,6 +44,7 @@ export class NominaordConceptoDialog {
       nombreEmpleado: string;
       curp: string;
       rfc: string;
+      plaza: string;
       qnaTexto: string;
       detalles: Array<{
         noComprobante: number|string;

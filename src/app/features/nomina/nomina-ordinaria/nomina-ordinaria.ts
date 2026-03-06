@@ -242,6 +242,7 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
         nombreEmpleado: row.nombreEmpleado,
         curp: row.curp,
         rfc: row.rfc,
+        plaza: row.clavePlaza,
         qnaTexto: `${this.anioSeleccionado}/${this.quincenaSeleccionada.toString().padStart(2,'0')}`,
         detalles
       }
