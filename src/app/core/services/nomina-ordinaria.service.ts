@@ -25,17 +25,6 @@ export class NominaService {
     return this.http.get<ApiResponse<any>>(`${this.base}/calculation/status/${id}`);
   }
 
-  downloadCalculoCsv(request: CalculationNomina) {
-    return this.http.post(
-      `${this.base}/calculation/excel/csv`,
-      request,
-      {
-        responseType: 'blob',
-        observe: 'response'
-      }
-    );
-  }
-
   exportarAnexoV() {
     return this.http.post(
       `${this.base}/calculation/export-anexo-v`,
