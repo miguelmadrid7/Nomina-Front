@@ -62,10 +62,65 @@ main {
   overflow-y: auto;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body { 
+  height: 100%; 
+}
+
+body { 
+  margin: 0; 
+  font-family: Roboto, 
+  "Helvetica Neue", sans-serif; 
+}
 
 
-.cdk-overlay-container, .cdk-global-overlay-wrapper {
+.cdk-overlay-container, 
+.cdk-global-overlay-wrapper {
   z-index: 11000 !important;
 }
+
+/* Colores globales de la aplicacion */
+:root {
+  --brand: #491D2A;
+  --ink-900: #1a1a1a;
+  --ink-700: #343a40;
+  --line: #e5e7eb;
+  --bg: #ffffff;
+  --card: #f6f6f7;
+}
+
+
+/* Diseño de las  paginas globales  */ 
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 5px;
+}
+
+/* Divider de todas paginas globales  */ 
+.section-divider { 
+  height: 2px; 
+  background: var(--brand); 
+  opacity: 0.15; 
+  margin: 18px 0 16px; 
+}
+
+/* Título global */
+.page-title { 
+  margin: 0; 
+  font-weight: 800; 
+  letter-spacing: .3px; 
+  
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  margin: 0;
+  padding: 8px 12px;  
+  flex: 1;
+  min-height: 0;     
+}
+
