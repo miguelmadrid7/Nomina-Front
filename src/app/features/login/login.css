@@ -1,0 +1,225 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #491D2A;
+  color: #fff;
+}
+
+/* Tarjeta */
+.card {
+  max-width: 400px;
+  width: 90%;
+  padding: 24px 32px;
+  background: #ffffff;
+  color: #333;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+  margin: 40px auto 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+/* Encabezado */
+.header {
+  width: 100%;
+  text-align: center;
+  user-select: none;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Franja superior */
+.header-top {
+  position: relative;         
+  display: flex;
+  align-items: center;
+  justify-content: center;   
+  gap: clamp(8px, 2vw, 24px);
+  padding: clamp(14px, 2.8vw, 28px) clamp(12px, 2vw, 24px);
+  color: #d6c49e;
+  background: transparent;
+}
+
+/* Título principal */
+.header-title,
+.header-subtitle {
+  margin: 0;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  line-height: 1.1;
+  font-size: clamp(24px, 4vw, 44px);
+}
+
+/* Franja intermedia */
+.header-middle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 2vw, 24px);
+  padding: clamp(14px, 2.8vw, 28px) clamp(12px, 2vw, 24px);
+  background-color: #d6c49e;
+  color: #491D2A;
+  border-bottom: 6px solid #491D2A;
+  margin-bottom: clamp(10px, 5vw, 40px);
+}
+
+/* Barra inferior con dos líneas apiladas */
+.header-bottom {
+  width: 100%;
+  display: flex;
+  flex-direction: column; 
+  align-items: center;     
+  justify-content: center;
+  gap: 4px;               
+  min-height: clamp(56px, 7vw, 96px);
+  padding: 0 clamp(16px, 3vw, 32px);
+  background-color: #d6c49e;
+  color: #491D2A;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Tipografía unificada para ambas franjas de texto */
+.header-bottom,
+.footer-brand {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: clamp(14px, 1.4vw, 18px);
+  line-height: 1.2;
+}
+
+/* Logo en la izquierda */
+.brand-logo {
+  position: absolute;
+  left: clamp(12px, 2vw, 24px);
+  top: 50%;
+  transform: translateY(-50%);
+  max-height: 70px;
+  height: auto;
+  width: auto;
+}
+
+/* Pie */
+.footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-brand {
+  background: #491D2A;
+  color: #d6c49e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.25);
+}
+
+.footer-brand mat-icon {
+  color: #d6c49e;
+  font-size: clamp(24px, 3.2vw, 36px);
+  width: 1em; height: 1em;
+}
+
+/* Campos */
+.field-title {
+  display: inline-block;
+  font-weight: 700;
+  color: #1e1e1e;
+  margin: 8px 0 4px;
+  font-size: 14px;
+}
+
+mat-form-field { display: block; width: 100%; }
+
+.icon-container mat-icon {
+  color: #d6c49e;
+  width: 1em; height: 1em;
+  font-size: clamp(24px, 3.5vw, 44px);
+}
+
+/* Botón */
+.login-button button {
+  background-color: #491D2A;
+  color: #fff;
+  font-weight: 700;
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color .3s ease, transform .2s ease;
+}
+.login-button button:hover { 
+  background-color: #491D2A; 
+  transform: scale(1.02); 
+}
+
+/* Responsive */
+@media (max-width: 420px) {
+  .header-top, .header-middle { flex-direction: column; }
+}
+
+@media (max-width: 480px) {
+  .card { margin: 24px auto; padding: 16px; }
+}
+
+/* Material form-field adornos */
+:host ::ng-deep .login-field.with-separator .mat-mdc-form-field-icon-prefix {
+  color: #718096; 
+  padding-right: 12px; 
+  margin-right: 8px; 
+  border-right: 1px solid #e2e8f0;
+}
+:host ::ng-deep .login-field.with-separator .mat-mdc-form-field-icon-suffix {
+  padding-left: 12px; 
+  margin-left: 8px; 
+  border-left: 1px solid #e2e8f0; 
+  color: #718096;
+}
+
+/* Borde de error */
+:host ::ng-deep .mat-mdc-form-field.ng-invalid.ng-touched .mdc-notched-outline__leading,
+:host ::ng-deep .mat-mdc-form-field.ng-invalid.ng-touched .mdc-notched-outline__notch,
+:host ::ng-deep .mat-mdc-form-field.ng-invalid.ng-touched .mdc-notched-outline__trailing {
+  border-color: #d32f2f !important;
+}
+
+/* Enlaces auxiliares */
+.aux-links {
+   margin-top: 4px; 
+   display: flex; 
+   justify-content: flex-end;
+}
+
+.aux-links a { 
+  font-size: 13px; 
+  color: #3f51b5; 
+  text-decoration: none; 
+}
+
+.aux-links a:hover {
+   text-decoration: underline; 
+}
+
+/* Segunda línea (Dirección de Nómina y Control de Plazas) más pequeña */
+.header-bottom span + span {
+  font-size: clamp(12px, 1.1vw, 16px); 
+  letter-spacing: 1px;                
+}
+
+/* (Opcional) Asegura que la primera línea mantenga el tamaño base actual */
+.header-bottom span:first-child {
+  font-size: clamp(14px, 1.4vw, 18px);
+}
+
+/* Asegura que ambas líneas estén en negritas */
+.header-bottom span {
+  font-weight: bold;
+}

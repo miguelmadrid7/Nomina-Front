@@ -1,0 +1,125 @@
+<div class="page-header">
+  <h2 class="page-title">Nómina ordinaria</h2>
+</div>
+
+<div class="section-divider"></div>
+
+<div class="actions-right">
+  <button mat-raised-button class="btn-descarga-csv" (click)="clearFilters()">
+    Limpiar filtros
+  </button>
+</div>
+
+
+<div class="table-container" *ngIf="showRecords">
+  <div class="table-card card">
+    <div class="table-content">
+      <div class="table-scroll">
+        <table mat-table [dataSource]="dataSource" class="nomina-table">
+
+          <ng-container matColumnDef="curp">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-filter">
+                <span>CURP</span>
+                <input
+                  matInput
+                  placeholder="Buscar"
+                  (input)="enforceUppercase($event)"
+                  (keyup.enter)="applyFilter('curp', $event.target.value)">
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let e">{{ e.curp }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="rfc">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-filter">
+                <span>RFC</span>
+                <input
+                  matInput
+                  placeholder="Buscar"
+                  (input)="enforceUppercase($event)"
+                  (keyup.enter)="applyFilter('rfc', $event.target.value)">
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="nombreEmpleado">
+            <th mat-header-cell *matHeaderCellDef>
+              <div class="header-filter">
+                <span>Empleado</span>
+                <input
+                  matInput
+                  placeholder="Buscar"
+                  (input)="enforceUppercase($event)"
+                  (keyup.enter)="applyFilter('nombreEmpleado', $event.target.value)">
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let e">{{ e.nombreEmpleado }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="qnaProceso">
+            <th mat-header-cell *matHeaderCellDef>
+              QNA
+              <div class="qna-filters-row">
+                <mat-form-field appearance="outline" class="qna-field">
+                  <mat-label>Año</mat-label>
+                  <mat-select [(ngModel)]="anioSeleccionado" (ngModelChange)="onQnaModelChange()">
+                    <mat-option *ngFor="let anio of anios" [value]="anio">
+                      {{ anio }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="qna-field">
+                  <mat-label>Quincena</mat-label>
+                 <mat-select [(ngModel)]="quincenaSeleccionada" (ngModelChange)="onQnaModelChange()">
+                    <mat-option *ngFor="let q of quincenas" [value]="q">
+                      {{ q.toString().padStart(2,'0') }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+
+              </div>
+            </th>
+            <td mat-cell *matCellDef="let e">{{ e.qnaProceso }}</td>
+          </ng-container>
+
+
+           <ng-container matColumnDef="clavePlaza">
+            <th mat-header-cell *matHeaderCellDef>Clave Plaza</th>
+            <td mat-cell *matCellDef="let e">{{ e.clavePlaza }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="baseCalculoIsr">
+            <th mat-header-cell *matHeaderCellDef>Base Cálculo ISR</th>
+            <td mat-cell *matCellDef="let e">{{ e.baseCalculoIsr }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="conceptoDetalle">
+            <th mat-header-cell *matHeaderCellDef>Conceptos</th>
+            <td mat-cell *matCellDef="let e">
+              <button mat-button color="primary" (click)="openConceptosDialog(e)">
+                Ver detalle
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+
+      <div class="table-footer">
+        <mat-paginator
+          [length]="totalElements"
+          [pageSize]="50"
+          [pageSizeOptions]="[50, 100, 150, 200]"
+          showFirstLastButtons
+          aria-label="Select page">
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</div>

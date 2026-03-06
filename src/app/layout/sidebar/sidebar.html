@@ -1,0 +1,239 @@
+<div class="sidebar-shell p-3" [class.collapsed]="collapsed">
+  <a class="navbar-brand d-flex align-items-center gap-3" routerLink="/home">
+    <span class="brand-title fw-semibold"></span>
+  </a>
+  <a routerLink="/home"
+    class="brand d-flex align-items-center pb-3 mb-3 text-decoration-none border-bottom">
+  </a>
+
+  <ul class="list-unstyled ps-0">
+     <li class="mb-1">
+        <button
+          class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
+          data-bs-toggle="collapse"
+          data-bs-target="#catalogos-collapse">
+          <span class="d-flex align-items-center">
+           <i class="fa-solid fa-folder me-2"></i>
+            <span class="label">Catálogos</span>
+          </span>
+         <i class="bi bi-chevron-down caret"></i>
+        </button>
+
+          <div class="collapse show" id="catalogos-collapse">
+            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+              <li>
+                 <a
+                    routerLink="/empleados/list"
+                    class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                     <i class="fa-solid fa-folder me-2"></i>
+                     <span class="label">Empleado</span>
+                  </a>
+              </li>
+
+               <li>
+                  <a routerLink="" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                    <i class="fa-solid fa-user-plus me-2"></i>
+                    <span class="label">Nuevo Ingreso</span>
+                  </a>
+                </li>
+
+                <li>
+                    <a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                      <i class="fa-solid fa-square-plus me-2"></i>
+                      <span class="label">Alta plaza adicional</span>
+                    </a>
+                </li>
+            </ul>
+          </div>
+      </li>
+
+
+       <li class="mb-1">
+          <button
+            class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
+            data-bs-toggle="collapse"
+            data-bs-target="#movimientos-collapse"
+            aria-expanded="true">
+              <span class="d-flex align-items-center">
+                <i class="fa-solid fa-arrows-up-down-left-right me-2"></i>
+                <span class="label">Movimientos</span>
+              </span>
+              <i class="bi bi-chevron-down caret"></i>
+          </button>
+            <div class="collapse show" id="movimientos-collapse">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                 <li>
+                    <a routerLink="/contact" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                      <i class="fa-solid fa-inbox me-2"></i>
+                      <span class="label">Bandeja</span>
+                    </a>
+                  </li>
+
+                  <li>
+                    <a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                       <i class="fa-solid fa-user-plus me-2"></i>
+                      <span class="label">Nuevo Ingreso</span>
+                    </a>
+                  </li>
+
+                 <li>
+                    <a href="#" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                       <i class="fa-solid fa-square-plus me-2"></i>
+                      <span class="label">Alta plaza adicional</span>
+                    </a>
+                  </li>
+              </ul>
+            </div>
+        </li>
+
+        <!-- Nómina -->
+        <li class="mb-1">
+          <button
+            class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
+            data-bs-toggle="collapse"
+            data-bs-target="#nomina-collapse"
+            aria-expanded="true">
+
+            <span class="d-flex align-items-center">
+              <i class="bi bi-cash-stack me-2"></i>
+              <span class="label">Nómina</span>
+            </span>
+            <i class="bi bi-chevron-down caret"></i>
+          </button>
+            <div class="collapse show" id="nomina-collapse">
+              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                <li>
+                  <a *ngIf="hasAnyRole([1, 2])"
+                      routerLink="nomina/calculo-nomina-ordinaria"
+                      class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                    <i class="fa-solid fa-calculator me-2"></i>
+                    <span class="label">Cálculo nómina ordinaria</span>
+                  </a>
+                </li>
+
+                <li>
+                  <a *ngIf="hasAnyRole([1, 2])"
+                    routerLink="nomina/ordinaria"
+                    class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                    <i class="fa-solid fa-list-check me-2"></i>
+                    <span class="label">Visualizar nómina ordinaria</span>
+                  </a>
+                </li>
+
+                 <li>
+                    <a *ngIf="hasAnyRole([1, 2])"
+                      routerLink="nomina/extraordinaria"
+                      class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                      <i class="fa-solid fa-star me-2"></i> 
+                      <span class="label">Visualizar nómina extraordinaria</span>
+                    </a>
+                  </li>
+
+                <li>
+                  <a *ngIf="hasAnyRole([1, 2])"
+                    routerLink="nomina/aguinaldo"
+                    class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                    <i class="fa-solid fa-gift me-2"></i> 
+                    <span class="label">Calcular aguinaldo</span>
+                  </a>
+                </li>
+
+                <li>
+                  <a *ngIf="hasAnyRole([1, 2])"
+                      routerLink="nomina/extraordinaria"
+                      class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                    <i class="fa-solid fa-arrow-trend-up me-2"></i>
+                    <span class="label">Calcular incremento</span>
+                  </a>
+                </li>
+
+                <li>
+                  <a *ngIf="hasAnyRole([1, 2])"
+                      routerLink="nomina/generar-producto"
+                      class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                    <i class="fa-solid fa-file-arrow-down me-2"></i>
+                    <span class="label">Generar entregables</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+        </li>
+
+        <li class="mb-1">
+          <button
+            class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
+            data-bs-toggle="collapse"
+            data-bs-target="#otros-registros-collapse">
+              <span class="d-flex align-items-center">
+                <i class="fa-solid fa-folder me-2"></i>
+                <span class="label">Otros registros</span>
+              </span>
+            <i class="bi bi-chevron-down caret"></i>
+          </button>
+
+          <div class="collapse show" id="otros-registros-collapse">
+            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+              <li>
+                <a
+                  routerLink="pension/alimenticia"
+                  routerLinkActive="active"
+                  class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <i class="fa-solid fa-users me-2"></i>
+                  <span class="label">Pension alimenticia</span>
+                </a>
+              </li>
+
+              <li>
+                <a
+                    routerLink="juicios/juicios-mercantiles"
+                    routerLinkActive="active" 
+                    class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <i class="fa-solid fa-square-plus me-2"></i>
+                  <span class="label">Juicios mercantiles</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+
+
+
+          <!-- Dashboard -->
+          <li class="mb-1">
+            <a routerLink="/home"
+              routerLinkActive="active"
+              class="nav-link d-flex align-items-center text-decoration-none rounded">
+               <i class="fa-solid fa-gauge me-2"></i>
+              <span class="label">Dashboard</span>
+            </a>
+          </li>
+
+
+           <!-- Dashboard -->
+          <li class="mb-1">
+            <a routerLink="/login"
+              routerLinkActive="active"
+              class="nav-link d-flex align-items-center text-decoration-none rounded">
+              <i class="fas fa-sign-out-alt"></i><span class="label">Salir</span>
+            </a>
+          </li>
+  </ul>
+
+  <!-- <div class="dropdown position-fixed bottom-0 mb-3">
+    <a
+      href="#"
+      class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle"
+      data-bs-toggle="dropdown"
+      aria-expanded="false">
+        <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2"/>
+            <strong class="label">mdo</strong>
+    </a>
+    <ul class="dropdown-menu text-small shadow">
+      <li><a class="dropdown-item" href="#">New project...</a></li>
+      <li><a class="dropdown-item" href="#">Settings</a></li>
+      <li><a class="dropdown-item" href="#">Profile</a></li>
+      <li><hr class="dropdown-divider" /></li>
+      <li><a class="dropdown-item" href="#">Sign out</a></li>
+    </ul>
+  </div> -->
+</div>

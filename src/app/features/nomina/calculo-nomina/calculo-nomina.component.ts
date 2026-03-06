@@ -1,0 +1,110 @@
+import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatStepperModule } from '@angular/material/stepper';
+import { NominaService } from '../../../core/services/nomina-ordinaria.service';
+import { environment } from '../../../../environments/environment';
+import SockJS from 'sockjs-client';
+import * as Stomp from 'stompjs';
+import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
+@Component({
+  selector: 'app-calculo-nomina',
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+    MatStepperModule,
+    MatCardModule,
+    MatIconModule,
+    MatProgressBarModule,
+],
+  templateUrl: './calculo-nomina.component.html',
+  styleUrls:[ './calculo-nomina.component.css'],
+  host: { 'ngSkipHydration': 'true' }
+})
+export class CalculoNominaComponent {
+
+  progress = 0;
+  progressTarget = 0;
+  processing = false;
+  deliverableReady = false;
+  private stompClient: any;
+
+
+  steps = [
+  { label: 'Inicializando proceso', progress: 5 },            // truncate
+  { label: 'Insertando nómina cheque plaza', progress: 10 },   // insertNomChequePza
+  { label: 'Insertando nómina cheque concepto', progress: 15},// insertNomChequeCptoTab
+  { label: 'Calculando concepto H0', progress: 30 },           // cpto_ho
+  { label: 'Calculando concepto informados', progress: 35 },   // cpto_informados
+  { label: 'Calculando concepto quinquenios', progress: 40 },  // cpto_quinquenios
+  { label: 'Calculando nómina cheque concepto primas', progress: 50 }, // nom_cheque_cpto_primas
+  { label: 'Calculando concepto 01', progress: 60 },           // cpto_01
+  { label: 'Calculando concepto 02', progress: 70 },           // cpto_02
+  { label: 'Calculando concepto 04', progress: 75 },           // cpto_04
+  { label: 'Calculando concepto 58', progress: 80 },           // cpto_58
+  { label: 'Calculando concepto 77', progress: 85 },           // cpto_77
+  { label: 'Calculando concepto 62', progress: 89 },           // cpto_77
+  { label: 'Actualizando importes', progress: 90 },            // updateImportes
+  { label: 'Preparando entregable', progress: 95 },            // preparar
+  { label: 'Finalizando proceso', progress: 99 },              // complete (previo al 100)
+];
+
+  constructor(
+    private nominaService: NominaService,
+    private zone: NgZone,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  private subscribeToJob(jobId: number): void {
+    this.stompClient.subscribe(`/topic/payroll/${jobId}`, (message: any) => {
+      const data = JSON.parse(message.body);
+      this.zone.run(() => this.handleProgressUpdate(data));
+    });
+  }
+  
+  private handleProgressUpdate(data: any): void {
+    this.progress = Math.max(this.progress, data.progress);
+    if (data.progress === 100 || data.status === 'COMPLETED') {
+      this.deliverableReady = true;
+      this.processing = false;
+      if (this.stompClient) {
+        this.stompClient.disconnect(() => {});
+      }
+    }
+    this.cdr.detectChanges();
+  }
+
+
+  get currentStepIndex(): number {
+    const raw = this.steps.findIndex(s => this.progress < s.progress);
+    return raw === -1 ? this.steps.length - 1 : raw;
+  }
+
+  executePayrollProcess(): void {
+    this.processing = true;
+    this.progress = 0;
+    this.deliverableReady = false;
+    const ws = new SockJS(`${environment.apiUrl}/ws`);
+    this.stompClient = Stomp.over(ws);
+    this.stompClient.connect({}, () => {
+      this.nominaService.executePayrollProcess(202522).subscribe({
+        next: (resp: any) => {
+          const jobId = resp?.data;
+          if (!jobId) return;
+          this.subscribeToJob(jobId);
+        },
+        error: () => {
+          this.processing = false;
+        }
+      });
+    });
+  }
+}
