@@ -43,7 +43,7 @@ export class Home {
 
     ngAfterViewInit(): void {
       this.isSidebarCollapsed = this.sidebar.collapsed;
-      this.cd.detectChanges(); // fuerza a Angular a actualizar
+      this.cd.detectChanges();
     }
 
     buildBreadCrumb(
@@ -51,29 +51,20 @@ export class Home {
       url: string = '',
       breadcrumbs: { label: string; url: string }[] = []
     ): { label: string; url: string }[] {
-
       const children = route.children;
-
       if (children.length === 0) return breadcrumbs;
-
       for (const child of children) {
-
         const routeURL = child.snapshot.url.map((s) => s.path).join('/');
-
         if (routeURL !== '') url += `/${routeURL}`;
-
         const label = child.snapshot.data['breadcrumb'];
-
         if (label) {
           breadcrumbs.push({
             label,
             url
           });
         }
-
         return this.buildBreadCrumb(child, url, breadcrumbs);
       }
-
       return breadcrumbs;
     }
 
