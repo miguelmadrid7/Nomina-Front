@@ -13,6 +13,9 @@ import { NominaordConceptoDialog } from '../../nomina/nominaord-concepto-dialog/
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NominaRow } from '../../../models/nomina-Row.model';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { LoaderService } from '../../../core/services/loader.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-nomina-ordinaria',
@@ -20,6 +23,7 @@ import { NominaRow } from '../../../models/nomina-Row.model';
   imports: [
     CommonModule,
     FormsModule,
+    MatProgressSpinnerModule,
     MatFormFieldModule,
     MatButtonModule,
     MatSelectModule,
@@ -36,16 +40,8 @@ import { NominaRow } from '../../../models/nomina-Row.model';
 export class NominaOrdinaria implements OnInit, AfterViewInit {
 
   dataSource = new MatTableDataSource<NominaRow>([]);
-  displayedColumns: string[] = [
-  'curp',
-  'rfc',
-  'nombreEmpleado',
-  'qnaProceso',
-  'clavePlaza',
-  'baseCalculoIsr',
-  'conceptoDetalle',
-];
-filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
+  displayedColumns: string[] = ['curp', 'rfc', 'nombreEmpleado', 'qnaProceso', 'clavePlaza', 'baseCalculoIsr', 'conceptoDetalle',];
+  filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
 
   anios: number[] = [2026, 2025, 2024];
   quincenas: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
@@ -73,6 +69,7 @@ filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
 
   constructor(
     private nominaService: NominaService,
+    private loaderService: LoaderService,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
     private zone: NgZone
@@ -96,14 +93,6 @@ filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
   ngAfterViewInit(): void {
     setTimeout(() => {
       if (this.paginator) {
-        this.dataSource.paginator = this.paginator;
-      }
-    }, 0);
-  }
-
-  private ensurePaginatorBoundSoon(): void {
-    setTimeout(() => {
-      if (this.paginator && this.dataSource.paginator !== this.paginator) {
         this.dataSource.paginator = this.paginator;
       }
     }, 0);
@@ -153,46 +142,21 @@ filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
     this.totalElements = 0;
   }
 
-  private pickConcept(conceptos: any[], target: number): any | null {
-    if (!Array.isArray(conceptos) || conceptos.length === 0) return null;
-    return conceptos[0];
-  }
-
-  private isApplicableConcept(c: any, target: number): boolean {
-    return true;
-  }
-
-  private adaptResponse(items: any[], target: number): any[] {
-    return (items ?? [])
-      .map(item => {
-        const conceptos = item?.conceptos ?? [];
-        const concept = this.pickConcept(conceptos, target);
-        if (!concept || !this.isApplicableConcept(concept, target)) return null;
-        return {
-          empleadoId: item.tabEmpleadosId,
-          nombreEmpleado: item.nombreEmpleado,
-          qnaProceso: target,
-          curp: item.curp,
-          rfc: item.rfc,
-          nivelSueldo: concept?.catCategoriasCve ?? '',
-          concepto: concept?.conceptoCve ?? '',
-          tipoConcepto: concept?.tipoConcepto ?? (concept?.conceptoCve ?? ''),
-          totalImporteQnal: item.totalImporteQnal,
-          conceptos: conceptos
-        };
-      })
-      .filter(Boolean) as any[];
-  }
-
   private fetchNomina(): void {
   if (this.isRefreshing) return;
   this.isRefreshing = true;
+  this.loaderService.show();
 
-  this.nominaService.getNominaCheque().subscribe({
+  this.nominaService.getNominaCheque().pipe(
+    finalize(() => {
+      this.loaderService.hide();
+      this.isRefreshing = false;
+    })
+  )
+  .subscribe({
     next: (response) => {
       if (!response.success) {
         this.showSnack(response.message || 'Error', 'Cerrar', 4000);
-        this.isRefreshing = false; // IMPORTANTE
         return;
       }
 
@@ -246,11 +210,10 @@ filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
 
       this.dataSource.data = grouped;
       this.totalElements = grouped.length;
-      this.isRefreshing = false;
     },
     error: () => {
       this.clearTable();
-      this.isRefreshing = false;
+      this.showSnack('Error al obtener la nómina', 'Cerrar', 4000);
     }
   });
 }
