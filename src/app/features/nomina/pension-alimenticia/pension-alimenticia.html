@@ -19,7 +19,6 @@
   </div>
 
   <div class="search-card">
-    <label class="field-title" for="buscarEmpleado">Buscar empleado</label>
     <mat-form-field appearance="outline" class="login-field with-separator search-input" floatLabel="always">
       <mat-icon matPrefix>search</mat-icon>
       <input
@@ -170,6 +169,7 @@
             <mat-select
                 id="formaAplicacion"
                 name="formaAplicacion"
+                placeholder="Seleccionar forma"
                 [(ngModel)]="formaAplicacion"
                 (selectionChange)="onFormaChange()"
                 required
@@ -218,6 +218,7 @@
             <mat-select
               id="bancoSeleccionado"
               name="bancoSeleccionado"
+              placeholder="Seleccionar banco"
               [(ngModel)]="bancoSeleccionado"
               required
               #bancoSeleccionadoCtrl="ngModel">
