@@ -1,11 +1,25 @@
 /* Shell de la vista */
 :host {
+  --brand: #491D2A;
+  --ink-900: #1a1a1a;
+  --ink-700: #343a40;
+  --line: #e5e7eb;
+  --bg: #ffffff;
+  --card: #f6f6f7;
   display: flex;
   flex-direction: column;
-  height: 100dvh;      /* antes: min-height: 100vh */
-  overflow: hidden;    /* mantenido */
+  height: 100dvh;      
+  overflow: hidden;   
   box-sizing: border-box;
   padding: 16px;
+}
+
+/* Separador */
+.section-divider { 
+  height: 2px; 
+  background: var(--brand); 
+  opacity: 0.15; 
+  margin: 18px 0 16px; 
 }
 
 /* Encabezado y acciones */
@@ -44,7 +58,7 @@
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  min-height: 0;                 /* clave para que .table-scroll pueda scrollear */
+  min-height: 0;                
 }
 
 /* Tarjeta de la tabla */
@@ -69,7 +83,7 @@
 }
 .table-scroll {
   width: 100%;
-  overflow: auto;                /* x + y */
+  overflow: auto;               
   flex: 1 1 auto;
   min-height: 0;
   -webkit-overflow-scrolling: touch;
@@ -88,7 +102,7 @@
   border: 1px solid #e5e7eb;
   text-align: left;
   vertical-align: middle;
-  white-space: nowrap;           /* evita saltos feos en encabezados */
+  white-space: nowrap;          
 }
 .nomina-table th {
   position: sticky;
