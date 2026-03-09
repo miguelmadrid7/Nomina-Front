@@ -1,36 +1,3 @@
-/* Shell de la vista */
-:host {
-  --brand: #491D2A;
-  --ink-900: #1a1a1a;
-  --ink-700: #343a40;
-  --line: #e5e7eb;
-  --bg: #ffffff;
-  --card: #f6f6f7;
-  display: flex;
-  flex-direction: column;
-  height: 100dvh;      
-  overflow: hidden;   
-  box-sizing: border-box;
-  padding: 16px;
-}
-
-/* Separador */
-.section-divider { 
-  height: 2px; 
-  background: var(--brand); 
-  opacity: 0.15; 
-  margin: 18px 0 16px; 
-}
-
-/* Encabezado y acciones */
-.page-title { 
-  margin: 0; 
-  font-weight: 800; 
-  letter-spacing: .3px; 
-  
-}
-
-
 .actions-right {
   width: 100%;
   display: flex;
@@ -39,55 +6,6 @@
   margin: 8px 0 12px 0;
   padding: 0 4px;
   box-sizing: border-box;
-}
-
-/* Botones */
-.btn-descarga-csv {
-  background-color: #491D2A !important;
-  color: #fff !important;
-  border-radius: 22px !important;
-  padding: 8px 18px !important;
-  font-weight: 600;
-  text-transform: none;
-  box-shadow: 0 2px 6px rgba(0,0,0,.15);
-}
-.btn-descarga-csv:hover { background-color: #5a2435 !important; }
-
-/* Contenedor principal de tabla (flex para scroll correcto) */
-.table-container {
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;                
-}
-
-/* Tarjeta de la tabla */
-.table-card.card {
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  background: #fff;
-  overflow: hidden;
-  box-shadow: 0 1px 2px rgba(0,0,0,.06);
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
-}
-
-/* Contenido y área scrolleable */
-.table-content {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
-}
-.table-scroll {
-  width: 100%;
-  overflow: auto;               
-  flex: 1 1 auto;
-  min-height: 0;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-gutter: stable both-edges;
 }
 
 /* Tabla */
@@ -153,19 +71,6 @@
   margin-top: 4px;
 }
 .qna-field { width: 160px; max-width: 200px; }
-
-/* Paginador/foot */
-.table-footer {
-  flex: 0 0 auto;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 8px;
-  gap: 8px;
-  box-sizing: border-box;
-  background: #fff;
-  border-top: 1px solid #e5e7eb;
-}
 
 /* Estados vacíos */
 .empty {
