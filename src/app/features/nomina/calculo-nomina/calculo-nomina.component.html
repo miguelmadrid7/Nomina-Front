@@ -1,19 +1,19 @@
-<div class="page">
-  <div class="page-header">
+<div class="page-header">
     <h2 class="page-title">Cálculo de nómina</h2>
+</div>
 
-    <div class="section-divider"></div>
+<div class="section-divider"></div>
 
-    
-    <p class="page-subtitle">Ejecuta y da seguimiento al proceso de cálculo.</p>
-  </div>
+<div class="page-header">
+   <p class="page-subtitle">Ejecuta y da seguimiento al proceso de cálculo.</p>
+</div>
 
   <mat-card class="actions-card" appearance="outlined">
     <div class="actions-row">
       <button
         mat-raised-button
         color="primary"
-        class="btn-primary"
+        class="btn-component"
         (click)="executePayrollProcess()"
         [disabled]="processing">
         <ng-container *ngIf="!processing">
@@ -76,4 +76,3 @@
       </div>
     </mat-card>
   </div>
-</div>

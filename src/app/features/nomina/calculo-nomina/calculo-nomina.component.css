@@ -1,46 +1,3 @@
-:host {
-   --brand: #491D2A;
-  --ink-900: #1a1a1a;
-  --ink-700: #343a40;
-  --line: #e5e7eb;
-  --bg: #ffffff;
-  --card: #f6f6f7;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  padding: 5px;
-}
-
-/* Contenedor principal centrado y con ancho legible */
-.page {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-  margin: 0;
-  padding: 8px 12px;
-  flex: 1;
-  min-height: 0;      
-}
-
-/* Encabezado de página */
-.page-header { 
-  display: grid; 
-  gap: 6px; 
-
-}
-.page-title { 
-  margin: 0; 
-  font-weight: 800; 
-  letter-spacing: .3px; 
-  
-}
-
-.page-subtitle { 
-  margin: 0; 
-  color: #6b7280; 
-}
-
 /* Cards con más aire y separación */
 .actions-card,
 .progress-card {
@@ -64,44 +21,6 @@
   margin-bottom: 12px;
 }
 
-/* Botón base (tu clase existente) */
-.btn {
-  background-color: #491D2A !important;
-  color: #ffffff !important;
-  border-radius: 25px !important;
-  padding: 8px 24px !important;
-  font-weight: 500;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-  text-transform: none;
-}
-
-/* Botón primario y secundario en acciones */
-.btn-primary {
-  background: #491D2A !important;
-  color: #fff !important;
-  display: inline-flex; 
-  gap: 10px; 
-  align-items: center;
-}
-
-.btn-secondary {
-  border-color: #491D2A !important;
-  color: #491D2A !important;
-  display: inline-flex; 
-  gap: 8px; 
-  align-items: center;
-}
-
-/* Hover / disabled */
-.btn:hover:not(:disabled),
-.btn-primary:hover:not(:disabled) { 
-  background-color: #491D2A !important; 
-}
-
-.btn:disabled { 
-  background-color: #491D2A !important; 
-  color: #ffffff !important; 
-}
 
 /* Tips debajo de acciones */
 .hints {
@@ -239,10 +158,3 @@
   }
 }
 
-/* Separador */
-.section-divider { 
-  height: 2px; 
-  background: var(--brand); 
-  opacity: 0.15; 
-  margin: 18px 0 16px; 
-}
