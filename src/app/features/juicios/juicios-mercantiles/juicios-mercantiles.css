@@ -285,3 +285,14 @@ mdc-notched-outline__trailing,
   grid-template-columns: repeat(2, 1fr);
   gap: 14px 20px;
 }
+
+
+.form-gri { 
+  display: grid; 
+  grid-template-columns: repeat(3, minmax(320px, 1fr));
+  gap: 16px 20px; 
+}
+
+.form-gri mat-form-field {
+  width: 100%;
+}
