@@ -18,35 +18,35 @@
 .page-container {
   display: flex;
   flex-direction: column;
+  gap: var(--space-lg);
   min-height: 100%;
-  padding: 5px;
+  padding: var(--space-md);
+  box-sizing: border-box;
+}
+
+/* Encabezado de página */
+.page-header { 
+  display: flex; 
+  flex-direction: column;
+  gap: var(--space-xs); 
+
 }
 
 /* Título global */
 .page-title { 
   margin: 0; 
   font-weight: 800; 
+  font-size: 22px;
+  color: var(--ink-900);
   letter-spacing: .3px; 
   
 }
 
-/* Divider de todas paginas globales  */ 
-.section-divider { 
-  height: 2px; 
-  background: var(--brand); 
-  opacity: 0.15; 
-  margin: 18px 0 16px; 
-}
-
-/* Botones */
-.btn-component {
-  background-color: #491D2A !important;
-  color: #fff !important;
-  border-radius: 10px !important;
-  padding: 8px 18px !important;
-  font-weight: 600;
-  text-transform: none;
-  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+/* Subtítulo global */
+.page-subtitle { 
+  margin: 0; 
+  padding-bottom: 10px;
+  color: #6b7280; 
 }
 
 /* Contenedor principal de tabla */
@@ -99,4 +99,24 @@
   background: #fff;
   border-top: 1px solid #e5e7eb;
 }
+
+/* Divider de todas paginas globales  */ 
+.section-divider { 
+  height: 2px; 
+  background: var(--brand); 
+  opacity: 0.15; 
+  margin: 18px 0 16px; 
+}
+
+/* Botones */
+.btn-component {
+  background-color: #491D2A !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  padding: 8px 18px !important;
+  font-weight: 600;
+  text-transform: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
+
 
