@@ -81,11 +81,15 @@ body {
 /* Colores globales de la aplicacion */
 :root {
   --brand: #491D2A;
+  --brand-600: #491D2A;
+  --brand-100: #f7eef1;
   --ink-900: #1a1a1a;
   --ink-700: #343a40;
   --line: #e5e7eb;
   --bg: #ffffff;
   --card: #f6f6f7;
+  --dlg-title-h: 52px;
+  --dlg-actions-h: 64px;
 }
 
 
