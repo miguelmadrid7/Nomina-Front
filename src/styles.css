@@ -107,6 +107,16 @@
   margin: 18px 0 16px; 
 }
 
+
+/* Encabezado de sección + acciones */
+.section-header { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  gap: 12px; 
+  margin: 8px 0 12px; 
+}
+
 /* Botones */
 .btn-component {
   background-color: #491D2A !important;
