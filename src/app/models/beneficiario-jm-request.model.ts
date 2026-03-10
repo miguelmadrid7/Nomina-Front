@@ -4,6 +4,4 @@ export interface BeneficiarioJMRequest {
     primerApellido: string;
     segundoApellido: string;
     nombre: string;
-    
-
 }

@@ -6,242 +6,351 @@
     <div class="section-divider"></div>
 
     <div *ngIf="form" [formGroup]="form">
-    <div class="section-header">
-        <h3>Buscar empleado.</h3>
-        <div class="search-actions">
-        <button mat-stroked-button class="btn-outline" (click)="clearFilters()">
-            Limpiar
-        </button>
-        <button mat-flat-button class="btn-primary" (click)="buscarEmpleado()">
-            Buscar
-        </button>
+        <div class="section-header">
+            <h3>Buscar empleado.</h3>
+                <div class="search-actions">
+                    <button mat-flat-button class="btn-component" (click)="clearFilters()">Limpiar </button>
+                    <button mat-flat-button class="btn-component" (click)="buscarEmpleado()">Buscar</button>
+                </div>
         </div>
-    </div>
 
     <!-- Buscar empleado  -->
     <div *ngIf="form" [formGroup]="form">
-    <div formGroupName="busqueda" class="search-card">
-        <mat-form-field appearance="outline" class="login-field with-separator search-input" floatLabel="always">
-        <mat-icon matPrefix>search</mat-icon>
-        <input
-            matInput
-            id="buscarEmpleado"
-            formControlName="searchText"
-            [matAutocomplete]="auto"
-            #autocompleteTrigger="matAutocompleteTrigger" 
-            (keydown.enter)="$event.preventDefault(); buscarEmpleado()"
-            placeholder="BUSCAR POR RFC, PRIMER APELLIDO, SEGUNDO APELLIDO O POR NOMBRE">
+        <mat-card class="form-card">
+            <mat-card-content class="form-grid">
+                <div formGroupName="busqueda" class="span-3">
+                    <mat-form-field appearance="outline" class="login-field with-separator search-input span-3" floatLabel="always">
+                        <mat-icon matPrefix>search</mat-icon>
+                            <input
+                                matInput
+                                id="buscarEmpleado"
+                                formControlName="searchText"
+                                [matAutocomplete]="auto"
+                                #autocompleteTrigger="matAutocompleteTrigger" 
+                                (keydown.enter)="$event.preventDefault(); buscarEmpleado()"
+                                placeholder="BUSCAR POR RFC, PRIMER APELLIDO, SEGUNDO APELLIDO O POR NOMBRE">
 
-        <mat-autocomplete #auto="matAutocomplete" 
-                          (optionSelected)="empleadoSeleccionado($event.option.value)"
-                          [displayWith]="displayEmpleado">
-            <mat-option *ngFor="let emp of resultado" [value]="emp">
-                {{ emp?.rfc || '—' }} · 
-                {{ emp?.primerApellido || '—' }} ·  
-                {{ emp?.segundoApellido || '—' }} · 
-                {{ emp?.nombre || '—' }}
-            </mat-option>
+                            <mat-autocomplete #auto="matAutocomplete" 
+                                            (optionSelected)="empleadoSeleccionado($event.option.value)"
+                                            [displayWith]="displayEmpleado">
+                                <mat-option *ngFor="let emp of resultado" [value]="emp">
+                                    {{ emp?.rfc || '—' }} · 
+                                    {{ emp?.primerApellido || '—' }} ·  
+                                    {{ emp?.segundoApellido || '—' }} · 
+                                    {{ emp?.nombre || '—' }}
+                                </mat-option>
+                            </mat-autocomplete>
+                    </mat-form-field>
+                </div>
 
-        </mat-autocomplete>
-        </mat-form-field>
-    </div>
-
-    <div class="search-card form-gri" formGroupName="empleado">
-        <div>
-            <label class="field-title">Apellido paterno*</label>
-            <mat-form-field appearance="outline" class="login-field with-separator">
-            <mat-icon matPrefix>person</mat-icon>
-            <input matInput formControlName="primerApellido" readonly placeholder="Ingresar Apellido Paterno">
-            </mat-form-field>
-        </div>
-
-        <div>
-            <label class="field-title">Apellido materno*</label>
-            <mat-form-field appearance="outline" class="login-field with-separator">
-            <mat-icon matPrefix>person</mat-icon>
-            <input matInput formControlName="segundoApellido" readonly placeholder="Ingresar Apellido Materno">
-            </mat-form-field>
-        </div>
-
-        <div>
-            <label class="field-title">Nombre(s)*</label>
-            <mat-form-field appearance="outline" class="login-field with-separator">
-            <mat-icon matPrefix>person</mat-icon>
-            <input matInput formControlName="nombre" readonly placeholder="Ingresar Nombre Completo">
-            </mat-form-field>
-        </div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <!-- Agregar beneficiario -->
-    <div class="section-header">
-        <h3>Agregar Beneficiario</h3>
-        <button mat-flat-button class="btn-component" type="button" (click)="guardar()">Guardar</button>
-    </div>
-
-    <div *ngIf="form" [formGroup]="form">
-        <div formGroupName="beneficiario">
-            <mat-card class="form-card">
-                <mat-card-content class="form-grid">
-                    <!-- RFC -->
-                    <div class="span-3">
-                        <label class="field-title" for="rfc">RFC*</label>
-                            <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
-
-                                <mat-icon matPrefix>badge</mat-icon>
-
-                                <input matInput formControlName="rfc" maxlength="13" placeholder="Ingresar RFC del beneficiario"/>
-
-                                <mat-error *ngIf="form.get('beneficiario.rfc')?.invalid && form.get('beneficiario.rfc')?.touched"> RFC inválido</mat-error>
-                            </mat-form-field>
+                <ng-container formGroupName="empleado">
+                    <div>
+                        <label class="field-title">Apellido paterno*</label>
+                        <mat-form-field appearance="outline" class="login-field with-separator">
+                        <mat-icon matPrefix>person</mat-icon>
+                        <input matInput formControlName="primerApellido" readonly placeholder="Ingresar Apellido Paterno">
+                        </mat-form-field>
                     </div>
 
-                    <!-- Apellido Paterno -->
-                    <div>
-                        <label class="field-title" for="primerApellido">Apellido paterno*</label>
-                            <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
-                            
-                                <mat-icon matPrefix>person</mat-icon>
-                                
-                                <input matInput formControlName="primerApellido" placeholder="Ingresar Apellido Paterno"/>
-
-                                <mat-error *ngIf="form.get('beneficiario.primerApellido')?.invalid && (form.get('primerApellido')?.touched)"> Ingresa el apellido paterno (mín. 2 caracteres). </mat-error>
-                            </mat-form-field>
-                    </div>
-
-                    <!-- Apellido Materno -->
-                    <div>
+                    <div >
                         <label class="field-title">Apellido materno*</label>
-                            <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
-                                
-                                <mat-icon matPrefix>person</mat-icon>
-                                
-                                <input matInput formControlName="segundoApellido" placeholder="Ingresar Apellido Materno"/>
-
-                                <mat-error *ngIf="form.get('beneficiario.segundoApellido')?.invalid && (form.get('segundoApellido')?.touched)"> Ingresa el apellido materno (mín. 2 caracteres). </mat-error>
-                            </mat-form-field>
+                        <mat-form-field appearance="outline" class="login-field with-separator">
+                        <mat-icon matPrefix>person</mat-icon>
+                        <input matInput formControlName="segundoApellido" readonly placeholder="Ingresar Apellido Materno">
+                        </mat-form-field>
                     </div>
 
-                    <!-- Nombre Completo -->
                     <div>
                         <label class="field-title">Nombre(s)*</label>
+                        <mat-form-field appearance="outline" class="login-field with-separator">
+                        <mat-icon matPrefix>person</mat-icon>
+                        <input matInput formControlName="nombre" readonly placeholder="Ingresar Nombre Completo">
+                        </mat-form-field>
+                    </div>
+                </ng-container>
+            </mat-card-content>
+        </mat-card>
+        
+
+
+
+        <!-- Mostrar tabla -->
+        <p class="d-inline-flex gap-1">
+        <a class="btn-component" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+            Mostrar tabla
+        </a>
+        </p>
+
+        <div class="collapse show" id="collapseExample" style="">
+            <table mat-table class="nomina-table">
+
+                <!-- RFC -->
+                <ng-container matColumnDef="rfc">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <span>RFC</span>
+                    </th>
+                    <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
+                </ng-container>
+
+
+                <!-- Nombre completo -->
+                <ng-container matColumnDef="nombreCompleto">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <span>Nombre completo</span>
+                    </th>
+                    <td mat-cell *matCellDef="let e">{{ e.nombreCompleto }}</td>
+                </ng-container>
+
+                <!-- Importe  total a pagar -->
+                <ng-container matColumnDef="importeTotal">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <span>Importe total a pagar</span>
+                    </th>
+                    <td mat-cell *matCellDef="let e">{{ e.importeTotal }}</td>
+                </ng-container>
+
+                <!-- Cita bancaria -->
+                <ng-container matColumnDef="citaBancaria">
+                    <th mat-header-cell *matHeaderCellDef>Cita bancaria</th>
+                    <td mat-cell *matCellDef="let e">{{ e.citaBancaria }}</td>
+                </ng-container>
+
+                <!-- Nombre -->
+                <ng-container matColumnDef="formaAplicacion">
+                    <th mat-header-cell *matHeaderCellDef>
+                        <span>Forma de aplicacion</span>
+                    </th>
+                    <td mat-cell *matCellDef="let e">{{ e.formaAplicacion }}</td>
+                </ng-container>
+
+                <!-- Quincena a descontar -->
+                <ng-container matColumnDef="qnaProceso">
+                <th mat-header-cell *matHeaderCellDef>
+                Importe de la QNA a descontar
+                <div class="qna-filters-row">
+                    <mat-form-field appearance="outline" class="qna-field">
+                    <mat-label>Año</mat-label>
+                    <mat-select formControlName="anio" (selectionChange)="onQnaModelChange()">
+                        <mat-option *ngFor="let anio of anio" [value]="anio">
+                        {{ anio }}
+                        </mat-option>
+                    </mat-select>
+                    </mat-form-field>
+
+
+                </div>
+
+                <div class="qna-filters-row">
+                <mat-form-field appearance="outline" class="qna-field">
+                    <mat-label>Quincena</mat-label>
+                    <mat-select formControlName ="quincena" (selectionChange)="onQnaModelChange()">
+                        <mat-option *ngFor="let q of quincena" [value]="q">
+                        {{ q.toString().padStart(2,'0') }}
+                        </mat-option>
+                    </mat-select>
+                    </mat-form-field>
+                    </div>
+                </th>
+                <td mat-cell *matCellDef="let e">{{ e.qnaProceso }}</td>
+            </ng-container>
+
+
+                <!-- Clabe bancaria -->
+                <ng-container matColumnDef="clabeInterbancaria">
+                    <th mat-header-cell *matHeaderCellDef>Clabe interbancaria</th>
+                    <td mat-cell *matCellDef="let e">{{ e.clabeInterbancaria }}</td>
+                </ng-container>
+
+                <!-- Institucion bancaria -->
+                <ng-container matColumnDef="institucionBancaria">
+                    <th mat-header-cell *matHeaderCellDef>Institucion bancaria</th>
+                    <td mat-cell *matCellDef="let e">{{ e.institucionBancaria }}</td>
+                </ng-container>
+
+                <!-- Acciones -->
+                <ng-container matColumnDef="acciones">
+                    <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                    <td mat-cell *matCellDef="let e">
+                    <button mat-button color="primary">
+                        Ver detalle
+                    </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Agregar beneficiario -->
+        <div class="section-header">
+            <h3>Agregar Beneficiario</h3>
+            <button mat-flat-button class="btn-component" type="button" (click)="guardar()">Guardar</button>
+        </div>
+
+        <div *ngIf="form" [formGroup]="form">
+            <div formGroupName="beneficiario">
+                <mat-card class="form-card">
+                    <mat-card-content class="form-grid">
+                        <!-- RFC -->
+                        <div class="span-3">
+                            <label class="field-title" for="rfc">RFC*</label>
+                                <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+
+                                    <mat-icon matPrefix>badge</mat-icon>
+
+                                    <input matInput formControlName="rfc" maxlength="13" placeholder="Ingresar RFC del beneficiario"/>
+
+                                    <mat-error *ngIf="form.get('beneficiario.rfc')?.invalid && form.get('beneficiario.rfc')?.touched"> RFC inválido</mat-error>
+                                </mat-form-field>
+                        </div>
+
+                        <!-- Apellido Paterno -->
+                        <div>
+                            <label class="field-title" for="primerApellido">Apellido paterno*</label>
+                                <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+                                
+                                    <mat-icon matPrefix>person</mat-icon>
+                                    
+                                    <input matInput formControlName="primerApellido" placeholder="Ingresar Apellido Paterno"/>
+
+                                    <mat-error *ngIf="form.get('beneficiario.primerApellido')?.invalid && (form.get('primerApellido')?.touched)"> Ingresa el apellido paterno (mín. 2 caracteres). </mat-error>
+                                </mat-form-field>
+                        </div>
+
+                        <!-- Apellido Materno -->
+                        <div>
+                            <label class="field-title">Apellido materno*</label>
+                                <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+                                    
+                                    <mat-icon matPrefix>person</mat-icon>
+                                    
+                                    <input matInput formControlName="segundoApellido" placeholder="Ingresar Apellido Materno"/>
+
+                                    <mat-error *ngIf="form.get('beneficiario.segundoApellido')?.invalid && (form.get('segundoApellido')?.touched)"> Ingresa el apellido materno (mín. 2 caracteres). </mat-error>
+                                </mat-form-field>
+                        </div>
+
+                        <!-- Nombre Completo -->
+                        <div>
+                            <label class="field-title">Nombre(s)*</label>
+                                <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+                                    
+                                    <mat-icon matPrefix>person</mat-icon>
+                                    
+                                    <input matInput formControlName="nombre" placeholder="Ingresar Nombre Completo" />
+
+                                    <mat-error *ngIf="form.get('beneficiario.nombre')?.invalid && (form.get('nombre')?.touched)"> Ingresa el nombre (mín. 2 caracteres). </mat-error>
+                                </mat-form-field>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+
+                <mat-card class="form-card" formGroupName="descuento">
+                    <mat-card-content class="form-grid">
+                        <!-- Importe total -->
+                        <div>
+                            <label class="field-title">Importe total que se le debe de pagar*</label>
                             <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
-                                
-                                <mat-icon matPrefix>person</mat-icon>
-                                
-                                <input matInput formControlName="nombre" placeholder="Ingresar Nombre Completo" />
 
-                                <mat-error *ngIf="form.get('beneficiario.nombre')?.invalid && (form.get('nombre')?.touched)"> Ingresa el nombre (mín. 2 caracteres). </mat-error>
+                                <mat-icon matPrefix>attach_money</mat-icon>
+
+                                <input matInput formControlName="importeTotal" type="number" placeholder="Ingresar importe total"/>
+
+                                <mat-error *ngIf="form.get('importeTotal')?.invalid && (form.get('importeTotal')?.touched)"> Captura un importe válido (>= 0). </mat-error>
                             </mat-form-field>
-                    </div>
-                </mat-card-content>
-            </mat-card>
-         </div>
+                        </div>
 
-            <mat-card class="form-card" formGroupName="descuento">
-                <mat-card-content class="form-grid">
-                    <!-- Importe total -->
-                    <div>
-                        <label class="field-title">Importe total que se le debe de pagar*</label>
-                        <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+                        <!-- Cita bancaria -->
+                        <div>
+                            <label class="field-title">Cita bancaria*</label>
+                            <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
 
-                            <mat-icon matPrefix>attach_money</mat-icon>
+                                <mat-icon matPrefix>receipt_long</mat-icon>
 
-                            <input matInput formControlName="importeTotal" type="number" placeholder="Ingresar importe total"/>
+                                <input matInput formControlName="citaBancaria" placeholder="Ingresar Cita Bancaria"/>
 
-                            <mat-error *ngIf="form.get('importeTotal')?.invalid && (form.get('importeTotal')?.touched)"> Captura un importe válido (>= 0). </mat-error>
-                        </mat-form-field>
-                    </div>
-
-                    <!-- Cita bancaria -->
-                    <div>
-                        <label class="field-title">Cita bancaria*</label>
-                        <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
-
-                            <mat-icon matPrefix>receipt_long</mat-icon>
-
-                            <input matInput formControlName="citaBancaria" placeholder="Ingresar Cita Bancaria"/>
-
-                            <mat-error *ngIf="form.get('citaBancaria')?.invalid && (form.get('citaBancaria')?.touched)"> Captura la cita bancaria. </mat-error>
-                        </mat-form-field>
-                    </div>
-
-                    <div class="grid-empty"></div>
-
-                    <!-- Forma de aplicación -->
-                    <div>
-                        <label class="field-title" for="formaAplicacion">Forma de aplicación*</label>
-                        <mat-form-field appearance="outline" class="login-field with-separator full-width" floatLabel="always">
-                                <mat-icon matPrefix>tune</mat-icon>
-                                    <mat-select formControlName="formaAplicacion" placeholder="Seleccionar forma">
-                                        <mat-option value="P">Factor</mat-option>
-                                        <mat-option value="C">Importe fijo</mat-option>
-                                    </mat-select>
+                                <mat-error *ngIf="form.get('citaBancaria')?.invalid && (form.get('citaBancaria')?.touched)"> Captura la cita bancaria. </mat-error>
                             </mat-form-field>
-                    </div>
+                        </div>
 
-                     <!-- Factor / Importe -->
-                    <div>
-                        <label class="field-title" for="factorImporte">Factor / Importe*</label>
-                        <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
-                            <mat-icon matPrefix>{{ formaAplicacion === 'P' ? 'percent' : 'attach_money' }}</mat-icon>
-                            
-                            <input
-                            matInput
-                            id="factorImporte"
-                            formControlName="factorImporte"
-                            [type]="formaAplicacion === 'P' ? 'text' : 'number'"
-                            [attr.maxlength]="formaAplicacion === 'P' ? 3 : null"
-                            placeholder="Ingresar cantidad"
-                            (input)="onFactorImporteInput()" />
+                        <div class="grid-empty"></div>
 
-                            <mat-error *ngIf="form.get('factorImporte')?.invalid && (form.get('factorImporte')?.touched)">Campo obligatorio</mat-error>
-                        </mat-form-field>
-                    </div>
+                        <!-- Forma de aplicación -->
+                        <div>
+                            <label class="field-title" for="formaAplicacion">Forma de aplicación*</label>
+                            <mat-form-field appearance="outline" class="login-field with-separator full-width" floatLabel="always">
+                                    <mat-icon matPrefix>tune</mat-icon>
+                                        <mat-select formControlName="formaAplicacion" placeholder="Seleccionar forma">
+                                            <mat-option value="P">Factor</mat-option>
+                                            <mat-option value="C">Importe fijo</mat-option>
+                                        </mat-select>
+                                </mat-form-field>
+                        </div>
 
-                    <div class="grid-empty"></div>
+                        <!-- Factor / Importe -->
+                        <div>
+                            <label class="field-title" for="factorImporte">Factor / Importe*</label>
+                            <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+                                <mat-icon matPrefix>{{ formaAplicacion === 'P' ? 'percent' : 'attach_money' }}</mat-icon>
+                                
+                                <input
+                                matInput
+                                id="factorImporte"
+                                formControlName="factorImporte"
+                                [type]="formaAplicacion === 'P' ? 'text' : 'number'"
+                                [attr.maxlength]="formaAplicacion === 'P' ? 3 : null"
+                                placeholder="Ingresar cantidad"
+                                (input)="onFactorImporteInput()" />
 
-                    <!-- Banco -->
-                    <div>
-                        <label class="field-title" for="bancoId">Buscar banco*</label>
-                        <mat-form-field appearance="outline" class="login-field with-separator full-width" floatLabel="always">
-                            <mat-icon matPrefix>account_balance</mat-icon>
+                                <mat-error *ngIf="form.get('factorImporte')?.invalid && (form.get('factorImporte')?.touched)">Campo obligatorio</mat-error>
+                            </mat-form-field>
+                        </div>
 
-                            <mat-select id="bancoId" formControlName="bancoId" required placeholder="Seleccionar banco">
+                        <div class="grid-empty"></div>
 
-                            <mat-option *ngFor="let bank of bancos" [value]="bank.id">{{ bank.banco }}</mat-option>
+                        <!-- Banco -->
+                        <div>
+                            <label class="field-title" for="bancoId">Buscar banco*</label>
+                            <mat-form-field appearance="outline" class="login-field with-separator full-width" floatLabel="always">
+                                <mat-icon matPrefix>account_balance</mat-icon>
 
-                            </mat-select>
-                            <mat-error *ngIf="form.get('bancoId')?.invalid && (form.get('bancoId')?.touched)"> Selecciona un banco. </mat-error>
-                        </mat-form-field>
-                    </div>
+                                <mat-select id="bancoId" formControlName="bancoId" required placeholder="Seleccionar banco">
 
-                    <!-- CLABE -->
-                    <div>
-                        <label class="field-title" for="clabe">CLABE interbancaria*</label>
-                        <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+                                <mat-option *ngFor="let bank of bancos" [value]="bank.id">{{ bank.banco }}</mat-option>
 
-                            <mat-icon matPrefix>credit_card</mat-icon>
+                                </mat-select>
+                                <mat-error *ngIf="form.get('bancoId')?.invalid && (form.get('bancoId')?.touched)"> Selecciona un banco. </mat-error>
+                            </mat-form-field>
+                        </div>
 
-                            <input matInput id="clabe" formControlName="clabe" placeholder="18 dígitos" maxlength="18" />
+                        <!-- CLABE -->
+                        <div>
+                            <label class="field-title" for="clabe">CLABE interbancaria*</label>
+                            <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
 
-                            <mat-error *ngIf="form.get('clabe')?.invalid && (form.get('clabe')?.touched)"> La CLABE debe tener exactamente 18 dígitos numéricos.</mat-error>
-                        </mat-form-field>
-                    </div>
-                </mat-card-content>
-            </mat-card>
-    </div>
+                                <mat-icon matPrefix>credit_card</mat-icon>
 
-    <div class="section-divider"></div>
+                                <input matInput id="clabe" formControlName="clabe" placeholder="18 dígitos" maxlength="18" />
 
-    <!-- VIGENCIA -->
-    <div class="section-header">
-      <h3>Vigencia de movimiento.</h3>
-    </div>
+                                <mat-error *ngIf="form.get('clabe')?.invalid && (form.get('clabe')?.touched)"> La CLABE debe tener exactamente 18 dígitos numéricos.</mat-error>
+                            </mat-form-field>
+                        </div>
+                    </mat-card-content>
+                </mat-card>
+        </div>
 
-    
-    <div *ngIf="form" [formGroup]="form">
+        <div class="section-divider"></div>
+
+        <!-- VIGENCIA -->
+        <div class="section-header">
+        <h3>Vigencia de movimiento.</h3>
+        </div>
+
+        <div *ngIf="form" [formGroup]="form">
     <mat-card class="form-card" formGroupName="vigencia">
         <mat-card-content class="form-grid vigencia-grid">
             <div>

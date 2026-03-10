@@ -1,4 +1,4 @@
-import { Component, NgZone, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, ViewChild } from '@angular/core';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -9,11 +9,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { rfcValidator, clabeValidator, factorImporteValidator, vigenciaRangoValidator } from '../../../shared/validators/juicios.validators';
+import { rfcValidator, factorImporteValidator, vigenciaRangoValidator } from '../../../shared/validators/juicios.validators';
 import { JuiciosMercantilesService } from '../../../core/services/juicios-mercantiles.services';
 import { BeneficiarioJMRequest } from '../../../models/beneficiario-jm-request.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Banco } from '../../../models/banco.model';
+import { MatTableModule } from '@angular/material/table';
 
 @Component({
   selector: 'app-juicios-mercantiles',
@@ -28,6 +29,7 @@ import { Banco } from '../../../models/banco.model';
     MatInputModule,
     MatIconModule,
     MatButtonModule,
+    MatTableModule,
   ],
   templateUrl: './juicios-mercantiles.html',
   styleUrls: ['./juicios-mercantiles.css']
@@ -37,7 +39,8 @@ export class JuiciosMercantiles {
     private juiciosMercantilesService: JuiciosMercantilesService, 
     private dialog: MatDialog,  
     private zone: NgZone, 
-    private snackBar: MatSnackBar ) {}
+    private snackBar: MatSnackBar,
+  private cd: ChangeDetectorRef ) {}
 
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   form!: FormGroup;
@@ -50,25 +53,45 @@ export class JuiciosMercantiles {
   vigenciaInicio: string = '';
   vigenciaFin: string = '';
 
+  anio: number[] = [2026, 2025, 2024];
+  quincena: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
+  anioSeleccionado: number | null = null;
+  quincenaSeleccionada: number | null = null;
+
+  showRecords = true;
+
+
+  // Control de refrescos y QNA
+  isRefreshing = false;
+  filtersReady = true;
+  lastQnaKey: string | null = null;
+  qnaDebounceId: any;
+  displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'importeTotal', 'formaAplicacion', 'qnaProceso', 'citaBancaria', 'clabeInterbancaria', 'institucionBancaria', 'acciones'];
+
 
 
   ngOnInit() {
     this.form = this.fb.group({
+      busqueda: this.fb.group({
+        searchText: [''],
+        empleadoId: [null],
+        rfc: [''],
+        primerApellido: [''],
+        segundoApellido: [''],
+        nombre: ['']
+      }),
       empleado: this.fb.group({
         rfc: ['', []],
         primerApellido: [''],
         segundoApellido: [''],
         nombre: [''],
       }),
-
-
       beneficiario: this.fb.group({
         rfc: ['', [rfcValidator]],
         primerApellido: [''],
         segundoApellido: [''],
         nombre: [''],
       }),
-
       descuento: this.fb.group({
         formaAplicacion: [''],
         factorImporte: [null],
@@ -77,24 +100,16 @@ export class JuiciosMercantiles {
         importeTotal: [null],
         citaBancaria: ['']
       }),
-
       vigencia: this.fb.group({
         inicio: [''],
         fin: ['']
       }),
-
-      busqueda: this.fb.group({
-        searchText: [''],
-        empleadoId: [null]
-      })
+      anio: [null],
+      quincena: [null],
     },
 
-    {
-      validators: [
-        factorImporteValidator(),
-        vigenciaRangoValidator()
-      ]
-    });
+    { validators: [factorImporteValidator(), vigenciaRangoValidator()]}
+  );
 
     this.juiciosMercantilesService.getBancos().subscribe({
       next: (resp) => {
@@ -280,6 +295,23 @@ export class JuiciosMercantiles {
 
       this.vigenciaFin = valor;
     }
+  }
+
+  onQnaModelChange(): void {
+    if (!this.showRecords || !this.filtersReady) return;
+    clearTimeout(this.qnaDebounceId);
+    this.qnaDebounceId = setTimeout(() => {
+      const key = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
+      if (this.lastQnaKey !== key && !this.isRefreshing) {
+        this.lastQnaKey = key;
+        this.refresh();
+      }
+    }, 0);
+  }
+
+
+  refresh(): void {
+   
   }
 
 

@@ -1,55 +1,5 @@
-:host {
-  --brand: #491D2A;
-  --ink-900: #1a1a1a;
-  --ink-700: #343a40;
-  --line: #e5e7eb;
-  --bg: #ffffff;
-  --card: #f6f6f7;
-   display: flex;
-  flex-direction: column;
-  min-height: 0;
-  flex: 1;
-}
-
-/* Página */
-.page-container { 
-  padding: 8px 12px 24px 12px;
-  
-  overflow-y: auto;
-}
-
-/* Título */
-.page-header { 
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between; 
-}
-
-.page-title { 
-  margin: 0;
-  font-weight: 800;
-  letter-spacing: .3px;
-  font-size: 28px;
-  line-height: 1.25;
-}
-
 @media (max-width: 576px) {
   .page-title { font-size: 22px; }
-}
-
-/* Encabezado de página */
-.page-header { 
-  display: grid; 
-  gap: 6px; 
-
-}
-
-/* Separador */
-.section-divider { 
-  height: 2px; 
-  background: var(--brand); 
-  opacity: 0.15; 
-  margin: 18px 0 16px; 
 }
 
 /* Encabezado de sección + acciones */
@@ -81,6 +31,9 @@
   border: 1px solid var(--line);
   box-shadow: 0 1px 2px rgba(0,0,0,.04);
   margin-bottom: 18px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px 20px;
 }
 
 /* Campo de búsqueda */
@@ -129,36 +82,7 @@
    display: block; 
 }
 
-/* Botones */
-.btn,
-.btn-primary,
-.btn-outline { 
-  font-weight: 700; 
-  letter-spacing: .2px; 
-}
 
-/* Primario sólido */
-.btn,
-.btn-primary {
-  background-color: var(--brand) !important;
-  color: #fff !important;
-}
-
-.btn:hover,
-.btn-primary:hover { 
-  filter: brightness(0.95); 
-}
-
-/* Contorno */
-.btn-outline {
-  border-color: var(--brand) !important;
-  color: var(--brand) !important;
-  background: transparent !important;
-}
-
-.btn-outline:hover { 
-  background: rgba(73,29,42,0.08) !important; 
-}
 
 /* Inputs Material: bordes y foco en brand */
 :host ::ng-deep 
@@ -295,4 +219,51 @@ mdc-notched-outline__trailing,
 
 .form-gri mat-form-field {
   width: 100%;
+}
+
+
+
+
+/* Tabla */
+.nomina-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.nomina-table th,
+.nomina-table td {
+  padding: 8px 10px;
+  border: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;          
+}
+.nomina-table th {
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  z-index: 3;
+  font-weight: 700;
+  color: #111827;
+  box-shadow: 0 1px 0 rgba(0,0,0,.05);
+}
+
+/* Fila hover y rayado suave (opcional) */
+.nomina-table tr:nth-child(even) td { background: #fafafa; }
+.nomina-table tr:hover td { background: #f5f7fb; }
+
+
+
+.nomina-table {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.nomina-table th {
+  background: #f8fafc;
+}
+
+.nomina-table td {
+  font-size: 13px;
 }
