@@ -1,0 +1,212 @@
+:host {
+  --brand: #4a1d2a;
+  --brand-100: rgba(73,29,42,0.08);
+  --bg: #fff;
+  --line: #e5e7eb;
+  --ink-700: #374151;
+  --ink-900: #111827;
+  --dlg-title-h: 56px;
+  --dlg-actions-h: 52px;
+  display: block;
+}
+
+.form-grid,
+.vigencia-grid,
+.name-row {
+  gap: 8px 10px;
+}
+
+.field-title {
+  margin: 2px 0 2px;
+  font-size: 12px;
+}
+
+.form-card {
+  margin-bottom: 8px;
+}
+
+
+.dialog-shell {
+  width: min(1200px, 92vw);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.dlg-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--brand);
+  color: #fff;
+  padding: 20px 15px;
+}
+
+.dlg-bar-title {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+:host ::ng-deep .dlg-bar .mat-icon {
+  color: #fff !important;
+  opacity: 1 !important;
+}
+
+:host ::ng-deep .dlg-bar .mat-mdc-icon-button {
+  --mdc-icon-button-icon-color: #ffffff;
+  --mdc-icon-button-disabled-icon-color: rgba(255, 255, 255, 0.38);
+}
+
+:host ::ng-deep .dlg-bar .mat-mdc-icon-button .mat-ripple-element {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.dlg-content {
+  padding: 14px 16px;
+  max-height: calc(80vh - var(--dlg-title-h) - var(--dlg-actions-h));
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg);
+}
+
+.dlg-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  background: #fff;
+}
+
+.dlg-actions button[mat-stroked-button] {
+  border-color: var(--brand);
+  color: var(--brand);
+  font-weight: 600;
+}
+
+.dlg-actions button[mat-stroked-button]:hover {
+  background: rgba(73, 29, 42, 0.06);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0 12px;
+}
+
+.section-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.form-card {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  margin-bottom: 14px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
+}
+
+.vigencia-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
+}
+
+.span-3 {
+  grid-column: 1 / -1;
+}
+
+.grid-empty {
+  grid-column: 1 / -1;
+  height: 0;
+  border-top: 1px solid var(--line);
+  margin: 10px 0 12px;
+  width: 100%;
+}
+
+.field-title {
+  display: block;
+  font-weight: 700;
+  color: var(--ink-900);
+  margin: 6px 0 4px;
+  font-size: 13px;
+}
+
+mat-form-field {
+  width: 100%;
+  display: block;
+}
+
+.full-width {
+  width: 100%;
+}
+
+@media (max-width: 720px) {
+  .form-grid,
+  .vigencia-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dlg-content {
+    padding: 12px;
+  }
+}
+
+.name-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px 16px;
+}
+
+@media (max-width: 720px) {
+  .name-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+:host ::ng-deep .jm-dialog-panel .mat-mdc-form-field {
+  --mdc-outlined-text-field-container-shape: 10px;
+}
+
+:host ::ng-deep .jm-dialog-panel .mat-mdc-form-field-infix {
+  min-height: 40px;        /* default suele ser más alto */
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+:host ::ng-deep .jm-dialog-panel .mat-mdc-text-field-wrapper {
+  padding-left: 10px;      /* reduce espacio interno */
+  padding-right: 10px;
+}
+
+:host ::ng-deep .jm-dialog-panel .mat-mdc-form-field-subscript-wrapper {
+  display: none;           /* quita el espacio reservado para hint/error */
+}
+
+.form-grid,
+.vigencia-grid,
+.name-row {
+  gap: 10px 12px;
+}
+
+.field-title {
+  margin: 4px 0 3px;
+  font-size: 12px;
+}
+
+.form-card {
+  margin-bottom: 10px;
+}
+
