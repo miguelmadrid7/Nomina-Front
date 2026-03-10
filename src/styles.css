@@ -107,7 +107,6 @@
   margin: 18px 0 16px; 
 }
 
-
 /* Encabezado de sección + acciones */
 .section-header { 
   display: flex; 
@@ -128,15 +127,11 @@
   box-shadow: 0 2px 6px rgba(0,0,0,.15);
 }
 
-
-/* Estolo del header de los dialogos */
-.dlg-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--brand);
-  color: #fff;
-  padding: 20px 15px;
+/* Header fijo arriba, sin texto */
+.dialog-header {
+  height: 56px;
+  background: #491D2A;
+  margin: 0;
 }
 
 .dlg-bar-title {

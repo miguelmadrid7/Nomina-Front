@@ -1,5 +1,6 @@
 <div class="dialog-shell">
-  <div class="dlg-bar"></div>
+  <div class="dialog-header"></div>
+  
 
   <div class="dlg-content">
     <div *ngIf="form" [formGroup]="form">
@@ -188,7 +189,6 @@
   </div>
 
   <div class="dlg-actions">
-    
     <button mat-flat-button class="btn-component" type="button" (click)="guardar()">Dar de alta</button>
 </div>
 </div>
