@@ -99,6 +99,16 @@ input{
   background:#f5f7fb;
 }
 
+/* ===== QNA FILTERS ===== */
+.qna-filters{
+  display: flex;
+  flex-direction: column;   
+  align-items: flex-start;  
+  gap: 6px;
+  margin-top: 6px;
+}
+
+
 /* ===== PREFIX / SUFFIX ===== */
 :host ::ng-deep .mat-mdc-form-field-icon-prefix{
   display:flex;
@@ -209,15 +219,6 @@ input{
 :host ::ng-deep 
 .mat-mdc-option .mdc-list-item__primary-text{
   text-transform:uppercase;
-}
-
-/* ===== QNA FILTERS ===== */
-.qna-filters{
-   display: flex;
-  flex-direction: column;   /* clave */
-  align-items: flex-start;  /* o stretch si quieres ocupar todo el ancho */
-  gap: 6px;
-  margin-top: 6px;
 }
 
 :host ::ng-deep .qna-filters .mat-mdc-form-field-subscript-wrapper {
