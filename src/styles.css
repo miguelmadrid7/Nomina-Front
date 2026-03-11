@@ -46,12 +46,20 @@
   color: #6b7280; 
 }
 
+/* Titulos con la nomenclatura h3 */
 .section-header h3 { 
   margin: 0; 
   font-size: 16px; 
   font-weight: 700; 
   color: var(--ink-900); 
 }
+
+/* Botones globales del lado dercho superior */
+.search-actions { 
+  display: flex; 
+  gap: 10px; 
+}
+
 
 /* Contenedor principal de tabla */
 .table-container {
