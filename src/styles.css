@@ -31,13 +31,12 @@
 }
 
 /* Título global */
-.page-title { 
+.page-title {
   margin: 0; 
-  font-weight: 800; 
-  font-size: 22px;
+  font-weight: 800 !important; 
+  font-size: 22px !important;
   color: var(--ink-900);
-  letter-spacing: .3px; 
-  
+  letter-spacing: .3px;
 }
 
 /* Subtítulo global */
@@ -45,6 +44,13 @@
   margin: 0; 
   padding-bottom: 10px;
   color: #6b7280; 
+}
+
+.section-header h3 { 
+  margin: 0; 
+  font-size: 16px; 
+  font-weight: 700; 
+  color: var(--ink-900); 
 }
 
 /* Contenedor principal de tabla */
