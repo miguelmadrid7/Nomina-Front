@@ -106,10 +106,8 @@ export class BeneficiarioJmDialog {
           }
         });
   }
-    
 
-
-   // Agregar este método helper a la clase
+  // Agregar este método helper a la clase
   private showSnack(message: string, action: string, duration: number): void {
     this.zone.runOutsideAngular(() => {
       setTimeout(() => {
@@ -237,7 +235,7 @@ export class BeneficiarioJmDialog {
     this.autocompleteTrigger?.closePanel();
   }
 
-  close(): void {
+  cerrar(): void {
     this.dialogRef.close();
   }
 

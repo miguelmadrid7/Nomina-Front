@@ -1,43 +1,30 @@
+/* GRID LAYOUT */
 .form-grid,
-.vigencia-grid,
-.name-row {
-  gap: 8px 10px;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 8px 0 12px;
-}
-
-.section-header h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--ink-900);
-}
-
-.form-card {
-  background: transparent;
-  padding: 0;
-  border-radius: 0;
-  border: none;
-  box-shadow: none;
-  margin-bottom: 14px;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px 16px;
-}
-
 .vigencia-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px 16px;
+  gap: 4px 16px;
+}
+
+.dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-bottom: 1px solid #ffffff;
+}
+
+.dialog-close {
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  margin-left: auto;
+}
+
+.name-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px 16px;
 }
 
 .span-3 {
@@ -52,25 +39,32 @@
   width: 100%;
 }
 
+/* FORM CARD */
+.form-card {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  margin-bottom: 2px;
+}
+
+/* FORM LABEL */
 .field-title {
   display: block;
   font-weight: 700;
   color: var(--ink-900);
-  margin: 6px 0 4px;
+  margin: 4px 0 2px;
   font-size: 13px;
 }
 
-.full-width {
+/* ANGULAR MATERIAL BASE */
+mat-form-field {
   width: 100%;
+  display: block;
 }
 
-.name-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px 16px;
-}
-
-
+/* MATERIAL DIALOG ICON FIX */
 :host ::ng-deep .dlg-bar .mat-icon {
   color: #fff !important;
   opacity: 1 !important;
@@ -85,46 +79,88 @@
   background-color: rgba(255, 255, 255, 0.2);
 }
 
+/* ANGULAR MATERIAL FORM OVERRIDES */
 :host ::ng-deep .jm-dialog-panel .mat-mdc-form-field {
   --mdc-outlined-text-field-container-shape: 10px;
 }
 
 :host ::ng-deep .jm-dialog-panel .mat-mdc-form-field-infix {
-  min-height: 40px;        /* default suele ser más alto */
-  padding-top: 8px;
-  padding-bottom: 8px;
+  min-height: 34px;
+  padding-top: 6px;
+  padding-bottom: 2px;
+}
+
+:host ::ng-deep .compact-field .mat-mdc-form-field-flex {
+  align-items: center;
+  gap: 8px;
+}
+
+:host ::ng-deep .compact-field .mat-mdc-form-field-icon-prefix {
+  width: 32px;
+  display: flex;
+  justify-content: center;
 }
 
 :host ::ng-deep .jm-dialog-panel .mat-mdc-text-field-wrapper {
-  padding-left: 10px;      /* reduce espacio interno */
+  padding-left: 10px;
   padding-right: 10px;
 }
 
 :host ::ng-deep .jm-dialog-panel .mat-mdc-form-field-subscript-wrapper {
-  display: none;           /* quita el espacio reservado para hint/error */
+  display: none;
+}
+
+/* eliminar espacio Angular Material */
+:host ::ng-deep .mat-mdc-form-field {
+  margin-bottom: 0 !important;
+}
+
+/* reducir padding card */
+:host ::ng-deep .mat-mdc-card-content {
+  padding: 0 !important;
+}
+
+/* COMPACT INPUT VARIANT */
+:host ::ng-deep .compact-field .mat-mdc-form-field-infix {
+  min-height: 32px;
+  padding-top: 4px;
+  padding-bottom: 2px;
+}
+
+:host ::ng-deep .compact-field .mat-mdc-text-field-wrapper {
+  padding-left: 8px;
+  padding-right: 15px;
+}
+
+:host ::ng-deep .compact-field mat-icon {
+  font-size: 18px;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+}
+
+:host ::ng-deep .compact-field input {
+  font-size: 13px;
 }
 
 
-mat-form-field {
-  width: 100%;
-  display: block;
-}
 
+
+
+/* RESPONSIVE */
 @media (max-width: 720px) {
+
   .form-grid,
   .vigencia-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .name-row {
     grid-template-columns: 1fr;
   }
 
   .dlg-content {
     padding: 12px;
   }
+
 }
-
-
-@media (max-width: 720px) {
-  .name-row {
-    grid-template-columns: 1fr;
-  }
-}
-
