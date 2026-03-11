@@ -15,6 +15,8 @@ import { BeneficiarioJMRequest } from '../../../models/beneficiario-jm-request.m
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Banco } from '../../../models/banco.model';
 import { MatTableModule } from '@angular/material/table';
+import { BeneficiarioJmDialog } from '../../../shared/dialogs/beneficiario-jm-dialog/beneficiario-jm-dialog';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-juicios-mercantiles',
@@ -30,6 +32,7 @@ import { MatTableModule } from '@angular/material/table';
     MatIconModule,
     MatButtonModule,
     MatTableModule,
+    MatPaginatorModule,
   ],
   templateUrl: './juicios-mercantiles.html',
   styleUrls: ['./juicios-mercantiles.css']
@@ -68,6 +71,7 @@ export class JuiciosMercantiles {
   qnaDebounceId: any;
   displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'importeTotal', 'formaAplicacion', 'qnaProceso', 'citaBancaria', 'clabeInterbancaria', 'institucionBancaria', 'acciones'];
 
+  totalElements = 0;
 
 
   ngOnInit() {
@@ -134,7 +138,25 @@ export class JuiciosMercantiles {
 
   buscarEmpleado() {
     const value = this.form.get('busqueda.searchText')?.value;
+    if (value && typeof value === 'object') {
+      return;
+    }
+
     const texto = typeof value === 'string' ? value.toLowerCase() : '';
+    if (!texto) {
+      this.resultado = [];
+      this.autocompleteTrigger?.closePanel();
+      this.showSnack('Captura un criterio de busqueda', 'Cerrar', 4000);
+    }
+
+    if(texto.length < 3 ){
+      this.resultado = [];
+      this.autocompleteTrigger?.closePanel();
+      this.showSnack('Captura almenos 3 caractares para buscar', 'Cerrar', 4000);
+      return;
+
+    }
+
 
     this.cargandoBusqueda = true;
     this.juiciosMercantilesService.getBuscarEmpleado().subscribe({
@@ -314,14 +336,42 @@ export class JuiciosMercantiles {
    
   }
 
+  modalBeneficiario(): void {
+    const empleadoId = this.form.get('busqueda.empleadoId')?.value;
+    if (!empleadoId) {
+      this.showSnack('Seleccionar un empleado primero', 'Cerrar', 4000);
+      return;
+    }
+
+    const dialogRef = this.dialog.open(BeneficiarioJmDialog, {
+      width: '1200px',
+      maxWidth: '92vw',
+      maxHeight: '90vh',
+      panelClass: 'jm-dialog-panel',
+      disableClose: false,
+      data: {
+        empleadoId, bancos: this.bancos,
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) =>{
+      if(!result) return;
+      this.juiciosMercantilesService.agregarBeneficiario(result).subscribe({
+        next: () => {
+          this.showSnack('Beneficiario guardado correctamente', 'Cerrar', 4000);
+          //this.refresh();
+        },
+        error: () => this.showSnack('Error al guardar beneficiario', 'Cerrar', 4000),
+      });
+    });
+
+  }
+
 
   clearFilters(): void {
     this.form.reset();
     this.resultado = [];
     this.autocompleteTrigger?.closePanel();
   }
-
-
-
 }
 
