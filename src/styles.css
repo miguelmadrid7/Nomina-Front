@@ -149,7 +149,7 @@
 
 .dlg-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 10px;
   padding: 10px 12px;
   border-top: 1px solid var(--line);
