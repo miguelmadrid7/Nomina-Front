@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, NgZone, ViewChild } from '@angular/core';
+import { Component, Inject, NgZone, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,7 +14,8 @@ import { JuiciosMercantilesService } from '../../../core/services/juicios-mercan
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BeneficiarioJMRequest } from '../../../models/beneficiario-jm-request.model';
 import { factorImporteValidator, rfcValidator, vigenciaRangoValidator } from '../../validators/juicios.validators';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { vigenciaFormatoValidator } from '../../validators/validaciones.validators';
 
 @Component({
   selector: 'app-beneficiario-jm-dialog',
@@ -53,7 +54,8 @@ export class BeneficiarioJmDialog {
     private juiciosMercantilesService: JuiciosMercantilesService, 
     private snackBar: MatSnackBar, 
     private zone: NgZone, 
-    private dialogRef: MatDialogRef<BeneficiarioJmDialog>) {}
+    private dialogRef: MatDialogRef<BeneficiarioJmDialog>,
+   @Inject(MAT_DIALOG_DATA) public data: { empleadoId: number; bancos: Banco[] }) {}
 
   ngOnInit() {
         this.form = this.fb.group({
@@ -86,25 +88,20 @@ export class BeneficiarioJmDialog {
             citaBancaria: ['']
           }),
           vigencia: this.fb.group({
-            inicio: [''],
-            fin: ['']
+            inicio: ['', [vigenciaFormatoValidator()]],
+            fin: ['', [vigenciaFormatoValidator()]]
           }),
           anio: [null],
           quincena: [null],
         },
-    
+  
         { validators: [factorImporteValidator(), vigenciaRangoValidator()]}
       );
-    
-        this.juiciosMercantilesService.getBancos().subscribe({
-          next: (resp) => {
-            this.bancos = resp?.data ?? [];
-          },
-          error: () => {
-            this.bancos = [];
-            this.showSnack('Error al cargar catálogo de bancos', 'Cerrar', 4000);
-          }
-        });
+  
+        // Usa datos del padre
+        this.bancos = this.data?.bancos ?? [];
+        // Setea el empleadoId recibido por el padre en el form del diálogo
+        this.form.get('busqueda.empleadoId')?.setValue(Number(this.data?.empleadoId));
   }
 
   // Agregar este método helper a la clase
@@ -116,117 +113,40 @@ export class BeneficiarioJmDialog {
     });
   }
 
-  onVigenciaInput(tipo: 'inicio' | 'fin') {
-
-    if (tipo === 'inicio') {
-      if (!this.vigenciaInicio) return;
-
-      let valor = this.vigenciaInicio.toString();
-
-      // Solo números
-      valor = valor.replace(/\D/g, '');
-
-      // Máximo 6 dígitos
-      if (valor.length > 6) {
-        valor = valor.substring(0, 6);
-      }
-
-      this.vigenciaInicio = valor;
-    }
-
-    if (tipo === 'fin') {
-      if (!this.vigenciaFin) return;
-
-      let valor = this.vigenciaFin.toString();
-
-      // Solo números
-      valor = valor.replace(/\D/g, '');
-
-      // Máximo 6 dígitos
-      if (valor.length > 6) {
-        valor = valor.substring(0, 6);
-      }
-
-      this.vigenciaFin = valor;
-    }
-  }
-
-  onFactorImporteInput() {
-
-    if (this.factorImporte == null) return;
-
-    // FACTOR (porcentaje)
-    if (this.formaAplicacion === 'P') {
-
-      let valor = this.factorImporte.toString();
-
-      // Solo números
-      valor = valor.replace(/\D/g, '');
-
-      // Máximo 3 dígitos
-      if (valor.length > 3) {
-        valor = valor.substring(0, 3);
-      }
-
-      let numero = Number(valor);
-
-      // Máximo 100%
-      if (numero > 100) {
-        numero = 100;
-      }
-
-      this.factorImporte = numero;
-    }
-
-    // IMPORTE FIJO
-    if (this.formaAplicacion === 'C') {
-      // Solo validar que sea número positivo
-      let numero = Number(this.factorImporte);
-
-      if (isNaN(numero)) {
-        this.factorImporte = undefined as any;
-        return;
-      }
-
-      if (numero < 0) {
-        this.factorImporte = 0;
-      }
-    }
-  }
-
   guardar(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.showSnack('Formulario inválido', 'Cerrar', 4000);
-      return; 
-    }
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    this.showSnack('Formulario inválido', 'Cerrar', 4000);
+    return;
+  }
 
-    const formValue = this.form.value;
+  const raw = this.form.get('busqueda.empleadoId')?.value;
+  const empleadoId = raw !== null && raw !== undefined ? Number(raw) : NaN;
 
-    const empleadoId = this.form.get('busqueda.empleadoId')?.value;
-    if (!empleadoId) {
-      this.showSnack('Seleccionar primero un empleado', 'Cerrar', 4000);
-      return;
-    }
+  if (!Number.isFinite(empleadoId)) {
+    this.showSnack('Seleccionar primero un empleado', 'Cerrar', 4000);
+    return;
+  }
 
-    const payload = {
-      empleadoId,
-      rfc: formValue.beneficiario?.rfc,
-      primerApellido: formValue.beneficiario?.primerApellido,
-      segundoApellido: formValue.beneficiario?.segundoApellido,
-      nombre: formValue.beneficiario?.nombre
-    };
+  const fv = this.form.value;
+  const payload = {
+    tabEmpleadosId: Number(this.data.empleadoId),
+    formaAplicacion: fv.descuento?.formaAplicacion,
+    factorImporte: fv.descuento?.factorImporte,
+    numeroDocumento: fv.descuento?.citaBancaria,
+    qnaini: Number(fv.vigencia?.inicio),
+    qnafin: Number(fv.vigencia?.fin),
+    tabBeneficiariosJmId: Number(this.data.empleadoId),
+    numeroBenef: 1
+  };
 
-    this.juiciosMercantilesService.agregarBeneficiario(payload).subscribe({
-      next: () => {
-        this.showSnack('Beneficiario guardado correctamente', 'Cerrar', 4000);
-        this.clearFilters();
-      },
-       error: () => {
-        this.showSnack('Error al guardar beneficiario' , 'Cerrar', 4000);
-      }
-    })
-
+  this.juiciosMercantilesService.agregarBeneficiario(payload).subscribe({
+    next: () => {
+      this.showSnack('Beneficiario guardado correctamente', 'Cerrar', 4000);
+      this.cerrar(); // o clearFilters(), pero normalmente se cierra el diálogo
+    },
+    error: () => this.showSnack('Error al guardar beneficiario', 'Cerrar', 4000),
+  });
   }
 
   clearFilters(): void {
@@ -238,5 +158,4 @@ export class BeneficiarioJmDialog {
   cerrar(): void {
     this.dialogRef.close();
   }
-
 }
