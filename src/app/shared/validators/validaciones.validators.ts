@@ -38,4 +38,13 @@ export function factorImporteValidator(): ValidatorFn {
   };
 }
 
-
+export function upperCaseValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+        const value = control.value;
+        if (!value) return null;
+        if (value !== value.toUpperCase()) {
+            return { notUpperCase: true };
+        }
+        return null;
+    };
+}
