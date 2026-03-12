@@ -14,6 +14,10 @@
   border-bottom: 1px solid #ffffff;
 }
 
+.uppercase-input {
+  text-transform: uppercase;
+}
+
 .dialog-close {
   width: 36px;
   height: 36px;

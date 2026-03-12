@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, NgZone, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -15,8 +15,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BeneficiarioJMRequest } from '../../../models/beneficiario-jm-request.model';
 import { factorImporteValidator, rfcValidator, vigenciaRangoValidator } from '../../validators/juicios.validators';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { vigenciaFormatoValidator } from '../../validators/validaciones.validators';
-import { SoloLetrasDirectiva } from '../../directives/validaciones.directivas';
+import { upperCaseValidator, vigenciaFormatoValidator } from '../../validators/validaciones.validators';
+import { SoloLetrasDirectiva } from '../../directives/solo-letras.directivas';
 
 @Component({
   selector: 'app-beneficiario-jm-dialog',
@@ -70,7 +70,7 @@ export class BeneficiarioJmDialog {
             nombre: ['']
           }),
           empleado: this.fb.group({
-            rfc: ['', []],
+            rfc: ['', [Validators.required, upperCaseValidator]],
             primerApellido: [''],
             segundoApellido: [''],
             nombre: [''],
