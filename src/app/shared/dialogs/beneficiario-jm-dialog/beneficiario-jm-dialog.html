@@ -39,7 +39,8 @@
                 <input 
                   matInput 
                   formControlName="primerApellido" 
-                  placeholder="Ingresar Apellido Paterno" />
+                  placeholder="Ingresar Apellido Paterno"
+                  appSoloLetras/>
                 <mat-error *ngIf="form.get('beneficiario.primerApellido')?.invalid && (form.get('beneficiario.primerApellido')?.touched)">Ingresa el apellido paterno (mín. 2 caracteres).</mat-error>
               </mat-form-field>
             </div>

@@ -16,6 +16,7 @@ import { BeneficiarioJMRequest } from '../../../models/beneficiario-jm-request.m
 import { factorImporteValidator, rfcValidator, vigenciaRangoValidator } from '../../validators/juicios.validators';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { vigenciaFormatoValidator } from '../../validators/validaciones.validators';
+import { SoloLetrasDirectiva } from '../../directives/validaciones.directivas';
 
 @Component({
   selector: 'app-beneficiario-jm-dialog',
@@ -31,6 +32,7 @@ import { vigenciaFormatoValidator } from '../../validators/validaciones.validato
     MatIconModule,
     MatButtonModule,
     MatTableModule,
+    SoloLetrasDirectiva
   ],
   templateUrl: './beneficiario-jm-dialog.html',
   styleUrl: './beneficiario-jm-dialog.css'
