@@ -1,0 +1,59 @@
+.home-shell {
+  min-height: 100vh;
+  --header-height: 64px;
+}
+
+.content-shell {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: auto;
+  padding-top: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Evita cualquier separación visual del header respecto al divider */
+.content-shell > header.navbar {
+  margin: 0;
+  border-radius: 0;
+}
+
+.home-shell{
+  height: calc(100vh - 64px); /* resta altura del header */
+  display: flex;
+}
+
+.sidebar-wrapper{
+  width: 280px;
+  flex-shrink: 0;
+  transition: width 0.3s ease;
+}
+
+.sidebar-collapsed .sidebar-wrapper{
+  width: 80px;
+}
+
+.content-shell{
+  flex: 1;
+  overflow: auto;
+}
+
+
+.page-header{
+  background:#f6f7fb;
+  border-bottom:1px solid #e5e7eb;
+}
+
+.page-title{
+  font-size:22px;
+  font-weight:600;
+}
+
+.breadcrumb{
+  font-size:14px;
+}
+
+.breadcrumb a{
+  text-decoration:none;
+  color:#6c757d;
+}

@@ -1,0 +1,138 @@
+<div class="dlg-bar"></div>
+
+ <mat-dialog-content class="dlg-content">
+  <div class="employee-info">
+
+  <!-- Entidad -->
+  <div class="employee-field full">
+    <div class="dlg-bar-title">Entidad Federativa: HIDALGO</div>
+  </div>
+
+  <!-- fila 1 -->
+  <div class="employee-field">
+    <span class="label">Nombre:</span>
+    <span class="value">{{ data.nombreEmpleado }}</span>
+  </div>
+
+  <div class="employee-field">
+    <span class="label">Clave:</span>
+    <span class="value">{{ data.plaza }}</span>
+  </div>
+
+  <!-- fila 2 -->
+  <div class="employee-field">
+    <span class="label">RFC:</span>
+    <span class="value">{{ data.rfc }}</span>
+  </div>
+
+  <div class="employee-field">
+    <span class="label">QNA:</span>
+    <span class="value">{{ data.qnaTexto }}</span>
+  </div>
+
+  <!-- fila 3 -->
+  <div class="employee-field">
+    <span class="label">CURP:</span>
+    <span class="value">{{ data.curp }}</span>
+  </div>
+
+  <div class="employee-field">
+    <span class="label">No. Comprobante:</span>
+    <span class="value">{{ noComprobanteCab }}</span>
+  </div>
+
+  <div class="employee-field">
+    <span class="label">Nómina (ordinaria, extraoirdinaria):</span>
+    <span class="value"></span>
+  </div>
+
+
+  <!-- totales -->
+  <div class="employee-totals">
+    <div>Percepciones: $ {{ totalPercepciones | number:'1.2-2' }}</div>
+    <div>Deducciones: $ {{ totalDeducciones | number:'1.2-2' }}</div>
+    <div>Líquido: $ {{ liquido | number:'1.2-2' }}</div>
+  </div>
+
+</div>
+
+
+
+
+  <!-- Selector de vista -->
+  <div class="view-toggle">
+    <mat-radio-group [(ngModel)]="selectedView">
+      <mat-radio-button value="ambas">Ambas</mat-radio-button>
+      <mat-radio-button value="percepciones">Percepciones</mat-radio-button>
+      <mat-radio-button value="deducciones">Deducciones</mat-radio-button>
+    </mat-radio-group>
+  </div>
+
+  <!-- Tablas Percepciones / Deducciones con Angular Material -->
+  <div class="pd-grid" [ngClass]="{ 'single': selectedView !== 'ambas' }">
+    <!-- Percepciones -->
+    <div class="pd-col"
+         *ngIf="(selectedView === 'ambas' || selectedView === 'percepciones') && percepciones.length > 0">
+      <div class="pd-title">Percepciones</div>
+      <table mat-table [dataSource]="percepciones" class="mat-elevation-z1 pd-table">
+
+        <ng-container matColumnDef="tipo">
+          <th mat-header-cell *matHeaderCellDef>Tipo</th>
+          <td mat-cell *matCellDef="let r">{{ r.tipo }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="concepto">
+          <th mat-header-cell *matHeaderCellDef>Concepto</th>
+          <td mat-cell *matCellDef="let r">{{ r.concepto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="importe">
+          <th mat-header-cell *matHeaderCellDef class="right">Importe</th>
+          <td mat-cell *matCellDef="let r" class="right">{{ r.importe | number:'1.2-2' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['tipo','concepto','importe']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['tipo','concepto','importe'];"></tr>
+      </table>
+
+      <!-- Estado vacío opcional -->
+      <div *ngIf="percepciones.length === 0" class="empty-hint">Sin percepciones.</div>
+    </div>
+
+    <!-- Deducciones -->
+    <div class="pd-col"
+         *ngIf="(selectedView === 'ambas' || selectedView === 'deducciones') && deducciones.length > 0">
+      <div class="pd-title">Deducciones</div>
+      <table mat-table [dataSource]="deducciones" class="mat-elevation-z1 pd-table">
+
+        <ng-container matColumnDef="tipo">
+          <th mat-header-cell *matHeaderCellDef>Tipo</th>
+          <td mat-cell *matCellDef="let r">{{ r.tipo }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="concepto">
+          <th mat-header-cell *matHeaderCellDef>Concepto</th>
+          <td mat-cell *matCellDef="let r">{{ r.concepto }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="importe">
+          <th mat-header-cell *matHeaderCellDef class="right">Importe</th>
+          <td mat-cell *matCellDef="let r" class="right">{{ r.importe | number:'1.2-2' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['tipo','concepto','importe']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['tipo','concepto','importe'];"></tr>
+      </table>
+
+      <!-- Estado vacío opcional -->
+      <div *ngIf="deducciones.length === 0" class="empty-hint">Sin deducciones.</div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+
+
+
+<mat-dialog-actions align="end" class="dlg-actions">
+  <button mat-stroked-button color="primary" (click)="close()">Cerrar</button>
+</mat-dialog-actions>

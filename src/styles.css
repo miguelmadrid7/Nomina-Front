@@ -1,66 +1,206 @@
-body {
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
+/* Colores globales de la aplicacion */
+:root {
+  --brand: #491D2A;
+  --brand-600: #491D2A;
+  --brand-100: #f7eef1;
+  --ink-900: #1a1a1a;
+  --ink-700: #343a40;
+  --line: #e5e7eb;
+  --bg: #ffffff;
+  --card: #f6f6f7;
+  --dlg-title-h: 52px;
+  --dlg-actions-h: 64px;
 }
 
-html {
-  height: -webkit-fill-available;
+/* Diseño de las  paginas globales  */ 
+.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  min-height: 100%;
+  padding: var(--space-md);
+  box-sizing: border-box;
 }
 
-main {
-  height: 100vh;
-  height: -webkit-fill-available;
-  max-height: 100vh;
-  overflow-x: auto;
-  overflow-y: hidden;
+/* Encabezado de página */
+.page-header { 
+  display: flex; 
+  flex-direction: column;
+  gap: var(--space-xs); 
+
 }
 
-.dropdown-toggle { outline: 0; }
+/* Título global */
+.page-title {
+  margin: 0; 
+  font-weight: 800 !important; 
+  font-size: 22px !important;
+  color: var(--ink-900);
+  letter-spacing: .3px;
+}
 
-.btn-toggle {
-  padding: .25rem .5rem;
+/* Subtítulo global */
+.page-subtitle { 
+  margin: 0; 
+  padding-bottom: 10px;
+  color: #6b7280; 
+}
+
+/* Titulos con la nomenclatura h3 */
+.section-header h3 { 
+  margin: 0; 
+  font-size: 16px; 
+  font-weight: 700; 
+  color: var(--ink-900); 
+}
+
+/* Botones globales del lado dercho superior */
+.search-actions { 
+  display: flex; 
+  gap: 10px; 
+}
+
+
+/* Contenedor principal de tabla */
+.table-container {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;                
+}
+
+/* Tarjeta de la tabla */
+.table-card.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Contenido y área scrolleable */
+.table-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.table-scroll {
+  width: 100%;
+  overflow: auto;               
+  flex: 1 1 auto;
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable both-edges;
+}
+
+/* Paginador/foot */
+.table-footer {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 8px;
+  gap: 8px;
+  box-sizing: border-box;
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Divider de todas paginas globales  */ 
+.section-divider { 
+  grid-column: 1 / -1;
+  height: 2px; 
+  background: var(--brand); 
+  opacity: 0.15; 
+  margin: 18px 0 16px; 
+}
+
+/* Encabezado de sección + acciones */
+.section-header { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  gap: 12px; 
+  margin: 8px 0 12px; 
+}
+
+/* Botones */
+.btn-component {
+  background-color: #491D2A !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  padding: 8px 18px !important;
   font-weight: 600;
-  color: var(--bs-emphasis-color);
-  background-color: transparent;
-}
-.btn-toggle:hover,
-.btn-toggle:focus {
-  color: rgba(var(--bs-emphasis-color-rgb), .85);
-  background-color: var(--bs-tertiary-bg);
+  text-transform: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
 }
 
-.btn-toggle::before {
-  width: 1.25em;
-  line-height: 0;
-  content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
-  transition: transform .35s ease;
-  transform-origin: .5em 50%;
+/* Texto informativo sobre empleado estilos globales */
+.info-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 4px 0;
 }
 
-[data-bs-theme="dark"] .btn-toggle::before {
-  content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%28255,255,255,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+.info-content {
+  display: flex;
+  flex-direction: column;
 }
 
-.btn-toggle[aria-expanded="true"] {
-  color: rgba(var(--bs-emphasis-color-rgb), .85);
-}
-.btn-toggle[aria-expanded="true"]::before {
-  transform: rotate(90deg);
+.info-label {
+  font-size: 12px;
+  color: #6b7280;
 }
 
-.btn-toggle-nav a {
-  padding: .1875rem .5rem;
-  margin-top: .125rem;
-  margin-left: 1.25rem;
-}
-.btn-toggle-nav a:hover,
-.btn-toggle-nav a:focus {
-  background-color: var(--bs-tertiary-bg);
+.info-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
 }
 
-.scrollarea {
-  overflow-y: auto;
+/* Header fijo arriba, sin texto */
+.dialog-header {
+  height: 56px;
+  background: #491D2A;
+  margin: 0;
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.dlg-bar-title {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.dlg-content {
+  padding: 14px 16px;
+  max-height: calc(80vh - var(--dlg-title-h) - var(--dlg-actions-h));
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg);
+}
+
+.dlg-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  background: #fff;
+}
+
+.dlg-actions button[mat-stroked-button] {
+  border-color: var(--brand);
+  color: var(--brand);
+  font-weight: 600;
+}
+
+.dlg-actions button[mat-stroked-button]:hover {
+  background: rgba(73, 29, 42, 0.06);
+}

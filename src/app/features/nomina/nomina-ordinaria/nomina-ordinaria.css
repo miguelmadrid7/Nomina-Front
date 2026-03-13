@@ -1,0 +1,99 @@
+.actions-right {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin: 8px 0 12px 0;
+  padding: 0 4px;
+  box-sizing: border-box;
+}
+
+/* Tabla */
+.nomina-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.nomina-table th,
+.nomina-table td {
+  padding: 8px 10px;
+  border: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;          
+}
+.nomina-table th {
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  z-index: 3;
+  font-weight: 700;
+  color: #111827;
+  box-shadow: 0 1px 0 rgba(0,0,0,.05);
+}
+
+/* Fila hover y rayado suave (opcional) */
+.nomina-table tr:nth-child(even) td { background: #fafafa; }
+.nomina-table tr:hover td { background: #f5f7fb; }
+
+/* Header con filtro (CURP/RFC/Empleado) */
+.header-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+.header-filter span {
+  font-weight: 700;
+  font-size: 13px;
+  color: #1f2937;
+}
+.header-filter input {
+  font-size: 12px;
+  padding: 6px 8px;
+  width: 180px;
+  box-sizing: border-box;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.header-filter input:focus {
+  border-color: #491D2A;
+  box-shadow: 0 0 0 3px rgba(73,29,42,.15);
+}
+
+/* Columna QNA con selects en línea */
+.qna-filters-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.qna-field { width: 160px; max-width: 200px; }
+
+/* Estados vacíos */
+.empty {
+  padding: 16px;
+  border: 1px dashed #e5e7eb;
+  border-radius: 8px;
+  color: #374151;
+  background: #fafafa;
+  flex: 0 0 auto;
+}
+
+/* Mat stepper (si se usa en esta pantalla) */
+.process-steps { margin-top: 20px; max-width: 900px; }
+.step-content { display: flex; align-items: center; gap: 10px; padding: 8px 0; }
+
+/* Ajustes responsive */
+@media (max-width: 960px) {
+  .header-filter input { width: 140px; }
+  .qna-field { width: 140px; }
+}
+@media (max-width: 720px) {
+  .actions-right { justify-content: flex-start; flex-wrap: wrap; }
+  .btn-descarga-csv { width: auto; }
+  .header-filter input { width: 120px; }
+  .qna-field { width: 120px; }
+}
