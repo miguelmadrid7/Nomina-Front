@@ -114,9 +114,8 @@ export class BeneficiarioJmDialog {
   }
 
   cancelar(): void {
-  // Cierra el diálogo devolviendo un resultado "cancelado"
-  this.dialogRef.close({ cancelled: true });
-}
+    this.dialogRef.close({ cancelled: true });
+  }
 
   cerrar(): void {
     this.dialogRef.close(true);
