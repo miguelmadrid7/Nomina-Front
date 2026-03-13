@@ -110,15 +110,15 @@
                         <!-- Importe  total a pagar -->
                         <ng-container matColumnDef="importeTotal">
                                 <th mat-header-cell *matHeaderCellDef>
-                                    <span>Importe total a pagar</span>
+                                    <span>Importe pagar $</span>
                                 </th>
-                                <td mat-cell *matCellDef="let e">{{ e.importeTotal }}</td>
+                                <td mat-cell *matCellDef="let e">$ {{ e.importeTotal }}</td>
                         </ng-container>
 
                         <!-- Cita bancaria -->
                         <ng-container matColumnDef="citaBancaria">
                                 <th mat-header-cell *matHeaderCellDef>Cita bancaria</th>
-                                <td mat-cell *matCellDef="let e">{{ e.citaBancaria }}</td>
+                                <td mat-cell *matCellDef="let e">{{ e.numeroDocumento }}</td>
                         </ng-container>
 
                         <!-- Forma aplicacion -->
@@ -154,7 +154,7 @@
                                         </div>
 
                                     </th>
-                                <td mat-cell *matCellDef="let e">{{ e.qnaProceso }}</td>
+                                <td mat-cell *matCellDef="let e">{{ e.qnaini }} - {{ e.qnafin }}</td>
                         </ng-container>
 
                         <!-- Clabe bancaria -->
