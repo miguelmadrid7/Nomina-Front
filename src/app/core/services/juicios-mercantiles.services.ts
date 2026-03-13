@@ -5,6 +5,7 @@ import { Observable } from "rxjs";
 import { BeneficiarioJMRequest } from "../../models/beneficiario-jm-request.model";
 import { ApiResponse } from "../../models/api-Response.model";
 import { Banco } from "../../models/banco.model";
+import { BeneficiarioNom } from "../../models/beneficiario-nom.model";
 
 @Injectable({ providedIn: 'root' })
 export class JuiciosMercantilesService {
@@ -18,8 +19,12 @@ export class JuiciosMercantilesService {
     return this.http.get<BeneficiarioJMRequest[]>(`${this.base}/beneficiarios/tab`);
   }
 
-  agregarBeneficiario(payload: BeneficiarioJMRequest): Observable<number> {
-    return this.http.post<number>(`${this.base}/beneficiarios/tab`, payload);
+  getobtenerBeneficiarios(empleadoId: number) {
+    return this.http.get<ApiResponse<BeneficiarioNom[]>>(`${this.base}/beneficiarios/nom/${empleadoId}`);
+  }
+
+  agregarBeneficiario(data: any) {
+    return this.http.post<number>(`${this.base}/beneficiarios/nom`, data);
   }
 
 

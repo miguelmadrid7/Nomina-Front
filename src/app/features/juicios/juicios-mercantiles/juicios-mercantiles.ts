@@ -43,7 +43,7 @@ export class JuiciosMercantiles {
     private dialog: MatDialog,  
     private zone: NgZone, 
     private snackBar: MatSnackBar,
-  private cd: ChangeDetectorRef ) {}
+    private cd: ChangeDetectorRef ) {}
 
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   form!: FormGroup;
@@ -61,6 +61,8 @@ export class JuiciosMercantiles {
   anioSeleccionado: number | null = null;
   quincenaSeleccionada: number | null = null;
 
+  beneficiarios: any[] = [];
+
   showRecords = true;
 
 
@@ -70,7 +72,6 @@ export class JuiciosMercantiles {
   lastQnaKey: string | null = null;
   qnaDebounceId: any;
   displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'importeTotal', 'formaAplicacion', 'qnaProceso', 'citaBancaria', 'clabeInterbancaria', 'institucionBancaria', 'acciones'];
-
   totalElements = 0;
 
 
@@ -184,7 +185,7 @@ export class JuiciosMercantiles {
   empleadoSeleccionado(emp: BeneficiarioJMRequest) {
     this.form.patchValue({
       busqueda:{
-        empleadoId: emp.id,
+        empleadoId: Number(emp.id),
         searchText: emp
       },
 
@@ -197,6 +198,10 @@ export class JuiciosMercantiles {
     });
     this.resultado = [];
     this.autocompleteTrigger?.closePanel();
+    
+    if(emp.id){
+      this.cargarBeneficiarios(emp.id);
+    }
   }
 
   displayEmpleado(emp: BeneficiarioJMRequest | string | null): string {
@@ -215,12 +220,14 @@ export class JuiciosMercantiles {
 
     const formValue = this.form.value;
 
-    const empleadoId = this.form.get('busqueda.empleadoId')?.value;
-    if (!empleadoId) {
+    const raw = this.form.get('busqueda.empleadoId')?.value;
+    const empleadoId = raw !== null && raw !== undefined ? Number(raw) : NaN;
+    if (!Number.isFinite(empleadoId)) {
       this.showSnack('Seleccionar primero un empleado', 'Cerrar', 4000);
       return;
     }
 
+    
     const payload = {
       empleadoId,
       rfc: formValue.beneficiario?.rfc,
@@ -336,35 +343,46 @@ export class JuiciosMercantiles {
    
   }
 
-  modalBeneficiario(): void {
-    const empleadoId = this.form.get('busqueda.empleadoId')?.value;
-    if (!empleadoId) {
+  modalBeneficiario(beneficiario?: any): void {
+  const raw = this.form.get('busqueda.empleadoId')?.value;
+  const empleadoId = raw !== null && raw !== undefined ? Number(raw) : NaN;
+    if (!Number.isFinite(empleadoId)) {
       this.showSnack('Seleccionar un empleado primero', 'Cerrar', 4000);
       return;
     }
 
-    const dialogRef = this.dialog.open(BeneficiarioJmDialog, {
-      width: '1200px',
-      maxWidth: '92vw',
-      maxHeight: '90vh',
-      panelClass: 'jm-dialog-panel',
-      disableClose: false,
-      data: {
-        empleadoId, bancos: this.bancos,
+  const dialogRef = this.dialog.open(BeneficiarioJmDialog, {
+    width: '1200px',
+    maxWidth: '92vw',
+    maxHeight: '90vh',
+    panelClass: 'jm-dialog-panel',
+    disableClose: false,
+    data: {
+      empleadoId,
+      bancos: this.bancos,
+      modo: beneficiario ? 'editar' : 'crear',
+      beneficiario
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (!result) return;
+    // SOLO refrescar la tabla
+    this.cargarBeneficiarios(empleadoId);
+  });
+  }
+
+  cargarBeneficiarios(empleadoId: number){
+    this.juiciosMercantilesService.getobtenerBeneficiarios(empleadoId).subscribe({
+      next: (resp:any) => {
+        this.beneficiarios = resp.data ?? [];
+        this.totalElements = this.beneficiarios.length;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.showSnack('Error al cargar beneficiarios', 'Cerrar', 4000);
       }
     });
-
-    dialogRef.afterClosed().subscribe((result) =>{
-      if(!result) return;
-      this.juiciosMercantilesService.agregarBeneficiario(result).subscribe({
-        next: () => {
-          this.showSnack('Beneficiario guardado correctamente', 'Cerrar', 4000);
-          //this.refresh();
-        },
-        error: () => this.showSnack('Error al guardar beneficiario', 'Cerrar', 4000),
-      });
-    });
-
   }
 
 
