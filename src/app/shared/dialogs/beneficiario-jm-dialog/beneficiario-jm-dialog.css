@@ -24,6 +24,11 @@
   justify-content: center;
 }
 
+:host ::ng-deep button.btn-small-danger.mat-mdc-unelevated-button {
+  background: #d32f2f !important;
+  color: #fff !important;
+}
+
 .btn-small-primary {
   background: #1976d2;
   color: #fff;
