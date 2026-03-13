@@ -17,6 +17,7 @@ import { Banco } from '../../../models/banco.model';
 import { MatTableModule } from '@angular/material/table';
 import { BeneficiarioJmDialog } from '../../../shared/dialogs/beneficiario-jm-dialog/beneficiario-jm-dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { ApiResponse } from '../../../models/api-Response.model';
 
 @Component({
   selector: 'app-juicios-mercantiles',
@@ -137,50 +138,48 @@ export class JuiciosMercantiles {
   }
 
 
-  buscarEmpleado() {
-    const value = this.form.get('busqueda.searchText')?.value;
-    if (value && typeof value === 'object') {
-      return;
-    }
+buscarEmpleado() {
+  const value = this.form.get('busqueda.searchText')?.value;
+  if (value && typeof value === 'object') return;
 
-    const texto = typeof value === 'string' ? value.toLowerCase() : '';
-    if (!texto) {
-      this.resultado = [];
-      this.autocompleteTrigger?.closePanel();
-      this.showSnack('Captura un criterio de busqueda', 'Cerrar', 4000);
-    }
-
-    if(texto.length < 3 ){
-      this.resultado = [];
-      this.autocompleteTrigger?.closePanel();
-      this.showSnack('Captura almenos 3 caractares para buscar', 'Cerrar', 4000);
-      return;
-
-    }
-
-
-    this.cargandoBusqueda = true;
-    this.juiciosMercantilesService.getBuscarEmpleado().subscribe({
-      next: (data) => {
-        this.resultado = data.filter(b =>
-          b.rfc?.toLowerCase().includes(texto) ||
-          b.primerApellido?.toLowerCase().includes(texto) ||
-          b.segundoApellido?.toLowerCase().includes(texto) ||
-          b.nombre?.toLowerCase().includes(texto) 
-        );
-
-        this.cargandoBusqueda = false;
-
-        if(this.autocompleteTrigger) {
-          this.autocompleteTrigger.openPanel();
-        }
-      },
-      error: () => {
-        this.cargandoBusqueda = false;
-        this.showSnack('Error en la busqueda' , 'Cerrar', 4000);
-      }
-    });
+  const texto = typeof value === 'string' ? value.toLowerCase() : '';
+  if (!texto) {
+    this.resultado = [];
+    this.autocompleteTrigger?.closePanel();
+    this.showSnack('Captura un criterio de busqueda', 'Cerrar', 4000);
+    return; // agrega return para no seguir
   }
+  if (texto.length < 3) {
+    this.resultado = [];
+    this.autocompleteTrigger?.closePanel();
+    this.showSnack('Captura almenos 3 caractares para buscar', 'Cerrar', 4000);
+    return;
+  }
+
+  this.cargandoBusqueda = true;
+  this.juiciosMercantilesService.getBuscarEmpleado().subscribe({
+    next: (resp: ApiResponse<BeneficiarioJMRequest[]>) => {
+      const lista: BeneficiarioJMRequest[] = resp?.data ?? [];
+      this.resultado = lista.filter((b: BeneficiarioJMRequest) =>
+        b.rfc?.toLowerCase().includes(texto) ||
+        b.primerApellido?.toLowerCase().includes(texto) ||
+        b.segundoApellido?.toLowerCase().includes(texto) ||
+        b.nombre?.toLowerCase().includes(texto)
+      );
+
+      this.cargandoBusqueda = false;
+      if (this.resultado.length > 0) {
+        setTimeout(() => this.autocompleteTrigger?.openPanel());
+      } else {
+        this.autocompleteTrigger?.closePanel();
+      }
+    },
+    error: () => {
+      this.cargandoBusqueda = false;
+      this.showSnack('Error en la busqueda', 'Cerrar', 4000);
+    }
+  });
+}
 
   empleadoSeleccionado(emp: BeneficiarioJMRequest) {
     this.form.patchValue({

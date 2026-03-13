@@ -15,9 +15,9 @@ export class JuiciosMercantilesService {
 
 
 
-  getBuscarEmpleado(): Observable<BeneficiarioJMRequest[]> {
-    return this.http.get<BeneficiarioJMRequest[]>(`${this.base}/beneficiarios/tab`);
-  }
+  getBuscarEmpleado() {
+  return this.http.get<ApiResponse<BeneficiarioJMRequest[]>>(`${this.base}/beneficiarios/tab`);
+}
 
   getobtenerBeneficiarios(empleadoId: number) {
     return this.http.get<ApiResponse<BeneficiarioNom[]>>(`${this.base}/beneficiarios/nom/${empleadoId}`);
