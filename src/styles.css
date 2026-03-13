@@ -141,59 +141,6 @@
   box-shadow: 0 2px 6px rgba(0,0,0,.15);
 }
 
-.btn-group {
-  gap: 16px;
-}
-
-/* Botones chicos con color de fondo + color de ícono (heredado) */
-.btn-small-danger {
-  background: #d32f2f;
-  color: #fff;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-small-primary {
-  background: #1976d2;
-  color: #fff;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-small-success {
-  background: #2e7d32;
-  color: #fff;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-small-danger,
-.btn-small-primary,
-.btn-small-success {
-  width: 100px;
-  height: 32px;
-  padding: 0;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Texto informativo sobre empleado estilos globales */
 .info-field {
   display: flex;
