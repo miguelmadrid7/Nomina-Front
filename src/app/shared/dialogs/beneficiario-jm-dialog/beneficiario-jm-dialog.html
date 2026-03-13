@@ -101,8 +101,14 @@
                 matInput 
                 formControlName="importeTotal" 
                 type="number" 
+                min="0" 
+                step="any" 
+                inputmode="decimal" 
+                (keydown)="($event.key === '-' || $event.key === 'e' || $event.key === 'E') ? $event.preventDefault() : null" 
+                (wheel)="$event.preventDefault()" 
+                appSoloLetras
                 placeholder="Ingresar importe total" />
-              <mat-error *ngIf="form.get('descuento.importeTotal')?.invalid && (form.get('descuento.importeTotal')?.touched)">Captura un importe válido (>= 0).</mat-error>
+              <mat-error *ngIf="form.get('descuento.importeTotal')?.invalid && (form.get('descuento.importeTotal')?.touched)">Captura un importe válido.</mat-error>
             </mat-form-field>
           </div>
 
@@ -141,23 +147,18 @@
                 id="factorImporte"
                 formControlName="factorImporte"
                 [type]="form.get('descuento.formaAplicacion')?.value === 'P' ? 'text' : 'number'"
-
                 [attr.min]="form.get('descuento.formaAplicacion')?.value !== 'P' ? 0 : null"
                 [attr.step]="form.get('descuento.formaAplicacion')?.value !== 'P' ? 'any' : null"
- 
                 [attr.maxlength]="form.get('descuento.formaAplicacion')?.value === 'P' ? 3 : null"
-
                 inputmode="decimal"
                 (keydown)="(form.get('descuento.formaAplicacion')?.value !== 'P') && ( $event.key === '-' || $event.key === 'e' || $event.key === 'E') ? $event.preventDefault() : null"
                 placeholder="Ingresar cantidad"/>
               <mat-error *ngIf="form.get('descuento.factorImporte')?.hasError('required') && (form.get('descuento.factorImporte')?.touched)">
                 Campo obligatorio
               </mat-error>
-
               <mat-error *ngIf="form.get('descuento.factorImporte')?.hasError('min') && (form.get('descuento.factorImporte')?.touched)">
                 Debe ser un valor positivo
               </mat-error>
-
               <mat-error *ngIf="form.get('descuento.factorImporte')?.hasError('max') && (form.get('descuento.factorImporte')?.touched)">
                 El porcentaje no puede ser mayor a 100
               </mat-error>
@@ -236,6 +237,6 @@
 
   <div class="dlg-actions">
     <button mat-flat-button class="btn-small-primary" type="button" (click)="guardar()">Guardar</button>
-    <button mat-flat-button class="btn-small-danger" type="button" (click)="guardar()">Cancelar</button>
+    <button mat-flat-button class="btn-small-danger" type="button" (click)="cancelar()">Cancelar</button>
   </div>
 </div>
