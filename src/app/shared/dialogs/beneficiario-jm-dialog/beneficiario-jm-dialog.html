@@ -26,7 +26,18 @@
                   formControlName="rfc" 
                   maxlength="13" 
                   placeholder="Ingresar RFC del beneficiario" />
-                <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('notUpperCase')">RFC inválido </mat-error>
+                <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('required')">
+                  El RFC es obligatorio
+                </mat-error>
+                <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('rfcLongitud')">
+                  Longitud inválida: debe ser de 12 (Moral) o 13 (Física) caracteres
+                </mat-error>
+                <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('rfcFecha')">
+                  La fecha (AAMMDD) dentro del RFC no es válida
+                </mat-error>
+                <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('rfcFormato')">
+                  Formato de RFC inválido
+                </mat-error>
               </mat-form-field>
             </div>
 
@@ -83,7 +94,7 @@
 
           <!-- Importe total a pagar -->
           <div>
-            <label class="field-title">Importe total que se le debe de pagar*</label>
+            <label class="field-title">Importe total*</label>
             <mat-form-field appearance="outline" class="login-field compact-field uppercase-input" floatLabel="always">
               <mat-icon matPrefix>attach_money</mat-icon>
               <input 
@@ -130,9 +141,30 @@
                 id="factorImporte"
                 formControlName="factorImporte"
                 [type]="form.get('descuento.formaAplicacion')?.value === 'P' ? 'text' : 'number'"
+
+                [attr.min]="form.get('descuento.formaAplicacion')?.value !== 'P' ? 0 : null"
+                [attr.step]="form.get('descuento.formaAplicacion')?.value !== 'P' ? 'any' : null"
+ 
                 [attr.maxlength]="form.get('descuento.formaAplicacion')?.value === 'P' ? 3 : null"
+
+                inputmode="decimal"
+                (keydown)="(form.get('descuento.formaAplicacion')?.value !== 'P') && ( $event.key === '-' || $event.key === 'e' || $event.key === 'E') ? $event.preventDefault() : null"
                 placeholder="Ingresar cantidad"/>
-              <mat-error *ngIf="form.get('descuento.factorImporte')?.invalid && (form.get('descuento.factorImporte')?.touched)">Campo obligatorio</mat-error>
+              <mat-error *ngIf="form.get('descuento.factorImporte')?.hasError('required') && (form.get('descuento.factorImporte')?.touched)">
+                Campo obligatorio
+              </mat-error>
+
+              <mat-error *ngIf="form.get('descuento.factorImporte')?.hasError('min') && (form.get('descuento.factorImporte')?.touched)">
+                Debe ser un valor positivo
+              </mat-error>
+
+              <mat-error *ngIf="form.get('descuento.factorImporte')?.hasError('max') && (form.get('descuento.factorImporte')?.touched)">
+                El porcentaje no puede ser mayor a 100
+              </mat-error>
+
+              <mat-error *ngIf="form.get('descuento.factorImporte')?.hasError('pattern') && (form.get('descuento.factorImporte')?.touched)">
+                Solo números enteros de hasta 3 dígitos
+              </mat-error>
             </mat-form-field>
           </div>
 
@@ -203,6 +235,7 @@
   </div>
 
   <div class="dlg-actions">
-    <button mat-flat-button class="btn-component" type="button" (click)="guardar()">Dar de alta</button>
+    <button mat-flat-button class="btn-small-primary" type="button" (click)="guardar()">Guardar</button>
+    <button mat-flat-button class="btn-small-danger" type="button" (click)="guardar()">Cancelar</button>
   </div>
 </div>
