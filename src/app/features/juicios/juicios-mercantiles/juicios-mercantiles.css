@@ -11,18 +11,18 @@ input{
 /* ===== FORM CARD ===== */
 .form-card{
   background-color:var(--card);
-  padding:16px;
+  padding:2px 8px;
   border-radius:10px;
   border:1px solid var(--line);
   box-shadow:0 1px 2px rgba(0,0,0,.04);
-  margin-bottom:18px;
+  margin-bottom:5px;
 }
 
 /* ===== GRID ===== */
 .form-grid{
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:14px 20px;
+  gap:8px 20px;
 }
 
 .form-grid > *{
@@ -33,7 +33,7 @@ input{
   grid-column:span 3;
   display:grid;
   grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:14px 20px;
+  gap:6px 16px;
 }
 
 /* ===== GRID UTILITIES ===== */
@@ -102,8 +102,8 @@ input{
 /* ===== QNA FILTERS ===== */
 .qna-filters{
   display: flex;
-  flex-direction: column;   
-  align-items: flex-start;  
+  flex-direction: column;
+  align-items: flex-start;
   gap: 6px;
   margin-top: 6px;
 }
@@ -166,16 +166,16 @@ input{
 }
 
 /* ===== MATERIAL STATES ===== */
-:host ::ng-deep 
+:host ::ng-deep
 .mat-mdc-form-field-appearance-outline .mdc-notched-outline__leading,
-:host ::ng-deep 
+:host ::ng-deep
 .mat-mdc-form-field-appearance-outline .mdc-notched-outline__trailing{
   border-color:#d9dbe0;
 }
 
-:host ::ng-deep 
+:host ::ng-deep
 .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
-:host ::ng-deep 
+:host ::ng-deep
 .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing{
   border-color:var(--brand)!important;
 }
@@ -185,24 +185,24 @@ input{
 }
 
 /* ===== VALIDATION ===== */
-:host ::ng-deep 
+:host ::ng-deep
 .mat-mdc-form-field.ng-invalid.ng-touched .mdc-notched-outline__leading,
-:host ::ng-deep 
+:host ::ng-deep
 .mat-mdc-form-field.ng-invalid.ng-touched .mdc-notched-outline__notch,
-:host ::ng-deep 
+:host ::ng-deep
 .mat-mdc-form-field.ng-invalid.ng-touched .mdc-notched-outline__trailing{
   border-color:#d32f2f!important;
 }
 
 /* ===== AUTOCOMPLETE ===== */
-:host ::ng-deep 
+:host ::ng-deep
 .mat-mdc-autocomplete-panel .mdc-list-item--selected,
-:host ::ng-deep 
+:host ::ng-deep
 .mat-mdc-autocomplete-panel .mdc-list-item:hover{
   background:rgba(73,29,42,0.06)!important;
 }
 
-:host ::ng-deep 
+:host ::ng-deep
 .mat-mdc-autocomplete-panel .mdc-list-item__primary-text{
   color:var(--ink-900);
 }
@@ -214,16 +214,14 @@ input{
   text-transform:uppercase;
 }
 
-:host ::ng-deep 
+:host ::ng-deep
 .mat-mdc-select-value,
-:host ::ng-deep 
+:host ::ng-deep
 .mat-mdc-option .mdc-list-item__primary-text{
   text-transform:uppercase;
 }
 
-:host ::ng-deep .qna-filters .mat-mdc-form-field-subscript-wrapper {
-  display: none;
-}
+
 
 :host ::ng-deep .qna-compact .mat-mdc-floating-label {
   white-space: nowrap;
@@ -276,3 +274,79 @@ input{
     flex-wrap:wrap;
   }
 }
+
+
+.info-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 4px 0;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.info-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+
+/* Botones chicos con color de fondo + color de ícono (heredado) */
+.btn-small-danger {
+  background: #d32f2f;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-small-primary {
+  background: #1976d2;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-small-success {
+  background: #2e7d32;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-small-danger,
+.btn-small-primary,
+.btn-small-success {
+  width: 100px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+

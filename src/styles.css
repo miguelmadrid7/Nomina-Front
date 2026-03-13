@@ -146,7 +146,6 @@
 }
 
 /* Botones chicos con color de fondo + color de ícono (heredado) */
-/* Botones chicos con color de fondo + color de ícono (heredado) */
 .btn-small-danger {
   background: #d32f2f;
   color: #fff;
@@ -193,6 +192,31 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Texto informativo sobre empleado estilos globales */
+.info-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 4px 0;
+}
+
+.info-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.info-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
 }
 
 /* Header fijo arriba, sin texto */
