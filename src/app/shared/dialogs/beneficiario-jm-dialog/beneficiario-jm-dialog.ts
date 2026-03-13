@@ -69,6 +69,8 @@ export class BeneficiarioJmDialog {
       })
     },
     { validators: [factorImporteValidator(), vigenciaRangoValidator()] });
+
+    this.bancos = this.data?.bancos ?? [];
   }
   
 
