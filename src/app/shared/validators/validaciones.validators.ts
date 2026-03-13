@@ -78,3 +78,41 @@ export function upperCaseValidator(): ValidatorFn {
         return null;
     };
 }
+
+export function factorImporteControlValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (!control || !control.parent) return null;
+
+    const forma = control.parent.get('formaAplicacion')?.value;
+    const raw = control.value;
+
+    // Si está vacío, deja que el 'required' lo maneje
+    if (raw === null || raw === undefined || raw === '') return null;
+
+    // Normaliza a string para pruebas
+    const texto = String(raw).trim();
+
+    if (forma === 'P') {
+      // Solo enteros 0-100 y hasta 3 dígitos
+      if (!/^\d{1,3}$/.test(texto)) {
+        return { factorNoEntero: true }; // ej. contener punto o más de 3 dígitos
+      }
+      const n = Number(texto);
+      if (Number.isNaN(n)) return { numeroInvalido: true };
+      if (n < 0) return { factorMin: true };
+      if (n > 100) return { factorMax: true };
+      return null;
+    }
+
+    if (forma === 'C') {
+      // Importe positivo o cero (permitir decimales)
+      const n = Number(texto);
+      if (Number.isNaN(n)) return { numeroInvalido: true };
+      if (n < 0) return { importeNegativo: true };
+      return null;
+    }
+
+    // Si no hay formaAplicacion aún, no marcamos error
+    return null;
+  };
+}
