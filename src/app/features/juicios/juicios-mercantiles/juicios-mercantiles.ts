@@ -74,7 +74,7 @@ export class JuiciosMercantiles {
   filtersReady = true;
   lastQnaKey: string | null = null;
   qnaDebounceId: any;
-  displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'importeTotal', 'formaAplicacion', 'qnaProceso', 'citaBancaria', 'clabeInterbancaria', 'institucionBancaria', 'acciones'];
+  displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'qnaProceso', 'formaAplicacion', 'importeTotal', 'restoPagar', 'citaBancaria', 'status', 'acciones'];
   totalElements = 0;
 
 
