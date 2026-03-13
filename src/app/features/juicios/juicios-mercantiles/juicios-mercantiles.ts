@@ -16,7 +16,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Banco } from '../../../models/banco.model';
 import { MatTableModule } from '@angular/material/table';
 import { BeneficiarioJmDialog } from '../../../shared/dialogs/beneficiario-jm-dialog/beneficiario-jm-dialog';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ApiResponse } from '../../../models/api-Response.model';
 
 @Component({
@@ -47,6 +47,8 @@ export class JuiciosMercantiles {
     private cd: ChangeDetectorRef ) {}
 
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
+  @ViewChild(MatPaginator) paginator?: MatPaginator;
+  
   form!: FormGroup;
   resultado: BeneficiarioJMRequest[] = [];
   cargandoBusqueda = false;
@@ -337,7 +339,6 @@ export class JuiciosMercantiles {
     }, 0);
   }
 
-
   refresh(): void {
    
   }
@@ -381,11 +382,9 @@ export class JuiciosMercantiles {
             .trim().replace(/\s{2,}/g, ' ')
         }));
 
-        // Siguiente macrotarea: ya no rompe el ciclo actual
         setTimeout(() => {
           this.beneficiarios = mapped;
           this.totalElements = mapped.length;
-          // si usas OnPush:
           this.cd.markForCheck();
         });
       },
@@ -393,11 +392,45 @@ export class JuiciosMercantiles {
     });
   }
 
-
+  
   clearFilters(): void {
-    this.form.reset();
+    // 1) Limpiar buscador y empleado
+    this.form.patchValue({
+      busqueda: {
+        searchText: '',
+        empleadoId: null,
+        rfc: '',
+        primerApellido: '',
+        segundoApellido: '',
+        nombre: ''
+      },
+      empleado: {
+        rfc: '',
+        primerApellido: '',
+        segundoApellido: '',
+        nombre: ''
+      }
+    }, { emitEvent: false });
+
+    // 2) Cerrar panel de autocomplete
     this.resultado = [];
     this.autocompleteTrigger?.closePanel();
+
+    // 3) Limpiar tabla
+    this.beneficiarios = [];
+    this.totalElements = 0;
+
+    // 4) Opcional: reset a filtros QNA si los usas
+    this.anioSeleccionado = null;
+    this.quincenaSeleccionada = null;
+    this.form.get('anio')?.reset(null, { emitEvent: false });
+    this.form.get('quincena')?.reset(null, { emitEvent: false });
+
+    // 5) Paginador a la primera página
+    this.paginator?.firstPage?.();
+
+    // 6) Si usas ChangeDetectionStrategy.OnPush:
+    this.cd.markForCheck();
   }
 }
 
