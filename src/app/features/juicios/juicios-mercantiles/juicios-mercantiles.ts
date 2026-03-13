@@ -371,16 +371,25 @@ export class JuiciosMercantiles {
   });
   }
 
-  cargarBeneficiarios(empleadoId: number){
+  cargarBeneficiarios(empleadoId: number) {
     this.juiciosMercantilesService.getobtenerBeneficiarios(empleadoId).subscribe({
-      next: (resp:any) => {
-        this.beneficiarios = resp.data ?? [];
-        this.totalElements = this.beneficiarios.length;
-        this.cd.detectChanges();
+      next: (resp: any) => {
+        const raw = resp?.data ?? [];
+        const mapped = raw.map((e: any) => ({
+          ...e,
+          nombreCompleto: `${e?.primerApellido ?? ''} ${e?.segundoApellido ?? ''} ${e?.nombre ?? ''}`
+            .trim().replace(/\s{2,}/g, ' ')
+        }));
+
+        // Siguiente macrotarea: ya no rompe el ciclo actual
+        setTimeout(() => {
+          this.beneficiarios = mapped;
+          this.totalElements = mapped.length;
+          // si usas OnPush:
+          this.cd.markForCheck();
+        });
       },
-      error: () => {
-        this.showSnack('Error al cargar beneficiarios', 'Cerrar', 4000);
-      }
+      error: () => this.showSnack('Error al cargar beneficiarios', 'Cerrar', 4000)
     });
   }
 
