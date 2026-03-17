@@ -16,6 +16,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { vigenciaFormatoValidator } from '../../validators/validaciones.validators';
 import { SoloLetrasDirectiva } from '../../directives/solo-letras.directivas';
 import { BeneficiarioJMRequest } from '../../../models/beneficiario-jm-request.model';
+import { startWith } from 'rxjs';
 
 @Component({
   selector: 'app-beneficiario-jm-dialog',
@@ -38,6 +39,7 @@ export class BeneficiarioJmDialog {
 
   form!: FormGroup;
   bancos: Banco[] = [];
+  factorDecimal = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -88,7 +90,50 @@ export class BeneficiarioJmDialog {
       beneficiarioGroup.addValidators(vigenciaMinimaValidator(minAaaaqq));
       beneficiarioGroup.updateValueAndValidity({ emitEvent: false });
     }
+
+
+    const b = this.form.get('beneficiario') as FormGroup;
+const formaCtrl  = b.get('formaAplicacion')!;
+const factorCtrl = b.get('factorImporte')!;
+const totalCtrl  = b.get('importeTotal')!;
+
+formaCtrl.valueChanges.pipe(startWith(formaCtrl.value)).subscribe((m: string) => {
+  if (m === 'C') {
+    // Importe fijo
+    totalCtrl.setValidators([Validators.required, Validators.min(0)]);
+    totalCtrl.updateValueAndValidity({ emitEvent: false });
+
+    factorCtrl.setValidators([Validators.min(0)]); // sin required
+    factorCtrl.updateValueAndValidity({ emitEvent: false });
+  } else if (m === 'P') {
+    // Porcentaje
+    factorCtrl.setValidators([
+      Validators.required,
+      Validators.min(0),
+      Validators.max(100),
+      Validators.pattern(/^\d{1,3}$/)
+    ]);
+    factorCtrl.updateValueAndValidity({ emitEvent: false });
+
+    // Importe total permitido pero no requerido
+    totalCtrl.setValidators([Validators.min(0)]);
+    totalCtrl.updateValueAndValidity({ emitEvent: false });
+  } else {
+    // Sin selección aún: ambos opcionales
+    factorCtrl.setValidators([Validators.min(0)]);
+    factorCtrl.updateValueAndValidity({ emitEvent: false });
+    totalCtrl.setValidators([Validators.min(0)]);
+    totalCtrl.updateValueAndValidity({ emitEvent: false });
   }
+});
+
+// Hint decimal (1 => 0.01)
+factorCtrl.valueChanges.pipe(startWith(factorCtrl.value)).subscribe(v => {
+  const n = Number(v);
+  this.factorDecimal = Number.isFinite(n) ? n / 100 : 0;
+});
+  }
+  
   
   private showSnack(message: string, action: string, duration: number): void {
     this.zone.runOutsideAngular(() => {
@@ -108,7 +153,8 @@ export class BeneficiarioJmDialog {
       nombre: v.nombre ?? null,
       tabEmpleadosId: this.data.empleadoId,
       formaAplicacion: v.formaAplicacion ?? null,
-      factorImporte: v.factorImporte ?? null,
+      factorImporte: v.factorImporte != null ? Number(v.factorImporte) : null,
+      importeTotal: v.importeTotal != null ? Number(v.importeTotal) : null,
       numeroDocumento: v.citaBancaria ?? null,
       qnaini: v.inicio != null ? Number(v.inicio) : null,
       qnafin: v.fin != null ? Number(v.fin) : null,
@@ -117,6 +163,8 @@ export class BeneficiarioJmDialog {
   }
 
   guardar(): void {
+    console.log('BENEFICIARIO FORM:', this.form.value.beneficiario);
+    console.log('importeTotal control:', this.form.get('beneficiario.importeTotal')?.value);
     console.log('FORM STATUS:', this.form.status);
     console.log('FORM ERRORS:', this.form.errors);
     console.log('BENEFICIARIO ERRORS:', this.form.get('beneficiario')?.errors);

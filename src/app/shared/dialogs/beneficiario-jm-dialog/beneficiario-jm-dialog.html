@@ -100,8 +100,6 @@
                 step="any" 
                 inputmode="decimal" 
                 (keydown)="($event.key === '-' || $event.key === 'e' || $event.key === 'E') ? $event.preventDefault() : null" 
-                (wheel)="$event.preventDefault()" 
-                appSoloLetras
                 placeholder="Ingresar importe total" />
               <mat-error *ngIf="form.get('beneficiario.importeTotal')?.invalid && (form.get('beneficiario.importeTotal')?.touched)">Captura un importe válido.</mat-error>
             </mat-form-field>
@@ -133,21 +131,27 @@
           </div>
 
           <!-- Factor / importe -->
+          <!-- Factor / Importe -->
           <div>
             <label class="field-title" for="factorImporte">Factor / Importe*</label>
             <mat-form-field appearance="outline" class="login-field compact-field uppercase-input" floatLabel="always">
               <mat-icon matPrefix>{{ form.get('beneficiario.formaAplicacion')?.value === 'P' ? 'percent' : 'attach_money' }}</mat-icon>
+
               <input
                 matInput
                 id="factorImporte"
                 formControlName="factorImporte"
-                [type]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 'text' : 'number'"
-                [attr.min]="form.get('beneficiario.formaAplicacion')?.value !== 'P' ? 0 : null"
-                [attr.step]="form.get('beneficiario.formaAplicacion')?.value !== 'P' ? 'any' : null"
-                [attr.maxlength]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 3 : null"
+                type="number"
+                [attr.min]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 0 : null"
+                [attr.max]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 100 : null"
+                [attr.step]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 1 : 'any'"
                 inputmode="decimal"
-                (keydown)="(form.get('beneficiario.formaAplicacion')?.value !== 'P') && ( $event.key === '-' || $event.key === 'e' || $event.key === 'E') ? $event.preventDefault() : null"
-                placeholder="Ingresar cantidad"/>
+                (keydown)="($event.key === '-' || $event.key === 'e' || $event.key === 'E' || $event.key === '+') ? $event.preventDefault() : null"
+                placeholder="Ingresar cantidad" />
+              <mat-hint *ngIf="form.get('beneficiario.formaAplicacion')?.value === 'P'">
+                Equivale a {{ factorDecimal | number:'1.2-2' }} de la base
+              </mat-hint>
+
               <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('required') && (form.get('beneficiario.factorImporte')?.touched)">
                 Campo obligatorio
               </mat-error>
@@ -156,10 +160,6 @@
               </mat-error>
               <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('max') && (form.get('beneficiario.factorImporte')?.touched)">
                 El porcentaje no puede ser mayor a 100
-              </mat-error>
-
-              <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('pattern') && (form.get('beneficiario.factorImporte')?.touched)">
-                Solo números enteros de hasta 3 dígitos
               </mat-error>
             </mat-form-field>
           </div>
