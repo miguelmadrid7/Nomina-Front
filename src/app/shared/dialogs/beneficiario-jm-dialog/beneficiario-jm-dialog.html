@@ -15,7 +15,6 @@
             <div class="dlg-bar-title">Agregar Beneficiario</div>
 
             <div class="section-divider"></div>
-            
             <!-- RFC -->
             <div class="span-3">
               <label class="field-title" for="rfc">RFC*</label>
@@ -84,14 +83,10 @@
               </mat-form-field>
             </div>
             </div>
-
           </div>
         </div>
-      </div>
 
-      <mat-card class="form-card" formGroupName="descuento">
         <mat-card-content class="form-grid">
-
           <!-- Importe total a pagar -->
           <div>
             <label class="field-title">Importe total*</label>
@@ -108,7 +103,7 @@
                 (wheel)="$event.preventDefault()" 
                 appSoloLetras
                 placeholder="Ingresar importe total" />
-              <mat-error *ngIf="form.get('descuento.importeTotal')?.invalid && (form.get('descuento.importeTotal')?.touched)">Captura un importe válido.</mat-error>
+              <mat-error *ngIf="form.get('beneficiario.importeTotal')?.invalid && (form.get('beneficiario.importeTotal')?.touched)">Captura un importe válido.</mat-error>
             </mat-form-field>
           </div>
 
@@ -121,7 +116,7 @@
                 matInput 
                 formControlName="citaBancaria" 
                 placeholder="Ingresar Cita Bancaria" />
-              <mat-error *ngIf="form.get('descuento.citaBancaria')?.invalid && (form.get('descuento.citaBancaria')?.touched)">Captura la cita bancaria.</mat-error>
+              <mat-error *ngIf="form.get('beneficiario.citaBancaria')?.invalid && (form.get('beneficiario.citaBancaria')?.touched)">Captura la cita bancaria.</mat-error>
             </mat-form-field>
           </div>
 
@@ -141,29 +136,29 @@
           <div>
             <label class="field-title" for="factorImporte">Factor / Importe*</label>
             <mat-form-field appearance="outline" class="login-field compact-field uppercase-input" floatLabel="always">
-              <mat-icon matPrefix>{{ form.get('descuento.formaAplicacion')?.value === 'P' ? 'percent' : 'attach_money' }}</mat-icon>
+              <mat-icon matPrefix>{{ form.get('beneficiario.formaAplicacion')?.value === 'P' ? 'percent' : 'attach_money' }}</mat-icon>
               <input
                 matInput
                 id="factorImporte"
                 formControlName="factorImporte"
-                [type]="form.get('descuento.formaAplicacion')?.value === 'P' ? 'text' : 'number'"
-                [attr.min]="form.get('descuento.formaAplicacion')?.value !== 'P' ? 0 : null"
-                [attr.step]="form.get('descuento.formaAplicacion')?.value !== 'P' ? 'any' : null"
-                [attr.maxlength]="form.get('descuento.formaAplicacion')?.value === 'P' ? 3 : null"
+                [type]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 'text' : 'number'"
+                [attr.min]="form.get('beneficiario.formaAplicacion')?.value !== 'P' ? 0 : null"
+                [attr.step]="form.get('beneficiario.formaAplicacion')?.value !== 'P' ? 'any' : null"
+                [attr.maxlength]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 3 : null"
                 inputmode="decimal"
-                (keydown)="(form.get('descuento.formaAplicacion')?.value !== 'P') && ( $event.key === '-' || $event.key === 'e' || $event.key === 'E') ? $event.preventDefault() : null"
+                (keydown)="(form.get('beneficiario.formaAplicacion')?.value !== 'P') && ( $event.key === '-' || $event.key === 'e' || $event.key === 'E') ? $event.preventDefault() : null"
                 placeholder="Ingresar cantidad"/>
-              <mat-error *ngIf="form.get('descuento.factorImporte')?.hasError('required') && (form.get('descuento.factorImporte')?.touched)">
+              <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('required') && (form.get('beneficiario.factorImporte')?.touched)">
                 Campo obligatorio
               </mat-error>
-              <mat-error *ngIf="form.get('descuento.factorImporte')?.hasError('min') && (form.get('descuento.factorImporte')?.touched)">
+              <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('min') && (form.get('beneficiario.factorImporte')?.touched)">
                 Debe ser un valor positivo
               </mat-error>
-              <mat-error *ngIf="form.get('descuento.factorImporte')?.hasError('max') && (form.get('descuento.factorImporte')?.touched)">
+              <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('max') && (form.get('beneficiario.factorImporte')?.touched)">
                 El porcentaje no puede ser mayor a 100
               </mat-error>
 
-              <mat-error *ngIf="form.get('descuento.factorImporte')?.hasError('pattern') && (form.get('descuento.factorImporte')?.touched)">
+              <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('pattern') && (form.get('beneficiario.factorImporte')?.touched)">
                 Solo números enteros de hasta 3 dígitos
               </mat-error>
             </mat-form-field>
@@ -177,7 +172,7 @@
               <mat-select id="bancoId" formControlName="bancoId" required placeholder="Seleccionar banco">
                 <mat-option *ngFor="let bank of bancos" [value]="bank.id">{{ bank.banco }}</mat-option>
               </mat-select>
-              <mat-error *ngIf="form.get('descuento.bancoId')?.invalid && (form.get('descuento.bancoId')?.touched)">Selecciona un banco.</mat-error>
+              <mat-error *ngIf="form.get('beneficiario.bancoId')?.invalid && (form.get('beneficiario.bancoId')?.touched)">Selecciona un banco.</mat-error>
             </mat-form-field>
           </div>
 
@@ -191,18 +186,17 @@
                   id="clabe" 
                   formControlName="clabe" 
                   placeholder="18 dígitos" maxlength="18" />
-                <mat-error *ngIf="form.get('descuento.clabe')?.invalid && (form.get('descuento.clabe')?.touched)">La CLABE debe tener exactamente 18 dígitos numéricos.</mat-error>
+                <mat-error *ngIf="form.get('beneficiario.clabe')?.invalid && (form.get('beneficiario.clabe')?.touched)">La CLABE debe tener exactamente 18 dígitos numéricos.</mat-error>
               </mat-form-field>
           </div>
         </mat-card-content>
-      </mat-card>
 
-      <mat-card class="form-card" formGroupName="vigencia">
+      
         <mat-card-content class="form-grid vigencia-grid">
 
           <!-- Desde -->
           <div>
-            <label class="field-title" for="vigenciaInicio">Inicio*</label>
+            <label class="field-title" for="inicio">Inicio*</label>
               <mat-form-field appearance="outline" class="login-field compact-field uppercase-input" floatLabel="always">
                 <mat-icon matPrefix>calendar_today</mat-icon>
                   <input
@@ -211,13 +205,13 @@
                     formControlName="inicio"
                     placeholder="AAAAQQ"
                     maxlength="6"/>
-                <mat-error *ngIf="form.get('vigencia.inicio')?.invalid && (form.get('vigencia.inicio')?.touched)">Captura la vigencia de inicio en formato AAAAQQ.</mat-error>
+                <mat-error *ngIf="form.get('beneficiario.inicio')?.invalid && (form.get('beneficiario.inicio')?.touched)">Captura la vigencia de inicio en formato AAAAQQ.</mat-error>
               </mat-form-field>
           </div>
 
           <!-- Hasta -->
           <div>
-            <label class="field-title" for="vigenciaFin">Hasta*</label>
+            <label class="field-title" for="fin">Hasta*</label>
               <mat-form-field appearance="outline" class="login-field compact-field uppercase-input" floatLabel="always">
                 <mat-icon matPrefix>calendar_today</mat-icon>
                   <input
@@ -226,12 +220,11 @@
                     formControlName="fin"
                     placeholder="AAAAQQ"
                     maxlength="6"/>
-                  <mat-error *ngIf="form.get('vigencia.fin')?.invalid && (form.get('vigencia.fin')?.touched)">Captura la vigencia de fin en formato AAAAQQ.</mat-error>
+                  <mat-error *ngIf="form.get('beneficiario.fin')?.invalid && (form.get('beneficiario.fin')?.touched)">Captura la vigencia de fin en formato AAAAQQ.</mat-error>
               </mat-form-field>
           </div>
-
         </mat-card-content>
-      </mat-card>
+      </div>
     </div>
   </div>
 

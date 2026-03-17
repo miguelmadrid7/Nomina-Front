@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
 import { BeneficiarioJMRequest } from "../../models/beneficiario-jm-request.model";
 import { ApiResponse } from "../../models/api-Response.model";
 import { Banco } from "../../models/banco.model";
@@ -13,11 +12,9 @@ export class JuiciosMercantilesService {
 
   constructor(private http: HttpClient) {}
 
-
-
   getBuscarEmpleado() {
-  return this.http.get<ApiResponse<BeneficiarioJMRequest[]>>(`${this.base}/beneficiarios/tab`);
-}
+    return this.http.get<ApiResponse<BeneficiarioJMRequest[]>>(`${this.base}/beneficiarios/tab`);
+  }
 
   getobtenerBeneficiarios(empleadoId: number) {
     return this.http.get<ApiResponse<BeneficiarioNom[]>>(`${this.base}/beneficiarios/nom/${empleadoId}`);

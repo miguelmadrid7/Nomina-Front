@@ -11,10 +11,11 @@ import { Banco } from '../../../models/banco.model';
 import { JuiciosMercantilesService } from '../../../core/services/juicios-mercantiles.services';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { factorImporteValidator, vigenciaRangoValidator } from '../../validators/juicios.validators';
-import { factorImporteControlValidator, rfcValidator } from '../../../shared/validators/validaciones.validators';
+import { factorImporteControlValidator, rfcValidator, vigenciaMinimaValidator } from '../../../shared/validators/validaciones.validators';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { vigenciaFormatoValidator } from '../../validators/validaciones.validators';
 import { SoloLetrasDirectiva } from '../../directives/solo-letras.directivas';
+import { BeneficiarioJMRequest } from '../../../models/beneficiario-jm-request.model';
 
 @Component({
   selector: 'app-beneficiario-jm-dialog',
@@ -49,32 +50,46 @@ export class BeneficiarioJmDialog {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      beneficiario: this.fb.group({
+      empleado : this.fb.group({
         rfc: [null, [rfcValidator()]],                    // sin required
         primerApellido: [null, [Validators.minLength(2)]],
         segundoApellido: [null, [Validators.minLength(2)]],
         nombre: [null, [Validators.minLength(2)]],
       }),
-      descuento: this.fb.group({
-        formaAplicacion: [null],                          // sin required
-        factorImporte: [null, [factorImporteControlValidator()]], // tu validador ya ignora null
-        bancoId: [null],                                  // sin required
+      beneficiario: this.fb.group({
+        tabBeneficiariosJmId: [null],
+        rfc: [null, [rfcValidator()]],
+        primerApellido: [null, [Validators.minLength(2)]],
+        segundoApellido: [null, [Validators.minLength(2)]],
+        nombre: [null, [Validators.minLength(2)]],
+        formaAplicacion: [null],
+        factorImporte: [null, [factorImporteControlValidator()]],
+        bancoId: [null],
         clabe: [null, [Validators.pattern(/^\d{18}$/)]],
         importeTotal: [null, [Validators.min(0)]],
         citaBancaria: [null],
-      }),
-      vigencia: this.fb.group({
-        inicio: [null, [vigenciaFormatoValidator()]],     // tu validador ya ignora null
+        inicio: [null, [vigenciaFormatoValidator()]],
         fin: [null, [vigenciaFormatoValidator()]],
       })
     },
     { validators: [factorImporteValidator(), vigenciaRangoValidator()] });
-
     this.bancos = this.data?.bancos ?? [];
+    
+    const curr = this.getCurrentQna();
+    const minObj = this.nextQna(curr.aaaaqq);
+    const minAaaaqq = minObj.aaaaqq;
+    this.form.patchValue({
+      beneficiario: {
+        inicio: String(minAaaaqq)
+      }
+    }, { emitEvent: false });
+    const beneficiarioGroup = this.form.get('beneficiario');
+    if (beneficiarioGroup) {
+      beneficiarioGroup.addValidators(vigenciaMinimaValidator(minAaaaqq));
+      beneficiarioGroup.updateValueAndValidity({ emitEvent: false });
+    }
   }
   
-
-
   private showSnack(message: string, action: string, duration: number): void {
     this.zone.runOutsideAngular(() => {
       setTimeout(() => {
@@ -84,20 +99,28 @@ export class BeneficiarioJmDialog {
   }
 
   private buildPayload() {
-    const fv = this.form.value;
+    const v = this.form.value.beneficiario ?? {};
     return {
-      tabEmpleadosId: this.data.empleadoId,
-      formaAplicacion: fv.descuento?.formaAplicacion,
-      factorImporte: fv.descuento?.factorImporte,
-      numeroDocumento: fv.descuento?.citaBancaria,
-      qnaini: Number(fv.vigencia?.inicio),
-      qnafin: Number(fv.vigencia?.fin),
       tabBeneficiariosJmId: this.data.empleadoId,
+      rfc: v.rfc ?? null,
+      primerApellido: v.primerApellido ?? null,
+      segundoApellido: v.segundoApellido ?? null,
+      nombre: v.nombre ?? null,
+      tabEmpleadosId: this.data.empleadoId,
+      formaAplicacion: v.formaAplicacion ?? null,
+      factorImporte: v.factorImporte ?? null,
+      numeroDocumento: v.citaBancaria ?? null,
+      qnaini: v.inicio != null ? Number(v.inicio) : null,
+      qnafin: v.fin != null ? Number(v.fin) : null,
       numeroBenef: 1
     };
   }
 
   guardar(): void {
+    console.log('FORM STATUS:', this.form.status);
+    console.log('FORM ERRORS:', this.form.errors);
+    console.log('BENEFICIARIO ERRORS:', this.form.get('beneficiario')?.errors);
+    console.log('FORM VALUE:', this.form.value);
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.showSnack('Formulario inválido', 'Cerrar', 4000);
@@ -114,6 +137,23 @@ export class BeneficiarioJmDialog {
       }
     });
   }
+
+  getCurrentQna(): { anio: number; qna: number; aaaaqq: number } {
+    const now = new Date();
+    const anio = now.getFullYear();
+    const mes = now.getMonth() + 1; // 1..12
+    const qnaDelMes = (now.getDate() <= 15) ? 1 : 2;   // 1a o 2a quincena del mes
+    const qna = (mes - 1) * 2 + qnaDelMes;            // 1..24
+    return { anio, qna, aaaaqq: anio * 100 + qna };
+  }
+
+  nextQna(aaaaqq: number): { anio: number; qna: number; aaaaqq: number } {
+  let anio = Math.floor(aaaaqq / 100);
+  let qna = aaaaqq % 100;  // 1..24
+  qna += 1;
+  if (qna > 24) { qna = 1; anio += 1; }
+  return { anio, qna, aaaaqq: anio * 100 + qna };
+  } 
 
   cancelar(): void {
     this.dialogRef.close({ cancelled: true });
