@@ -18,6 +18,7 @@ import { MatTableModule } from '@angular/material/table';
 import { BeneficiarioJmDialog } from '../../../shared/dialogs/beneficiario-jm-dialog/beneficiario-jm-dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ApiResponse } from '../../../models/api-Response.model';
+import { clamp, perQnaAmount, quincenasTranscurridas, toAaaaqq } from '../../../shared/validators/validaciones.validators';
 
 @Component({
   selector: 'app-juicios-mercantiles',
@@ -137,6 +138,22 @@ export class JuiciosMercantiles {
         this.zone.run(() => this.snackBar.open(message, action, { duration }));
       }, 50);
     });
+  }
+
+  private recalcBeneficiariosView(): void {
+    const selA = this.anioSeleccionado ?? null;
+    const selQ = this.quincenaSeleccionada ?? null;
+    const aaaaqqSel = (selA && selQ) ? toAaaaqq(selA, selQ) : null;
+
+    this.beneficiarios = (this.beneficiarios ?? []).map((e: any) => {
+      const total = Number(e?.importeTotal ?? 0);
+      const porQna = perQnaAmount(e);
+      const trans = quincenasTranscurridas(Number(e?.qnaini ?? 0), Number(e?.qnafin ?? 0), aaaaqqSel);
+      const acumulado = clamp(porQna * trans, 0, total);
+      const resto = clamp(total - acumulado, 0, total);
+      return { ...e, descuentoQna: porQna, pagadoAcumulado: acumulado, restoPagar: resto };
+    });
+    this.cd.markForCheck();
   }
 
 
@@ -331,14 +348,22 @@ export class JuiciosMercantiles {
   }
 
   onQnaModelChange(): void {
-    if (!this.showRecords || !this.filtersReady) return;
+    // 1) Lee SIEMPRE del form
+    const a = this.form.get('anio')?.value;
+    const q = this.form.get('quincena')?.value;
+    this.anioSeleccionado = a != null ? Number(a) : null;
+    this.quincenaSeleccionada = q != null ? Number(q) : null;
+
+    // 2) Opcional: tu lógica de debounce/clave
     clearTimeout(this.qnaDebounceId);
     this.qnaDebounceId = setTimeout(() => {
       const key = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
       if (this.lastQnaKey !== key && !this.isRefreshing) {
         this.lastQnaKey = key;
-        this.refresh();
+        // refresh(); // si no haces llamada al back, puedes omitirlo
       }
+      // 3) Siempre recalcular vista
+      this.recalcBeneficiariosView();
     }, 0);
   }
 
@@ -379,19 +404,19 @@ export class JuiciosMercantiles {
   this.juiciosMercantilesService.getobtenerBeneficiarios(empleadoId).subscribe({
     next: (resp: any) => {
       const raw = resp?.data ?? [];
-      const mapped = raw.map((e: any) => {
-        const importe = Number(e?.importeTotal ?? 0);
-        return {
-          ...e,
-          nombreCompleto: `${e?.primerApellido ?? ''} ${e?.segundoApellido ?? ''} ${e?.nombre ?? ''}`
-            .trim().replace(/\s{2,}/g, ' '),
-          restoPagar: importe // Inicialmente igual al total hasta que exista un acumulado pagado
-        };
-      });
+      const mapped = raw.map((e: any) => ({
+        ...e,
+        nombreCompleto: `${e?.primerApellido ?? ''} ${e?.segundoApellido ?? ''} ${e?.nombre ?? ''}`.trim().replace(/\s{2,}/g, ' '),
+        importeTotal: Number(e?.importeTotal ?? 0),
+        factorImporte: Number(e?.factorImporte ?? 0),
+        qnaini: Number(e?.qnaini ?? 0),
+        qnafin: e?.qnafin != null ? Number(e.qnafin) : null
+      }));  
 
       setTimeout(() => {
         this.beneficiarios = mapped;
         this.totalElements = mapped.length;
+        this.recalcBeneficiariosView(); // <-- AQUÍ
         this.cd.markForCheck();
       });
     },
