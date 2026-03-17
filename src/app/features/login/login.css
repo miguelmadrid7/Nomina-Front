@@ -1,0 +1,169 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* --- SECCIÓN 1: HEADER DORADO --- */
+.header-top-gold {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(20px, 3vw, 40px) 20px;
+  background-color: #bc955b;
+  color: #ffffff;
+}
+
+.brand-logo {
+  position: absolute;
+  left: 24px;
+  max-height: 75px;
+  width: auto;
+}
+
+.header-title {
+  margin: 0;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: clamp(24px, 4vw, 44px);
+}
+
+/* --- SECCIÓN 2: FRANJA GUINDA SUB-HEADER --- */
+.header-sub-maroon {
+  background-color: #691B32;
+  color: #ffffff;
+  padding: 50px 24px;
+  text-align: left;
+}
+
+.entity-name {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+/* --- SECCIÓN 3: CUERPO BLANCO Y CARD RESCATADA --- */
+.main-body-white {
+  flex: 1;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  max-width: 400px;
+  width: 90%;
+  padding: 24px 32px; /* Original rescatado */
+  margin: 40px auto 24px; /* Original rescatado */
+  background: #ffffff;
+  color: #333;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15); /* Sombra original para resaltar */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.field-title {
+  display: inline-block;
+  font-weight: 700;
+  color: #1e1e1e;
+  margin: 8px 0 4px;
+  font-size: 14px;
+}
+
+.login-button button {
+  background-color: #691B32 !important;
+  color: #fff !important;
+  width: 100%;
+  padding: 12px 0;
+  font-weight: 700;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color .3s ease, transform .2s ease;
+}
+
+.login-button button:hover {
+  transform: scale(1.02);
+}
+
+.aux-links {
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.aux-links a {
+  font-size: 13px;
+  color: #3f51b5;
+  text-decoration: none;
+}
+
+/* --- SECCIÓN 4: FOOTER GUINDA --- */
+.footer-maroon {
+  background-color: #691B32;
+  color: #bc955b;
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.footer-text, .footer-subtext {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #fafafa;
+
+}
+
+/* --- AJUSTES MATERIAL: LÍNEAS SEPARADORAS --- */
+:host ::ng-deep {
+  /* 1. Ajuste general del campo para que no corte nuestras líneas */
+  .mat-mdc-form-field-flex {
+    align-items: center !important;
+  }
+
+  /* 2. Línea para el icono de la IZQUIERDA (Persona/Candado) */
+  .login-field.with-separator .mat-mdc-form-field-icon-prefix {
+    padding: 0 12px !important;
+    /* Creamos la línea vertical */
+    border-right: 1px solid #d1d5db !important; 
+    display: flex !important;
+    align-items: center !important;
+    /* Forzamos una altura suficiente para que la línea se vea */
+    height: 24px !important; 
+    margin-right: 12px !important;
+    /* Evitamos que el contenedor de Material limite el borde */
+    overflow: visible !important; 
+  }
+
+  /* 3. Línea para el icono de la DERECHA (Ojo de contraseña) */
+  .login-field.with-separator .mat-mdc-form-field-icon-suffix {
+    padding: 0 12px !important;
+    border-left: 1px solid #d1d5db !important;
+    display: flex !important;
+    align-items: center !important;
+    height: 24px !important;
+    margin-left: 12px !important;
+    overflow: visible !important;
+  }
+
+  /* 4. Ajuste del espaciado interno del input para que no pegue el texto a la línea */
+  .mat-mdc-text-field-wrapper .mat-mdc-form-field-infix {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  /* 5. Asegurar que el botón del ojo no tenga un fondo gris o bordes extra */
+  .mat-mdc-icon-button.mat-mdc-form-field-icon-suffix {
+    background: transparent !important;
+  }
+}

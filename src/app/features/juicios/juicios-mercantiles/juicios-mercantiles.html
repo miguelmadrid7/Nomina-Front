@@ -1,0 +1,212 @@
+<div class="page-container">
+    <div class="page-header">
+        <h2 class="page-title">Beneficiarios de jucios mercantiles</h2>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div *ngIf="form" [formGroup]="form">
+        <div class="section-header">
+            <h3>Buscar empleado.</h3>
+        </div>
+
+        <!-- Buscar empleado  -->
+        <mat-card class="form-card">
+            <mat-card-content class="form-grid">
+
+                <div class="btn-group">
+                    <button mat-icon-button class="btn-small-danger" (click)="clearFilters()">
+                        <mat-icon>delete_outline</mat-icon>
+                    </button>
+
+                    <button mat-icon-button class="btn-small-primary" (click)="buscarEmpleado()">
+                        <mat-icon>search</mat-icon>
+                    </button>
+
+                    <button mat-icon-button class="btn-small-success" (click)="modalBeneficiario()">
+                        <mat-icon>person_add</mat-icon>
+                    </button>
+                </div>
+
+                <div formGroupName="busqueda" class="span-3">
+                    <mat-form-field appearance="outline" class="login-field with-separator compact-field search-input span-3" floatLabel="always">
+                        <mat-icon matPrefix>search</mat-icon>
+                            <input
+                                matInput
+                                id="buscarEmpleado"
+                                formControlName="searchText"
+                                [matAutocomplete]="auto"
+                                #autocompleteTrigger="matAutocompleteTrigger" 
+                                (keydown.enter)="$event.preventDefault(); buscarEmpleado()"
+                                placeholder="BUSCAR POR RFC, PRIMER APELLIDO, SEGUNDO APELLIDO O POR NOMBRE">
+
+                            <mat-autocomplete #auto="matAutocomplete" 
+                                            (optionSelected)="empleadoSeleccionado($event.option.value)"
+                                            [displayWith]="displayEmpleado">
+                                <mat-option *ngFor="let emp of resultado" [value]="emp">
+                                    {{ emp?.rfc || '—' }} · 
+                                    {{ emp?.primerApellido || '—' }} ·  
+                                    {{ emp?.segundoApellido || '—' }} · 
+                                    {{ emp?.nombre || '—' }}
+                                </mat-option>
+                            </mat-autocomplete>
+                    </mat-form-field>
+                </div>
+
+                 <div>Datos del empleado seleccionado:</div>
+                <div formGroupName="empleado" class="empleado-grid">
+                   
+                    <div class="info-field">
+                        <mat-icon>person</mat-icon>
+                        <div class="info-content">
+                            <span class="info-label">Apellido paterno</span>
+                            <span>{{ form.get('empleado.primerApellido')?.value || '—' }} </span>
+                        </div>
+                    </div>
+
+                    <div class="info-field">
+                        <mat-icon>person</mat-icon>
+                        <div class="info-content">
+                            <span class="info-label">Apellido materno</span>
+                            <span>{{ form.get('empleado.segundoApellido')?.value || '—' }} </span>
+                        </div>
+                    </div>
+
+                    <div class="info-field">
+                        <mat-icon>person</mat-icon>
+                        <div class="info-content">
+                            <span class="info-label">Nombre</span>
+                            <span>{{ form.get('empleado.nombre')?.value || '—' }} </span>
+                        </div>
+                    </div>
+                </div>
+
+            </mat-card-content>
+        </mat-card>
+        
+       <div class="section-divider"></div>
+
+        <div class="table-container">
+             <div class="table-card card">   
+            <div class="table-content">
+                <div class="table-scroll">
+                    <table mat-table [dataSource]="beneficiarios" class="nomina-table">
+                        <!-- RFC -->
+                        <ng-container matColumnDef="rfc">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <span>RFC</span>
+                                </th>
+                                <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
+                        </ng-container>
+
+                        <!-- Nombre completo -->
+                        <ng-container matColumnDef="nombreCompleto">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <span>Nombre completo</span>
+                                </th>
+                                <td mat-cell *matCellDef="let e">{{ e.nombreCompleto }}</td>
+                        </ng-container>
+
+                        <!-- Quincena a descontar -->
+                        <ng-container matColumnDef="qnaProceso">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    Importe de la QNA a descontar
+                                        <div class="qna-filters">
+                                            <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
+                                                <mat-label>Año</mat-label>
+                                                    <mat-select formControlName="anio" (selectionChange)="onQnaModelChange()">
+                                                        <mat-option *ngFor="let anio of anio" [value]="anio">
+                                                        {{ anio }}
+                                                        </mat-option>
+                                                    </mat-select>
+                                            </mat-form-field>
+
+                                            <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
+                                                <mat-label>Quincena</mat-label>
+                                                <mat-select formControlName ="quincena" (selectionChange)="onQnaModelChange()">
+                                                    <mat-option *ngFor="let q of quincena" [value]="q">
+                                                    {{ q.toString().padStart(2,'0') }}
+                                                    </mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+
+                                    </th>
+                                <td mat-cell *matCellDef="let e">{{ e.qnaini }} - {{ e.qnafin }}</td>
+                        </ng-container>
+
+                        <!-- Cita bancaria -->
+                        <ng-container matColumnDef="citaBancaria">
+                                <th mat-header-cell *matHeaderCellDef>Cita bancaria</th>
+                                <td mat-cell *matCellDef="let e">{{ e.numeroDocumento }}</td>
+                        </ng-container>
+
+                        <!-- Forma aplicacion -->
+                        <ng-container matColumnDef="formaAplicacion">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <span>Forma de aplicacion</span>
+                                </th>
+                                <td mat-cell *matCellDef="let e">{{ e.formaAplicacion }}</td>
+                        </ng-container>
+
+                        <!-- Importe  total a pagar -->
+                        <ng-container matColumnDef="importeTotal">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <span>Importe pagar $</span>
+                                </th>
+                                <td mat-cell *matCellDef="let e">{{ e.importeTotal | currency:'MXN':'symbol':'1.0-2' }}</td>
+
+                        </ng-container>
+
+                         <!-- Importe  restante  a pagar -->
+                        <ng-container matColumnDef="restoPagar">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <span>Resto a pagar $</span>
+                                </th>
+                                <td mat-cell *matCellDef="let e">{{ e.restoPagar   | currency:'MXN':'symbol':'1.0-2' }}</td>
+                        </ng-container>
+
+                          <!-- Estatus -->
+                        <ng-container matColumnDef="status">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <span>Estatus</span>
+                                </th>
+                                <td mat-cell *matCellDef="let e">{{ e.status }}</td>
+                        </ng-container>
+
+                       
+                        <!-- Acciones -->
+                        <ng-container matColumnDef="acciones">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div class="acciones-header">
+                                        <span>Acciones</span>
+                                    </div>
+                                </th>
+
+                                <td mat-cell *matCellDef="let e">
+                                    <button mat-icon-button class="btn-small-succes" (click)="modalBeneficiario()">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                </td>
+                        </ng-container>
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    </table>
+        </div>
+
+         <div class="table-footer">
+            <mat-paginator
+                [length]="totalElements"
+                [pageSize]="50"
+                [pageSizeOptions]="[50, 100, 150, 200]"
+                showFirstLastButtons
+                aria-label="Select page">
+            </mat-paginator>
+        
+        </div>
+     </div>
+     </div>
+     </div>
+     </div>
+    </div>   
+        
