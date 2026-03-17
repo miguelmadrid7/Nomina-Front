@@ -95,7 +95,6 @@ export class JuiciosMercantiles {
         nombre: [''],
       }),
       beneficiario: this.fb.group({
-         id: [null],
         rfc: ['', [rfcValidator]],
         primerApellido: [''],
         segundoApellido: [''],
@@ -232,13 +231,13 @@ export class JuiciosMercantiles {
     
     const payload = {
       tabEmpleadosId: empleadoId,
-  tabBeneficiariosJmId: formValue.beneficiario?.id, // 🔥 ESTE ES CLAVE
-  formaAplicacion: formValue.descuento?.formaAplicacion,
-  factorImporte: formValue.descuento?.factorImporte,
-  numeroBenef: 1, // o el que corresponda
-  qnaini: formValue.vigencia?.inicio,
-  qnafin: formValue.vigencia?.fin,
-  numeroDocumento: formValue.descuento?.citaBancaria
+      tabBeneficiariosJmId: formValue.beneficiario?.id, 
+      formaAplicacion: formValue.descuento?.formaAplicacion,
+      factorImporte: formValue.descuento?.factorImporte,
+      numeroBenef: 1,
+      qnaini: formValue.vigencia?.inicio,
+      qnafin: formValue.vigencia?.fin,
+      numeroDocumento: formValue.descuento?.citaBancaria
     };
 
     this.juiciosMercantilesService.agregarBeneficiario(payload).subscribe({
@@ -377,24 +376,28 @@ export class JuiciosMercantiles {
   }
 
   cargarBeneficiarios(empleadoId: number) {
-    this.juiciosMercantilesService.getobtenerBeneficiarios(empleadoId).subscribe({
-      next: (resp: any) => {
-        const raw = resp?.data ?? [];
-        const mapped = raw.map((e: any) => ({
+  this.juiciosMercantilesService.getobtenerBeneficiarios(empleadoId).subscribe({
+    next: (resp: any) => {
+      const raw = resp?.data ?? [];
+      const mapped = raw.map((e: any) => {
+        const importe = Number(e?.importeTotal ?? 0);
+        return {
           ...e,
           nombreCompleto: `${e?.primerApellido ?? ''} ${e?.segundoApellido ?? ''} ${e?.nombre ?? ''}`
-            .trim().replace(/\s{2,}/g, ' ')
-        }));
+            .trim().replace(/\s{2,}/g, ' '),
+          restoPagar: importe // Inicialmente igual al total hasta que exista un acumulado pagado
+        };
+      });
 
-        setTimeout(() => {
-          this.beneficiarios = mapped;
-          this.totalElements = mapped.length;
-          this.cd.markForCheck();
-        });
-      },
-      error: () => this.showSnack('Error al cargar beneficiarios', 'Cerrar', 4000)
-    });
-  }
+      setTimeout(() => {
+        this.beneficiarios = mapped;
+        this.totalElements = mapped.length;
+        this.cd.markForCheck();
+      });
+    },
+    error: () => this.showSnack('Error al cargar beneficiarios', 'Cerrar', 4000)
+  });
+}
 
   
   clearFilters(): void {
