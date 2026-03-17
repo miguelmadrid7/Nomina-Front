@@ -95,6 +95,7 @@ export class JuiciosMercantiles {
         nombre: [''],
       }),
       beneficiario: this.fb.group({
+         id: [null],
         rfc: ['', [rfcValidator]],
         primerApellido: [''],
         segundoApellido: [''],
@@ -230,11 +231,14 @@ export class JuiciosMercantiles {
 
     
     const payload = {
-      empleadoId,
-      rfc: formValue.beneficiario?.rfc,
-      primerApellido: formValue.beneficiario?.primerApellido,
-      segundoApellido: formValue.beneficiario?.segundoApellido,
-      nombre: formValue.beneficiario?.nombre
+      tabEmpleadosId: empleadoId,
+  tabBeneficiariosJmId: formValue.beneficiario?.id, // 🔥 ESTE ES CLAVE
+  formaAplicacion: formValue.descuento?.formaAplicacion,
+  factorImporte: formValue.descuento?.factorImporte,
+  numeroBenef: 1, // o el que corresponda
+  qnaini: formValue.vigencia?.inicio,
+  qnafin: formValue.vigencia?.fin,
+  numeroDocumento: formValue.descuento?.citaBancaria
     };
 
     this.juiciosMercantilesService.agregarBeneficiario(payload).subscribe({

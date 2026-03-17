@@ -12,6 +12,7 @@ export class JuiciosMercantilesService {
 
   constructor(private http: HttpClient) {}
 
+  //Buscador para search del empleado
   getBuscarEmpleado() {
     return this.http.get<ApiResponse<BeneficiarioJMRequest[]>>(`${this.base}/beneficiarios/tab`);
   }
@@ -20,6 +21,7 @@ export class JuiciosMercantilesService {
     return this.http.get<ApiResponse<BeneficiarioNom[]>>(`${this.base}/beneficiarios/nom/${empleadoId}`);
   }
 
+  //Se hace post en el modal de
   agregarBeneficiario(data: any) {
     return this.http.post<number>(`${this.base}/beneficiarios/nom`, data);
   }
