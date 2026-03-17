@@ -124,3 +124,50 @@ export function vigenciaMinimaValidator(minAaaaqq: number): ValidatorFn {
     return Object.keys(err).length ? err : null;
   };
 }
+
+export function toAaaaqq(anio: number, qna: number): number {
+  return anio * 100 + qna;
+}
+
+export function clamp(value: number, min: number, max: number): number {
+  return Math.min(Math.max(value, min), max);
+}
+
+export function quincenasTranscurridas(
+  qnaini: number | null,
+  qnafin: number | null,
+  aaaaqqSel: number | null
+): number {
+  if (!qnaini || !aaaaqqSel) return 0;
+  const to = qnafin ? Math.min(aaaaqqSel, qnafin) : aaaaqqSel;
+  if (to < qnaini) return 0;
+  const a1 = Math.floor(qnaini / 100), q1 = qnaini % 100;
+  const a2 = Math.floor(to / 100),     q2 = to % 100;
+  const years = a2 - a1;
+  return years * 24 + (q2 - q1) + 1; // inclusivo
+}
+
+export function perQnaAmount(e: any): number {
+  const total = Number(e?.importeTotal ?? 0);
+  const factor = Number(e?.factorImporte ?? 0);
+  if (e?.formaAplicacion === 'C') {
+    return clamp(factor, 0, total); // importe fijo por QNA
+  }
+  if (e?.formaAplicacion === 'P') {
+    const per = total * (clamp(factor, 0, 100) / 100); // % del total (simulación)
+    return clamp(per, 0, total);
+  }
+  return 0;
+}
+
+export function qnaDentroVigenciaValidator(): ValidatorFn {
+  return (ctrl: AbstractControl): ValidationErrors | null => {
+    const grp = ctrl.get('beneficiario');
+    if (!grp) return null;
+    const inicio = Number(grp.get('inicio')?.value ?? 0);
+    const fin = Number(grp.get('fin')?.value ?? 0);
+    const aaaaqqSel = Number(/* lee año+quincena del form si aplica */);
+    const trans = quincenasTranscurridas(inicio, fin, aaaaqqSel);
+    return trans < 1 ? { qnaFueraVigencia: true } : null;
+  };
+}
