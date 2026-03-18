@@ -47,18 +47,19 @@ export class BeneficiarioJmDialog {
     private snackBar: MatSnackBar,
     private zone: NgZone,
     private dialogRef: MatDialogRef<BeneficiarioJmDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: { empleadoId: number; bancos: Banco[] }
+    @Inject(MAT_DIALOG_DATA) public data: { empleadoId: number; bancos: Banco[], modo?: 'crear' | 'editar', beneficiario? : any }
   ) {}
 
   ngOnInit(): void {
     this.form = this.fb.group({
       empleado : this.fb.group({
-        rfc: [null, [rfcValidator()]],                    // sin required
+        rfc: [null, [rfcValidator()]],                 
         primerApellido: [null, [Validators.minLength(2)]],
         segundoApellido: [null, [Validators.minLength(2)]],
         nombre: [null, [Validators.minLength(2)]],
       }),
       beneficiario: this.fb.group({
+        nomId: [null], 
         tabBeneficiariosJmId: [null],
         rfc: [null, [rfcValidator()]],
         primerApellido: [null, [Validators.minLength(2)]],
@@ -132,6 +133,26 @@ export class BeneficiarioJmDialog {
       const n = Number(v);
       this.factorDecimal = Number.isFinite(n) ? n / 100 : 0;
     });
+
+    if (this.data?.beneficiario) {
+    const b = this.data.beneficiario;
+      this.form.patchValue({
+        beneficiario: {
+          nomId: b.id,
+          tabBeneficiariosJmId: b.tabBeneficiariosJmId ?? null,
+          rfc: b.rfc,
+          primerApellido: b.primerApellido,
+          segundoApellido: b.segundoApellido,
+          nombre: b.nombre,
+          formaAplicacion: b.formaAplicacion,
+          factorImporte: b.factorImporte,
+          importeTotal: b.importeTotal,
+          citaBancaria: b.numeroDocumento,
+          inicio: b.qnaini,
+          fin: b.qnafin
+        }
+      });
+    }
   }
   
   
@@ -146,12 +167,12 @@ export class BeneficiarioJmDialog {
   private buildPayload() {
     const v = this.form.value.beneficiario ?? {};
     return {
-      tabBeneficiariosJmId: this.data.empleadoId,
+      tabBeneficiariosJmId: v.tabBeneficiariosJmId ?? null,
+      tabEmpleadosId: this.data.empleadoId,
       rfc: v.rfc ?? null,
       primerApellido: v.primerApellido ?? null,
       segundoApellido: v.segundoApellido ?? null,
       nombre: v.nombre ?? null,
-      tabEmpleadosId: this.data.empleadoId,
       formaAplicacion: v.formaAplicacion ?? null,
       factorImporte: v.factorImporte != null ? Number(v.factorImporte) : null,
       importeTotal: v.importeTotal != null ? Number(v.importeTotal) : null,
@@ -163,21 +184,42 @@ export class BeneficiarioJmDialog {
   }
 
   guardar(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.showSnack('Formulario inválido', 'Cerrar', 4000);
-      return;
-    }
-    const payload = this.buildPayload();
-    this.juiciosMercantilesService.agregarBeneficiario(payload).subscribe({
-      next: () => {
-        this.showSnack('Beneficiario guardado correctamente', 'Cerrar', 4000);
-        this.cerrar();
+    
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    this.showSnack('Formulario inválido', 'Cerrar', 4000);
+    return;
+  }
+
+  const payload = this.buildPayload();
+  const nomId = this.form.get('beneficiario.nomId')?.value ?? this.data?.beneficiario?.id ?? null;
+
+  console.log('modo', this.data?.modo, 'nomId', nomId, 'payload', payload);
+  if (this.data?.modo === 'editar' && nomId) {
+    this.juiciosMercantilesService.actualizarBeneficiario(
+      nomId,            // <-- usar el ID NOM
+      payload
+    ).subscribe({
+      next: () => { 
+        this.showSnack('Beneficiario actualizado correctamente', 'Cerrar', 4000); 
+        this.cerrar(); 
       },
-      error: () => {
-        this.showSnack('Error al guardar beneficiario', 'Cerrar', 4000);
+      error: () => { 
+        this.showSnack('Error al actualizar beneficiario', 'Cerrar', 4000); 
       }
     });
+
+  } else {
+    this.juiciosMercantilesService.agregarBeneficiario(payload).subscribe({
+      next: () => { 
+        this.showSnack('Beneficiario guardado correctamente', 'Cerrar', 4000); 
+        this.cerrar(); }
+        ,
+      error: () => { 
+        this.showSnack('Error al guardar beneficiario', 'Cerrar', 4000); 
+      }
+    });
+  }
   }
 
   getCurrentQna(): { anio: number; qna: number; aaaaqq: number } {
