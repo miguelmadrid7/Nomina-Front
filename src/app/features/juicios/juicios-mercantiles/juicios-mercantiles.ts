@@ -332,31 +332,32 @@ export class JuiciosMercantiles {
   }
 
   modalBeneficiario(beneficiario?: any): void {
-  const raw = this.form.get('busqueda.empleadoId')?.value;
-  const empleadoId = raw !== null && raw !== undefined ? Number(raw) : NaN;
-    if (!Number.isFinite(empleadoId)) {
-      this.showSnack('Seleccionar un empleado primero', 'Cerrar', 4000);
-      return;
-    }
+    console.log('item para editar', beneficiario?.id, beneficiario);
+    const raw = this.form.get('busqueda.empleadoId')?.value;
+    const empleadoId = raw !== null && raw !== undefined ? Number(raw) : NaN;
+      if (!Number.isFinite(empleadoId)) {
+        this.showSnack('Seleccionar un empleado primero', 'Cerrar', 4000);
+        return;
+      }
 
-  const dialogRef = this.dialog.open(BeneficiarioJmDialog, {
-    width: '1200px',
-    maxWidth: '92vw',
-    maxHeight: '90vh',
-    panelClass: 'jm-dialog-panel',
-    disableClose: false,
-    data: {
-      empleadoId,
-      bancos: this.bancos,
-      modo: beneficiario ? 'editar' : 'crear',
-      beneficiario
-    }
-  });
+    const dialogRef = this.dialog.open(BeneficiarioJmDialog, {
+      width: '1200px',
+      maxWidth: '92vw',
+      maxHeight: '90vh',
+      panelClass: 'jm-dialog-panel',
+      disableClose: false,
+      data: {
+        empleadoId,
+        bancos: this.bancos,
+        modo: beneficiario ? 'editar' : 'crear',
+        beneficiario
+      }
+    });
 
-  dialogRef.afterClosed().subscribe(result => {
-    if (!result) return;
-    this.cargarBeneficiarios(empleadoId);
-  });
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) return;
+      this.cargarBeneficiarios(empleadoId);
+    });
   }
 
   cargarBeneficiarios(empleadoId: number) {
@@ -365,11 +366,15 @@ export class JuiciosMercantiles {
       const raw = resp?.data ?? [];
       const mapped = raw.map((e: any) => ({
         ...e,
+        id: e?.id ?? null,                    // <-- forzar preservación del ID NOM
+        tabBeneficiariosJmId: e?.tabBeneficiariosJmId ?? null,
         nombreCompleto: `${e?.primerApellido ?? ''} ${e?.segundoApellido ?? ''} ${e?.nombre ?? ''}`.trim().replace(/\s{2,}/g, ' '),
         importeTotal: Number(e?.importeTotal ?? 0),
         factorImporte: Number(e?.factorImporte ?? 0),
         qnaini: Number(e?.qnaini ?? 0),
-        qnafin: e?.qnafin != null ? Number(e.qnafin) : null
+        qnafin: e?.qnafin != null ? Number(e.qnafin) : null,
+        bancoId: e.bancoId ?? e.idBanco ?? null,
+        clabe: e.clabe ?? e.clabeInterbancaria ?? null
       }));  
 
       setTimeout(() => {
