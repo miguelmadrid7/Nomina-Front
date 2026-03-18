@@ -17,6 +17,7 @@ export class JuiciosMercantilesService {
     return this.http.get<ApiResponse<BeneficiarioJMRequest[]>>(`${this.base}/beneficiarios/tab`);
   }
 
+  //Se obtiene los beneficiarios del empleado seleccionado
   getobtenerBeneficiarios(empleadoId: number) {
     return this.http.get<ApiResponse<BeneficiarioNom[]>>(`${this.base}/beneficiarios/nom/${empleadoId}`);
   }
