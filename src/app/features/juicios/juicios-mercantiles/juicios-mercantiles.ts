@@ -19,6 +19,7 @@ import { BeneficiarioJmDialog } from '../../../shared/dialogs/beneficiario-jm-di
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ApiResponse } from '../../../models/api-Response.model';
 import { clamp, perQnaAmount, quincenasTranscurridas, toAaaaqq } from '../../../shared/validators/validaciones.validators';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-juicios-mercantiles',
@@ -35,6 +36,7 @@ import { clamp, perQnaAmount, quincenasTranscurridas, toAaaaqq } from '../../../
     MatButtonModule,
     MatTableModule,
     MatPaginatorModule,
+    MatTooltipModule
   ],
   templateUrl: './juicios-mercantiles.html',
   styleUrls: ['./juicios-mercantiles.css']
@@ -145,8 +147,27 @@ export class JuiciosMercantiles {
       const trans = quincenasTranscurridas(Number(e?.qnaini ?? 0), Number(e?.qnafin ?? 0), aaaaqqSel);
       const acumulado = clamp(porQna * trans, 0, total);
       const resto = clamp(total - acumulado, 0, total);
-      return { ...e, descuentoQna: porQna, pagadoAcumulado: acumulado, restoPagar: resto };
+      // Estatus dinámico:
+      // - Si la vigencia ya cerró (qnafin != 999999 y no es null) => INACTIVO
+      // - Si hay tope y ya no hay resto => INACTIVO
+      // - En otro caso => ACTIVO
+      let status = e?.status ?? 'ACTIVO';
+      if (e?.qnafin != null && Number(e.qnafin) !== 999999) {
+        status = 'INACTIVO';
+      } else if (Number.isFinite(total) && total > 0 && resto <= 0) {
+        status = 'INACTIVO';
+      } else {
+        status = 'ACTIVO';
+      }
+      return { 
+        ...e, 
+        descuentoQna: porQna, 
+        pagadoAcumulado: acumulado, 
+        restoPagar: resto,  
+        status 
+      };
     });
+    
     this.cd.markForCheck();
   }
 
@@ -332,7 +353,6 @@ export class JuiciosMercantiles {
   }
 
   modalBeneficiario(beneficiario?: any): void {
-    console.log('item para editar', beneficiario?.id, beneficiario);
     const raw = this.form.get('busqueda.empleadoId')?.value;
     const empleadoId = raw !== null && raw !== undefined ? Number(raw) : NaN;
       if (!Number.isFinite(empleadoId)) {
@@ -374,7 +394,8 @@ export class JuiciosMercantiles {
         qnaini: Number(e?.qnaini ?? 0),
         qnafin: e?.qnafin != null ? Number(e.qnafin) : null,
         bancoId: e.bancoId ?? e.idBanco ?? null,
-        clabe: e.clabe ?? e.clabeInterbancaria ?? null
+        clabe: e.clabe ?? e.clabeInterbancaria ?? null,
+        status: e?.estatus ?? 'ACTIVO'
       }));  
 
       setTimeout(() => {

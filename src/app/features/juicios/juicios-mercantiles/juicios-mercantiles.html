@@ -184,7 +184,12 @@
                                 </th>
 
                                 <td mat-cell *matCellDef="let e">
-                                    <button mat-icon-button class="btn-small-succes" (click)="modalBeneficiario(e)">
+                                    <button mat-icon-button 
+                                    class="btn-small-succes" 
+                                    (click)="modalBeneficiario(e)" 
+                                    [disabled]="e.status === 'INACTIVO'"
+                                    matTooltip="Editar"
+                                    [matTooltipDisabled]="e.status === 'INACTIVO'">
                                         <mat-icon>edit</mat-icon>
                                     </button>
                                 </td>
