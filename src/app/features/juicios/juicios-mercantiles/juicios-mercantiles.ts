@@ -59,18 +59,12 @@ export class JuiciosMercantiles {
   bancos: Banco[] = [];
   vigenciaInicio: string = '';
   vigenciaFin: string = '';
-
   anio: number[] = [2026, 2025, 2024];
   quincena: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
   anioSeleccionado: number | null = null;
   quincenaSeleccionada: number | null = null;
-
   beneficiarios: any[] = [];
-
   showRecords = true;
-
-
-  // Control de refrescos y QNA
   isRefreshing = false;
   filtersReady = true;
   lastQnaKey: string | null = null;
@@ -226,7 +220,6 @@ export class JuiciosMercantiles {
     if (!emp) return '';
     if (typeof emp === 'string') return emp;
     return `${emp.rfc} - ${emp.primerApellido} ${emp.segundoApellido} ${emp.nombre}`;
-
   }
 
   guardar(): void {
@@ -237,7 +230,6 @@ export class JuiciosMercantiles {
     }
 
     const formValue = this.form.value;
-
     const raw = this.form.get('busqueda.empleadoId')?.value;
     const empleadoId = raw !== null && raw !== undefined ? Number(raw) : NaN;
     if (!Number.isFinite(empleadoId)) {
@@ -270,42 +262,26 @@ export class JuiciosMercantiles {
   }
 
   onFactorImporteInput() {
-
     if (this.factorImporte == null) return;
-
-    // FACTOR (porcentaje)
     if (this.formaAplicacion === 'P') {
-
       let valor = this.factorImporte.toString();
-
-      // Solo números
       valor = valor.replace(/\D/g, '');
-
-      // Máximo 3 dígitos
       if (valor.length > 3) {
         valor = valor.substring(0, 3);
       }
-
       let numero = Number(valor);
-
-      // Máximo 100%
       if (numero > 100) {
         numero = 100;
       }
-
       this.factorImporte = numero;
     }
 
-    // IMPORTE FIJO
     if (this.formaAplicacion === 'C') {
-      // Solo validar que sea número positivo
       let numero = Number(this.factorImporte);
-
       if (isNaN(numero)) {
         this.factorImporte = undefined as any;
         return;
       }
-
       if (numero < 0) {
         this.factorImporte = 0;
       }
@@ -313,48 +289,33 @@ export class JuiciosMercantiles {
   }
 
   onVigenciaInput(tipo: 'inicio' | 'fin') {
-
     if (tipo === 'inicio') {
       if (!this.vigenciaInicio) return;
-
       let valor = this.vigenciaInicio.toString();
-
-      // Solo números
       valor = valor.replace(/\D/g, '');
-
-      // Máximo 6 dígitos
       if (valor.length > 6) {
         valor = valor.substring(0, 6);
       }
-
       this.vigenciaInicio = valor;
     }
 
     if (tipo === 'fin') {
       if (!this.vigenciaFin) return;
-
       let valor = this.vigenciaFin.toString();
-
-      // Solo números
       valor = valor.replace(/\D/g, '');
-
-      // Máximo 6 dígitos
       if (valor.length > 6) {
         valor = valor.substring(0, 6);
       }
-
       this.vigenciaFin = valor;
     }
   }
 
   onQnaModelChange(): void {
-    // 1) Lee SIEMPRE del form
     const a = this.form.get('anio')?.value;
     const q = this.form.get('quincena')?.value;
     this.anioSeleccionado = a != null ? Number(a) : null;
     this.quincenaSeleccionada = q != null ? Number(q) : null;
 
-    // 2) Opcional: tu lógica de debounce/clave
     clearTimeout(this.qnaDebounceId);
     this.qnaDebounceId = setTimeout(() => {
       const key = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
@@ -362,7 +323,6 @@ export class JuiciosMercantiles {
         this.lastQnaKey = key;
         // refresh(); // si no haces llamada al back, puedes omitirlo
       }
-      // 3) Siempre recalcular vista
       this.recalcBeneficiariosView();
     }, 0);
   }
@@ -395,7 +355,6 @@ export class JuiciosMercantiles {
 
   dialogRef.afterClosed().subscribe(result => {
     if (!result) return;
-    // SOLO refrescar la tabla
     this.cargarBeneficiarios(empleadoId);
   });
   }
@@ -416,7 +375,7 @@ export class JuiciosMercantiles {
       setTimeout(() => {
         this.beneficiarios = mapped;
         this.totalElements = mapped.length;
-        this.recalcBeneficiariosView(); // <-- AQUÍ
+        this.recalcBeneficiariosView();
         this.cd.markForCheck();
       });
     },
@@ -426,7 +385,6 @@ export class JuiciosMercantiles {
 
   
   clearFilters(): void {
-    // 1) Limpiar buscador y empleado
     this.form.patchValue({
       busqueda: {
         searchText: '',
@@ -444,24 +402,19 @@ export class JuiciosMercantiles {
       }
     }, { emitEvent: false });
 
-    // 2) Cerrar panel de autocomplete
     this.resultado = [];
     this.autocompleteTrigger?.closePanel();
 
-    // 3) Limpiar tabla
     this.beneficiarios = [];
     this.totalElements = 0;
 
-    // 4) Opcional: reset a filtros QNA si los usas
     this.anioSeleccionado = null;
     this.quincenaSeleccionada = null;
     this.form.get('anio')?.reset(null, { emitEvent: false });
     this.form.get('quincena')?.reset(null, { emitEvent: false });
 
-    // 5) Paginador a la primera página
     this.paginator?.firstPage?.();
 
-    // 6) Si usas ChangeDetectionStrategy.OnPush:
     this.cd.markForCheck();
   }
 }
