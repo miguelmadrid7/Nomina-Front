@@ -93,45 +93,45 @@ export class BeneficiarioJmDialog {
 
 
     const b = this.form.get('beneficiario') as FormGroup;
-const formaCtrl  = b.get('formaAplicacion')!;
-const factorCtrl = b.get('factorImporte')!;
-const totalCtrl  = b.get('importeTotal')!;
+    const formaCtrl  = b.get('formaAplicacion')!;
+    const factorCtrl = b.get('factorImporte')!;
+    const totalCtrl  = b.get('importeTotal')!;
 
-formaCtrl.valueChanges.pipe(startWith(formaCtrl.value)).subscribe((m: string) => {
-  if (m === 'C') {
-    // Importe fijo
-    totalCtrl.setValidators([Validators.required, Validators.min(0)]);
-    totalCtrl.updateValueAndValidity({ emitEvent: false });
+    formaCtrl.valueChanges.pipe(startWith(formaCtrl.value)).subscribe((m: string) => {
+      if (m === 'C') {
+        // Importe fijo
+        totalCtrl.setValidators([Validators.required, Validators.min(0)]);
+        totalCtrl.updateValueAndValidity({ emitEvent: false });
 
-    factorCtrl.setValidators([Validators.min(0)]); // sin required
-    factorCtrl.updateValueAndValidity({ emitEvent: false });
-  } else if (m === 'P') {
-    // Porcentaje
-    factorCtrl.setValidators([
-      Validators.required,
-      Validators.min(0),
-      Validators.max(100),
-      Validators.pattern(/^\d{1,3}$/)
-    ]);
-    factorCtrl.updateValueAndValidity({ emitEvent: false });
+        factorCtrl.setValidators([Validators.min(0)]); // sin required
+        factorCtrl.updateValueAndValidity({ emitEvent: false });
+      } else if (m === 'P') {
+        // Porcentaje
+        factorCtrl.setValidators([
+          Validators.required,
+          Validators.min(0),
+          Validators.max(100),
+          Validators.pattern(/^\d{1,3}$/)
+        ]);
+        factorCtrl.updateValueAndValidity({ emitEvent: false });
 
-    // Importe total permitido pero no requerido
-    totalCtrl.setValidators([Validators.min(0)]);
-    totalCtrl.updateValueAndValidity({ emitEvent: false });
-  } else {
-    // Sin selección aún: ambos opcionales
-    factorCtrl.setValidators([Validators.min(0)]);
-    factorCtrl.updateValueAndValidity({ emitEvent: false });
-    totalCtrl.setValidators([Validators.min(0)]);
-    totalCtrl.updateValueAndValidity({ emitEvent: false });
-  }
-});
+        // Importe total permitido pero no requerido
+        totalCtrl.setValidators([Validators.min(0)]);
+        totalCtrl.updateValueAndValidity({ emitEvent: false });
+      } else {
+        // Sin selección aún: ambos opcionales
+        factorCtrl.setValidators([Validators.min(0)]);
+        factorCtrl.updateValueAndValidity({ emitEvent: false });
+        totalCtrl.setValidators([Validators.min(0)]);
+        totalCtrl.updateValueAndValidity({ emitEvent: false });
+      }
+    });
 
-// Hint decimal (1 => 0.01)
-factorCtrl.valueChanges.pipe(startWith(factorCtrl.value)).subscribe(v => {
-  const n = Number(v);
-  this.factorDecimal = Number.isFinite(n) ? n / 100 : 0;
-});
+    // Hint decimal (1 => 0.01)
+    factorCtrl.valueChanges.pipe(startWith(factorCtrl.value)).subscribe(v => {
+      const n = Number(v);
+      this.factorDecimal = Number.isFinite(n) ? n / 100 : 0;
+    });
   }
   
   
@@ -163,12 +163,6 @@ factorCtrl.valueChanges.pipe(startWith(factorCtrl.value)).subscribe(v => {
   }
 
   guardar(): void {
-    console.log('BENEFICIARIO FORM:', this.form.value.beneficiario);
-    console.log('importeTotal control:', this.form.get('beneficiario.importeTotal')?.value);
-    console.log('FORM STATUS:', this.form.status);
-    console.log('FORM ERRORS:', this.form.errors);
-    console.log('BENEFICIARIO ERRORS:', this.form.get('beneficiario')?.errors);
-    console.log('FORM VALUE:', this.form.value);
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.showSnack('Formulario inválido', 'Cerrar', 4000);
