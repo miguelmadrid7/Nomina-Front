@@ -15,11 +15,11 @@
 
 .form-card {
   background-color: var(--card);
-  padding: 16px;
+  padding:2px 8px;
   border-radius: 10px;
   border: 1px solid var(--line);
   box-shadow: 0 1px 2px rgba(0,0,0,.04);
-  margin-bottom: 18px;
+  margin-bottom: 5px;
 }
 
 .form-card mat-form-field {
@@ -80,6 +80,60 @@
 .full-width {
   width: 100%;
 }
+
+/* Botones chicos con color de fondo + color de ícono (heredado) */
+.btn-small-danger {
+  background: #d32f2f;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-small-primary {
+  background: #1976d2;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-small-success {
+  background: #2e7d32;
+  color: #fff;
+  width: 40px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-group {
+  gap: 16px;
+}
+
+.btn-small-danger,
+.btn-small-primary,
+.btn-small-success{
+  width: 100px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 
 /* Bordes y foco */
 :host ::ng-deep 
