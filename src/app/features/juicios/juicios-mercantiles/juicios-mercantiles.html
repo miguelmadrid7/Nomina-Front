@@ -194,8 +194,20 @@
                                     </button>
                                 </td>
                         </ng-container>
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
+                <tr mat-row
+      *matRowDef="let row; columns: displayedColumns;"
+      [class.inactive-row]="row?.status === 'INACTIVO'"
+      [attr.aria-disabled]="row?.status === 'INACTIVO'">
+  </tr>
+
+  <!-- Estado vacío -->
+<div class="empty-state" *ngIf="(beneficiarios?.length ?? 0) === 0">
+  <mat-icon>inbox</mat-icon>
+  <div>No hay beneficiarios para mostrar</div>
+</div>
+
                     </table>
         </div>
 

@@ -196,6 +196,29 @@ button[disabled] {
   pointer-events: none;
 }
 
+/* Densidad compacta y zebra */
+.nomina-table .mat-mdc-cell, .nomina-table .mat-mdc-header-cell { padding: 8px 12px; }
+.nomina-table tr:nth-child(even) { background-color: #fafafa; }
+
+/* Cabecera fija */
+.sticky-header { position: sticky; top: 0; z-index: 1; background: #fff; }
+
+/* Alinear números a la derecha */
+.num { text-align: right; }
+
+/* Fila inactiva */
+.inactive-row { opacity: 0.55; filter: grayscale(0.2); background-color: #f7f7f7; }
+.inactive-row td { cursor: not-allowed; }
+.inactive-row button[disabled] { opacity: 0.6; pointer-events: none; }
+
+/* Chips de estatus */
+.chip-activo { background-color: #e6f4ea; color: #1e7e34; }
+.chip-inactivo { background-color: #fbe9e7; color: #c62828; }
+
+/* Estado vacío */
+.empty-state { display:flex; flex-direction:column; align-items:center; gap:8px; padding:24px; color:#777; }
+.empty-state mat-icon { font-size:36px; height:36px; width:36px; color:#bbb; }
+
 
 
 /* ===== PREFIX / SUFFIX ===== */

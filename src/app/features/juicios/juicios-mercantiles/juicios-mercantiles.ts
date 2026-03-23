@@ -20,6 +20,9 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ApiResponse } from '../../../models/api-Response.model';
 import { clamp, perQnaAmount, quincenasTranscurridas, toAaaaqq } from '../../../shared/validators/validaciones.validators';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'app-juicios-mercantiles',
@@ -36,7 +39,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatButtonModule,
     MatTableModule,
     MatPaginatorModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatTooltipModule,
+    MatChipsModule,
+    MatMenuModule,
+    MatSortModule
   ],
   templateUrl: './juicios-mercantiles.html',
   styleUrls: ['./juicios-mercantiles.css']
