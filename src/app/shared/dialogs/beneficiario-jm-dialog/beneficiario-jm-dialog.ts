@@ -153,6 +153,13 @@ export class BeneficiarioJmDialog {
         }
       });
     }
+
+    this.form.get('beneficiario.rfc')?.valueChanges.subscribe(val => {
+    if (typeof val === 'string') {
+      const up = val.toUpperCase().trim();
+      if (val !== up) this.form.get('beneficiario.rfc')?.setValue(up, { emitEvent: false });
+    }
+  });
   }
   
   
@@ -166,10 +173,18 @@ export class BeneficiarioJmDialog {
 
   private buildPayload() {
     const v = this.form.value.beneficiario ?? {};
+    const rfc = typeof v.rfc === 'string' ? v.rfc.trim().toUpperCase() : null;
+
+    // Permite enviar si hay ID, o si hay RFC (para que backend resuelva).
+    if (!v.tabBeneficiariosJmId && (!rfc || rfc.length === 0)) {
+      this.showSnack('Captura un RFC existente en TAB o selecciona un beneficiario del catálogo.', 'Cerrar', 4000);
+      return;
+    }
+
     return {
       tabBeneficiariosJmId: v.tabBeneficiariosJmId ?? null,
       tabEmpleadosId: this.data.empleadoId,
-      rfc: v.rfc ?? null,
+      rfc,
       primerApellido: v.primerApellido ?? null,
       segundoApellido: v.segundoApellido ?? null,
       nombre: v.nombre ?? null,
@@ -184,7 +199,6 @@ export class BeneficiarioJmDialog {
   }
 
   guardar(): void {
-    
   if (this.form.invalid) {
     this.form.markAllAsTouched();
     this.showSnack('Formulario inválido', 'Cerrar', 4000);
@@ -192,14 +206,12 @@ export class BeneficiarioJmDialog {
   }
 
   const payload = this.buildPayload();
+  if (!payload) return; // <-- evitar POST sin body
   const nomId = this.form.get('beneficiario.nomId')?.value ?? this.data?.beneficiario?.id ?? null;
 
-  console.log('modo', this.data?.modo, 'nomId', nomId, 'payload', payload);
   if (this.data?.modo === 'editar' && nomId) {
-    this.juiciosMercantilesService.actualizarBeneficiario(
-      nomId,            // <-- usar el ID NOM
-      payload
-    ).subscribe({
+    this.juiciosMercantilesService.actualizarBeneficiario(nomId, payload)
+    .subscribe({
       next: () => { 
         this.showSnack('Beneficiario actualizado correctamente', 'Cerrar', 4000); 
         this.cerrar(); 
@@ -220,6 +232,12 @@ export class BeneficiarioJmDialog {
       }
     });
   }
+  this.form.get('beneficiario.rfc')?.valueChanges.subscribe(val => {
+    if (typeof val === 'string') {
+      const up = val.toUpperCase().trim();
+      if (val !== up) this.form.get('beneficiario.rfc')?.setValue(up, { emitEvent: false });
+    }
+  });
   }
 
   getCurrentQna(): { anio: number; qna: number; aaaaqq: number } {
