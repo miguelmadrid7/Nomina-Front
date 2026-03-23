@@ -29,13 +29,16 @@ export class JuiciosMercantilesService {
 
   //Se hace post en el modal de dar de alta un beneficiario
   agregarBeneficiario(data: any) {
-    return this.http.post<number>(`${this.base}/beneficiarios/nom`, data);
-  }
+  return this.http.post<ApiResponse<any>>(`${this.base}/beneficiarios/nom`, data, {
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
 
   //Se actualiza los datos de un beneficiario seleccionado
   actualizarBeneficiario(id: number, data: any) {
-    return this.http.put<number>(`${this.base}/beneficiarios/nom/${id}`, data);
-  }
-
+  return this.http.put<ApiResponse<any>>(`${this.base}/beneficiarios/nom/${id}`, data, {
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
 
 }
