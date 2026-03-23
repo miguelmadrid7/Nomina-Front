@@ -183,7 +183,7 @@ export class JuiciosMercantiles {
     const value = this.form.get('busqueda.searchText')?.value;
     if (value && typeof value === 'object') return;
 
-    const texto = typeof value === 'string' ? value.toLowerCase() : '';
+    const texto = typeof value === 'string' ? value.trim() : '';
     if (!texto) {
       this.resultado = [];
       this.autocompleteTrigger?.closePanel();
@@ -198,14 +198,16 @@ export class JuiciosMercantiles {
     }
 
     this.cargandoBusqueda = true;
-    this.juiciosMercantilesService.getBuscarEmpleado().subscribe({
+    this.juiciosMercantilesService.getBuscarEmpleado(texto).subscribe({
       next: (resp: ApiResponse<BeneficiarioJMRequest[]>) => {
-        const lista: BeneficiarioJMRequest[] = resp?.data ?? [];
-        this.resultado = lista.filter((b: BeneficiarioJMRequest) =>
-          b.rfc?.toLowerCase().includes(texto) ||
-          b.primerApellido?.toLowerCase().includes(texto) ||
-          b.segundoApellido?.toLowerCase().includes(texto) ||
-          b.nombre?.toLowerCase().includes(texto)
+        const lista = resp?.data ?? [];
+
+        // Filtra entradas sin datos útiles para evitar “— · — · — · —”
+        this.resultado = lista.filter(e =>
+          (e?.rfc && e.rfc.trim()) ||
+          (e?.primerApellido && e.primerApellido.trim()) ||
+          (e?.segundoApellido && e.segundoApellido.trim()) ||
+          (e?.nombre && e.nombre.trim())
         );
 
         this.cargandoBusqueda = false;
@@ -223,31 +225,89 @@ export class JuiciosMercantiles {
   }
 
   empleadoSeleccionado(emp: BeneficiarioJMRequest) {
-    this.form.patchValue({
-      busqueda:{
-        empleadoId: Number(emp.id),
-        searchText: emp
-      },
+  const partes = this.repartirNombre(emp);
 
-      empleado: {
-        rfc: emp.rfc ?? '',
-        primerApellido: emp.primerApellido ?? '',
-        segundoApellido: emp.segundoApellido ?? '',
-        nombre: emp.nombre ?? ''
-      }
-    });
-    this.resultado = [];
-    this.autocompleteTrigger?.closePanel();
-    
-    if(emp.id){
-      this.cargarBeneficiarios(emp.id);
+  this.form.patchValue({
+    busqueda:{
+      empleadoId: Number(emp.id),
+      searchText: emp
+    },
+    empleado: {
+      rfc: emp.rfc ?? '',
+      primerApellido: partes.primerApellido,
+      segundoApellido: partes.segundoApellido,
+      nombre: partes.nombre
     }
+  });
+
+  this.resultado = [];
+  this.autocompleteTrigger?.closePanel();
+
+  if (emp.id) {
+    this.cargarBeneficiarios(emp.id);
+  }
   }
 
   displayEmpleado(emp: BeneficiarioJMRequest | string | null): string {
-    if (!emp) return '';
-    if (typeof emp === 'string') return emp;
-    return `${emp.rfc} - ${emp.primerApellido} ${emp.segundoApellido} ${emp.nombre}`;
+  if (!emp) return '';
+  if (typeof emp === 'string') return emp;
+
+  const isCode = (s?: string) => !!s && /^[A-Z0-9]{13,18}$/.test(s.trim());
+
+  const fullName = [emp.primerApellido, emp.segundoApellido, emp.nombre]
+    .filter(x => x && !isCode(x))
+    .join(' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+
+  // Si no hay nombre limpio, muestra solo RFC; si lo hay, RFC - Nombre
+  return [emp.rfc || '', fullName || ''].filter(Boolean).join(' - ');
+  }
+
+  // Quita prefijos tipo "RFC - CURP - " y códigos tipo RFC/CURP al inicio
+  private limpiarNombreCompleto(s?: string): string {
+    const raw = (s ?? '').toString().replace(/\s{2,}/g, ' ').trim();
+    if (!raw) return '';
+
+    // Si viene con separadores "-", quédate con el último segmento (normalmente el nombre)
+    // Ej: "AAAA... - BBBB... - ALDANA ALDANA ALFREDO" => "ALDANA ALDANA ALFREDO"
+    const lastSeg = raw.split('-').map(x => x.trim()).filter(Boolean).pop() ?? raw;
+
+    // Quita códigos tipo RFC/CURP (13 a 18 alfanum) al inicio
+    const sinCodigosInicio = lastSeg.replace(/^(?:[A-Z0-9]{13,18}\s*)+/, '').trim();
+    return sinCodigosInicio.replace(/\s{2,}/g, ' ').trim();
+  }
+
+  // Reparte un nombre completo en [primerApellido, segundoApellido, nombre]
+  // Solo rellena lo que falte; si ya tienes apellidos, los respeta.
+  private repartirNombre(emp: BeneficiarioJMRequest): { primerApellido: string; segundoApellido: string; nombre: string } {
+    const limpia = (x?: string) => (x ?? '').toString().trim().replace(/\s{2,}/g, ' ');
+    let pa = limpia(emp.primerApellido);
+    let sa = limpia(emp.segundoApellido);
+    let no = limpia(emp.nombre);
+
+    // Si nombre viene contaminado, límpialo
+    no = this.limpiarNombreCompleto(no);
+
+    // Si ya están las 3 partes, respeta
+    if (pa && sa && no) return { primerApellido: pa, segundoApellido: sa, nombre: no };
+
+    // Si faltan apellidos, intenta deducirlos desde 'no'
+    const tokens = no.split(/\s+/).filter(Boolean);
+
+    if ((!pa || !sa) && tokens.length >= 3) {
+      // Heurística MX más común: AP_PATERNO AP_MATERNO NOMBRES...
+      if (!pa) pa = tokens[0];
+      if (!sa) sa = tokens[1];
+      no = tokens.slice(2).join(' ');
+    } else if ((!pa || !no) && tokens.length === 2) {
+      // 2 tokens: asume AP_PATERNO + NOMBRES
+      if (!pa) pa = tokens[0];
+      no = tokens[1];
+    }
+    // Con 1 token no hay mucho que repartir: lo dejamos como nombre
+
+    return { primerApellido: limpia(pa), segundoApellido: limpia(sa), nombre: limpia(no) };
   }
 
   guardar(): void {
@@ -390,20 +450,32 @@ export class JuiciosMercantiles {
   cargarBeneficiarios(empleadoId: number) {
   this.juiciosMercantilesService.getobtenerBeneficiarios(empleadoId).subscribe({
     next: (resp: any) => {
-      const raw = resp?.data ?? [];
-      const mapped = raw.map((e: any) => ({
+      // Normaliza: soporta {data: {beneficiarios: [...]}} o arrays planos previos
+      const data = resp?.data ?? resp;
+      const source = Array.isArray(data?.beneficiarios)
+        ? data.beneficiarios
+        : Array.isArray(data)
+          ? data
+          : Array.isArray(data?.content)
+            ? data.content
+            : [];
+
+      const mapped = source.map((e: any) => ({
         ...e,
-        id: e?.id ?? null,                    // <-- forzar preservación del ID NOM
+        id: e?.id ?? null,
         tabBeneficiariosJmId: e?.tabBeneficiariosJmId ?? null,
         nombreCompleto: `${e?.primerApellido ?? ''} ${e?.segundoApellido ?? ''} ${e?.nombre ?? ''}`.trim().replace(/\s{2,}/g, ' '),
         importeTotal: Number(e?.importeTotal ?? 0),
         factorImporte: Number(e?.factorImporte ?? 0),
         qnaini: Number(e?.qnaini ?? 0),
         qnafin: e?.qnafin != null ? Number(e.qnafin) : null,
-        bancoId: e.bancoId ?? e.idBanco ?? null,
-        clabe: e.clabe ?? e.clabeInterbancaria ?? null,
-        status: e?.estatus ?? 'ACTIVO'
-      }));  
+        bancoId: e?.bancoId ?? e?.idBanco ?? null,
+        clabe: e?.clabe ?? e?.clabeInterbancaria ?? null,
+        status: e?.estatus ?? e?.status ?? 'ACTIVO',
+        numeroDocumento: e?.numeroDocumento ?? e?.citaBancaria ?? null,
+        formaAplicacion: e?.formaAplicacion ?? null,
+        rfc: e?.rfc ?? e?.tabBeneficiario?.rfc ?? ''
+      }));
 
       setTimeout(() => {
         this.beneficiarios = mapped;

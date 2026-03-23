@@ -44,11 +44,8 @@
                                             (optionSelected)="empleadoSeleccionado($event.option.value)"
                                             [displayWith]="displayEmpleado">
                                 <mat-option *ngFor="let emp of resultado" [value]="emp">
-                                    {{ emp?.rfc || '—' }} · 
-                                    {{ emp?.primerApellido || '—' }} ·  
-                                    {{ emp?.segundoApellido || '—' }} · 
-                                    {{ emp?.nombre || '—' }}
-                                </mat-option>
+  {{ displayEmpleado(emp) }}
+</mat-option>
                             </mat-autocomplete>
                     </mat-form-field>
                 </div>
