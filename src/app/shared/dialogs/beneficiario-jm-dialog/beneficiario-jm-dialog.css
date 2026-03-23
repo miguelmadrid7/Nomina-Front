@@ -41,6 +41,18 @@
   justify-content: center;
 }
 
+.btn-small-success {
+  background: #2e7d32;
+  color: #fff;
+  width: 40px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .btn-small-danger,
 .btn-small-primary {
   width: 100px;
