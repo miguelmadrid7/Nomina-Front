@@ -70,6 +70,7 @@ export class BeneficiarioJmDialog {
         clabe: [null, [Validators.pattern(/^\d{18}$/)]],
         importeTotal: [null, [Validators.min(0)]],
         citaBancaria: [null],
+        ctaBancaria: [null, [Validators.pattern(/^\d{1,10}$/)]],
         inicio: [null, [vigenciaFormatoValidator()]],
         fin: [null, [vigenciaFormatoValidator()]],
       })
@@ -134,7 +135,15 @@ export class BeneficiarioJmDialog {
     });
 
     if (this.data?.beneficiario) {
-    const b = this.data.beneficiario;
+      const b = this.data.beneficiario;
+      const tab = b.tabBeneficiario ?? {};
+
+      const bancoMatch = this.bancos.find(
+        bk => (bk.banco ?? '').toString().trim().toUpperCase() === (tab.institucionBancaria ?? '').toString().trim().toUpperCase()
+      );
+      const bancoId = bancoMatch?.id ?? null;
+
+
       this.form.patchValue({
         beneficiario: {
           nomId: b.id,
@@ -148,7 +157,12 @@ export class BeneficiarioJmDialog {
           factorImporte: b.factorImporte,
           importeTotal: b.importeTotal,
           inicio: b.qnaini,
-          fin: b.qnafin
+          fin: b.qnafin,
+          
+      // CORREGIDO: leer del TAB
+      clabe: (tab.clabeInterbancaria ?? '').toString().toUpperCase().trim() || null,
+      ctaBancaria: tab.ctaBancaria ?? null,
+      bancoId // si hay match por nombre, preselecciona
         }
       });
     }
@@ -189,33 +203,40 @@ export class BeneficiarioJmDialog {
   }
 
   private buildPayload() {
-    const v = this.form.value.beneficiario ?? {};
-    const rfc = typeof v.rfc === 'string' ? v.rfc.trim().toUpperCase() : null;
-    const S = (v: any) => typeof v === 'string' ? v.toUpperCase().trim() : (v ?? null);
+  const v = this.form.value.beneficiario ?? {};
+  const S = (x:any)=> typeof x === 'string' ? x.toUpperCase().trim() : (x ?? null);
 
-    // Permite enviar si hay ID, o si hay RFC (para que backend resuelva).
-    if (!v.tabBeneficiariosJmId && (!rfc || rfc.length === 0)) {
-      this.showSnack('Captura un RFC existente en TAB o selecciona un beneficiario del catálogo.', 'Cerrar', 4000);
-      return;
-    }
-
-    return {
-      tabBeneficiariosJmId: v.tabBeneficiariosJmId ?? null,
-      tabEmpleadosId: this.data.empleadoId,
-      rfc: S(v.rfc),
-      primerApellido: S(v.primerApellido),
-      segundoApellido: S(v.segundoApellido),
-      nombre: S(v.nombre),
-      formaAplicacion: S(v.formaAplicacion),
-      factorImporte: v.factorImporte != null ? Number(v.factorImporte) : null,
-      importeTotal: v.importeTotal != null ? Number(v.importeTotal) : null,
-      numeroDocumento: S(v.citaBancaria),
-      qnaini: v.inicio != null ? Number(v.inicio) : null, // AAAAQQ numérico
-      qnafin: v.fin != null ? Number(v.fin) : null,       // AAAAQQ numérico
-      numeroBenef: 1,
-      // nomId y bancoId no van en payload, pero si los usas, mantenlos numéricos.
-    };
+  const rfc = typeof v.rfc === 'string' ? v.rfc.trim().toUpperCase() : null;
+  if (!v.tabBeneficiariosJmId && (!rfc || rfc.length === 0)) {
+    this.showSnack('Captura un RFC existente en TAB o selecciona un beneficiario del catálogo.', 'Cerrar', 4000);
+    return;
   }
+
+  // Nombre del banco seleccionado (si hay)
+  const bancoNombreSel = this.bancos.find(b => b.id === v.bancoId)?.banco;
+  // Fallback: el nombre que viene del beneficiario actual (si es edición)
+  const bancoNombreOrig = (this.data?.beneficiario?.tabBeneficiario?.institucionBancaria ?? '') as string;
+
+  return {
+    tabBeneficiariosJmId: v.tabBeneficiariosJmId ?? null,
+    tabEmpleadosId: this.data.empleadoId,
+    rfc: S(v.rfc),
+    primerApellido: S(v.primerApellido),
+    segundoApellido: S(v.segundoApellido),
+    nombre: S(v.nombre),
+    formaAplicacion: S(v.formaAplicacion),
+    factorImporte: v.factorImporte != null ? Number(v.factorImporte) : null,
+    importeTotal: v.importeTotal != null ? Number(v.importeTotal) : null,
+    numeroDocumento: S(v.citaBancaria),
+    qnaini: v.inicio != null ? Number(v.inicio) : null,
+    qnafin: v.fin != null ? Number(v.fin) : null,
+    numeroBenef: 1,
+
+    clabeInterbancaria: S(v.clabe),
+    ctaBancaria: v.ctaBancaria != null && v.ctaBancaria !== '' ? Number(v.ctaBancaria) : null,
+    institucionBancaria: S(bancoNombreSel || bancoNombreOrig || null)
+  };
+}
 
   guardar(): void {
   if (this.form.invalid) {
