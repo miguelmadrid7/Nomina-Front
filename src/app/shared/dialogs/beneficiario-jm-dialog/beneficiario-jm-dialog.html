@@ -169,7 +169,7 @@
             <label class="field-title" for="bancoId">Buscar banco*</label>
             <mat-form-field appearance="outline" class="login-field compact-field full-width uppercase-input" floatLabel="always">
               <mat-icon matPrefix>account_balance</mat-icon>
-              <mat-select id="bancoId" formControlName="bancoId" required placeholder="Seleccionar banco">
+              <mat-select id="bancoId" formControlName="bancoId" placeholder="Seleccionar banco">
                 <mat-option *ngFor="let bank of bancos" [value]="bank.id">{{ bank.banco }}</mat-option>
               </mat-select>
               <mat-error *ngIf="form.get('beneficiario.bancoId')?.invalid && (form.get('beneficiario.bancoId')?.touched)">Selecciona un banco.</mat-error>

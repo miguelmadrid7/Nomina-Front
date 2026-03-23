@@ -15,8 +15,7 @@ import { factorImporteControlValidator, rfcValidator, vigenciaMinimaValidator } 
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { vigenciaFormatoValidator } from '../../validators/validaciones.validators';
 import { SoloLetrasDirectiva } from '../../directives/solo-letras.directivas';
-import { BeneficiarioJMRequest } from '../../../models/beneficiario-jm-request.model';
-import { startWith } from 'rxjs';
+import { startWith, distinctUntilChanged } from 'rxjs';
 
 @Component({
   selector: 'app-beneficiario-jm-dialog',
@@ -140,14 +139,14 @@ export class BeneficiarioJmDialog {
         beneficiario: {
           nomId: b.id,
           tabBeneficiariosJmId: b.tabBeneficiariosJmId ?? null,
-          rfc: b.rfc,
-          primerApellido: b.primerApellido,
-          segundoApellido: b.segundoApellido,
-          nombre: b.nombre,
-          formaAplicacion: b.formaAplicacion,
+          rfc: (b.rfc ?? '').toString().toUpperCase().trim(),
+          primerApellido: (b.primerApellido ?? '').toString().toUpperCase().trim(),
+          segundoApellido: (b.segundoApellido ?? '').toString().toUpperCase().trim(),
+          nombre: (b.nombre ?? '').toString().toUpperCase().trim(),
+          formaAplicacion: (b.formaAplicacion ?? '').toString().toUpperCase().trim(),
+          citaBancaria: (b.numeroDocumento ?? '').toString().toUpperCase().trim(),
           factorImporte: b.factorImporte,
           importeTotal: b.importeTotal,
-          citaBancaria: b.numeroDocumento,
           inicio: b.qnaini,
           fin: b.qnafin
         }
@@ -160,6 +159,24 @@ export class BeneficiarioJmDialog {
       if (val !== up) this.form.get('beneficiario.rfc')?.setValue(up, { emitEvent: false });
     }
   });
+
+    const upperPipe = (path: string) => {
+    const c = this.form.get(path);
+    c?.valueChanges.pipe(distinctUntilChanged()).subscribe((val: any) => {
+      if (typeof val === 'string') {
+        const up = val.toUpperCase().trim();
+        if (up !== val) c.setValue(up, { emitEvent: false });
+      }
+    });
+  };
+    upperPipe('beneficiario.rfc');
+    upperPipe('beneficiario.primerApellido');
+    upperPipe('beneficiario.segundoApellido');
+    upperPipe('beneficiario.nombre');
+    upperPipe('beneficiario.formaAplicacion'); // es string 'P' | 'C'
+    upperPipe('beneficiario.citaBancaria');
+    upperPipe('beneficiario.inicio'); // AAAAQQ
+    upperPipe('beneficiario.fin');    // AAAAQQ
   }
   
   
@@ -174,6 +191,7 @@ export class BeneficiarioJmDialog {
   private buildPayload() {
     const v = this.form.value.beneficiario ?? {};
     const rfc = typeof v.rfc === 'string' ? v.rfc.trim().toUpperCase() : null;
+    const S = (v: any) => typeof v === 'string' ? v.toUpperCase().trim() : (v ?? null);
 
     // Permite enviar si hay ID, o si hay RFC (para que backend resuelva).
     if (!v.tabBeneficiariosJmId && (!rfc || rfc.length === 0)) {
@@ -184,17 +202,18 @@ export class BeneficiarioJmDialog {
     return {
       tabBeneficiariosJmId: v.tabBeneficiariosJmId ?? null,
       tabEmpleadosId: this.data.empleadoId,
-      rfc,
-      primerApellido: v.primerApellido ?? null,
-      segundoApellido: v.segundoApellido ?? null,
-      nombre: v.nombre ?? null,
-      formaAplicacion: v.formaAplicacion ?? null,
+      rfc: S(v.rfc),
+      primerApellido: S(v.primerApellido),
+      segundoApellido: S(v.segundoApellido),
+      nombre: S(v.nombre),
+      formaAplicacion: S(v.formaAplicacion),
       factorImporte: v.factorImporte != null ? Number(v.factorImporte) : null,
       importeTotal: v.importeTotal != null ? Number(v.importeTotal) : null,
-      numeroDocumento: v.citaBancaria ?? null,
-      qnaini: v.inicio != null ? Number(v.inicio) : null,
-      qnafin: v.fin != null ? Number(v.fin) : null,
-      numeroBenef: 1
+      numeroDocumento: S(v.citaBancaria),
+      qnaini: v.inicio != null ? Number(v.inicio) : null, // AAAAQQ numérico
+      qnafin: v.fin != null ? Number(v.fin) : null,       // AAAAQQ numérico
+      numeroBenef: 1,
+      // nomId y bancoId no van en payload, pero si los usas, mantenlos numéricos.
     };
   }
 
