@@ -13,9 +13,10 @@ app-root {
   flex-direction: column;
 }
 
-/* Quita reglas de mat-sidenav* (no aplican a este layout) */
 mat-sidenav-container,
-mat-sidenav-content { all: unset; } /* opcional: o simplemente elimina sus reglas previas */
+mat-sidenav-content { 
+  all: unset;
+ } 
 
 /* Colores globales de la aplicacion */
 :root {
@@ -88,7 +89,10 @@ mat-sidenav-content { all: unset; } /* opcional: o simplemente elimina sus regla
   min-height: 0;                
 }
 
-.table-content { min-height: 0; }
+/* Contenido de la tabla */
+.table-content { 
+  min-height: 0; 
+}
 
 /* Tarjeta de la tabla */
 .table-card.card {
