@@ -6,6 +6,31 @@
   gap: 4px 16px;
 }
 
+/* La fila especial ocupa toda la anchura del grid padre (2 columnas) */
+.form-grid > .bank-row {
+  grid-column: 1 / -1; 
+}
+
+/* Fila interna: 3 columnas para los 3 campos */
+.bank-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px 16px; 
+}
+
+/* La fila especial ocupa toda la anchura del grid padre (2 columnas) */
+.form-grid > .aplicacion-row {
+  grid-column: 1 / -1;
+}
+
+/* Fila interna: 3 columnas para los 3 campos */
+.aplicacion-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px 16px; /* igual que .form-grid */
+}
+
+
 /* ===== Botones ===== */
 .btn-group {
   gap: 16px;
