@@ -1,12 +1,16 @@
+/* Shell debajo del header fijo de 64px */
 .home-shell {
-  min-height: 100vh;
-  --header-height: 64px;
+  height: calc(100vh - 64px);
+  display: flex;
+  min-height: 0;            /* clave */
 }
 
+/* Columna central scrolleable */
 .content-shell {
   flex: 1 1 auto;
   min-width: 0;
-  overflow: auto;
+  min-height: 0;            /* clave */
+  overflow: auto;           /* único scroll */
   padding-top: 0;
   padding-left: 0;
   padding-right: 0;
@@ -16,6 +20,11 @@
 .content-shell > header.navbar {
   margin: 0;
   border-radius: 0;
+}
+
+/* El wrapper del contenido de rutas no debe cortar */
+.content-shell > .container-fluid {
+  min-height: 0;            /* evita corte por padding */
 }
 
 .home-shell{

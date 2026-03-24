@@ -1,3 +1,22 @@
+/* Único scroll en el área de contenido; el documento NO scrollea */
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+/* Wrappers raíz (por si algún flujo flex los envuelve) */
+app-root {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Quita reglas de mat-sidenav* (no aplican a este layout) */
+mat-sidenav-container,
+mat-sidenav-content { all: unset; } /* opcional: o simplemente elimina sus reglas previas */
+
 /* Colores globales de la aplicacion */
 :root {
   --brand: #491D2A;
@@ -17,7 +36,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
-  min-height: 100%;
+  min-height: 0%;
   padding: var(--space-md);
   box-sizing: border-box;
 }
@@ -68,6 +87,8 @@
   flex-direction: column;
   min-height: 0;                
 }
+
+.table-content { min-height: 0; }
 
 /* Tarjeta de la tabla */
 .table-card.card {
