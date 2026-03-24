@@ -12,63 +12,61 @@ type AnyRow = Record<string, any>;
 @Injectable({ providedIn: 'root' })
 export class JuiciosMercantilesService {
   private base = environment.apiUrl;
- 
 
   constructor(private http: HttpClient) {}
 
+  //Buscador para search del empleado
+  getBuscarEmpleado(search: string) {
+    const q = (search ?? '').trim();
+    return this.http
+      .get<ApiResponse<AnyRow[]>>(`${this.base}/employee/by/${encodeURIComponent(q)}/search`)
+      .pipe(
+        map((resp) => {
+          const raw: AnyRow[] = (resp as any)?.data ?? (resp as any) ?? [];
+          const toNumber = (v: any) => Number.isFinite(Number(v)) ? Number(v) : null;
+          const data: BeneficiarioJMRequest[] = raw.map((e: AnyRow) => ({
+            id: toNumber(
+              e?.['id'] ??
+              e?.['empleadoId'] ??
+              e?.['tabEmpleadosId'] ??
+              e?.['tab_empleados_id']
+            ) ?? undefined,
 
-getBuscarEmpleado(search: string) {
-  const q = (search ?? '').trim();
-  return this.http
-    .get<ApiResponse<AnyRow[]>>(`${this.base}/employee/by/${encodeURIComponent(q)}/search`)
-    .pipe(
-      map((resp) => {
-        const raw: AnyRow[] = (resp as any)?.data ?? (resp as any) ?? [];
-        const toNumber = (v: any) => Number.isFinite(Number(v)) ? Number(v) : null;
+            rfc:
+              e?.['rfc'] ??
+              e?.['RFC'] ??
+              e?.['rfc_empleado'] ??
+              e?.['rfcEmpleado'] ??
+              '',
 
-        const data: BeneficiarioJMRequest[] = raw.map((e: AnyRow) => ({
-          id: toNumber(
-            e?.['id'] ??
-            e?.['empleadoId'] ??
-            e?.['tabEmpleadosId'] ??
-            e?.['tab_empleados_id']
-          ) ?? undefined,
+            primerApellido:
+              e?.['primerApellido'] ??
+              e?.['apellidoPaterno'] ??
+              e?.['primer_apellido'] ??
+              e?.['apePat'] ??
+              e?.['ape_pat'] ??
+              '',
 
-          rfc:
-            e?.['rfc'] ??
-            e?.['RFC'] ??
-            e?.['rfc_empleado'] ??
-            e?.['rfcEmpleado'] ??
-            '',
+            segundoApellido:
+              e?.['segundoApellido'] ??
+              e?.['apellidoMaterno'] ??
+              e?.['segundo_apellido'] ??
+              e?.['apeMat'] ??
+              e?.['ape_mat'] ??
+              '',
 
-          primerApellido:
-            e?.['primerApellido'] ??
-            e?.['apellidoPaterno'] ??
-            e?.['primer_apellido'] ??
-            e?.['apePat'] ??
-            e?.['ape_pat'] ??
-            '',
+            nombre:
+              e?.['nombre'] ??
+              e?.['nombres'] ??
+              e?.['nombreEmpleado'] ??
+              e?.['nombre_empleado'] ??
+              (typeof e?.['empleado'] === 'string' ? e?.['empleado'] : '')
+          }));
 
-          segundoApellido:
-            e?.['segundoApellido'] ??
-            e?.['apellidoMaterno'] ??
-            e?.['segundo_apellido'] ??
-            e?.['apeMat'] ??
-            e?.['ape_mat'] ??
-            '',
-
-          nombre:
-            e?.['nombre'] ??
-            e?.['nombres'] ??
-            e?.['nombreEmpleado'] ??
-            e?.['nombre_empleado'] ??
-            (typeof e?.['empleado'] === 'string' ? e?.['empleado'] : '')
-        }));
-
-        return { ...(resp as any), data };
-      })
-    );
-}
+          return { ...(resp as any), data };
+        })
+      );
+  }
 
    //Se obtiene la lista de los banco que hay en la bd y los muestra el combobox
   getBancos() {
