@@ -1,0 +1,37 @@
+.form-row {
+  display: flex;
+  flex-wrap: wrap; /* evita que se rompa en pantallas pequeñas */
+  gap: 16px;
+  align-items: center;
+}
+
+.section {
+  margin-bottom: 24px;
+}
+
+.compact-field {
+  min-width: 150px;
+  flex: 1; /* hace que todos crezcan uniforme */
+}
+
+button {
+  height: 56px; /* alineación con mat-form-field */
+}
+
+.table-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* TABLA ocupa más espacio */
+.table-section {
+  flex: 2;
+  min-width: 0; /* evita overflow raro */
+}
+
+/* FORMULARIO ocupa menos */
+.detail-section {
+  flex: 1;
+  max-width: 400px;
+}
