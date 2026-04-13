@@ -44,7 +44,7 @@ export class Terceros {
   selectedRow: any;
 
   displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'qnaProceso', 'acciones'];
-  dataSource = [ { rfc: 'ABC123', nombreCompleto: 'Juan Pérez', qnaProceso: '202601', acciones: 'Ver'} ];
+  dataSource = [ { rfc: 'ABC123', nombreCompleto: 'Juan Pérez', qnaProceso: '202601', acciones: 'Editar / Eliminar' } ];
 
   constructor(private fb: FormBuilder ) {}
 
@@ -61,12 +61,7 @@ export class Terceros {
       qnaProceso: ['']
     });
   }
-
-  selectRow(row: any) {
-    this.selectedRow = row;
-    this.detailForm.patchValue(row);
-  }
-
+  
   onQnaModelChange(): void {
     if (!this.showRecords || !this.filtersReady) return;
     clearTimeout(this.qnaDebounceId);
@@ -76,6 +71,15 @@ export class Terceros {
         this.lastQnaKey = key;
       }
     }, 0);
+  }
+
+  editar(row: any) {
+    this.selectedRow = row;
+    this.detailForm.patchValue(row);
+  }
+
+  eliminar(row: any) {
+    console.log('Eliminar:', this.selectedRow);
   }
 
 

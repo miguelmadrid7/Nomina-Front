@@ -1,21 +1,8 @@
 .form-row {
   display: flex;
-  flex-wrap: wrap; /* evita que se rompa en pantallas pequeñas */
+  flex-wrap: wrap;
   gap: 16px;
   align-items: center;
-}
-
-.section {
-  margin-bottom: 24px;
-}
-
-.compact-field {
-  min-width: 150px;
-  flex: 1; /* hace que todos crezcan uniforme */
-}
-
-button {
-  height: 56px; /* alineación con mat-form-field */
 }
 
 .table-layout {
@@ -24,14 +11,57 @@ button {
   align-items: flex-start;
 }
 
-/* TABLA ocupa más espacio */
+
 .table-section {
   flex: 2;
-  min-width: 0; /* evita overflow raro */
+  min-width: 0;
 }
 
-/* FORMULARIO ocupa menos */
-.detail-section {
-  flex: 1;
-  max-width: 400px;
+
+.detail-section form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
+
+.section {
+  margin-bottom: 24px;
+}
+
+.compact-field {
+  min-width: 150px;
+  flex: 1; 
+}
+
+
+.btn-group {
+  gap: 16px;
+  justify-content: center;
+}
+
+.btn-small-success {
+  background: #2e7d32;
+  color: #fff;
+  width: 40px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-small-danger {
+  background: #d32f2f;
+  color: #fff;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+

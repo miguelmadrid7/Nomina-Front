@@ -80,11 +80,22 @@
 
                         <ng-container matColumnDef="acciones">
                             <th mat-header-cell *matHeaderCellDef>Acciones</th>
-                            <td mat-cell *matCellDef="let e">{{ e.acciones }}</td>
+                                <td mat-cell *matCellDef="let e">
+                                    <div class="btn-group">
+                                        
+                                        <button mat-icon-button class="btn-small-success" (click)="editar(e); $event.stopPropagation()">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+
+                                        <button mat-icon-button class="btn-small-danger" (click)="eliminar(e); $event.stopPropagation()">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </div>
+                                </td>
                         </ng-container>
 
                         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"(click)="selectRow(row)"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                     </table>
 
                     <mat-paginator
@@ -99,11 +110,9 @@
         </div>
     </div>
 
-    <!-- FORMULARIO DETALLE -->
     <div class="detail-section" *ngIf="selectedRow">
         <mat-card>
-            <mat-card-title>Detalle</mat-card-title>
-
+            <mat-card-title>Detalle del empleado</mat-card-title>
             <form [formGroup]="detailForm">
                 <mat-form-field appearance="outline">
                     <mat-label>RFC</mat-label>
@@ -119,14 +128,14 @@
                     <mat-label>Qna</mat-label>
                     <input matInput formControlName="qnaProceso">
                 </mat-form-field>
+
+                <!-- CONTENEDOR DE BOTONES -->
+                <div class="btn-group">
+                    <button class="btn-small-success">Actualizar</button>
+                    <button class="btn-small-danger">Cancelar</button>
+                </div>
             </form>
         </mat-card>
     </div>
-
 </div>
-
-
-
-
-
 </div>
