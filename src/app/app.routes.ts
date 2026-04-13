@@ -79,6 +79,14 @@ export const routes: Routes = [
           import('./features/juicios/juicios-mercantiles/juicios-mercantiles')
             .then(m => m.JuiciosMercantiles),
         data: { roles: [1], breadcrumb: 'Juicios mercantiles' }
+      },
+
+      {
+        path: 'terceros/informacion-terceros',
+        loadComponent: () =>
+          import('./features/juicios/terceros/terceros')
+            .then(m => m.Terceros),
+        data: { roles: [1], breadcrumb: 'Información terceros' }
       }
     ]
   },
