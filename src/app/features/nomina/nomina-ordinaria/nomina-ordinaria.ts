@@ -232,10 +232,11 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
           }));
 
     this.dialog.open(NominaordConceptoDialog, {
-       width: '960px',
+      width: '850px',
       maxWidth: '95vw',
       maxHeight: '90vh',
       autoFocus: false,
+      position: { top: '80px' },
       //panelClass: 'brand-dialog',
       data: {
         empleadoId: row.empleadoId,
