@@ -5,9 +5,8 @@
 <div class="section-divider"></div>
 
 <div class="actions-right">
-  <button mat-raised-button class="btn-component" (click)="clearFilters()">
-    Limpiar filtros
-  </button>
+  <button mat-button class="btn-small-danger" (click)="clearFilters()"> Limpiar filtros </button>
+  <button mat-button class="btn-small-primary" (click)="applySearchFilter()" [disabled]="!search?.trim()"> Buscar </button>
 </div>
 
 <div class="global-search">
