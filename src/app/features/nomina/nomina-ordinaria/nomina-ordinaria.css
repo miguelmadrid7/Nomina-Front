@@ -35,10 +35,27 @@
   box-shadow: 0 1px 0 rgba(0,0,0,.05);
 }
 
+.nomina-table tr:nth-child(even) td { 
+  background: #fafafa; 
+}
+
+.nomina-table tr:hover td {
+  background: #f5f7fb; 
+}
+
+.nomina-table .mat-column-curp {
+  width: 150px;
+  text-align: center;
+}
+
+.nomina-table .mat-column-rfc {
+  width: 150px;
+  text-align: center;
+}
+
 .nomina-table .mat-column-nombreEmpleado{
-  width: 250px;
-  min-width: 250px;
-  max-width: 250px;
+  width: 150px;
+  text-align: center;
 }
 
 .nomina-table .mat-column-qnaProceso {
@@ -51,37 +68,14 @@
   text-align: center;
 }
 
-
 .nomina-table .mat-column-baseCalculoIsr {
-  width: 150px;
+  width: 100px;
   text-align: center;
-}
-
-.nomina-table .mat-column-curp {
-  width: 200px;
-  min-width: 200px;
-  max-width: 200px;
-}
-
-.nomina-table .mat-column-rfc {
-  width: 150px;
-  min-width: 150px;
-  max-width: 150px;
 }
 
 .nomina-table .mat-column-conceptoDetalle {
-  width: 150px;
-  min-width: 150px;
-  max-width: 150px;
+  width: 100px;
   text-align: center;
-}
-
-.nomina-table tr:nth-child(even) td { 
-  background: #fafafa; 
-}
-
-.nomina-table tr:hover td {
-  background: #f5f7fb; 
 }
 
 /* Selects */
