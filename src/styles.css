@@ -1,24 +1,4 @@
-/* Único scroll en el área de contenido; el documento NO scrollea */
-html, body {
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-}
-
-/* Wrappers raíz (por si algún flujo flex los envuelve) */
-app-root {
-  height: 100%;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-mat-sidenav-container,
-mat-sidenav-content { 
-  all: unset;
- } 
-
-/* Colores globales de la aplicacion */
+/* Colores globales*/
 :root {
   --brand: #491D2A;
   --brand-600: #491D2A;
@@ -32,7 +12,49 @@ mat-sidenav-content {
   --dlg-actions-h: 64px;
 }
 
-/* Diseño de las  paginas globales  */ 
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Montserrat', sans-serif;
+}
+
+app-root {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+mat-sidenav-container,
+mat-sidenav-content { 
+  all: unset;
+} 
+
+/* Linea separadora*/
+.with-separator 
+.mat-mdc-form-field-icon-prefix {
+  padding: 0 12px !important;
+  border-right: 1px solid #d1d5db !important; 
+  display: flex !important;
+  align-items: center !important;
+  height: 24px !important; 
+  margin-right: 12px !important;
+  overflow: visible !important; 
+}
+
+.with-separator 
+.mat-mdc-form-field-icon-suffix {
+  padding: 0 12px !important;
+  border-left: 1px solid #d1d5db !important;
+  display: flex !important;
+  align-items: center !important;
+  height: 24px !important;
+  margin-left: 12px !important;
+  overflow: visible !important;
+}
+
+/* Diseño de las paginas globales  */ 
 .page-container {
   display: flex;
   flex-direction: column;
@@ -81,7 +103,7 @@ mat-sidenav-content {
 }
 
 
-/* Contenedor principal de tabla */
+/* Tabla global*/
 .table-container {
   flex: 1 1 auto;
   display: flex;
@@ -89,12 +111,10 @@ mat-sidenav-content {
   min-height: 0;                
 }
 
-/* Contenido de la tabla */
 .table-content { 
   min-height: 0; 
 }
 
-/* Tarjeta de la tabla */
 .table-card.card {
   border: 1px solid #e5e7eb;
   border-radius: 12px;
@@ -107,7 +127,6 @@ mat-sidenav-content {
   min-height: 0;
 }
 
-/* Contenido y área scrolleable */
 .table-content {
   display: flex;
   flex-direction: column;
@@ -124,7 +143,6 @@ mat-sidenav-content {
   scrollbar-gutter: stable both-edges;
 }
 
-/* Paginador/foot */
 .table-footer {
   flex: 0 0 auto;
   display: flex;
@@ -135,6 +153,76 @@ mat-sidenav-content {
   box-sizing: border-box;
   background: #fff;
   border-top: 1px solid #e5e7eb;
+}
+
+.table-global {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+.table-global th,
+.table-global td {
+  padding: 8px 10px;
+  border: 1px solid #e5e7eb;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;          
+}
+
+.table-global th {
+  text-align: center;
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  z-index: 3;
+  font-weight: 700;
+  color: #111827;
+  box-shadow: 0 1px 0 rgba(0,0,0,.05);
+}
+
+.table-global tr:nth-child(even) td { 
+  background: #fafafa; 
+}
+
+.table-global tr:hover td {
+  background: #f5f7fb; 
+}
+
+.table-global .mat-column-curp {
+  width: 150px;
+  text-align: center;
+}
+
+.table-global .mat-column-rfc {
+  width: 150px;
+  text-align: center;
+}
+
+.table-global .mat-column-nombreEmpleado{
+  width: 150px;
+  text-align: center;
+}
+
+.table-global .mat-column-qnaProceso {
+  width: 150px;
+  text-align: center;
+}
+
+.table-global .mat-column-clavePlaza {
+  width: 150px;
+  text-align: center;
+}
+
+.table-global .mat-column-baseCalculoIsr {
+  width: 100px;
+  text-align: center;
+}
+
+.table-global .mat-column-conceptoDetalle {
+  width: 100px;
+  text-align: center;
 }
 
 /* Divider de todas paginas globales  */ 
