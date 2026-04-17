@@ -127,17 +127,15 @@
 
 /* --- AJUSTES MATERIAL: LÍNEAS SEPARADORAS --- */
 :host ::ng-deep {
-  /* 1. Ajuste general del campo para que no corte nuestras líneas */
   .mat-mdc-form-field-flex {
     align-items: center !important;
   }
-  /* 4. Ajuste del espaciado interno del input para que no pegue el texto a la línea */
+  
   .mat-mdc-text-field-wrapper .mat-mdc-form-field-infix {
     padding-left: 8px !important;
     padding-right: 8px !important;
   }
 
-  /* 5. Asegurar que el botón del ojo no tenga un fondo gris o bordes extra */
   .mat-mdc-icon-button.mat-mdc-form-field-icon-suffix {
     background: transparent !important;
   }

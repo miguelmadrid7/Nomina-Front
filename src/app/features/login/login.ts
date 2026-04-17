@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { LoginService } from '../../core/services/login.service';
-import { LoginPayload, LoginResponse } from '../../models/login.model';
+import { LoginPayload } from '../../models/login.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 
@@ -28,10 +28,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 })
 export class Login {
 
-  credentials: LoginPayload = {
-    user: '',
-    password: ''
-  };
+  credentials: LoginPayload = { user: '', password: '' };
   loading: boolean = false;
   error: string = '';
   hide = true;
@@ -53,9 +50,8 @@ export class Login {
     next: (resp) => {
       const authHeader = resp.headers.get('Authorization');
       if (authHeader) {
-        const token = authHeader.replace('Bearer ', ''); // <- IMPORTANTE
+        const token = authHeader.replace('Bearer ', ''); 
         this.loginService.setToken(token);
-        // Guardar roles y permisos del body
         if (resp.body?.data) {
           this.loginService.setSession(resp.body.data);
         }
