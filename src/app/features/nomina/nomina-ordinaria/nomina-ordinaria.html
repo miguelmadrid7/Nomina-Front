@@ -14,8 +14,8 @@
   <mat-form-field appearance="outline" class="qna-compact search-field" floatLabel="always" >
     <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
     <input matInput
-    [(ngModel)]="search"
-      (input)="enforceUppercase($event)"
+      [(ngModel)]="search"
+      appUppercase
       (keyup.enter)="applySearchFilter()"/>
   </mat-form-field>
 
@@ -23,7 +23,7 @@
 
     <mat-form-field appearance="outline" class="qna-compact" floatLabel="always" >
       <mat-label>Año</mat-label>
-      <mat-select [(ngModel)]="anioSeleccionado" (ngModelChange)="onQnaChange()">
+      <mat-select [(ngModel)]="anioSeleccionado" (ngModelChange)="onQnaChange()" placeholder="Seleccionar año">
         <mat-option *ngFor="let anio of anios" [value]="anio">
           {{ anio }}
         </mat-option>
@@ -32,7 +32,7 @@
 
     <mat-form-field appearance="outline" class="qna-compact" floatLabel="always" >
       <mat-label>Quincena</mat-label>
-      <mat-select [(ngModel)]="quincenaSeleccionada" (ngModelChange)="onQnaChange()">
+      <mat-select [(ngModel)]="quincenaSeleccionada" (ngModelChange)="onQnaChange()" placeholder="Seleccionar quincena">
         <mat-option *ngFor="let q of quincenas" [value]="q">
           {{ q.toString().padStart(2,'0') }}
         </mat-option>

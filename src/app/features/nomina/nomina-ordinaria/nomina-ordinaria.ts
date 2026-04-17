@@ -17,6 +17,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoaderService } from '../../../core/services/loader.service';
 import { finalize } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
+import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 
 @Component({
   selector: 'app-nomina-ordinaria',
@@ -34,8 +35,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatDialogModule,
     MatInputModule,
     MatSnackBarModule,
-    MatIconModule
-  ],
+    MatIconModule,
+    UppercaseDirective
+],
   templateUrl: './nomina-ordinaria.html',
   styleUrls: ['./nomina-ordinaria.css'],
 })
@@ -46,8 +48,8 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
 
   anios: number[] = [2026, 2025, 2024];
   quincenas: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
-  anioSeleccionado = 2026;
-  quincenaSeleccionada = 1;
+  anioSeleccionado: number | null = null;
+  quincenaSeleccionada: number | null = null;
   search: string = '';
 
   qnaProceso!: number;
@@ -113,22 +115,23 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
 
   onQnaChange(): void {
     if (!this.showRecords || !this.filtersReady) return;
-    clearTimeout(this.qnaDebounceId);
-    this.qnaDebounceId = setTimeout(() => {
-      const key = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
+      clearTimeout(this.qnaDebounceId);
+      this.qnaDebounceId = setTimeout(() => {
+        if (this.anioSeleccionado && !this.quincenaSeleccionada) {
+          this.loaderService.show();
+          this.dataSource.data = [];
+          this.totalElements = 0;
+        setTimeout(() => {
+          this.loaderService.hide();
+        }, 4000);
+      return;
+    }
+    const key = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
       if (this.lastQnaKey !== key && !this.isRefreshing) {
         this.lastQnaKey = key;
         this.loadNomina();
       }
     }, 0);
-  }
-
-
-  refreshIfQnaChanged(): void {
-    const key = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
-    if (this.lastQnaKey === key || this.isRefreshing) return;
-    this.lastQnaKey = key;
-    this.loadNomina();
   }
 
   loadNomina(): void {
@@ -139,17 +142,11 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
     if (!qna) {
       this.dataSource.data = [];
       this.totalElements = 0;
-      this.clearTable();
       return;
     }
     this.qnaProceso = qna;
     this.lastQnaKey = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
     this.getNomina();
-  }
-
-  clearTable(): void {
-    this.dataSource.data = [];
-    this.totalElements = 0;
   }
 
   getNomina(): void {
@@ -197,7 +194,7 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
         })
       );
 
-      const targetQna = parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada.toString().padStart(2,'0')}`, 10);
+      const targetQna = parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada?.toString().padStart(2,'0')}`, 10);
       const filtered = mapped.filter(r => r.qnaProceso === targetQna);
 
       // Agrupar por empleado/comprobante para evitar duplicados en la tabla
@@ -222,7 +219,8 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
       this.totalElements = grouped.length;
     },
     error: () => {
-      this.clearTable();
+      this.dataSource.data = [];
+      this.totalElements = 0;
       this.showSnack('Error al obtener la nómina', 'Cerrar', 4000);
     }
   });
@@ -253,7 +251,7 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
         curp: row.curp,
         rfc: row.rfc,
         plaza: row.clavePlaza,
-        qnaTexto: `${this.anioSeleccionado}/${this.quincenaSeleccionada.toString().padStart(2,'0')}`,
+        qnaTexto: `${this.anioSeleccionado}/${this.quincenaSeleccionada?.toString().padStart(2,'0')}`,
         detalles
       }
     });
@@ -265,33 +263,15 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
   }
 
   clearFilters(): void {
+    this.loaderService.show();
     this.search = '';
     this.dataSource.filter = '';
-    this.anioSeleccionado = 2026;
-    this.quincenaSeleccionada = 1;
-    if (this.showRecords) {
-      this.refreshIfQnaChanged();
-    }
-  }
-
-  executePayrollProcess(): void {
-    const qna = this.anioSeleccionado && this.quincenaSeleccionada
-      ? parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada.toString().padStart(2, '0')}`, 10)
-      : null;
-
-    if (!qna) {
-      this.showSnack('Selecciona una quincena y año válidos.', 'Cerrar', 4000);
-      return;
-    }
-
-    this.nominaService.executePayrollProcess(qna).subscribe({
-      next: () => {
-        this.loadNomina();
-        this.showSnack('Proceso completado correctamente', 'Cerrar', 3000);
-      },
-      error: () => {
-        this.showSnack('Error al ejecutar el proceso', 'Cerrar', 4000);
-      }
-    });
+    this.anioSeleccionado = null;
+    this.quincenaSeleccionada = null;
+    this.dataSource.data = [];
+    this.totalElements = 0;
+      setTimeout(() => {
+        this.loaderService.hide();
+      }, 4000); 
   }
 }
