@@ -14,13 +14,13 @@
     <mat-card class="card" appearance="outlined">
       
       <label class="field-title" for="usuario">Usuario:</label>
-      <mat-form-field appearance="outline" class="login-field with-separator">
+      <mat-form-field appearance="outline" class="with-separator">
         <mat-icon matPrefix>person</mat-icon>
         <input 
           matInput 
           id="usuario" 
           name="user" 
-          placeholder="Ingresar usuario" 
+          placeholder="Usuario" 
           [(ngModel)]="credentials.user" 
           required />
         <mat-error *ngIf="f.submitted || (f.controls['user']?.invalid && f.controls['user']?.touched)">
@@ -29,12 +29,12 @@
       </mat-form-field>
 
       <label class="field-title" for="password">Contraseña:</label>
-        <mat-form-field appearance="outline" class="login-field with-separator" floatLabel="always">
+        <mat-form-field appearance="outline" class="with-separator" floatLabel="always">
           <mat-icon matPrefix>lock</mat-icon>
           <input 
               matInput id="password" 
               name="password" 
-              placeholder="Ingresar contraseña" 
+              placeholder="Contraseña" 
               [type]="hide ? 'password' : 'text'"
               [(ngModel)]="credentials.password" required />
           <button 

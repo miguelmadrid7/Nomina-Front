@@ -1,3 +1,4 @@
+/* Letra global */
 :host {
   display: flex;
   flex-direction: column;
@@ -33,7 +34,7 @@
 
 /* --- SECCIÓN 2: FRANJA GUINDA SUB-HEADER --- */
 .header-sub-maroon {
-  background-color: #691B32;
+  background-color: #491D2A;
   color: #ffffff;
   padding: 50px 24px;
   text-align: left;
@@ -78,7 +79,7 @@
 }
 
 .login-button button {
-  background-color: #691B32 !important;
+  background-color: #491D2A !important;
   color: #fff !important;
   width: 100%;
   padding: 12px 0;
@@ -107,7 +108,7 @@
 
 /* --- SECCIÓN 4: FOOTER GUINDA --- */
 .footer-maroon {
-  background-color: #691B32;
+  background-color: #491D2A;
   color: #bc955b;
   padding: 24px;
   text-align: center;
@@ -130,32 +131,6 @@
   .mat-mdc-form-field-flex {
     align-items: center !important;
   }
-
-  /* 2. Línea para el icono de la IZQUIERDA (Persona/Candado) */
-  .login-field.with-separator .mat-mdc-form-field-icon-prefix {
-    padding: 0 12px !important;
-    /* Creamos la línea vertical */
-    border-right: 1px solid #d1d5db !important; 
-    display: flex !important;
-    align-items: center !important;
-    /* Forzamos una altura suficiente para que la línea se vea */
-    height: 24px !important; 
-    margin-right: 12px !important;
-    /* Evitamos que el contenedor de Material limite el borde */
-    overflow: visible !important; 
-  }
-
-  /* 3. Línea para el icono de la DERECHA (Ojo de contraseña) */
-  .login-field.with-separator .mat-mdc-form-field-icon-suffix {
-    padding: 0 12px !important;
-    border-left: 1px solid #d1d5db !important;
-    display: flex !important;
-    align-items: center !important;
-    height: 24px !important;
-    margin-left: 12px !important;
-    overflow: visible !important;
-  }
-
   /* 4. Ajuste del espaciado interno del input para que no pegue el texto a la línea */
   .mat-mdc-text-field-wrapper .mat-mdc-form-field-infix {
     padding-left: 8px !important;
