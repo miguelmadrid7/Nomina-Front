@@ -257,11 +257,6 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
     });
   }
 
-  enforceUppercase(evt: Event) {
-    const input = evt.target as HTMLInputElement;
-    input.value = (input.value ?? '').toUpperCase();
-  }
-
   clearFilters(): void {
     this.loaderService.show();
     this.search = '';
