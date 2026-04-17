@@ -13,6 +13,7 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  table-layout: fixed;
 }
 .nomina-table th,
 .nomina-table td {
@@ -23,6 +24,7 @@
   white-space: nowrap;          
 }
 .nomina-table th {
+  text-align: center;
   position: sticky;
   top: 0;
   background: #ffffff;
@@ -31,6 +33,104 @@
   color: #111827;
   box-shadow: 0 1px 0 rgba(0,0,0,.05);
 }
+
+.nomina-table .mat-column-curp,
+.nomina-table .mat-column-rfc,
+.nomina-table .mat-column-nombreEmpleado,
+.nomina-table .mat-column-clavePlaza {
+  width: 250px;
+  min-width: 250px;
+  max-width: 250px;
+}
+
+.nomina-table .mat-column-qnaProceso {
+  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
+}
+
+.nomina-table .mat-column-baseCalculoIsr {
+  width: 150px;
+  min-width: 250px;
+  max-width: 250px;
+  text-align: center;
+}
+
+.nomina-table .mat-column-curp {
+  width: 200px;
+  min-width: 200px;
+  max-width: 200px;
+}
+
+.nomina-table .mat-column-rfc {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+}
+
+.nomina-table .mat-column-conceptoDetalle {
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+  text-align: center;
+}
+
+/* Selects */
+.global-search {
+  display: flex;
+  align-items: center; 
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.qna-filters {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.qna-filters mat-form-field {
+  width: 200px;
+  min-width: 100px;
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-form-field-infix {
+  min-height: 34px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-text-field-wrapper {
+  height: 40px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-form-field-infix {
+  min-height: 40px !important;
+  display: flex;
+  align-items: center;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .qna-compact input.mat-mdc-input-element {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.search-field {
+  width: 400px; /* 🔥 control directo */
+}
+
+
+
 
 /* Fila hover y rayado suave (opcional) */
 .nomina-table tr:nth-child(even) td { background: #fafafa; }
@@ -41,7 +141,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  align-items: flex-start;
+  align-items: center;
 }
 .header-filter span {
   font-weight: 700;

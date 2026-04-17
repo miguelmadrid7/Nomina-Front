@@ -16,6 +16,7 @@ import { NominaRow } from '../../../models/nomina-Row.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoaderService } from '../../../core/services/loader.service';
 import { finalize } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-nomina-ordinaria',
@@ -33,6 +34,7 @@ import { finalize } from 'rxjs';
     MatDialogModule,
     MatInputModule,
     MatSnackBarModule,
+    MatIconModule
   ],
   templateUrl: './nomina-ordinaria.html',
   styleUrls: ['./nomina-ordinaria.css'],
@@ -41,12 +43,12 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
 
   dataSource = new MatTableDataSource<NominaRow>([]);
   displayedColumns: string[] = ['curp', 'rfc', 'nombreEmpleado', 'qnaProceso', 'clavePlaza', 'baseCalculoIsr', 'conceptoDetalle',];
-  filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
 
   anios: number[] = [2026, 2025, 2024];
   quincenas: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
   anioSeleccionado = 2026;
   quincenaSeleccionada = 1;
+  search: string = '';
 
   qnaProceso!: number;
   empleadoId?: number;
@@ -77,17 +79,14 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.dataSource.filterPredicate = (data: any, filter: string) => {
-      const search = JSON.parse(filter);
-      const curp = (data.curp ?? '').toString().toUpperCase();
-      const rfc = (data.rfc ?? '').toString().toUpperCase();
-      const nombre = (data.nombreEmpleado ?? '').toString().toUpperCase();
+    const search = filter.trim().toUpperCase();
       return (
-        nombre.includes(search.nombreEmpleado) &&
-        curp.includes(search.curp) &&
-        rfc.includes(search.rfc)
+        (data.curp ?? '').toUpperCase().includes(search) ||
+        (data.rfc ?? '').toUpperCase().includes(search) ||
+        (data.nombreEmpleado ?? '').toUpperCase().includes(search)
       );
     };
-    this.refresh()
+    this.loadNomina()
   }
 
   ngAfterViewInit(): void {
@@ -98,27 +97,41 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
     }, 0);
   }
 
-  onQnaModelChange(): void {
+  // Método helper de la clase
+  private showSnack(message: string, action: string, duration: number): void {
+    this.zone.runOutsideAngular(() => {
+      setTimeout(() => {
+        this.zone.run(() => this.snackBar.open(message, action, { duration }));
+      }, 50);
+    });
+  }
+
+  applySearchFilter() {
+    const value = (this.search || '').trim().toUpperCase();
+    this.dataSource.filter = value;
+  }
+
+  onQnaChange(): void {
     if (!this.showRecords || !this.filtersReady) return;
     clearTimeout(this.qnaDebounceId);
     this.qnaDebounceId = setTimeout(() => {
       const key = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
       if (this.lastQnaKey !== key && !this.isRefreshing) {
         this.lastQnaKey = key;
-        this.refresh();
+        this.loadNomina();
       }
     }, 0);
   }
 
 
-  private refreshIfQnaChanged(): void {
+  refreshIfQnaChanged(): void {
     const key = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
     if (this.lastQnaKey === key || this.isRefreshing) return;
     this.lastQnaKey = key;
-    this.refresh();
+    this.loadNomina();
   }
 
-  refresh(): void {
+  loadNomina(): void {
     const qna = this.anioSeleccionado && this.quincenaSeleccionada
       ? parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada.toString().padStart(2,'0')}`, 10)
       : null;
@@ -130,35 +143,31 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
       return;
     }
     this.qnaProceso = qna;
-
-    // Fija la llave aquí para evitar doble refresh al primer render
     this.lastQnaKey = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
-
-    this.fetchNomina();
+    this.getNomina();
   }
 
-  private clearTable(): void {
+  clearTable(): void {
     this.dataSource.data = [];
     this.totalElements = 0;
   }
 
-  private fetchNomina(): void {
-  if (this.isRefreshing) return;
-  this.isRefreshing = true;
-  this.loaderService.show();
+  getNomina(): void {
+    if (this.isRefreshing) return;
+      this.isRefreshing = true;
+      this.loaderService.show();
 
-  this.nominaService.getNominaCheque().pipe(
-    finalize(() => {
-      this.loaderService.hide();
-      this.isRefreshing = false;
-    })
-  )
-  .subscribe({
-    next: (response) => {
-      if (!response.success) {
-        this.showSnack(response.message || 'Error', 'Cerrar', 4000);
-        return;
-      }
+      this.nominaService.getNominaCheque().pipe(
+        finalize(() => {
+          this.loaderService.hide();
+          this.isRefreshing = false;
+        })
+      ).subscribe({
+        next: (response) => {
+          if (!response.success) {
+            this.showSnack(response.message || 'Error', 'Cerrar', 4000);
+            return;
+          }
 
       const raw = response?.data ?? [];
       const mapped: NominaRow[] = raw.map((row: any[]) => ({
@@ -175,17 +184,18 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
           }
           return null;
         })(),
-        tipoNomina: row[3],
-        clavePlaza: row[4],
-        curp: row[5],
-        rfc: row[6],
-        nombreEmpleado: `${row[7]} ${row[8]} ${row[9]}`,
-        tipoConcepto: row[10],
-        concepto: row[11],
-        descConcepto: row[12],
-        importe: Number(row[13]) || 0,
-        baseCalculoIsr: Number(row[14]) || 0
-      }));
+          tipoNomina: row[3],
+          clavePlaza: row[4],
+          curp: row[5],
+          rfc: row[6],
+          nombreEmpleado: `${row[7]} ${row[8]} ${row[9]}`,
+          tipoConcepto: row[10],
+          concepto: row[11],
+          descConcepto: row[12],
+          importe: Number(row[13]) || 0,
+          baseCalculoIsr: Number(row[14]) || 0
+        })
+      );
 
       const targetQna = parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada.toString().padStart(2,'0')}`, 10);
       const filtered = mapped.filter(r => r.qnaProceso === targetQna);
@@ -216,8 +226,7 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
       this.showSnack('Error al obtener la nómina', 'Cerrar', 4000);
     }
   });
-}
-
+  }
 
   openConceptosDialog(row: any) {
     const detalles = (row.detalles && row.detalles.length)
@@ -250,19 +259,14 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
     });
   }
 
-  applyFilter(column: 'curp' | 'rfc' | 'nombreEmpleado', value: string) {
-    this.filterValues[column] = (value ?? '').trim().toUpperCase();
-    this.dataSource.filter = JSON.stringify(this.filterValues);
-  }
-
   enforceUppercase(evt: Event) {
     const input = evt.target as HTMLInputElement;
     input.value = (input.value ?? '').toUpperCase();
   }
 
   clearFilters(): void {
-    this.filterValues = { curp: '', rfc: '', nombreEmpleado: '' };
-    this.dataSource.filter = JSON.stringify(this.filterValues);
+    this.search = '';
+    this.dataSource.filter = '';
     this.anioSeleccionado = 2026;
     this.quincenaSeleccionada = 1;
     if (this.showRecords) {
@@ -270,37 +274,24 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
     }
   }
 
-  // Agregar este método helper a la clase
-  private showSnack(message: string, action: string, duration: number): void {
-    this.zone.runOutsideAngular(() => {
-      setTimeout(() => {
-        this.zone.run(() => this.snackBar.open(message, action, { duration }));
-      }, 50);
+  executePayrollProcess(): void {
+    const qna = this.anioSeleccionado && this.quincenaSeleccionada
+      ? parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada.toString().padStart(2, '0')}`, 10)
+      : null;
+
+    if (!qna) {
+      this.showSnack('Selecciona una quincena y año válidos.', 'Cerrar', 4000);
+      return;
+    }
+
+    this.nominaService.executePayrollProcess(qna).subscribe({
+      next: () => {
+        this.loadNomina();
+        this.showSnack('Proceso completado correctamente', 'Cerrar', 3000);
+      },
+      error: () => {
+        this.showSnack('Error al ejecutar el proceso', 'Cerrar', 4000);
+      }
     });
   }
-
-  executePayrollProcess(): void {
-
-  const qna = this.anioSeleccionado && this.quincenaSeleccionada
-    ? parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada.toString().padStart(2, '0')}`, 10)
-    : null;
-
-  if (!qna) {
-    this.showSnack('Selecciona una quincena y año válidos.', 'Cerrar', 4000);
-    return;
-  }
-
-
-  this.nominaService.executePayrollProcess(qna).subscribe({
-    next: () => {
-      // Aquí simplemente simulas finalización inmediata
-      this.refresh();
-      this.showSnack('Proceso completado correctamente', 'Cerrar', 3000);
-    },
-    error: () => {
-      this.showSnack('Error al ejecutar el proceso', 'Cerrar', 4000);
-    }
-  });
-  }
-
 }
