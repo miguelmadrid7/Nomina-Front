@@ -1,3 +1,4 @@
+<div class="page-container">
 <div class="page-header">
   <h2 class="page-title">Nómina ordinaria</h2>
 </div>
@@ -10,7 +11,8 @@
 </div>
 
 <div class="global-search">
-  <mat-form-field appearance="outline" class="qna-compact search-field" floatLabel="always" >
+  <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always" >
+    <mat-icon matPrefix>search</mat-icon>
     <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
     <input matInput
       [(ngModel)]="search"
@@ -119,4 +121,5 @@
       </div>
     </div>
   </div>
+</div>
 </div>
