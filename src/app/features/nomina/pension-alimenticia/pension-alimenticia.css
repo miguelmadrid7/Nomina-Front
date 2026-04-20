@@ -16,7 +16,7 @@
 /* Grid */
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 👈 4 columnas */
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
 
@@ -25,7 +25,7 @@
 }
 
 .start-new-row {
-  grid-column: 1 / -4; /* fuerza nueva fila */
+  grid-column: 1 / -4;
 }
 
 /* Divider */
@@ -36,7 +36,6 @@
   opacity: 0.15; 
   margin: 5px 0 10px; 
 }
-
 
 
 /* Search */
