@@ -1,17 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatOption, MatSelectModule } from '@angular/material/select';
 import { PensionAlimenticiaService } from '../../../core/services/pension-alimenticia.service';
-
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { ViewChild } from '@angular/core';
-
-
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,14 +20,19 @@ import { IdResponse } from '../../../models/id-Response.model';
 import { Banco } from '../../../models/banco.model';
 import { BeneficiarioRequest } from '../../../models/beneficiario.model';
 import { ApiResponse } from '../../../models/api-Response.model';
+import { esCURP, esRFC, rfcValidator, vigenciaFormatoValidator } from '../../../shared/validators/validaciones.validators';
+import { factorImporteValidator } from '../../../shared/validators/juicios.validators';
+import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
+import { SoloLetrasDirectiva } from "../../../shared/directives/solo-letras.directivas";
 
 @Component({
   selector: 'app-pension-alimenticia',
   standalone: true,
   imports: [
-    MatFormFieldModule,
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
     MatInputModule,
     MatCardModule,
     MatButtonModule,
@@ -40,60 +42,66 @@ import { ApiResponse } from '../../../models/api-Response.model';
     MatOptionModule,
     MatIconModule,
     MatDialogModule,
-  ],
+    UppercaseDirective,
+    SoloLetrasDirectiva
+],
   templateUrl: './pension-alimenticia.html',
   styleUrl: './pension-alimenticia.css'
 })
 export class PensionAlimenticia {
-
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
-
+  form!: FormGroup;
+  searchText: string = '';
   rfc: string = '';
   apellidoPaterno: string = '';
   apellidoMaterno: string = '';
   nombreCompleto: string = '';
-
-  empleadoId: number | null = null;
   formaAplicacion: string = '';
   factorImporte: number | null = null;
-  numeroBeneficiario: number | null = null;
+  numeroDocumento: string = '';
   vigenciaInicio: string = '';
   vigenciaFin: string = '';
-  numeroDocumento: string = '';
-
+  numeroBeneficiario: number | null = null;
+  empleadoId: number | null = null;
   bancos: Banco[] = [];
   bancoSeleccionado: number | null = null;
-
-  searchText: string = '';
-  selectedEmpleado: EmpleadoItem | null = null;
   resultados: EmpleadoItem[] = [];
   cargandoBusqueda = false;
   guardando = false;
 
 
-
   constructor(
+    private fb: FormBuilder,
     private pensionAlimenticiaService: PensionAlimenticiaService,
     private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.cargarBancos();
+    this.initForm();
   }
 
-  // Normaliza a MAYÚSCULAS y trim seguro
-  private toUpper(v: any): string {
-    return (String(v ?? '')).toUpperCase().trim();
+  initForm(){
+    this.form = this.fb.group({
+      numeroBeneficiario: [null],
+      searchText: [''],
+      apellidoPaterno: ['', [Validators.required, Validators.minLength(2)]],
+      apellidoMaterno: ['', [Validators.required, Validators.minLength(2)]],
+      nombreCompleto: ['', [Validators.required, Validators.minLength(2)]],
+      rfc: ['', [Validators.required, rfcValidator()]],
+      formaAplicacion: ['', Validators.required],
+      factorImporte: [null, [Validators.required, factorImporteValidator()]],
+      bancoSeleccionado: [null, Validators.required],
+      numeroDocumento: [null, [Validators.required, Validators.pattern(/^\d{18}$/)]],
+      vigenciaInicio: ['', [Validators.required, vigenciaFormatoValidator()]],
+      vigenciaFin: ['', [Validators.required, vigenciaFormatoValidator()]],
+    },
+    { validators: [ factorImporteValidator() ] }
+    );
   }
 
-  // RFC persona física común (simplificado, en mayúsculas)
-  private esRFC(v: string) {
-    return /^[A-ZÑ&]{4}\d{6}[A-Z0-9]{3}$/.test(v);
-  }
-
-  // CURP (simplificado)
-  private esCURP(v: string) {
-    return /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/.test(v);
+  get f(){
+    return this.form.controls;
   }
 
   displayEmpleado(emp: EmpleadoItem | string | null): string {
@@ -111,11 +119,11 @@ export class PensionAlimenticia {
 
   onOptionSelected(emp: EmpleadoItem) {
     this.selectEmpleado(emp);
-    this.searchText = this.displayEmpleado(emp);
+    this.form.get('searchText')?.setValue(this.displayEmpleado(emp));
   }
 
   searchEmployee() {
-  const q = (this.searchText || '').trim().toUpperCase();
+  const q = (this.form.get('searchText')?.value || '').trim().toUpperCase();
   if (!q) {
     this.resultados = [];
     return;
@@ -123,18 +131,18 @@ export class PensionAlimenticia {
   this.cargandoBusqueda = true;
 
   // deja pasar si es RFC/CURP parcial con >=3
-  const targetRFC  = this.esRFC(q)  ? 'RFC'  : null;
-  const targetCURP = this.esCURP(q) ? 'CURP' : null;
+  const targetRFC  = esRFC(q)  ? 'RFC'  : null;
+  const targetCURP = esCURP(q) ? 'CURP' : null;
 
-  if (q.length < 3 && !this.esRFC(q) && !this.esCURP(q)) {
+  if (q.length < 3 && !esRFC(q) && !esCURP(q)) {
     this.resultados = [];
     this.cargandoBusqueda = false;
     return;
   }
 
   const obs =
-    (this.esRFC(q) || (targetRFC && q.length >= 3))  ? this.pensionAlimenticiaService.searchPorTarget('RFC', q)  :
-    (this.esCURP(q) || (targetCURP && q.length >= 3))? this.pensionAlimenticiaService.searchPorTarget('CURP', q) :
+    (esRFC(q) || (targetRFC && q.length >= 3))  ? this.pensionAlimenticiaService.searchPorTarget('RFC', q)  :
+    (esCURP(q) || (targetCURP && q.length >= 3))? this.pensionAlimenticiaService.searchPorTarget('CURP', q) :
                                                        this.pensionAlimenticiaService.searchEmpleadoLibre(q);
 
 
@@ -203,6 +211,15 @@ export class PensionAlimenticia {
 
   }
 
+  onSearchInputChange() {
+    const searchValue = this.form.get('searchText')?.value || '';
+    if (!searchValue || searchValue.trim().length === 0) {
+      this.resultados = [];
+      this.autocompleteTrigger?.closePanel();
+      this.empleadoId = null;
+    }
+  }
+
   cargarBancos(): void {
     this.pensionAlimenticiaService.getBancos()
     .subscribe({
@@ -215,21 +232,25 @@ export class PensionAlimenticia {
     })
   }
 
-  guardar(form?: NgForm) {
-    if (this.guardando) return;
+  guardar() {
+  if (this.guardando) return;
 
-    // Forzar mayúsculas en campos de texto y limpiar CLABE a dígitos
-    this.rfc = this.toUpper(this.rfc);
-    this.apellidoPaterno = this.toUpper(this.apellidoPaterno);
-    this.apellidoMaterno = this.toUpper(this.apellidoMaterno);
-    this.nombreCompleto = this.toUpper(this.nombreCompleto);
-    this.searchText = this.toUpper(this.searchText);
-    this.numeroDocumento = String(this.numeroDocumento ?? '').replace(/\D+/g, '');
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    return;
+  }
 
-    if (form && form.invalid) {
-      Object.values(form.controls).forEach(c => c.markAsTouched());
-      return;
-    }
+  this.guardando = true;
+
+  const value = this.form.value;
+
+  const beneficiarioAlimPayload = {
+    rfc: value.rfc,
+    primerApellido: value.apellidoPaterno,
+    segundoApellido: value.apellidoMaterno,
+    nombre: value.nombreCompleto
+  };
+
     this.guardando = true;
 
     const fail = (msg: string) => {
@@ -241,20 +262,13 @@ export class PensionAlimenticia {
     };
 
     if (!this.empleadoId) return fail('Selecciona un empleado antes de guardar.');
-    if (!['P','C'].includes(this.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
-    if (this.factorImporte == null) return fail('Captura Factor/Importe.');
-    if (!this.vigenciaInicio || !this.vigenciaFin) return fail('Captura la vigencia de inicio y fin.');
+    if (!['P','C'].includes(value.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
+    if (value.factorImporte == null) return fail('Captura Factor/Importe.');
+    if (!value.vigenciaInicio || !value.vigenciaFin) return fail('Captura la vigencia de inicio y fin.');
 
     // Normalizar y validar CLABE (18 dígitos)
-    const clabe = String(this.numeroDocumento ?? '').trim();
+    const clabe = String(value.numeroDocumento ?? '').trim().replace(/\D+/g, '');
     if (!/^\d{18}$/.test(clabe)) return fail('La CLABE debe tener exactamente 18 dígitos numéricos.');
-
-    const beneficiarioAlimPayload = {
-      rfc: this.rfc,
-      primerApellido: this.apellidoPaterno,
-      segundoApellido: this.apellidoMaterno,
-      nombre: this.nombreCompleto
-    };
 
     this.pensionAlimenticiaService.addBeneficiarioAlim(beneficiarioAlimPayload).subscribe({
       next: (resp: ApiResponse<IdResponse>) =>{
@@ -268,13 +282,13 @@ export class PensionAlimenticia {
           return;
         }
 
-        let factor = Number(this.factorImporte);
+        let factor = Number(value.factorImporte);
         if (Number.isNaN(factor)) {
           return fail('El campo Factor/Importe debe ser numérico.');
         }
-        if (this.formaAplicacion === 'P') {
+        
+        if (value.formaAplicacion === 'P') {
           if (factor > 1) factor = factor / 100;
-
           if (!(factor > 0 && factor <= 1)) {
             return fail('Para Factor, usa un porcentaje válido (ej. 20 = 20%). Debe ser mayor a 0 y hasta 100%.');
           }
@@ -287,16 +301,16 @@ export class PensionAlimenticia {
         const beneficiarioPayload: BeneficiarioRequest = {
           tabEmpleadosId: this.empleadoId!,
           tabBeneficiariosAlimId: beneficiarioAlimId,
-          formaAplicacion: this.formaAplicacion as 'P' | 'C',
+          formaAplicacion: value.formaAplicacion as 'P' | 'C',
           factorImporte: factor,
-          qnaini: Number(this.vigenciaInicio),
-          qnafin: Number(this.vigenciaFin),
+          qnaini: Number(value.vigenciaInicio),
+          qnafin: Number(value.vigenciaFin),
           numeroDocumento: clabe
           // bancoId: this.bancoSeleccionado // agrégalo si tu backend lo requiere
         };
 
-        if (this.numeroBeneficiario != null && !Number.isNaN(Number(this.numeroBeneficiario))) {
-          beneficiarioPayload.numeroBenef = Number(this.numeroBeneficiario);
+        if (value.numeroBeneficiario != null && !Number.isNaN(Number(value.numeroBeneficiario))) {
+          beneficiarioPayload.numeroBenef = Number(value.numeroBeneficiario);
         }
 
         if ([beneficiarioPayload.factorImporte, beneficiarioPayload.qnaini, beneficiarioPayload.qnafin].some((v: number) => Number.isNaN(v))) {
@@ -311,7 +325,7 @@ export class PensionAlimenticia {
             });
             this.guardando = false;
             // Limpiar formulario (manteniendo empleado seleccionado y búsqueda)
-            this.resetForm(form);
+            this.resetForm();
           },
           error: err => {
             console.error('Error al guardar pensión alimenticia', err);
@@ -335,198 +349,116 @@ export class PensionAlimenticia {
   }
 
   // Limpia los campos del formulario de captura (no toca la búsqueda/empleado)
-  private resetForm(form?: NgForm) {
-    try {
-      form?.resetForm();
-    } catch {
-
-    }
-    this.rfc = '';
-    this.apellidoPaterno = '';
-    this.apellidoMaterno = '';
-    this.nombreCompleto = '';
-    this.formaAplicacion = '';
-    this.factorImporte = null;
-    this.numeroBeneficiario = null;
-    this.vigenciaInicio = '';
-    this.vigenciaFin = '';
-    this.numeroDocumento = '';
-    this.bancoSeleccionado = null;
+  private resetForm() {
+   this.form.reset({
+    numeroBeneficiario: null,
+    searchText: this.form.get('searchText')?.value, // Mantener el texto de búsqueda
+    apellidoPaterno: '',
+    apellidoMaterno: '',
+    nombreCompleto: '',
+    rfc: '',
+    formaAplicacion: '',
+    factorImporte: null,
+    bancoSeleccionado: null,
+    numeroDocumento: null,
+    vigenciaInicio: '',
+    vigenciaFin: ''
+  });
   }
 
   clearSearch() {
-    this.searchText = '';
-    this.resultados = [];
-    this.cargandoBusqueda = false;
-    this.empleadoId = null;
-    this.rfc = '';
-    this.nombreCompleto = '';
+   // Limpiar todo el formulario
+  this.form.reset({
+    numeroBeneficiario: null,
+    searchText: '',
+    apellidoPaterno: '',
+    apellidoMaterno: '',
+    nombreCompleto: '',
+    rfc: '',
+    formaAplicacion: '',
+    factorImporte: null,
+    bancoSeleccionado: null,
+    numeroDocumento: null,
+    vigenciaInicio: '',
+    vigenciaFin: ''
+  });
+  
+  // Limpiar variables de búsqueda
+  this.resultados = [];
+  this.cargandoBusqueda = false;
+  this.empleadoId = null;
+  this.autocompleteTrigger?.closePanel();
   }
 
   formatearImporte() {
-    if (this.factorImporte == null) return;
-
-    let valor = Number(this.factorImporte);
+    const factorImporte = this.form.get('factorImporte')?.value;
+    const formaAplicacion = this.form.get('formaAplicacion')?.value;
+    if (factorImporte == null) return;
+    let valor = Number(factorImporte);
     if (isNaN(valor)) return;
-
-    if (this.formaAplicacion === 'C') {
+    if (formaAplicacion === 'C') {
       if (valor < 0) valor = 0;
-      this.factorImporte = Number(valor.toFixed(2));
+      this.form.get('factorImporte')?.setValue(Number(valor.toFixed(2)));
     }
   }
 
   // limpiar el valor al cambiar el tipo
   onFormaChange() {
-    this.factorImporte = null;
-  }
-
-  // Convierte a mayúsculas y elimina caracteres inválidos si se pegaron
-  onRfcInput() {
-    this.rfc = (this.rfc || '')
-      .toUpperCase()
-      .replace(/[^A-Z0-9Ñ&]/g, '');
-  }
-
-  // Bloquea teclas no permitidas
-  soloRFC(event: KeyboardEvent) {
-    const regex = /^[A-Za-z0-9ñÑ&]$/;
-
-    // Permitir teclas de control
-    const teclasPermitidas = [
-      'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete'
-    ];
-
-    if (teclasPermitidas.includes(event.key)) return;
-
-    if (!regex.test(event.key)) {
-      event.preventDefault();
-    }
-  }
-
-  // Bloquea números y caracteres no válidos al escribir
-  soloLetras(event: KeyboardEvent) {
-
-    // Permitir teclas de control
-    const teclasPermitidas = [
-      'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete', ' '
-    ];
-
-    if (teclasPermitidas.includes(event.key)) return;
-
-    // Solo letras (incluye acentos y Ñ)
-    const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ]$/;
-
-    if (!regex.test(event.key)) {
-      event.preventDefault();
-    }
-  }
-
-
-  // Limpia números si se pegan en el input
-  onNombreInput(tipo: 'paterno' | 'materno' | 'nombre') {
-
-    const limpiar = (valor: string) =>
-      valor
-        .replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '') // elimina números y símbolos
-        .replace(/\s+/g, ' ')                  // evita espacios dobles
-        .trimStart();                          // evita espacio inicial
-
-    if (tipo === 'paterno') {
-      this.apellidoPaterno = limpiar(this.apellidoPaterno);
-    }
-
-    if (tipo === 'materno') {
-      this.apellidoMaterno = limpiar(this.apellidoMaterno);
-    }
-
-    if (tipo === 'nombre') {
-      this.nombreCompleto = limpiar(this.nombreCompleto);
-    }
+    this.form.get('factorImporte')?.setValue(null);
   }
 
   onFactorImporteInput() {
-
-    if (this.factorImporte == null) return;
-
-    // FACTOR (porcentaje)
-    if (this.formaAplicacion === 'P') {
-
-      let valor = this.factorImporte.toString();
-
-      // Solo números
+  const formaAplicacion = this.form.get('formaAplicacion')?.value;
+    const factorImporte = this.form.get('factorImporte')?.value;
+    if (factorImporte == null) return;
+    if (formaAplicacion === 'P') {
+      let valor = factorImporte.toString();
       valor = valor.replace(/\D/g, '');
-
-      // Máximo 3 dígitos
       if (valor.length > 3) {
         valor = valor.substring(0, 3);
       }
-
       let numero = Number(valor);
-
-      // Máximo 100%
       if (numero > 100) {
         numero = 100;
       }
-
-      this.factorImporte = numero;
-    }
-
-    // IMPORTE FIJO
-    if (this.formaAplicacion === 'C') {
-      // Solo validar que sea número positivo
-      let numero = Number(this.factorImporte);
-
+      this.form.get('factorImporte')?.setValue(numero);
+    } else {
+      let numero = Number(factorImporte);
       if (isNaN(numero)) {
-        this.factorImporte = undefined as any;
+        this.form.get('factorImporte')?.setValue(undefined as any);
         return;
       }
-
       if (numero < 0) {
-        this.factorImporte = 0;
+        numero = 0;
       }
+      this.form.get('factorImporte')?.setValue(numero);
     }
   }
 
   onVigenciaInput(tipo: 'inicio' | 'fin') {
-
     if (tipo === 'inicio') {
-      if (!this.vigenciaInicio) return;
+      const vigenciaInicio = this.form.get('vigenciaInicio')?.value;
+      if (!vigenciaInicio) return;
 
-      let valor = this.vigenciaInicio.toString();
-
-      // Solo números
+      let valor = vigenciaInicio.toString();
       valor = valor.replace(/\D/g, '');
-
-      // Máximo 6 dígitos
       if (valor.length > 6) {
         valor = valor.substring(0, 6);
       }
-
-      this.vigenciaInicio = valor;
+      this.form.get('vigenciaInicio')?.setValue(valor);
     }
 
     if (tipo === 'fin') {
-      if (!this.vigenciaFin) return;
+      const vigenciaFin = this.form.get('vigenciaFin')?.value;
+      if (!vigenciaFin) return;
 
-      let valor = this.vigenciaFin.toString();
-
-      // Solo números
+      let valor = vigenciaFin.toString();
       valor = valor.replace(/\D/g, '');
-
-      // Máximo 6 dígitos
       if (valor.length > 6) {
         valor = valor.substring(0, 6);
       }
-
-      this.vigenciaFin = valor;
+      this.form.get('vigenciaFin')?.setValue(valor);
     }
   }
 
-  onSearchInputChange() {
-    if (!this.searchText || this.searchText.trim().length === 0) {
-      this.resultados = [];
-      this.autocompleteTrigger?.closePanel();
-      this.empleadoId = null;
-    }
-  }
 }

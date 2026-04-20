@@ -18,13 +18,14 @@
         </button>
   </div>
 
-  <div class="global-search">
+  <form [formGroup]="form" (ngSubmit)="guardar()">
+    <div class="global-search">
         <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
           <mat-icon matPrefix>search</mat-icon>
           <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
             <input matInput
               id="buscarEmpleado"
-              [(ngModel)]="searchText"
+              formControlName="searchText"
               [matAutocomplete]="auto"
               #autocompleteTrigger="matAutocompleteTrigger"
               (input)="onSearchInputChange()"
@@ -35,17 +36,16 @@
           </mat-autocomplete>
         </mat-form-field>
   </div>
-
   <div class="section-divider"></div>
-
-  <form #f="ngForm" (ngSubmit)="guardar(f)" novalidate>
+  
     <div class="section-header">
         <h3>Agregar Beneficiaria(o)</h3>
     </div>
 
     <div class="btn-group">
       <button class="btn btn-success" type="submit" [disabled]="guardando">
-        <mat-icon>save</mat-icon>   
+        <mat-icon>save</mat-icon>  
+        <span>Guardar</span> 
       </button>
     </div>
 
@@ -61,15 +61,13 @@
               matInput
               id="apellidoPaterno"
               name="apellidoPaterno"
-              [(ngModel)]="apellidoPaterno"
-              (keypress)="soloLetras($event)"
-              (input)="onNombreInput('paterno')"
+              formControlName="apellidoPaterno"
+              appSoloLetras
+              appUppercase
               placeholder="Ingresar Apellido Paterno"
               required
               minlength="2" />
-            <mat-error *ngIf="f.submitted || (f.controls['apellidoPaterno']?.invalid && f.controls['apellidoPaterno']?.touched)">
-              Ingresa el apellido paterno (mín. 2 caracteres).
-            </mat-error>
+            <mat-error *ngIf="f['apellidoPaterno']?.invalid && f['apellidoPaterno']?.touched"> Ingresa el apellido paterno (mín. 2 caracteres). </mat-error>
           </mat-form-field>
         </div>
 
@@ -82,13 +80,13 @@
               matInput
               id="apellidoMaterno"
               name="apellidoMaterno"
-              [(ngModel)]="apellidoMaterno"
-              (keypress)="soloLetras($event)"
-              (input)="onNombreInput('materno')"
+              formControlName="apellidoMaterno"
+              appSoloLetras
+              appUppercase
               placeholder="Ingresar Apellido Materno"
               required
               minlength="2" />
-            <mat-error *ngIf="f.submitted || (f.controls['apellidoMaterno']?.invalid && f.controls['apellidoMaterno']?.touched)">
+            <mat-error *ngIf="f['apellidoMaterno']?.invalid && f['apellidoMaterno']?.touched">
               Ingresa el apellido materno (mín. 2 caracteres).
             </mat-error>
           </mat-form-field>
@@ -103,15 +101,13 @@
               matInput
               id="nombreCompleto"
               name="nombreCompleto"
-              [(ngModel)]="nombreCompleto"
-              (keypress)="soloLetras($event)"
-              (input)="onNombreInput('nombre')"
+              formControlName="nombreCompleto"
+              appSoloLetras
+              appUppercase
               placeholder="Ingresar Nombre(s)"
               required
               minlength="2" />
-            <mat-error *ngIf="f.submitted || (f.controls['nombreCompleto']?.invalid && f.controls['nombreCompleto']?.touched)">
-              Ingresa el nombre (mín. 2 caracteres).
-            </mat-error>
+            <mat-error *ngIf="f['nombreCompleto']?.invalid && f['nombreCompleto']?.touched"> Ingresa el nombre (mín. 2 caracteres). </mat-error>
           </mat-form-field>
         </div>
 
@@ -124,16 +120,12 @@
               matInput
               id="rfc"
               name="rfc"
-              [(ngModel)]="rfc"
-              (input)="onRfcInput()"
-              (keypress)="soloRFC($event)"
+              formControlName="rfc"
               placeholder="Ingresa RFC"
               required
               maxlength="13"
               pattern="^[A-ZÑ&]{4}\d{6}[A-Z0-9]{3}$" />
-            <mat-error *ngIf="f.submitted || (f.controls['rfc']?.invalid && f.controls['rfc']?.touched)">
-              Ingresa un RFC válido (13 caracteres, mayúsculas y dígitos).
-            </mat-error>
+            <mat-error *ngIf="f['rfc']?.invalid && f['rfc']?.touched"> Ingresa un RFC válido (13 caracteres, mayúsculas y dígitos).</mat-error>
           </mat-form-field>
         </div>
 
@@ -145,8 +137,7 @@
             <input
               matInput
               id="numeroBeneficiario"
-              [(ngModel)]="numeroBeneficiario"
-              [ngModelOptions]="{ standalone: true }"
+              formControlName="numeroBeneficiario"
               placeholder="Se asigna automatico"
               readonly
               tabindex="-1" />
@@ -164,41 +155,33 @@
                 id="formaAplicacion"
                 name="formaAplicacion"
                 placeholder="Seleccionar forma"
-                [(ngModel)]="formaAplicacion"
+                formControlName="formaAplicacion"
                 (selectionChange)="onFormaChange()"
-                required
-                #formaAplicacionCtrl="ngModel">
+                required>
               <mat-option value="P">Factor</mat-option>
               <mat-option value="C">Importe fijo</mat-option>
             </mat-select>
-            <mat-error *ngIf="f.submitted || (formaAplicacionCtrl.invalid && formaAplicacionCtrl.touched)">
-              Selecciona la forma de aplicación.
-            </mat-error>
+            <mat-error *ngIf="f['formaAplicacion']?.invalid && f['formaAplicacion']?.touched">Selecciona la forma de aplicación. </mat-error>
           </mat-form-field>
         </div>
 
-         <!-- Factor / Importe -->
+        <!-- Factor / Importe -->
         <div>
           <label class="field-title" for="factorImporte">Factor / Importe*</label>
           <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
-            <!-- ICONO DINÁMICO -->
-            <mat-icon matPrefix>
-              {{ formaAplicacion === 'P' ? 'percent' : 'attach_money' }}
-            </mat-icon>
+            
+            <mat-icon matPrefix> {{ form.get('formaAplicacion')?.value === 'P' ? 'percent' : 'attach_money' }}</mat-icon>
               <input
                 matInput
                 id="factorImporte"
                 name="factorImporte"
-                [type]="formaAplicacion === 'P' ? 'text' : 'number'"
-                [(ngModel)]="factorImporte"
-                [placeholder]="formaAplicacion === 'P' ? '0 – 100%' : 'Ingrese importe'"
-                [attr.maxlength]="formaAplicacion === 'P' ? 3 : null"
+                [type]="form.get('formaAplicacion')?.value === 'P' ? 'text' : 'number'"
+                formControlName="factorImporte"
+                [placeholder]="form.get('formaAplicacion')?.value === 'P' ? '0 – 100%' : 'Ingrese importe'"
+                [attr.maxlength]="form.get('formaAplicacion')?.value === 'P' ? 3 : null"
                 (input)="onFactorImporteInput()"
-                required
-              />
-            <mat-error *ngIf="f.submitted || (f.controls['factorImporte']?.invalid && f.controls['factorImporte']?.touched)">
-              Ingresa un valor válido.
-            </mat-error>
+                required />
+            <mat-error *ngIf="form.get('factorImporte')?.invalid && form.get('factorImporte')?.touched">Ingresa un valor válido. </mat-error>
           </mat-form-field>
         </div>
 
@@ -211,16 +194,11 @@
               id="bancoSeleccionado"
               name="bancoSeleccionado"
               placeholder="Seleccionar banco"
-              [(ngModel)]="bancoSeleccionado"
-              required
-              #bancoSeleccionadoCtrl="ngModel">
-              <mat-option *ngFor="let bank of bancos" [value]="bank.id">
-                {{ bank.banco }}
-              </mat-option>
+              formControlName="bancoSeleccionado"
+              required>
+              <mat-option *ngFor="let bank of bancos" [value]="bank.id"> {{ bank.banco }} </mat-option>
             </mat-select>
-            <mat-error *ngIf="f.submitted || (bancoSeleccionadoCtrl.invalid && bancoSeleccionadoCtrl.touched)">
-              Selecciona un banco.
-            </mat-error>
+            <mat-error *ngIf="f['bancoSeleccionado']?.invalid && f['bancoSeleccionado']?.touched"> Selecciona un banco. </mat-error>
           </mat-form-field>
         </div>
 
@@ -234,14 +212,12 @@
               id="numeroDocumento"
               name="numeroDocumento"
               type="text"
-              [(ngModel)]="numeroDocumento"
+              formControlName="numeroDocumento"
               placeholder="18 dígitos"
               maxlength="18"
               required
               pattern="^\d{18}$" />
-            <mat-error *ngIf="f.submitted || (f.controls['numeroDocumento']?.invalid && f.controls['numeroDocumento']?.touched)">
-              La CLABE debe tener exactamente 18 dígitos numéricos.
-            </mat-error>
+            <mat-error *ngIf="f['numeroDocumento']?.invalid && f['numeroDocumento']?.touched"> La CLABE debe tener exactamente 18 dígitos numéricos. </mat-error>
           </mat-form-field>
         </div>
 
@@ -255,16 +231,13 @@
                 id="vigenciaInicio"
                 name="vigenciaInicio"
                 type="text"
-                [(ngModel)]="vigenciaInicio"
+                formControlName="vigenciaInicio"
                 placeholder="AAAAQQ"
                 required
                 maxlength="6"
                 pattern="^\d{6}$"
-                (input)="onVigenciaInput('inicio')"
-              />
-              <mat-error *ngIf="f.submitted || (f.controls['vigenciaInicio']?.invalid && f.controls['vigenciaInicio']?.touched)">
-                Captura la vigencia de inicio, debe de ser menor a 6 dígitos.
-              </mat-error>
+                (input)="onVigenciaInput('inicio')" />
+              <mat-error *ngIf="f['vigenciaInicio']?.invalid && f['vigenciaInicio']?.touched"> Captura la vigencia de inicio, debe de ser menor a 6 dígitos. </mat-error>
             </mat-form-field>
         </div>
 
@@ -278,16 +251,13 @@
                 id="vigenciaFin"
                 name="vigenciaFin"
                 type="text"
-                [(ngModel)]="vigenciaFin"
+                formControlName="vigenciaFin"
                 placeholder="AAAAQQ"
                 required
                 maxlength="6"
                 pattern="^\d{6}$"
-                (input)="onVigenciaInput('fin')"
-              />
-              <mat-error *ngIf="f.submitted || (f.controls['vigenciaFin']?.invalid && f.controls['vigenciaFin']?.touched)">
-                Captura la vigencia de fin, debe de ser menor a 6 dígitos.
-              </mat-error>
+                (input)="onVigenciaInput('fin')" />
+              <mat-error *ngIf="f['vigenciaFin']?.invalid && f['vigenciaFin']?.touched"> Captura la vigencia de fin, debe de ser menor a 6 dígitos. </mat-error>
             </mat-form-field>
         </div>
 
