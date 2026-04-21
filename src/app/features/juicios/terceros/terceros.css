@@ -1,122 +1,198 @@
-/* Tabla base */
-.table-layout {
-    display: flex;
-    align-items: flex-start;
+/* Contenedor de botones */
+.actions-right {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px 0 14px;
 }
 
-.table-section {
-    flex: 8;
-    min-width: 0;
+.btn-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.nomina-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
+.btn {
+  width: 120px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: .2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: none !important;
+  transition: all .18s ease;
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+  border: 2px solid;
 }
 
-.nomina-table th,
-.nomina-table td {
-    padding: 8px 10px;
-    border: 1px solid #e5e7eb;
-    text-align: left;
-    vertical-align: middle;
-    white-space: nowrap;
+.btn mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transition: transform 0.2s ease;
 }
 
-.nomina-table th {
-    position: sticky;
-    top: 0;
-    background: #ffffff;
-    z-index: 3;
-    font-weight: 700;
-    color: #111827;
-    box-shadow: 0 1px 0 rgba(0,0,0,.05);
+.btn-primary {
+  background: transparent;
+  color: #2563eb;
+  border-color: #2563eb;
 }
 
-.nomina-table tr:nth-child(even) td {
-    background: #fafafa;
+.btn-primary:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  transform: translateY(-1px);
 }
 
-.nomina-table tr:hover td {
-    background: #f5f7fb;
+.btn-danger {
+  background: transparent;
+  color: #dc2626;
+  border-color: #dc2626;
 }
 
-/* Selects */
+.btn-danger:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+.btn-success {
+  background: transparent;
+  color: #2e7d32;
+  border-color: #2e7d32;
+  width: 120px;
+  height: 36px;
+  padding: 0 16px;
+}
+
+.btn-success:hover {
+  background: #2e7d32;
+  color: #ffffff;
+  border-color: #2e7d32;
+  transform: translateY(-1px);
+}
+
+
+/* Search y selects */
+.global-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-field {
+  width: 550px;
+}
+
+.qna-filters {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.qna-filters mat-form-field {
+  width: 200px;
+  min-width: 100px;
+}
+
+.qna-small {
+  width: 120px;
+}
+
+.concepto-wide {
+  width: 660px; 
+}
+
+.concepto-wid {
+  width: 130px; 
+}
+
+:host ::ng-deep .qna-compact{
+  width:700px;
+}
+
+:host ::ng-deep .qna-small .mat-mdc-form-field-infix {
+  min-height: 32px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .qna-small .mat-mdc-text-field-wrapper {
+  height: 40px !important;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .qna-small .mat-mdc-select-trigger {
+  height: 32px;
+  display: flex;
+  align-items: center;
+}
+
 :host ::ng-deep .qna-compact .mat-mdc-form-field-infix {
-    min-height: 30px !important;
-    width: 90px !important; 
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-}
-
-:host ::ng-deep .qna-compact .mat-mdc-text-field-wrapper {
-    height: 30px !important;
-    width: 125px !important; 
-}
-
-:host ::ng-deep .qna-compact .mat-mdc-select-trigger {
-    height: 35px !important;
-    width: 100px !important; 
-}
-
-/* Search */
-:host ::ng-deep .search .mat-mdc-form-field-infix {
-  min-height: 28px !important;
+  min-height: 50px !important;
+  display: flex;
+  align-items: center;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
 
-:host ::ng-deep .search .mat-mdc-text-field-wrapper {
-  height: 28px !important;
-  width: 600px !important;
+:host ::ng-deep .qna-compact .mat-mdc-text-field-wrapper {
+  height: 40px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: flex;
+  align-items: center;
 }
 
-:host ::ng-deep .search .mat-mdc-form-field-flex {
-  height: 28px !important;
+:host ::ng-deep .qna-compact input.mat-mdc-input-element {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
-:host ::ng-deep .search .mdc-text-field {
-  height: 28px !important;
+:host ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
 }
 
-:host ::ng-deep .search input {
-  line-height: 30px !important;
-  padding-left: 10px !important;
-  font-size: 11px;
+:host ::ng-deep .mat-mdc-form-field {
+  margin-bottom: 0 !important;
 }
 
-/* Linea de separación */
-.with-separator .mat-mdc-form-field-icon-prefix {
-    padding: 0 12px !important;
-    border-right: 1px solid #585757 !important; 
-    display: flex !important;
-    align-items: center !important;
-    height: 24px !important; 
-    margin-right: 12px !important;
-    overflow: visible !important; 
-}
 
-.with-separator .mat-mdc-form-field-icon-suffix {
-    padding: 0 12px !important;
-    border-left: 1px solid #585757 !important;
-    display: flex !important;
-    align-items: center !important;
-    height: 24px !important;
-    margin-left: 12px !important;
-    overflow: visible !important;
-}
 
-:host ::ng-deep .with-separator .mat-mdc-form-field-icon-prefix {
-  border-right: 1px solid #585757 !important;
-}
 
 /* Separacion entre cada select */
 .top-row {
   display: flex;
   flex-wrap: wrap;
+  gap: 12px 2px;
+  align-items: center;
+}
+
+.row-line {
+  display: flex;
   gap: 12px;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  width: auto;
 }
 
 
@@ -149,47 +225,8 @@
 }
 
 
-/* Botones */
-.btn-group {
-  display: flex; 
-  gap: 16px;
-  margin-bottom: 12px; 
-}
 
-.btn-small-danger,
-.btn-small-primary {
-  width: 100px;
-  height: 32px;
-  padding: 0;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.btn-small-danger {
-  background: #d32f2f;
-  color: #fff;
-}
-
-.btn-small-primary {
-  background: #1976d2;
-  color: #fff;
-}
-
-.btn-small-danger,
-.btn-small-primary {
-  border: none !important;
-}
-
-/* efecto hover elegante */
-.btn-small-danger:hover {
-  background: #b71c1c;
-}
-
-.btn-small-primary:hover {
-  background: #1565c0;
-}
 
 
 

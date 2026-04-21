@@ -1,65 +1,39 @@
 <div class="page-container">
-    <div class="page-header"> <h2 class="page-title">Terceros</h2> </div>
+    <div class="page-header"> 
+        <h2 class="page-title">Información de terceros</h2> 
+    </div>
 
     <div class="section-divider"></div>
 
+    <div class="section-header span-3">
+        <h3>Filtros.</h3>
+    </div>
 
-    <div class="section-header span-3"><h3>Filtros.</h3></div>
-    <mat-card class="form-card">
-        <mat-card-content class="form-grid">
-            
+    <div class="actions-right">
+        <div class="btn-group">
+            <button class="btn btn-danger" (click)="clearFilters()">
+                <mat-icon>delete_outline</mat-icon>
+                <span>Limpiar</span>
+            </button>
+        </div>
+        <button class="btn btn-primary" (click)="buscarEmpleado()">
+            <mat-icon>search</mat-icon>
+            <span>Buscar</span>
+        </button>
 
-                <div class="btn-group">
-                    <button mat-flat-button class="btn-small-danger" (click)="clearFilters()">
-                        <mat-icon>delete_outline</mat-icon>
-                    </button>
+        <button class="btn btn-success">
+                <mat-icon>person_add</mat-icon>
+                <span>Agregar</span>
+        </button>
+    </div>
 
-                    <button mat-flat-button class="btn-small-primary" (click)="buscarEmpleado()">
-                        <mat-icon>search</mat-icon>
-                    </button>
-                </div>
-
-                <form [formGroup]="form" class="span-3">
-                    <div class="top-row">
-                        <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
-                            <mat-label>Año</mat-label>
-                                <mat-select formControlName="anio" (selectionChange)="onQnaModelChange()">
-                                    <mat-option *ngFor="let anio of anio" [value]="anio">{{ anio }}</mat-option>
-                                </mat-select>
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
-                            <mat-label>Quincena</mat-label>
-                                <mat-select formControlName ="quincena" (selectionChange)="onQnaModelChange()">
-                                    <mat-option *ngFor="let q of quincena" [value]="q">{{ q.toString().padStart(2,'0') }}</mat-option>
-                                </mat-select>
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
-                            <mat-label>Concepto</mat-label>
-                                <mat-select formControlName ="concepto">
-                                    <mat-option *ngFor="let c of concepto" [value]="c">
-                                        {{ c.cve }} 
-                                    </mat-option>
-                                </mat-select>
-                        </mat-form-field>
-
-                        <div class="compact-field qna-compact movimiento-col">
-                           
-                                <span class="movimiento-text">
-                                    {{ form.get('concepto')?.value?.descripcion || '—' }}
-                                </span>
-                        </div>
-
-                        <div>
-                            <span class="info-label">Descargar documento</span>
-                            <button mat-button class="btn-small-primary">Descargar</button>.txt
-                        </div>
-                    </div>
-
-                     <div formGroupName="busqueda" >
-                        <mat-form-field appearance="outline" class="compact-field with-separator search" floatLabel="always">
+    <form [formGroup]="form">
+        <div class="top-row">
+            <div class="row-line">
+                <div formGroupName="busqueda" class="global-search">
+                        <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                             <mat-icon matPrefix>search</mat-icon>
+                            <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
                                 <input
                                     matInput
                                     id="buscarEmpleado"
@@ -67,156 +41,149 @@
                                     [matAutocomplete]="auto"
                                     #autocompleteTrigger="matAutocompleteTrigger" 
                                     (keyup.enter)="buscarEmpleado()"
-                                    (input)="enforceUppercase($event)"
-                                    placeholder="BUSCAR POR RFC, PRIMER APELLIDO, SEGUNDO APELLIDO O POR NOMBRE">
+                                    (input)="enforceUppercase($event)">
 
-                                <mat-autocomplete #auto="matAutocomplete" 
-                                    (optionSelected)="empleadoSeleccionado($event.option.value)" 
-                                    [displayWith]="displayEmpleado">
-                                    <mat-option *ngFor="let emp of resultado" [value]="emp">
-                                        {{ displayEmpleado(emp) }} 
-                                    </mat-option>
-                                </mat-autocomplete>
+                            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="empleadoSeleccionado($event.option.value)" [displayWith]="displayEmpleado">
+                                <mat-option *ngFor="let emp of resultado" [value]="emp">
+                                    {{ displayEmpleado(emp) }} 
+                                </mat-option>
+                            </mat-autocomplete>
                         </mat-form-field>
-                    </div>
+                </div>
+            </div>
 
-                </form>
-        </mat-card-content>
-    </mat-card>
+            <div class="row-line">
+                <mat-form-field appearance="outline" class="compact-field qna-small" floatLabel="always">
+                        <mat-label>Año</mat-label>
+                            <mat-select formControlName="anio" (selectionChange)="onQnaModelChange()">
+                                <mat-option *ngFor="let anio of anio" [value]="anio">{{ anio }}</mat-option>
+                            </mat-select>
+                </mat-form-field>
 
-    <div class="table-container section"></div>
+                <mat-form-field appearance="outline" class="compact-field qna-small" floatLabel="always">
+                        <mat-label>Quincena</mat-label>
+                            <mat-select formControlName ="quincena" (selectionChange)="onQnaModelChange()">
+                                <mat-option *ngFor="let q of quincena" [value]="q">{{ q.toString().padStart(2,'0') }}</mat-option>
+                            </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="compact-field  qna-small concepto-wid" floatLabel="always">
+                        <mat-label>Estatus</mat-label>
+                            <mat-select formControlName ="estatus" (selectionChange)="onQnaModelChange()">
+                                <mat-option *ngFor="let e of estatusOptions" [value]="e">
+                                {{ e.label }}
+                                </mat-option>
+                            </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="compact-field qna-small" floatLabel="always">
+                        <mat-label>Orden</mat-label>
+                            <mat-select formControlName ="tipoOrden" (selectionChange)="onQnaModelChange()">
+                                <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t">
+                                    {{ t.label }}
+                                </mat-option>
+                            </mat-select>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="compact-field qna-compact concepto-wide" floatLabel="always">
+                        <mat-label>Concepto</mat-label>
+                            <mat-select formControlName ="concepto">
+                                <mat-option *ngFor="let c of concepto" [value]="c">
+                                    {{ c.cve }} - {{ c.descripcion }}
+                                </mat-option>
+                            </mat-select>
+                </mat-form-field>
+            </div>
+        </div>
+    </form>
+
+    <div class="section-divider"></div>
 
     <div class="table-layout">
+        <div class="table-section">
+            <div class="table-card card">
+                <div class="table-content">
+                    <div class="table-scroll">
+                        <table mat-table [dataSource]="dataSource" class="table-global">
 
-    <!-- TABLA -->
-    <div class="table-section">
-        <div class="table-card card">
-            <div class="table-content">
-                <div class="table-scroll">
-                    <table mat-table [dataSource]="dataSource" class="nomina-table">
+                            <ng-container matColumnDef="rfc">
+                                <th mat-header-cell *matHeaderCellDef> RFC </th>
+                                <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
+                            </ng-container>
 
-                        <ng-container matColumnDef="rfc">
-                            <th mat-header-cell *matHeaderCellDef>
-                                RFC
-                                    <br>
-                                        <input
-                                            matInput
-                                            placeholder="Buscar"
-                                            (input)="enforceUppercase($event)"
-                                            (keyup.enter)="buscarEmpleado($event.target.value)">
-                            </th>
-                            <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
-                        </ng-container>
+                            <ng-container matColumnDef="curp">
+                                <th mat-header-cell *matHeaderCellDef> CURP </th>
+                                <td mat-cell *matCellDef="let e">{{ e.curp }}</td>
+                            </ng-container>
 
-                        <ng-container matColumnDef="curp">
-                            <th mat-header-cell *matHeaderCellDef>
-                                CURP
-                                    <br>
-                                        <input
-                                            matInput
-                                            placeholder="Buscar"
-                                            (input)="enforceUppercase($event)"
-                                            (keyup.enter)="buscarEmpleado($event.target.value)">
-                            </th>
-                            <td mat-cell *matCellDef="let e">{{ e.curp }}</td>
-                        </ng-container>
+                            <ng-container matColumnDef="nombreCompleto">
+                                <th mat-header-cell *matHeaderCellDef> Nombre completo </th>
+                                <td mat-cell *matCellDef="let e">{{ e.nombreCompleto }}</td>
+                            </ng-container>
 
-                        <ng-container matColumnDef="nombreCompleto">
-                            <th mat-header-cell *matHeaderCellDef>
-                                Nombre completo
-                                    <br>
-                                        <input
-                                            matInput
-                                            placeholder="Buscar"
-                                            (input)="enforceUppercase($event)"
-                                            (keyup.enter)="buscarEmpleado($event.target.value)">
-                            </th>
-                            <td mat-cell *matCellDef="let e">{{ e.nombreCompleto }}</td>
-                        </ng-container>
+                            <ng-container matColumnDef="numeroDocumento">
+                                <th mat-header-cell *matHeaderCellDef>Numero de documento</th>
+                                <td mat-cell *matCellDef="let e">{{ e.numeroDocumento }}</td>
+                            </ng-container>
 
-                        <ng-container matColumnDef="liquides">
-                            <th mat-header-cell *matHeaderCellDef>Liquides</th>
-                            <td mat-cell *matCellDef="let e">{{ e.liquides }}</td>
-                        </ng-container>
+                            <ng-container matColumnDef="tipoOrden">
+                                <th mat-header-cell *matHeaderCellDef>Tipo de orden</th>
+                                <td mat-cell *matCellDef="let e">{{ e.tipoOrden }}</td>
+                            </ng-container>
 
-                        <ng-container matColumnDef="qnaProceso">
-                            <th mat-header-cell *matHeaderCellDef>Qna</th>
-                            <td mat-cell *matCellDef="let e">{{ e.qnaProceso }}</td>
-                        </ng-container>
+                            <ng-container matColumnDef="importeMensual">
+                                <th mat-header-cell *matHeaderCellDef>Importe mensual</th>
+                                <td mat-cell *matCellDef="let e">{{ e.importeMensual }}</td>
+                            </ng-container>
 
-                        <ng-container matColumnDef="acciones">
-                            <th mat-header-cell *matHeaderCellDef>Acciones</th>
-                                <td mat-cell *matCellDef="let e">
-                                    <div class="table-actions">
-                                        
-                                        <button mat-icon-button class="btn-success" (click)="editar(e); $event.stopPropagation()">
-                                            <mat-icon>edit</mat-icon>
-                                        </button>
+                            <ng-container matColumnDef="concepto">
+                                <th mat-header-cell *matHeaderCellDef>Concepto</th>
+                                <td mat-cell *matCellDef="let e">{{ e.concepto }}</td>
+                            </ng-container>
 
-                                        <button mat-icon-button class="btn-danger" (click)="eliminar(e); $event.stopPropagation()">
-                                            <mat-icon>delete</mat-icon>
-                                        </button>
-                                    </div>
-                                </td>
-                        </ng-container>
+                            <ng-container matColumnDef="qnaProceso">
+                                <th mat-header-cell *matHeaderCellDef>Qna</th>
+                                <td mat-cell *matCellDef="let e">{{ e.qnaProceso }}</td>
+                            </ng-container>
 
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                    </table>
+                            <ng-container matColumnDef="estatus">
+                                <th mat-header-cell *matHeaderCellDef>Estatus</th>
+                                <td mat-cell *matCellDef="let e">{{ e.estatus }}</td>
+                            </ng-container>
 
-                    <mat-paginator
-                        [length]="totalElements"
-                        [pageSize]="50"
-                        [pageSizeOptions]="[50, 100, 150, 200]"
-                        showFirstLastButtons>
-                    </mat-paginator>
+                            <ng-container matColumnDef="acciones">
+                                <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                                    <td mat-cell *matCellDef="let e">
+                                        <div class="table-actions">
+                                            
+                                            <button mat-icon-button class="btn-success" (click)="verNomina(e)">
+                                                <mat-icon>edit</mat-icon>
+                                            </button>
 
+                                            <button mat-icon-button class="btn-danger" (click)="eliminar(e); $event.stopPropagation()">
+                                                <mat-icon>delete</mat-icon>
+                                            </button>
+
+                                            <button mat-icon-button color="primary" (click)="verNomina(e)">
+                                                <mat-icon>visibility</mat-icon>
+                                            </button>
+                                        </div>
+                                    </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+
+                        <mat-paginator
+                            [length]="totalElements"
+                            [pageSize]="50"
+                            [pageSizeOptions]="[50, 100, 150, 200]"
+                            showFirstLastButtons>
+                        </mat-paginator>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    
-
-    <div class="detail-section" *ngIf="selectedRow">
-        <div class="panel-header">
-            <h3>Detalle del empleado</h3>
-                <button mat-icon-button class="close-btn" (click)="selectedRow = null">
-                <mat-icon>close</mat-icon>
-                </button>
-    </div>
-
-    <mat-card class="detail-card">
-        <mat-card-content>
-            <form [formGroup]="detailForm" class="detail-form">
-
-                <mat-form-field appearance="outline">
-                    <mat-label>RFC *</mat-label>
-                    <input matInput formControlName="rfc">
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                    <mat-label>Nombre</mat-label>
-                    <input matInput formControlName="nombreCompleto">
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                    <mat-label>Qna</mat-label>
-                    <input matInput formControlName="qnaProceso">
-                </mat-form-field>
-
-                <button mat-icon-button color="primary" (click)="verNomina(selectedRow)">
-    <mat-icon>visibility</mat-icon>
-</button>
-
-        
-                <div class="btn-group">
-                    <button mat-flat-button class="btn-success">Guardar</button>
-                    <button mat-stroked-button class="btn-danger" (click)="selectedRow = null">Cancelar</button>
-                </div>
-            </form>
-        </mat-card-content>
-    </mat-card>
-
-    </div>
     </div>
 </div>

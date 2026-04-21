@@ -13,9 +13,10 @@ import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BeneficiarioJMRequest } from '../../../models/beneficiario-jm-request.model';
 import { MatInputModule } from '@angular/material/input';
-import { forkJoin } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { NominaordConceptoDialog } from '../../nomina/nominaord-concepto-dialog/nominaord-concepto-dialog';
+import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
+import { ApiResponse } from '../../../models/api-Response.model';
 
 @Component({
   selector: 'app-terceros',
@@ -31,7 +32,7 @@ import { NominaordConceptoDialog } from '../../nomina/nominaord-concepto-dialog/
     MatPaginatorModule,
     MatAutocompleteModule,
     MatInputModule,
-  ],
+],
   templateUrl: './terceros.html',
   styleUrl: './terceros.css'
 })
@@ -48,7 +49,19 @@ export class Terceros {
 
   dataSource = new MatTableDataSource<NominaRow>([]);
   filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
-  displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'liquides', 'qnaProceso', 'acciones'];
+  displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'numeroDocumento', 'tipoOrden', 'importeMensual', 'concepto', 'qnaProceso', 'estatus', 'acciones'];
+  tipoOrdenOptions = [
+    { label: 'Alta' },
+    { label: 'Baja' },
+    { label: 'Cambio' }
+  ];
+
+   estatusOptions = [
+    { label: 'Registrado' },
+    { label: 'Pendiente' },
+    { label: 'Aprobado' }
+  ];
+
 
   form!: FormGroup;
   detailForm!: FormGroup;
@@ -63,7 +76,11 @@ export class Terceros {
   selectedRow: any;
   resultado: BeneficiarioJMRequest[] = [];
 
-   cargandoBusqueda = false;
+  cargandoBusqueda = false;
+  showFilters = true;
+
+  search: string = '';
+
 
   
   constructor(
@@ -81,6 +98,8 @@ export class Terceros {
       anio: [''],
       quincena: [''],
       concepto: [null],
+      tipoOrden: [null],
+      estatus: [null],
 
       busqueda: this.fb.group({
         empleadoId: [null],
@@ -89,6 +108,7 @@ export class Terceros {
 
       empleado: this.fb.group({
         rfc: [''],
+        curp: [''],
         primerApellido: [''],
         segundoApellido: [''],
         nombre: ['']
@@ -100,6 +120,8 @@ export class Terceros {
       qnaProceso: ['']
     });
     this.cargarConceptos();
+    
+   
   }
 
   private showSnack(message: string, action: string, duration: number): void {
@@ -107,6 +129,51 @@ export class Terceros {
       setTimeout(() => {
         this.zone.run(() => this.snackBar.open(message, action, { duration }));
       }, 50);
+    });
+  }
+
+  buscarEmpleado() {
+    const value = this.form.get('busqueda.searchText')?.value;
+    if (value && typeof value === 'object') return;
+
+    const texto = typeof value === 'string' ? value.trim() : '';
+    if (!texto) {
+      this.resultado = [];
+      this.autocompleteTrigger?.closePanel();
+      this.showSnack('Captura un criterio de busqueda', 'Cerrar', 4000);
+      return;
+    }
+    if (texto.length < 3) {
+      this.resultado = [];
+      this.autocompleteTrigger?.closePanel();
+      this.showSnack('Captura almenos 3 caractares para buscar', 'Cerrar', 4000);
+      return;
+    }
+
+    this.cargandoBusqueda = true;
+    this.terceroService.getBuscarEmpleado(texto).subscribe({
+      next: (resp: ApiResponse<BeneficiarioJMRequest[]>) => {
+        const lista = resp?.data ?? [];
+
+        // Filtra entradas sin datos útiles para evitar “— · — · — · —”
+        this.resultado = lista.filter(e =>
+          (e?.rfc && e.rfc.trim()) ||
+          (e?.primerApellido && e.primerApellido.trim()) ||
+          (e?.segundoApellido && e.segundoApellido.trim()) ||
+          (e?.nombre && e.nombre.trim())
+        );
+
+        this.cargandoBusqueda = false;
+        if (this.resultado.length > 0) {
+          setTimeout(() => this.autocompleteTrigger?.openPanel());
+        } else {
+          this.autocompleteTrigger?.closePanel();
+        }
+      },
+      error: () => {
+        this.cargandoBusqueda = false;
+        this.showSnack('Error en la busqueda', 'Cerrar', 4000);
+      }
     });
   }
   
@@ -140,11 +207,7 @@ export class Terceros {
     const raw = (s ?? '').toString().replace(/\s{2,}/g, ' ').trim();
     if (!raw) return '';
 
-    // Si viene con separadores "-", quédate con el último segmento (normalmente el nombre)
-    // Ej: "AAAA... - BBBB... - ALDANA ALDANA ALFREDO" => "ALDANA ALDANA ALFREDO"
     const lastSeg = raw.split('-').map(x => x.trim()).filter(Boolean).pop() ?? raw;
-
-    // Quita códigos tipo RFC/CURP (13 a 18 alfanum) al inicio
     const sinCodigosInicio = lastSeg.replace(/^(?:[A-Z0-9]{13,18}\s*)+/, '').trim();
     return sinCodigosInicio.replace(/\s{2,}/g, ' ').trim();
   }
@@ -155,92 +218,41 @@ export class Terceros {
     let sa = limpia(emp.segundoApellido);
     let no = limpia(emp.nombre);
 
-    // Si nombre viene contaminado, límpialo
     no = this.limpiarNombreCompleto(no);
+    if (pa && sa && no) return { 
+      primerApellido: pa, 
+      segundoApellido: sa, nombre: no 
+    };
 
-    // Si ya están las 3 partes, respeta
-    if (pa && sa && no) return { primerApellido: pa, segundoApellido: sa, nombre: no };
-
-    // Si faltan apellidos, intenta deducirlos desde 'no'
     const tokens = no.split(/\s+/).filter(Boolean);
 
     if ((!pa || !sa) && tokens.length >= 3) {
-      // Heurística MX más común: AP_PATERNO AP_MATERNO NOMBRES...
       if (!pa) pa = tokens[0];
       if (!sa) sa = tokens[1];
       no = tokens.slice(2).join(' ');
     } else if ((!pa || !no) && tokens.length === 2) {
-      // 2 tokens: asume AP_PATERNO + NOMBRES
       if (!pa) pa = tokens[0];
       no = tokens[1];
     }
-    // Con 1 token no hay mucho que repartir: lo dejamos como nombre
-
     return { primerApellido: limpia(pa), segundoApellido: limpia(sa), nombre: limpia(no) };
   }
 
   empleadoSeleccionado(emp: BeneficiarioJMRequest) {
-    const partes = this.repartirNombre(emp);
-  
-    this.form.patchValue({
-      busqueda:{
-        empleadoId: Number(emp.id),
-        searchText: this.displayEmpleado(emp)
-      },
-      empleado: {
-        rfc: emp.rfc ?? '',
-        primerApellido: partes.primerApellido,
-        segundoApellido: partes.segundoApellido,
-        nombre: partes.nombre
-      }
-    });
-  
-    this.resultado = [];
-    this.autocompleteTrigger?.closePanel();
-  
-    if (emp.id) {
-      this.cargarBeneficiarios(emp.id);
-    }
-  }
+  const partes = this.repartirNombre(emp);
 
-  cargarBeneficiarios(empleadoId: number) {
-    this.terceroService.getobtenerBeneficiarios(empleadoId).subscribe({
-      next: (resp: any) => {
-        const data = resp?.data ?? resp;
-        const source = Array.isArray(data?.beneficiarios)
-          ? data.beneficiarios
-          : Array.isArray(data)
-          ? data
-          : Array.isArray(data?.content)
-            ? data.content
-            : [];
+  const partesRaw = (emp as any).empleado?.split(' - ') ?? [];
 
-        const mapped = source.map((e: any) => ({
-          ...e,
-          id: e?.id ?? null,
-          tabBeneficiariosJmId: e?.tabBeneficiariosJmId ?? null,
-          nombreCompleto: `${e?.primerApellido ?? ''} ${e?.segundoApellido ?? ''} ${e?.nombre ?? ''}`.trim().replace(/\s{2,}/g, ' '),
-          importeTotal: Number(e?.importeTotal ?? 0),
-          factorImporte: Number(e?.factorImporte ?? 0),
-          qnaini: Number(e?.qnaini ?? 0),
-          qnafin: e?.qnafin != null ? Number(e.qnafin) : null,
-          bancoId: e?.bancoId ?? e?.idBanco ?? null,
-          clabe: e?.clabe ?? e?.clabeInterbancaria ?? null,
-          status: e?.estatus ?? e?.status ?? 'ACTIVO',
-          numeroDocumento: e?.numeroDocumento ?? e?.citaBancaria ?? null,
-          formaAplicacion: e?.formaAplicacion ?? null,
-          rfc: e?.rfc ?? e?.tabBeneficiario?.rfc ?? ''
-        }));
+  const row: any = {
+    rfc: partesRaw[0] ?? '',
+    curp: partesRaw[1] ?? '',
+    nombreCompleto: partesRaw[2] ?? `${partes.primerApellido} ${partes.segundoApellido} ${partes.nombre}`
+  };
 
-     
-        this.beneficiarios = mapped;
-        this.totalElements = mapped.length;
-        this.cd.detectChanges();
+  this.dataSource.data = [row];
+  this.totalElements = 1;
 
-    
-    },
-    error: () => this.showSnack('Error al cargar beneficiarios', 'Cerrar', 4000)
-  });
+  this.resultado = [];
+  this.autocompleteTrigger?.closePanel();
 }
 
   displayEmpleado(emp: BeneficiarioJMRequest | string | null): string {
@@ -257,35 +269,6 @@ export class Terceros {
   
     // Si no hay nombre limpio, muestra solo RFC; si lo hay, RFC - Nombre
     return [emp.rfc || '', fullName || ''].filter(Boolean).join(' - ');
-  }
-
-  buscarEmpleado(search?: string) {
-    const texto = search ?? this.form.get('busqueda.searchText')?.value;
-      if (!texto || texto.trim() === '') return;
-        this.terceroService.searchEmpleadoLibre(texto).subscribe({
-          next: (resp: any) => {
-            const data = resp?.data ?? [];
-            const mapped = data.map((e: any) => {
-            const partes = (e.empleado ?? '').split(' - ');
-        return {
-          rfc: partes[0] ?? '',
-          curp: partes[1] ?? '',
-          nombreCompleto: partes[2] ?? '',
-          liquides: 0, 
-          id: e.id
-        };
-      });
-      this.dataSource.data = mapped;
-      this.totalElements = mapped.length;
-      this.dataSource.paginator = this.paginator!;
-
-      
-
-    },
-      error: (err) => {
-        console.error('Error al buscar empleados:', err);
-      }
-    });
   }
 
   clearFilters(): void {
@@ -366,4 +349,6 @@ export class Terceros {
     }
   });
   }
+
+  
 }
