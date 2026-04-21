@@ -205,12 +205,37 @@ mat-sidenav-content {
   text-align: center;
 }
 
+.table-global .mat-column-nombreCompleto{
+  width: 150px;
+  text-align: center;
+}
+
+.table-global .mat-column-formaAplicacion {
+  width: 150px;
+  text-align: center;
+}
+
+.table-global .mat-column-importeTotal {
+  width: 150px;
+  text-align: center;
+}
+
+.table-global .mat-column-restoPagar {
+  width: 150px;
+  text-align: center;
+}
+
 .table-global .mat-column-qnaProceso {
   width: 150px;
   text-align: center;
 }
 
 .table-global .mat-column-clavePlaza {
+  width: 150px;
+  text-align: center;
+}
+
+.table-global .mat-column-citaBancaria {
   width: 150px;
   text-align: center;
 }
@@ -222,6 +247,16 @@ mat-sidenav-content {
 
 .table-global .mat-column-conceptoDetalle {
   width: 100px;
+  text-align: center;
+}
+
+.table-global .mat-column-status {
+  width: 150px;
+  text-align: center;
+}
+
+.table-global .mat-column-acciones {
+  width: 150px;
   text-align: center;
 }
 
@@ -240,7 +275,7 @@ mat-sidenav-content {
   align-items: center; 
   justify-content: space-between; 
   gap: 12px; 
-  margin: 8px 0 12px; 
+  margin: 8px 0; 
 }
 
 /* Botones */
