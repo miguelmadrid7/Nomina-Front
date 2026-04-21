@@ -1,10 +1,8 @@
 import { Injectable  } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../../models/api-Response.model';
-import { Empleado } from '../../features/servicios/empleado';
-import { BeneficiarioNom } from '../../models/beneficiario-nom.model';
 import { BeneficiarioJMRequest } from '../../models/beneficiario-jm-request.model';
 
 type AnyRow = Record<string, any>;
@@ -15,21 +13,8 @@ export class TerceroService {
 
     constructor(private http: HttpClient) {}
 
-    searchEmpleadoLibre(search: string) {
-        return this.http.get<ApiResponse<Empleado[]>>(`${this.base}/employee/by/${encodeURIComponent(search)}/search`);
-    }
-
-    obtenerConceptos(): Observable<any> {
-        return this.http.get<any>(`${this.base}/tercero/conceptos`);
-    }
-
-    //Se obtiene los beneficiarios del empleado seleccionado
-    getobtenerBeneficiarios(empleadoId: number) {
-        return this.http.get<ApiResponse<BeneficiarioNom[]>>(`${this.base}/beneficiarios/nom/${empleadoId}`);
-    }
-
     //Buscador para search del empleado
-      getBuscarEmpleado(search: string) {
+    getBuscarEmpleado(search: string) {
         const q = (search ?? '').trim();
         return this.http
           .get<ApiResponse<AnyRow[]>>(`${this.base}/employee/by/${encodeURIComponent(q)}/search`)
@@ -44,6 +29,8 @@ export class TerceroService {
                   e?.['tabEmpleadosId'] ??
                   e?.['tab_empleados_id']
                 ) ?? undefined,
+
+                empleado: e?.['empleado'] ?? '', 
     
                 rfc:
                   e?.['rfc'] ??
@@ -51,7 +38,14 @@ export class TerceroService {
                   e?.['rfc_empleado'] ??
                   e?.['rfcEmpleado'] ??
                   '',
-    
+
+                curp:   
+                  e?.['curp'] ??
+                  e?.['CURP'] ??
+                  e?.['curp_empleado'] ??
+                  e?.['curpEmpleado'] ??
+                  '',
+                    
                 primerApellido:
                   e?.['primerApellido'] ??
                   e?.['apellidoPaterno'] ??
@@ -79,7 +73,11 @@ export class TerceroService {
               return { ...(resp as any), data };
             })
           );
-      }
-    
+    }
+
+    // Se obtienen los conceptos de la bd
+    obtenerConceptos(): Observable<any> {
+      return this.http.get<any>(`${this.base}/tercero/conceptos`);
+    }
 
 }
