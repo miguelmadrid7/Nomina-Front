@@ -12,45 +12,45 @@
 
         <!-- Buscar empleado  -->
         <mat-card class="form-card">
-            <mat-card-content class="form-grid">
-
+            <div class="actions-right">
                 <div class="btn-group">
-                    <button mat-icon-button class="btn-small-danger" (click)="clearFilters()">
+                    <button class="btn btn-danger" (click)="clearFilters()">
                         <mat-icon>delete_outline</mat-icon>
-                    </button>
-
-                    <button mat-icon-button class="btn-small-primary" (click)="buscarEmpleado()">
-                        <mat-icon>search</mat-icon>
-                    </button>
-
-                    <button mat-icon-button class="btn-small-success" (click)="modalBeneficiario()">
-                        <mat-icon>person_add</mat-icon>
+                        <span>Limpiar</span>
                     </button>
                 </div>
 
-                <div formGroupName="busqueda" class="span-3">
-                    <mat-form-field appearance="outline" class="login-field with-separator compact-field search-input span-3" floatLabel="always">
-                        <mat-icon matPrefix>search</mat-icon>
-                            <input
-                                matInput
-                                id="buscarEmpleado"
-                                formControlName="searchText"
-                                [matAutocomplete]="auto"
-                                #autocompleteTrigger="matAutocompleteTrigger" 
-                                (keydown.enter)="$event.preventDefault(); buscarEmpleado()"
-                                placeholder="BUSCAR POR RFC, PRIMER APELLIDO, SEGUNDO APELLIDO O POR NOMBRE">
+                <button class="btn btn-primary" (click)="buscarEmpleado()">
+                    <mat-icon>search</mat-icon>
+                    <span>Buscar</span>
+                </button>
 
-                            <mat-autocomplete #auto="matAutocomplete" 
-                                            (optionSelected)="empleadoSeleccionado($event.option.value)"
-                                            [displayWith]="displayEmpleado">
-                                <mat-option *ngFor="let emp of resultado" [value]="emp">
-                                    {{ displayEmpleado(emp) }}
-                                </mat-option>
-                            </mat-autocomplete>
+                <button class="btn btn-success" (click)="modalBeneficiario()">
+                    <mat-icon>person_add</mat-icon>
+                    <span>Agregar</span>
+                </button>
+            </div>
+
+            <div formGroupName="busqueda" class="global-search">
+                <mat-form-field appearance="outline" class="with-separator qna-compact search-field" floatLabel="always">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
+                        <input
+                            matInput
+                            id="buscarEmpleado"
+                            formControlName="searchText"
+                            [matAutocomplete]="auto"
+                            #autocompleteTrigger="matAutocompleteTrigger" 
+                            (keydown.enter)="$event.preventDefault(); buscarEmpleado()">
+
+                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="empleadoSeleccionado($event.option.value)"[displayWith]="displayEmpleado">
+                            <mat-option *ngFor="let emp of resultado" [value]="emp">{{ displayEmpleado(emp) }}</mat-option>
+                        </mat-autocomplete>
                     </mat-form-field>
-                </div>
+            </div>
 
-                 <div>Datos del empleado seleccionado:</div>
+            <mat-card-content class="form-grid">
+                <div>Datos del empleado seleccionado:</div>
                 <div formGroupName="empleado" class="empleado-grid">
                    
                     <div class="info-field">
@@ -81,13 +81,13 @@
             </mat-card-content>
         </mat-card>
         
-       <div class="section-divider"></div>
+        <div class="section-divider"></div>
 
         <div class="table-container">
-             <div class="table-card card">   
+            <div class="table-card card">   
             <div class="table-content">
                 <div class="table-scroll">
-                    <table mat-table [dataSource]="beneficiarios" class="nomina-table">
+                    <table mat-table [dataSource]="beneficiarios" class="table-global">
                         <!-- RFC -->
                         <ng-container matColumnDef="rfc">
                                 <th mat-header-cell *matHeaderCellDef>
