@@ -85,95 +85,94 @@
 
         <div class="table-container">
             <div class="table-card card">   
-            <div class="table-content">
-                <div class="table-scroll">
-                    <table mat-table [dataSource]="beneficiarios" class="table-global">
-                        <!-- RFC -->
-                        <ng-container matColumnDef="rfc">
-                                <th mat-header-cell *matHeaderCellDef>
-                                    <span>RFC</span>
-                                </th>
-                                <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
-                        </ng-container>
+                <div class="table-content">
+                    <div class="table-scroll">
+                        <table mat-table [dataSource]="beneficiarios" class="table-global">
+                            <!-- RFC -->
+                            <ng-container matColumnDef="rfc">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        <span>RFC</span>
+                                    </th>
+                                    <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
+                            </ng-container>
 
-                        <!-- Nombre completo -->
-                        <ng-container matColumnDef="nombreCompleto">
-                                <th mat-header-cell *matHeaderCellDef>
-                                    <span>Nombre completo</span>
-                                </th>
-                                <td mat-cell *matCellDef="let e">{{ e.nombreCompleto }}</td>
-                        </ng-container>
+                            <!-- Nombre completo -->
+                            <ng-container matColumnDef="nombreCompleto">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        <span>Nombre completo</span>
+                                    </th>
+                                    <td mat-cell *matCellDef="let e">{{ e.nombreCompleto }}</td>
+                            </ng-container>
 
-                        <!-- Quincena a descontar -->
-                        <ng-container matColumnDef="qnaProceso">
-                                <th mat-header-cell *matHeaderCellDef>
-                                    Importe de la QNA a descontar
-                                        <div class="qna-filters">
-                                            <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
-                                                <mat-label>Año</mat-label>
-                                                    <mat-select formControlName="anio" (selectionChange)="onQnaModelChange()">
-                                                        <mat-option *ngFor="let anio of anio" [value]="anio">
-                                                        {{ anio }}
+                            <!-- Quincena a descontar -->
+                            <ng-container matColumnDef="qnaProceso">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        Importe de la QNA a descontar
+                                            <div class="qna-filters">
+                                                <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
+                                                    <mat-label>Año</mat-label>
+                                                        <mat-select formControlName="anio" (selectionChange)="onQnaModelChange()">
+                                                            <mat-option *ngFor="let anio of anio" [value]="anio">
+                                                            {{ anio }}
+                                                            </mat-option>
+                                                        </mat-select>
+                                                </mat-form-field>
+
+                                                <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
+                                                    <mat-label>Quincena</mat-label>
+                                                    <mat-select formControlName ="quincena" (selectionChange)="onQnaModelChange()">
+                                                        <mat-option *ngFor="let q of quincena" [value]="q">
+                                                        {{ q.toString().padStart(2,'0') }}
                                                         </mat-option>
                                                     </mat-select>
-                                            </mat-form-field>
+                                                </mat-form-field>
+                                            </div>
 
-                                            <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
-                                                <mat-label>Quincena</mat-label>
-                                                <mat-select formControlName ="quincena" (selectionChange)="onQnaModelChange()">
-                                                    <mat-option *ngFor="let q of quincena" [value]="q">
-                                                    {{ q.toString().padStart(2,'0') }}
-                                                    </mat-option>
-                                                </mat-select>
-                                            </mat-form-field>
-                                        </div>
+                                        </th>
+                                    <td mat-cell *matCellDef="let e">{{ e.qnaini }} - {{ e.qnafin }}</td>
+                            </ng-container>
 
+                            <!-- Cita bancaria -->
+                            <ng-container matColumnDef="citaBancaria">
+                                    <th mat-header-cell *matHeaderCellDef>Cita bancaria</th>
+                                    <td mat-cell *matCellDef="let e">{{ e.numeroDocumento }}</td>
+                            </ng-container>
+
+                            <!-- Forma aplicacion -->
+                            <ng-container matColumnDef="formaAplicacion">
+                                    <th mat-header-cell *matHeaderCellDef>
+                                        <span>Forma de aplicacion</span>
                                     </th>
-                                <td mat-cell *matCellDef="let e">{{ e.qnaini }} - {{ e.qnafin }}</td>
-                        </ng-container>
+                                    <td mat-cell *matCellDef="let e">{{ e.formaAplicacion }}</td>
+                            </ng-container>
 
-                        <!-- Cita bancaria -->
-                        <ng-container matColumnDef="citaBancaria">
-                                <th mat-header-cell *matHeaderCellDef>Cita bancaria</th>
-                                <td mat-cell *matCellDef="let e">{{ e.numeroDocumento }}</td>
-                        </ng-container>
-
-                        <!-- Forma aplicacion -->
-                        <ng-container matColumnDef="formaAplicacion">
-                                <th mat-header-cell *matHeaderCellDef>
-                                    <span>Forma de aplicacion</span>
-                                </th>
-                                <td mat-cell *matCellDef="let e">{{ e.formaAplicacion }}</td>
-                        </ng-container>
-
-                        <!-- Importe  total a pagar -->
-                        <ng-container matColumnDef="importeTotal">
+                            <!-- Importe  total a pagar -->
+                            <ng-container matColumnDef="importeTotal">
                                 <th mat-header-cell *matHeaderCellDef>
                                     <span>Importe pagar $</span>
                                 </th>
                                 <td mat-cell *matCellDef="let e">{{ e.importeTotal | currency:'MXN':'symbol':'1.0-2' }}</td>
+                            </ng-container>
 
-                        </ng-container>
-
-                         <!-- Importe  restante  a pagar -->
-                        <ng-container matColumnDef="restoPagar">
+                            <!-- Importe  restante  a pagar -->
+                            <ng-container matColumnDef="restoPagar">
                                 <th mat-header-cell *matHeaderCellDef>
                                     <span>Resto a pagar $</span>
                                 </th>
                                 <td mat-cell *matCellDef="let e">{{ e.restoPagar   | currency:'MXN':'symbol':'1.0-2' }}</td>
-                        </ng-container>
+                            </ng-container>
 
-                          <!-- Estatus -->
-                        <ng-container matColumnDef="status">
+                            <!-- Estatus -->
+                            <ng-container matColumnDef="status">
                                 <th mat-header-cell *matHeaderCellDef>
                                     <span>Estatus</span>
                                 </th>
                                 <td mat-cell *matCellDef="let e">{{ e.status }}</td>
-                        </ng-container>
+                            </ng-container>
 
-                       
-                        <!-- Acciones -->
-                        <ng-container matColumnDef="acciones">
+                        
+                            <!-- Acciones -->
+                            <ng-container matColumnDef="acciones">
                                 <th mat-header-cell *matHeaderCellDef>
                                     <div class="acciones-header">
                                         <span>Acciones</span>
@@ -182,45 +181,40 @@
 
                                 <td mat-cell *matCellDef="let e">
                                     <button mat-icon-button 
-                                    class="btn-small-succes" 
-                                    (click)="modalBeneficiario(e)" 
-                                    [disabled]="e.status === 'INACTIVO'"
-                                    matTooltip="Editar"
-                                    [matTooltipDisabled]="e.status === 'INACTIVO'">
-                                        <mat-icon>edit</mat-icon>
+                                        class="btn-small-succes" 
+                                        (click)="modalBeneficiario(e)" 
+                                        [disabled]="e.status === 'INACTIVO'"
+                                        matTooltip="Editar"
+                                        [matTooltipDisabled]="e.status === 'INACTIVO'">
+                                            <mat-icon>edit</mat-icon>
                                     </button>
                                 </td>
-                        </ng-container>
+                            </ng-container>
 
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
-                <tr mat-row
-      *matRowDef="let row; columns: displayedColumns;"
-      [class.inactive-row]="row?.status === 'INACTIVO'"
-      [attr.aria-disabled]="row?.status === 'INACTIVO'">
-  </tr>
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.inactive-row]="row?.status === 'INACTIVO'" [attr.aria-disabled]="row?.status === 'INACTIVO'"> </tr>
 
-  <!-- Estado vacío -->
-<div class="empty-state" *ngIf="(beneficiarios?.length ?? 0) === 0">
-  <mat-icon>inbox</mat-icon>
-  <div>No hay beneficiarios para mostrar</div>
-</div>
+                    <!-- Estado vacío -->
+                    <div class="empty-state" *ngIf="(beneficiarios?.length ?? 0) === 0">
+                        <mat-icon>inbox</mat-icon>
+                        <div>No hay beneficiarios para mostrar</div>
+                    </div>
 
-                    </table>
+                        </table>
+                    </div>
+
+                    <div class="table-footer">
+                        <mat-paginator
+                            [length]="totalElements"
+                            [pageSize]="50"
+                            [pageSizeOptions]="[50, 100, 150, 200]"
+                            showFirstLastButtons
+                            aria-label="Select page">
+                        </mat-paginator>
+                    </div>
+                </div>
+            </div>
         </div>
-
-         <div class="table-footer">
-            <mat-paginator
-                [length]="totalElements"
-                [pageSize]="50"
-                [pageSizeOptions]="[50, 100, 150, 200]"
-                showFirstLastButtons
-                aria-label="Select page">
-            </mat-paginator>
-        
-        </div>
-     </div>
-     </div>
-     </div>
-     </div>
-    </div>   
+    </div>
+</div>   
         
