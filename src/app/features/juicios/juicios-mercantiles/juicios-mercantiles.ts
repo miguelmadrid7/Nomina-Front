@@ -90,7 +90,9 @@ export class JuiciosMercantiles {
         rfc: [''],
         primerApellido: [''],
         segundoApellido: [''],
-        nombre: ['']
+        nombre: [''],
+        anio: [''],
+        quincena: ['']
       }),
       empleado: this.fb.group({
         rfc: ['', []],
@@ -399,8 +401,8 @@ export class JuiciosMercantiles {
   }
 
   onQnaModelChange(): void {
-    const a = this.form.get('anio')?.value;
-    const q = this.form.get('quincena')?.value;
+    const a = this.form.get('busqueda.anio')?.value;
+    const q = this.form.get('busqueda.quincena')?.value;
     this.anioSeleccionado = a != null ? Number(a) : null;
     this.quincenaSeleccionada = q != null ? Number(q) : null;
 
