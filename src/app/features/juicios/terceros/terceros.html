@@ -31,28 +31,26 @@
         <div class="top-row">
             <div class="row-line">
                 <div formGroupName="busqueda" class="global-search">
-                        <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                            <mat-icon matPrefix>search</mat-icon>
-                            <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
-                                <input
-                                    matInput
-                                    id="buscarEmpleado"
-                                    formControlName="searchText"
-                                    [matAutocomplete]="auto"
-                                    #autocompleteTrigger="matAutocompleteTrigger" 
-                                    (keyup.enter)="buscarEmpleado()"
-                                    (input)="enforceUppercase($event)">
+                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>search</mat-icon>
+                        <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
+                            <input
+                                matInput
+                                id="buscarEmpleado"
+                                formControlName="searchText"
+                                [matAutocomplete]="auto"
+                                #autocompleteTrigger="matAutocompleteTrigger" 
+                                (keyup.enter)="buscarEmpleado()"
+                                (input)="enforceUppercase($event)">
 
-                            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="empleadoSeleccionado($event.option.value)" [displayWith]="displayEmpleado">
-                                <mat-option *ngFor="let emp of resultado" [value]="emp">
-                                    {{ displayEmpleado(emp) }} 
-                                </mat-option>
-                            </mat-autocomplete>
-                        </mat-form-field>
+                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="empleadoSeleccionado($event.option.value)" [displayWith]="displayEmpleado">
+                            <mat-option *ngFor="let emp of resultado" [value]="emp">
+                                {{ displayEmpleado(emp) }} 
+                            </mat-option>
+                        </mat-autocomplete>
+                    </mat-form-field>
                 </div>
-            </div>
 
-            <div class="row-line">
                 <mat-form-field appearance="outline" class="compact-field qna-small" floatLabel="always">
                         <mat-label>Año</mat-label>
                             <mat-select formControlName="anio" (selectionChange)="onQnaChange()">
@@ -66,7 +64,9 @@
                                 <mat-option *ngFor="let q of quincena" [value]="q">{{ q.toString().padStart(2,'0') }}</mat-option>
                             </mat-select>
                 </mat-form-field>
+            </div>
 
+            <div class="row-line">
                 <mat-form-field appearance="outline" class="compact-field  qna-small concepto-wid" floatLabel="always">
                         <mat-label>Estatus</mat-label>
                             <mat-select formControlName ="estatus" >
@@ -142,7 +142,17 @@
                             </ng-container>
 
                             <ng-container matColumnDef="estatus">
-                                <th mat-header-cell *matHeaderCellDef>Estatus</th>
+                                <th mat-header-cell *matHeaderCellDef>
+                                    <div class="compact-field  qna-small concepto-wid">
+                                        <span>Estatus</span>
+                                            <mat-form-field appearance="outline" class="header-select">
+                                                <mat-select (selectionChange)="filterEstatus($event.value)">
+                                                    <mat-option value="">Todos</mat-option>
+                                                    <mat-option *ngFor="let e of estatusOptions" [value]="e.label">{{ e.label }}</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                    </div>
+                                </th>
                                 <td mat-cell *matCellDef="let e">{{ e.estatus }}</td>
                             </ng-container>
 

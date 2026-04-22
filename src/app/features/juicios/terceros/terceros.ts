@@ -14,8 +14,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { BeneficiarioJMRequest } from '../../../models/beneficiario-jm-request.model';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
-import { NominaordConceptoDialog } from '../../nomina/nominaord-concepto-dialog/nominaord-concepto-dialog';
-import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 import { ApiResponse } from '../../../models/api-Response.model';
 import { TercerosDialog } from '../../../shared/dialogs/terceros-dialog/terceros-dialog';
 import { LoaderService } from '../../../core/services/loader.service';
@@ -51,7 +49,7 @@ export class Terceros {
   @ViewChild(MatPaginator) paginator?: MatPaginator;
 
   dataSource = new MatTableDataSource<NominaRow>([]);
-  filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
+  filterValues: any = { search: '', estatus: '' };
   displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'numeroDocumento', 'tipoOrden', 'importeMensual',  'qnaProceso', 'estatus', 'acciones'];
   tipoOrdenOptions = [
     { label: 'Alta' },
@@ -120,21 +118,32 @@ export class Terceros {
       })
     });
     this.detailForm = this.fb.group({
-      rfc: [''],
-      nombreCompleto: [''],
-      qnaProceso: ['']
+        rfc: [''],
+        nombreCompleto: [''],
+        qnaProceso: ['']
     });
     this.cargarConceptos();
     this.dataSource.filterPredicate = (data: any, filter: string) => {
-    const search = filter.trim().toUpperCase();
-      return (
-        (data.curp ?? '').toUpperCase().includes(search) ||
-        (data.rfc ?? '').toUpperCase().includes(search) ||
-        (data.nombreEmpleado ?? '').toUpperCase().includes(search)
-      );
+    const filters = JSON.parse(filter);
+
+    const matchSearch =
+      !filters.search ||
+      (data.curp ?? '').toUpperCase().includes(filters.search) ||
+      (data.rfc ?? '').toUpperCase().includes(filters.search) ||
+      (data.nombreEmpleado ?? '').toUpperCase().includes(filters.search);
+
+    const matchEstatus =
+      !filters.estatus || data.estatus === filters.estatus;
+
+    return matchSearch && matchEstatus;
     };
   }
 
+
+  filterEstatus(value: string) {
+  this.filterValues.estatus = value;
+  this.dataSource.filter = JSON.stringify(this.filterValues);
+}
   ngAfterViewInit(): void {
   setTimeout(() => {
     if (this.paginator) {
@@ -402,7 +411,7 @@ export class Terceros {
     const row: any = {
       rfc: partesRaw[0] ?? '',
       curp: partesRaw[1] ?? '',
-      nombreCompleto: partesRaw[2] ?? `${partes.primerApellido} ${partes.segundoApellido} ${partes.nombre}`
+      nombreEmpleado: partesRaw[2] ?? `${partes.primerApellido} ${partes.segundoApellido} ${partes.nombre}`
     };
 
     this.dataSource.data = [row];
@@ -430,10 +439,17 @@ export class Terceros {
   }
 
   verNomina(row: any) {
+
+  const nombreCompleto = (row.nombreEmpleado || '').trim().split(' ');
+
+  const apellidoPaterno = nombreCompleto[0] || '';
+  const apellidoMaterno = nombreCompleto[1] || '';
+  const nombres = nombreCompleto.slice(2).join(' ') || '';
+
   const detalles = (row.detalles && row.detalles.length)
     ? row.detalles
     : (this.dataSource.data as NominaRow[])
-      .filter(d => d.noComprobante === row.noComprobante && d.rfc === row.rfc && d.curp === row.curp)
+        .filter(d => d.noComprobante === row.noComprobante && d.rfc === row.rfc && d.curp === row.curp)
         .map(d => ({
           noComprobante: d.noComprobante,
           tipoConcepto: d.tipoConcepto,
@@ -442,23 +458,27 @@ export class Terceros {
         }));
 
   this.dialog.open(TercerosDialog, {
-    width: '850px',
-    maxWidth: '95vw',
+    width: '1200px',
+    maxWidth: '92vw',
     maxHeight: '90vh',
+    panelClass: 'terceros-dialog-panel',
     autoFocus: false,
     position: { top: '80px' },
-    
+
     data: {
-        empleadoId: row.empleadoId,
-        nombreEmpleado: row.nombreEmpleado,
-        curp: row.curp,
-        rfc: row.rfc,
-        plaza: row.clavePlaza,
-        qnaTexto: `${this.anioSeleccionado}/${this.quincenaSeleccionada?.toString().padStart(2,'0')}`,
-        detalles
+      rfc: row.rfc,
+      curp: row.curp,
+      apellidoPaterno,
+      apellidoMaterno,
+      nombres,
+      numeroDocumento: row.numeroDocumento,
+      tipoOrden: row.tipoOrden,
+      importeMensual: row.importeMensual,
+      estatus: row.estatus,
+      detalles
     }
   });
-  }
+}
 
   cargarNominaTercero() {
   const anio = this.form.get('anio')?.value;

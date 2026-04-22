@@ -121,6 +121,29 @@
   width: 130px; 
 }
 
+.header-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+
+
+.header-select {
+  width: 120px;
+}
+
+:host ::ng-deep .header-select .mat-mdc-form-field-infix {
+  min-height: 28px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .header-select .mat-mdc-text-field-wrapper {
+  height: 32px !important;
+}
+
 :host ::ng-deep .qna-compact{
   width:700px;
 }
