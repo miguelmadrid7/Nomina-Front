@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { LoginService } from '../../core/services/login.service';
 import { CommonModule } from '@angular/common';
 
@@ -18,7 +18,7 @@ export class Sidebar {
 
   collapsed = false;
 
-  constructor(private loginService: LoginService) {}
+  constructor(private loginService: LoginService, private router: Router) {}
   
    ngOnInit(): void {
     const saved = localStorage.getItem('sidebar-collapsed');
@@ -40,6 +40,11 @@ export class Sidebar {
 
   hasModule(moduleId: number): boolean {
     return this.loginService.hasModule(moduleId);
+  }
+
+  logout() {
+    this.loginService.logout();
+    this.router.navigate(['/login'], { replaceUrl: true });
   }
 
 }
