@@ -80,4 +80,15 @@ export class TerceroService {
       return this.http.get<any>(`${this.base}/tercero/conceptos`);
     }
 
+    getNominaChequ(): Observable<ApiResponse<any[]>> {
+      return this.http.get<ApiResponse<any[]>>(`${this.base}/calculation/nomina-cheque`);
+    }
+
+    getNominaCheque(anio: number, qna: number, rfc?: string, curp?: string) {
+      let params: any = { anio: anio, qna: qna };
+        if (rfc) params.rfc = rfc;
+        if (curp) params.curp = curp;
+      return this.http.get<ApiResponse<any[]>>(`${this.base}/nomina/cheque`,{ params });
+    }
+
 }

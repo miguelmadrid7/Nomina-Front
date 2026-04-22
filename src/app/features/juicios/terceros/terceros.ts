@@ -17,6 +17,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { NominaordConceptoDialog } from '../../nomina/nominaord-concepto-dialog/nominaord-concepto-dialog';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 import { ApiResponse } from '../../../models/api-Response.model';
+import { TercerosDialog } from '../../../shared/dialogs/terceros-dialog/terceros-dialog';
+import { LoaderService } from '../../../core/services/loader.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-terceros',
@@ -49,7 +52,7 @@ export class Terceros {
 
   dataSource = new MatTableDataSource<NominaRow>([]);
   filterValues = { curp: '', rfc: '', nombreEmpleado: ''};
-  displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'numeroDocumento', 'tipoOrden', 'importeMensual', 'concepto', 'qnaProceso', 'estatus', 'acciones'];
+  displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'numeroDocumento', 'tipoOrden', 'importeMensual',  'qnaProceso', 'estatus', 'acciones'];
   tipoOrdenOptions = [
     { label: 'Alta' },
     { label: 'Baja' },
@@ -80,6 +83,7 @@ export class Terceros {
   showFilters = true;
 
   search: string = '';
+  qnaProceso!: number;
 
 
   
@@ -89,7 +93,8 @@ export class Terceros {
     private snackBar: MatSnackBar,
     private zone: NgZone,
     private cd: ChangeDetectorRef,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private loaderService: LoaderService,
   ) {}
 
 
@@ -120,9 +125,23 @@ export class Terceros {
       qnaProceso: ['']
     });
     this.cargarConceptos();
-    
-   
+    this.dataSource.filterPredicate = (data: any, filter: string) => {
+    const search = filter.trim().toUpperCase();
+      return (
+        (data.curp ?? '').toUpperCase().includes(search) ||
+        (data.rfc ?? '').toUpperCase().includes(search) ||
+        (data.nombreEmpleado ?? '').toUpperCase().includes(search)
+      );
+    };
   }
+
+  ngAfterViewInit(): void {
+  setTimeout(() => {
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
+    }
+  }, 0);
+}
 
   private showSnack(message: string, action: string, duration: number): void {
     this.zone.runOutsideAngular(() => {
@@ -176,16 +195,153 @@ export class Terceros {
       }
     });
   }
-  
-  onQnaModelChange(): void {
+
+  onQnaChange(): void {
+    this.anioSeleccionado = this.form.get('anio')?.value;
+    this.quincenaSeleccionada = this.form.get('quincena')?.value;
+
     if (!this.showRecords || !this.filtersReady) return;
+
     clearTimeout(this.qnaDebounceId);
+
     this.qnaDebounceId = setTimeout(() => {
-      const key = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
+      if (this.anioSeleccionado && !this.quincenaSeleccionada) {
+        this.loaderService.show();
+        this.dataSource.data = [];
+        this.totalElements = 0;
+
+        setTimeout(() => this.loaderService.hide(), 4000);
+        return;
+      }
+
+    const key = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
+
       if (this.lastQnaKey !== key && !this.isRefreshing) {
         this.lastQnaKey = key;
+        this.loadNomina();
       }
     }, 0);
+  }
+  
+  getNomina(): void {
+      if (this.isRefreshing) return;
+        this.isRefreshing = true;
+        this.loaderService.show();
+  
+        this.terceroService.getNominaChequ().pipe(
+          finalize(() => {
+            this.loaderService.hide();
+            this.isRefreshing = false;
+          })
+        ).subscribe({
+          next: (response) => {
+            if (!response.success) {
+              this.showSnack(response.message || 'Error', 'Cerrar', 4000);
+              return;
+            }
+  
+        const raw = response?.data ?? [];
+        const mapped: NominaRow[] = raw.map((row: any[]) => ({
+          noComprobante: row[0],
+          ur: row[1],
+          periodo: row[2],
+          qnaProceso: (() => {
+            const per = String(row[2] ?? '');
+            const m = per.match(/^(\d{1,2})\/(\d{4})$/);
+            if (m) {
+              const q = m[1].padStart(2,'0');
+              const y = m[2];
+              return parseInt(`${y}${q}`, 10);
+            }
+            return null;
+          })(),
+            tipoNomina: row[3],
+            clavePlaza: row[4],
+            curp: row[5],
+            rfc: row[6],
+            nombreEmpleado: `${row[7]} ${row[8]} ${row[9]}`,
+            tipoConcepto: row[10],
+            concepto: row[11],
+            descConcepto: row[12],
+            importe: Number(row[13]) || 0,
+            baseCalculoIsr: Number(row[14]) || 0
+          })
+        );
+  
+        const targetQna = parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada?.toString().padStart(2,'0')}`, 10);
+        const filtered = mapped.filter(r => r.qnaProceso === targetQna);
+  
+        // Agrupar por empleado/comprobante para evitar duplicados en la tabla
+        const groupedMap = filtered.reduce((map, r) => {
+          const key = `${r.rfc}|${r.curp}|${r.qnaProceso}|${r.noComprobante}`;
+          if (!map.has(key)) {
+            map.set(key, { ...r, detalles: [] as NominaRow['detalles'] });
+          }
+          const holder = map.get(key)!;
+          holder.detalles!.push({
+            noComprobante: r.noComprobante,
+            tipoConcepto: r.tipoConcepto,
+            concepto: r.concepto,
+            importe: r.importe,
+          });
+          return map;
+        }, new Map<string, NominaRow>());
+  
+        const grouped = Array.from(groupedMap.values());
+  
+        this.dataSource.data = grouped;
+        this.totalElements = grouped.length;
+      },
+      error: () => {
+        this.dataSource.data = [];
+        this.totalElements = 0;
+        this.showSnack('Error al obtener la nómina', 'Cerrar', 4000);
+      }
+    });
+  }
+
+  loadNomina(): void {
+    const qna = this.anioSeleccionado && this.quincenaSeleccionada
+      ? parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada.toString().padStart(2,'0')}`, 10)
+      : null;
+
+    if (!qna) {
+      this.dataSource.data = [];
+      this.totalElements = 0;
+      return;
+    }
+    this.qnaProceso = qna;
+    this.lastQnaKey = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
+    this.getNomina();
+  }
+  
+
+
+  cargarNominaPorPeriodo(anio: number, qna: number) {
+    this.terceroService.getNominaCheque(anio, qna).subscribe(resp => {
+
+      const raw = resp?.data ?? [];
+
+      const mapped: NominaRow[] = raw.map((row: any[]) => ({
+        noComprobante: row[0] ?? '—',
+        ur: row[1] ?? '',
+        periodo: row[2] ?? '',
+        qnaProceso: qna,
+        tipoNomina: row[3] ?? '',
+        clavePlaza: row[4] ?? '',
+        curp: row[5] ?? '',
+        rfc: row[6] ?? '',
+        nombreEmpleado: `${row[7] ?? ''} ${row[8] ?? ''} ${row[9] ?? ''}`.trim(),
+        tipoConcepto: row[10] ?? '',
+        concepto: row[11] ?? '',
+        descConcepto: row[12] ?? '',
+        importe: Number(row[13]) || 0,
+        baseCalculoIsr: Number(row[14]) || 0,
+      }));
+
+      this.dataSource.data = mapped;
+      this.totalElements = mapped.length;
+    });
   }
 
   editar(row: any) {
@@ -238,22 +394,24 @@ export class Terceros {
   }
 
   empleadoSeleccionado(emp: BeneficiarioJMRequest) {
-  const partes = this.repartirNombre(emp);
+    const partes = this.repartirNombre(emp);
+    const partesRaw = (emp as any).empleado?.split(' - ') ?? [];
+    const rfc = partesRaw[0] ?? '';
+    const curp = partesRaw[1] ?? '';
 
-  const partesRaw = (emp as any).empleado?.split(' - ') ?? [];
+    const row: any = {
+      rfc: partesRaw[0] ?? '',
+      curp: partesRaw[1] ?? '',
+      nombreCompleto: partesRaw[2] ?? `${partes.primerApellido} ${partes.segundoApellido} ${partes.nombre}`
+    };
 
-  const row: any = {
-    rfc: partesRaw[0] ?? '',
-    curp: partesRaw[1] ?? '',
-    nombreCompleto: partesRaw[2] ?? `${partes.primerApellido} ${partes.segundoApellido} ${partes.nombre}`
-  };
+    this.dataSource.data = [row];
+    this.totalElements = 1;
 
-  this.dataSource.data = [row];
-  this.totalElements = 1;
-
-  this.resultado = [];
-  this.autocompleteTrigger?.closePanel();
-}
+    this.resultado = [];
+    this.autocompleteTrigger?.closePanel();
+    this.cargarNominaTercero();
+  }
 
   displayEmpleado(emp: BeneficiarioJMRequest | string | null): string {
     if (!emp) return '';
@@ -269,6 +427,93 @@ export class Terceros {
   
     // Si no hay nombre limpio, muestra solo RFC; si lo hay, RFC - Nombre
     return [emp.rfc || '', fullName || ''].filter(Boolean).join(' - ');
+  }
+
+  verNomina(row: any) {
+  const detalles = (row.detalles && row.detalles.length)
+    ? row.detalles
+    : (this.dataSource.data as NominaRow[])
+      .filter(d => d.noComprobante === row.noComprobante && d.rfc === row.rfc && d.curp === row.curp)
+        .map(d => ({
+          noComprobante: d.noComprobante,
+          tipoConcepto: d.tipoConcepto,
+          concepto: d.concepto,
+          importe: Number(d.importe) || 0,
+        }));
+
+  this.dialog.open(TercerosDialog, {
+    width: '850px',
+    maxWidth: '95vw',
+    maxHeight: '90vh',
+    autoFocus: false,
+    position: { top: '80px' },
+    
+    data: {
+        empleadoId: row.empleadoId,
+        nombreEmpleado: row.nombreEmpleado,
+        curp: row.curp,
+        rfc: row.rfc,
+        plaza: row.clavePlaza,
+        qnaTexto: `${this.anioSeleccionado}/${this.quincenaSeleccionada?.toString().padStart(2,'0')}`,
+        detalles
+    }
+  });
+  }
+
+  cargarNominaTercero() {
+  const anio = this.form.get('anio')?.value;
+  const qna = this.form.get('quincena')?.value;
+  const row = this.dataSource.data[0];
+
+  this.terceroService.getNominaCheque(
+    anio,
+    qna,
+    row?.rfc,
+    row?.curp
+  ).subscribe(resp => {
+    const raw = resp?.data ?? [];
+
+    const mapped: NominaRow[] = raw.map((row: any[]) => ({
+      noComprobante: row[0] ?? '—',
+      ur: row[1] ?? '',
+      periodo: row[2] ?? '',
+      qnaProceso: null, // o calcula si tienes el dato
+      tipoNomina: row[3] ?? '',
+      clavePlaza: row[4] ?? '',
+      curp: row[5] ?? '',
+      rfc: row[6] ?? '',
+      nombreEmpleado: `${row[7] ?? ''} ${row[8] ?? ''} ${row[9] ?? ''}`.trim(),
+      tipoConcepto: row[10] ?? '',
+      concepto: row[11] ?? '',
+      descConcepto: row[12] ?? '',
+      importe: Number(row[13]) || 0,
+      baseCalculoIsr: Number(row[14]) || 0,
+    }));
+
+    // 🔥 AGRUPAR IGUAL QUE NOMINA
+    const groupedMap = mapped.reduce((map, r) => {
+      const key = `${r.rfc}|${r.curp}|${r.noComprobante}`;
+
+      if (!map.has(key)) {
+        map.set(key, { ...r, detalles: [] as any[] });
+      }
+
+      const holder = map.get(key)!;
+      holder.detalles.push({
+        noComprobante: r.noComprobante,
+        tipoConcepto: r.tipoConcepto,
+        concepto: r.concepto,
+        importe: r.importe
+      });
+
+      return map;
+    }, new Map<string, any>());
+
+    const grouped = Array.from(groupedMap.values());
+
+    this.dataSource.data = grouped;
+    this.totalElements = grouped.length;
+  });
   }
 
   clearFilters(): void {
@@ -324,31 +569,4 @@ export class Terceros {
       }
     });
   }
-
-  verNomina(row: any) {
-
-  // 🔥 AQUÍ ARMAS LOS DETALLES SIN BACKEND
-  const detalles = this.beneficiarios.map((b: any) => ({
-    noComprobante: row.noComprobante ?? 1,
-    tipoConcepto: 'D', // terceros normalmente deducciones
-    concepto: `BENEFICIARIO - ${b.nombreCompleto}`,
-    importe: Number(b.importeTotal ?? 0)
-  }));
-
-  // 🔥 ABRES EL MISMO DIALOG REUTILIZADO
-  this.dialog.open(NominaordConceptoDialog, {
-    width: '900px',
-    data: {
-      empleadoId: row.id,
-      nombreEmpleado: row.nombreCompleto,
-      curp: row.curp,
-      rfc: row.rfc,
-      plaza: row.plaza ?? '',
-      qnaTexto: `${this.form.value.anio}/${String(this.form.value.quincena).padStart(2,'0')}`,
-      detalles
-    }
-  });
-  }
-
-  
 }

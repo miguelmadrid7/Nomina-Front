@@ -55,21 +55,21 @@
             <div class="row-line">
                 <mat-form-field appearance="outline" class="compact-field qna-small" floatLabel="always">
                         <mat-label>Año</mat-label>
-                            <mat-select formControlName="anio" (selectionChange)="onQnaModelChange()">
+                            <mat-select formControlName="anio" (selectionChange)="onQnaChange()">
                                 <mat-option *ngFor="let anio of anio" [value]="anio">{{ anio }}</mat-option>
                             </mat-select>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="compact-field qna-small" floatLabel="always">
                         <mat-label>Quincena</mat-label>
-                            <mat-select formControlName ="quincena" (selectionChange)="onQnaModelChange()">
+                            <mat-select formControlName ="quincena" (selectionChange)="onQnaChange()">
                                 <mat-option *ngFor="let q of quincena" [value]="q">{{ q.toString().padStart(2,'0') }}</mat-option>
                             </mat-select>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="compact-field  qna-small concepto-wid" floatLabel="always">
                         <mat-label>Estatus</mat-label>
-                            <mat-select formControlName ="estatus" (selectionChange)="onQnaModelChange()">
+                            <mat-select formControlName ="estatus" >
                                 <mat-option *ngFor="let e of estatusOptions" [value]="e">
                                 {{ e.label }}
                                 </mat-option>
@@ -78,7 +78,7 @@
 
                 <mat-form-field appearance="outline" class="compact-field qna-small" floatLabel="always">
                         <mat-label>Orden</mat-label>
-                            <mat-select formControlName ="tipoOrden" (selectionChange)="onQnaModelChange()">
+                            <mat-select formControlName ="tipoOrden" >
                                 <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t">
                                     {{ t.label }}
                                 </mat-option>
@@ -118,7 +118,7 @@
 
                             <ng-container matColumnDef="nombreCompleto">
                                 <th mat-header-cell *matHeaderCellDef> Nombre completo </th>
-                                <td mat-cell *matCellDef="let e">{{ e.nombreCompleto }}</td>
+                                <td mat-cell *matCellDef="let e">{{ e.nombreEmpleado }}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="numeroDocumento">
@@ -127,18 +127,13 @@
                             </ng-container>
 
                             <ng-container matColumnDef="tipoOrden">
-                                <th mat-header-cell *matHeaderCellDef>Tipo de orden</th>
+                                <th mat-header-cell *matHeaderCellDef>Orden</th>
                                 <td mat-cell *matCellDef="let e">{{ e.tipoOrden }}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="importeMensual">
                                 <th mat-header-cell *matHeaderCellDef>Importe mensual</th>
                                 <td mat-cell *matCellDef="let e">{{ e.importeMensual }}</td>
-                            </ng-container>
-
-                            <ng-container matColumnDef="concepto">
-                                <th mat-header-cell *matHeaderCellDef>Concepto</th>
-                                <td mat-cell *matCellDef="let e">{{ e.concepto }}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="qnaProceso">
@@ -164,7 +159,7 @@
                                                 <mat-icon>delete</mat-icon>
                                             </button>
 
-                                            <button mat-icon-button color="primary" (click)="verNomina(e)">
+                                            <button mat-button color="primary" (click)="verNomina(e)">
                                                 <mat-icon>visibility</mat-icon>
                                             </button>
                                         </div>
