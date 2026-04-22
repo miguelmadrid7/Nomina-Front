@@ -1,0 +1,88 @@
+<div class="dialog-shell">
+  <div class="dialog-header dlg-bar">
+      <button mat-icon-button class="dialog-close" (click)="cerrar()">
+        <mat-icon>close</mat-icon>
+      </button>
+  </div>
+
+  <mat-dialog-content [formGroup]="form" class="dlg-content">
+    <div class="dlg-bar-title">Editar Tercero</div>
+    <!-- Agrega este div con la clase form-grid -->
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>RFC*</mat-label>
+        <input matInput formControlName="rfc" class="uppercase-input">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>CURP*</mat-label>
+        <input matInput formControlName="curp" class="uppercase-input">
+      </mat-form-field>
+
+      <div class="name-row span-3">
+        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+          <mat-label>Apellido paterno*</mat-label>
+          <input matInput formControlName="apellidoPaterno" class="uppercase-input">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+          <mat-label>Apellido materno*</mat-label>
+          <input matInput formControlName="apellidoMaterno" class="uppercase-input">
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+          <mat-label>Nombres personales</mat-label>
+          <input matInput formControlName="nombres" class="uppercase-input">
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Número documento</mat-label>
+        <input matInput formControlName="numeroDocumento">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Orden*</mat-label>
+        <mat-select formControlName="tipoOrden">
+          <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t">
+            {{ t }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Importe mensual*</mat-label>
+        <input matInput type="number" formControlName="importeMensual">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Estatus*</mat-label>
+        <mat-select formControlName="estatus">
+          <mat-option *ngFor="let e of estatusOptions" [value]="e">
+            {{ e }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="grid-empty"></div>
+
+      <div class="name-row span-3">
+        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+          <mat-label>Desde*</mat-label>
+          <input matInput formControlName="qnaDesde">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+          <mat-label>Hasta*</mat-label>
+          <input matInput formControlName="qnaHasta">
+        </mat-form-field>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <!-- ACTIONS -->
+  <div class="dlg-actions">
+    <button mat-flat-button class="btn-small-success" (click)="guardar()">Guardar</button>
+    <button mat-flat-button class="btn-small-danger" (click)="cerrar()">Cancelar</button>
+  </div>
+</div>

@@ -1,0 +1,171 @@
+/* GRID LAYOUT */
+.form-grid,
+.vigencia-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 16px;
+}
+
+/* La fila especial ocupa toda la anchura del grid padre (2 columnas) */
+.form-grid > .full {
+  grid-column: 1 / -1; 
+}
+
+/* Fila interna: 3 columnas para los 3 campos */
+.name-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px 16px; 
+}
+
+.span-3 {
+  grid-column: 1 / -1;
+}
+
+.grid-empty {
+  grid-column: 1 / -1;
+  height: 0;
+  border-top: 1px solid var(--line);
+  margin: 10px 0 12px;
+  width: 100%;
+}
+
+/* ===== Botones ===== */
+.btn-small-danger {
+  background: #d32f2f;
+  color: #fff;
+  width: 100px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-small-success {
+  background: #2e7d32;
+  color: #fff;
+  width: 100px;
+  height: 32px;
+  padding: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Dialog structure */
+.dialog-shell {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.dialog-header {
+  position: relative;
+  background: var(--brand);
+  color: #fff;
+  padding: 25px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centra el contenido */
+}
+
+
+
+.dlg-bar-title {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.dialog-close {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Dialog content - SIN display: grid */
+.dlg-content {
+  padding: 14px 16px;
+  max-height: calc(80vh - 120px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg);
+  flex: 1;
+}
+
+.dlg-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  background: #fff;
+  flex-shrink: 0;
+}
+
+/* Form field styles */
+.uppercase-input {
+  text-transform: uppercase;
+}
+
+mat-form-field {
+  width: 100%;
+  display: block;
+}
+
+/* Angular Material overrides */
+:host ::ng-deep .dlg-bar .mat-icon {
+  color: #fff !important;
+  opacity: 1 !important;
+}
+
+:host ::ng-deep .dlg-bar .mat-mdc-icon-button {
+  --mdc-icon-button-icon-color: #ffffff;
+  --mdc-icon-button-disabled-icon-color: rgba(255, 255, 255, 0.38);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+:host ::ng-deep .compact-field .mat-mdc-form-field-infix {
+  min-height: 32px;
+  padding-top: 4px;
+  padding-bottom: 2px;
+}
+
+:host ::ng-deep .compact-field .mat-mdc-text-field-wrapper {
+  padding-left: 8px;
+  padding-right: 15px;
+}
+
+:host ::ng-deep .compact-field input {
+  font-size: 13px;
+}
+
+:host ::ng-deep .mat-mdc-form-field {
+  margin-bottom: 0 !important;
+}
+
+/* RESPONSIVE */
+@media (max-width: 720px) {
+  .form-grid,
+  .vigencia-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .name-row {
+    grid-template-columns: 1fr;
+  }
+
+  .dlg-content {
+    padding: 12px;
+  }
+}
