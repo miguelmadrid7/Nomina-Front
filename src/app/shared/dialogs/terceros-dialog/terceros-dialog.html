@@ -1,48 +1,59 @@
 <div class="dialog-shell">
   <div class="dialog-header dlg-bar">
+    <div class="dlg-bar-title">Editar Tercero</div>
       <button mat-icon-button class="dialog-close" (click)="cerrar()">
         <mat-icon>close</mat-icon>
       </button>
   </div>
 
   <mat-dialog-content [formGroup]="form" class="dlg-content">
+    
     <div class="dlg-bar-title">Editar Tercero</div>
-    <!-- Agrega este div con la clase form-grid -->
+
+    <div class="section-divider"></div>
+
     <div class="form-grid">
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>RFC*</mat-label>
+        <mat-icon matPrefix>badge</mat-icon>
         <input matInput formControlName="rfc" class="uppercase-input">
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>CURP*</mat-label>
+        <mat-icon matPrefix>fingerprint</mat-icon>
         <input matInput formControlName="curp" class="uppercase-input">
       </mat-form-field>
 
       <div class="name-row span-3">
         <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
           <mat-label>Apellido paterno*</mat-label>
+          <mat-icon matPrefix>person</mat-icon>
           <input matInput formControlName="apellidoPaterno" class="uppercase-input">
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
           <mat-label>Apellido materno*</mat-label>
+          <mat-icon matPrefix>person</mat-icon>
           <input matInput formControlName="apellidoMaterno" class="uppercase-input">
         </mat-form-field>
         
         <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
           <mat-label>Nombres personales</mat-label>
+          <mat-icon matPrefix>person</mat-icon>
           <input matInput formControlName="nombres" class="uppercase-input">
         </mat-form-field>
       </div>
 
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>Número documento</mat-label>
+        <mat-icon matPrefix>description</mat-icon>
         <input matInput formControlName="numeroDocumento">
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>Orden*</mat-label>
+        <mat-icon matPrefix>reorder</mat-icon>
         <mat-select formControlName="tipoOrden">
           <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t">
             {{ t }}
@@ -52,11 +63,13 @@
 
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>Importe mensual*</mat-label>
+        <mat-icon matPrefix>attach_money</mat-icon>
         <input matInput type="number" formControlName="importeMensual">
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>Estatus*</mat-label>
+        <mat-icon matPrefix>rule</mat-icon>
         <mat-select formControlName="estatus">
           <mat-option *ngFor="let e of estatusOptions" [value]="e">
             {{ e }}
@@ -69,11 +82,13 @@
       <div class="name-row span-3">
         <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
           <mat-label>Desde*</mat-label>
+          <mat-icon matPrefix>calendar_today</mat-icon>
           <input matInput formControlName="qnaDesde">
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
           <mat-label>Hasta*</mat-label>
+          <mat-icon matPrefix>calendar_today</mat-icon>
           <input matInput formControlName="qnaHasta">
         </mat-form-field>
       </div>
@@ -82,7 +97,7 @@
 
   <!-- ACTIONS -->
   <div class="dlg-actions">
-    <button mat-flat-button class="btn-small-success" (click)="guardar()">Guardar</button>
-    <button mat-flat-button class="btn-small-danger" (click)="cerrar()">Cancelar</button>
+    <button class="btn btn-primary" (click)="guardar()">Guardar</button>
+    <button class="btn btn-danger" (click)="cerrar()">Cancelar</button>
   </div>
 </div>
