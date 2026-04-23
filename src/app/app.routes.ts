@@ -82,12 +82,18 @@ export const routes: Routes = [
       },
 
       {
-        path: 'terceros/informacion-terceros',
-        loadComponent: () =>
-          import('./features/juicios/terceros/terceros')
-            .then(m => m.Terceros),
-        data: { roles: [1], breadcrumb: 'Información terceros' }
-      }
+        path: 'terceros',
+        data: { breadcrumb: 'Terceros' },
+        children: [
+          {    
+            path: 'registro-terceros',
+            loadComponent: () =>
+              import('./features/terceros/terceros/terceros')
+                .then(m => m.Terceros),
+            data: { roles: [1], breadcrumb: 'Registro terceros' }
+          }
+        ]
+      },
     ]
   },
 
