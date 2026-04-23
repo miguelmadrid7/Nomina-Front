@@ -38,7 +38,7 @@
         </mat-form-field>
         
         <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-          <mat-label>Nombres personales</mat-label>
+          <mat-label>Nombres</mat-label>
           <mat-icon matPrefix>person</mat-icon>
           <input matInput formControlName="nombres" class="uppercase-input">
         </mat-form-field>
@@ -81,14 +81,24 @@
       <div class="name-row span-3">
         <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
           <mat-label>Desde*</mat-label>
-          <mat-icon matPrefix>calendar_today</mat-icon>
-          <input matInput formControlName="qnaDesde">
+            <mat-icon matPrefix>calendar_today</mat-icon>
+            <input matInput formControlName="qnaDesde">
+              <mat-error *ngIf="form.hasError('qnaMenorActual')">
+                No puede ser menor a la quincena actual
+              </mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
           <mat-label>Hasta*</mat-label>
-          <mat-icon matPrefix>calendar_today</mat-icon>
-          <input matInput formControlName="qnaHasta">
+            <mat-icon matPrefix>calendar_today</mat-icon>
+            <input matInput formControlName="qnaHasta">
+              <mat-error *ngIf="form.hasError('qnaMenorActual')">
+                No puede ser menor a la quincena actual
+              </mat-error>
+
+              <mat-error *ngIf="form.hasError('rangoInvalido')">
+                La QNA final no puede ser menor que la inicial
+              </mat-error>
         </mat-form-field>
       </div>
     </div>
