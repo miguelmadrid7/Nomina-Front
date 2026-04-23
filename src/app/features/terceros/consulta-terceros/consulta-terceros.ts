@@ -31,6 +31,7 @@ export class ConsultaTerceros {
   displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'numeroOrden', 'tipoOrden', 'importeMensual', 'concepto', 'qnaProceso', 'estatus'];
 
   form!: FormGroup;
+  filtrosTabla!: FormGroup;
   anio: number[] = [2026, 2025, 2024];
   quincena: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
   concepto: any[] = [];
@@ -46,8 +47,15 @@ export class ConsultaTerceros {
    ngOnInit() {
     this.form = this.fb.group({ 
       busqueda: this.fb.group({
-        concepto: [null],
+        concepto: [null]
       }),
+    });
+    
+    this.filtrosTabla = this.fb.group({
+        tipoOrden: [null],  
+        anio: [null],    
+        quincena: [null],
+      
     });
     this.cargarConceptos();
   }
