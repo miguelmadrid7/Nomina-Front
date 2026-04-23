@@ -173,6 +173,38 @@ export function qnaDentroVigenciaValidator(): ValidatorFn {
 }
 
 
+export function qnaMinimaValidator(minQna: number): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const desde = Number(group.get('qnaDesde')?.value);
+    const hasta = Number(group.get('qnaHasta')?.value);
+
+    if (
+      (Number.isFinite(desde) && desde < minQna) ||
+      (Number.isFinite(hasta) && hasta < minQna)
+    ) {
+      return { qnaMenorActual: true };
+    }
+
+    return null;
+  };
+}
+
+export function qnaRangoValidator(): ValidatorFn {
+  return (group: AbstractControl): ValidationErrors | null => {
+    const desde = Number(group.get('qnaDesde')?.value);
+    const hasta = Number(group.get('qnaHasta')?.value);
+
+    if (
+      Number.isFinite(desde) &&
+      Number.isFinite(hasta) &&
+      desde > hasta
+    ) {
+      return { rangoInvalido: true };
+    }
+
+    return null;
+  };
+}
 
 /* Helper de busquedads */
 export function esRFC(valor: string): boolean {
