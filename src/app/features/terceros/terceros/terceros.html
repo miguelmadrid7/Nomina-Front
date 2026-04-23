@@ -1,0 +1,162 @@
+<div class="page-container">
+    <div class="page-header"> 
+        <h2 class="page-title">Información de terceros</h2> 
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="section-header span-3">
+        <h3>Filtros.</h3>
+    </div>
+
+    <div class="actions-right">
+        <div class="btn-group">
+            <button class="btn btn-danger" (click)="clearFilters()">
+                <mat-icon>delete_outline</mat-icon>
+                <span>Limpiar</span>
+            </button>
+        </div>
+        <button class="btn btn-primary" (click)="buscarEmpleado()">
+            <mat-icon>search</mat-icon>
+            <span>Buscar</span>
+        </button>
+    </div>
+
+    <form [formGroup]="form">
+        <div formGroupName="busqueda" class="global-search">
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-icon matPrefix>search</mat-icon>
+                <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
+                    <input
+                        matInput
+                        id="buscarEmpleado"
+                        formControlName="searchText"
+                        [matAutocomplete]="auto"
+                        #autocompleteTrigger="matAutocompleteTrigger" 
+                        (keyup.enter)="buscarEmpleado()"
+                        (input)="enforceUppercase($event)">
+
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="empleadoSeleccionado($event.option.value)" [displayWith]="displayEmpleado">
+                    <mat-option *ngFor="let emp of resultado" [value]="emp">
+                        {{ displayEmpleado(emp) }} 
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+
+            <div>
+                Concepto
+            </div>
+
+        </div>
+           
+
+    <div class="section-divider"></div>
+
+    <div class="table-layout">
+        <div class="table-section">
+            <div class="table-card card">
+                <div class="table-content">
+                    <div class="table-scroll">
+                        <table mat-table [dataSource]="dataSource" class="table-global">
+
+                            <ng-container matColumnDef="rfc">
+                                <th mat-header-cell *matHeaderCellDef> RFC </th>
+                                <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="curp">
+                                <th mat-header-cell *matHeaderCellDef> CURP </th>
+                                <td mat-cell *matCellDef="let e">{{ e.curp }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="nombreCompleto">
+                                <th mat-header-cell *matHeaderCellDef>NOMBRE COMPLETO</th>
+                                <td mat-cell *matCellDef="let e">{{ e.nombreEmpleado }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="tipoOrden">
+                                <th mat-header-cell *matHeaderCellDef class="header-with-select"> ORDEN
+                                    <div class="header-column estatus-column">
+                                
+                                        <mat-form-field appearance="outline" class="header-select">
+                                            <mat-select formControlName ="tipoOrden" >
+                                                <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t">
+                                                    {{ t.label }}
+                                                </mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </th>
+                                <td mat-cell *matCellDef="let e">{{ e.tipoOrden }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="qnaProceso">
+                                <th mat-header-cell *matHeaderCellDef>QUINCENA PROCESO
+                                    <div class="header-column qna-proceso-column">
+                                        <div class="qna-filters-container">
+                                            <mat-form-field appearance="outline" class="header-select" floatLabel="always">
+                                                <mat-label>AÑO</mat-label>
+                                                    <mat-select formControlName="anio" (selectionChange)="onQnaChange()">
+                                                        <mat-option *ngFor="let anio of anio" [value]="anio">{{ anio }}</mat-option>
+                                                    </mat-select>
+                                            </mat-form-field>
+
+                                            <mat-form-field appearance="outline" class="header-select" floatLabel="always">
+                                                <mat-label>QNA</mat-label>
+                                                    <mat-select formControlName ="quincena" (selectionChange)="onQnaChange()">
+                                                        <mat-option *ngFor="let q of quincena" [value]="q">{{ q.toString().padStart(2,'0') }}</mat-option>
+                                                    </mat-select>
+                                            </mat-form-field>
+                                            </div>
+                                    </div>
+                                </th>
+                                <td mat-cell *matCellDef="let e">{{ e.qnaProceso }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="estatus">
+                                <th mat-header-cell *matHeaderCellDef> ESTATUS
+                                    <div class="header-column estatus-column">
+                                        <mat-form-field appearance="outline" class="header-select" floatLabel="always">
+                                            <mat-select (selectionChange)="filterEstatus($event.value)">
+                                                <mat-option *ngFor="let e of estatusOptions" [value]="e.label">{{ e.label }}</mat-option>
+                                            </mat-select>
+                                        </mat-form-field>
+                                    </div>
+                                </th>
+                                <td mat-cell *matCellDef="let e">{{ e.estatus }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="acciones">
+                                <th mat-header-cell *matHeaderCellDef>ACCIONES</th>
+                                    <td mat-cell *matCellDef="let e">
+                                        <div class="table-actions">
+                                            <div class="bttn-group">
+                                                <button mat-icon-button class="bttn ico-btn-primary" (click)="verNomina(e)">
+                                                    <mat-icon>edit</mat-icon>
+                                                </button>
+
+                                                <button mat-icon-button class="bttn ico-btn-danger" (click)="eliminar(e); $event.stopPropagation()">
+                                                    <mat-icon>delete</mat-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+
+                        <mat-paginator
+                            [length]="totalElements"
+                            [pageSize]="50"
+                            [pageSizeOptions]="[50, 100, 150, 200]"
+                            showFirstLastButtons>
+                        </mat-paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>

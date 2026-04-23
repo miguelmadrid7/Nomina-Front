@@ -1,0 +1,277 @@
+/* CONTENEDORES Y BOTONES */
+.actions-right {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 10px 0 14px;
+}
+
+.btn-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn {
+    width: 120px;
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: .2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: none !important;
+    transition: all .18s ease;
+    cursor: pointer;
+    position: relative;
+    background: transparent;
+    border: 2px solid;
+}
+
+.btn mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    transition: transform 0.2s ease;
+}
+
+.btn-primary {
+    background: transparent;
+    color: #2563eb;
+    border-color: #2563eb;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: transparent;
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    color: #ffffff;
+    border-color: #dc2626;
+    transform: translateY(-1px);
+}
+
+
+.bttn-group {
+    display: flex;
+    gap: 10px;  
+    align-items: center;
+    justify-content: center;
+}
+
+.bttn {
+    width: 40px;
+    height: 36px;
+    padding: 0 5px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: .2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: none !important;
+    transition: all .18s ease;
+    cursor: pointer;
+    position: relative;
+    background: transparent;
+    border: 2px solid;
+}
+
+
+.ico-btn-danger {
+    background: transparent;
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
+.ico-btn-primary {
+    background: transparent;
+    color: #2563eb;
+    border-color: #2563eb;
+}
+
+.ico-btn-success {
+    background: #2e7d32;
+    color: #ffffff;
+    border-color: #2e7d32;
+}
+
+
+/* SEARCH Y SELECTS */
+.global-search {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.search-field {
+    width: 650px;
+}
+
+/* TABLA GLOBAL */
+.table-global {
+    width: 100%;
+}
+
+.table-global .mat-mdc-header-cell {
+    vertical-align: middle !important;
+    padding: 10px 8px !important;
+}
+
+/* COLUMNAS DE TABLA */
+.table-global .mat-column-rfc {
+    width: 130px !important;
+    min-width: 130px !important;
+    max-width: 130px !important;
+    text-align: center !important;
+}
+
+.table-global .mat-column-curp {
+    width: 130px !important;
+    text-align: center !important;
+}
+
+.table-global .mat-column-nombreCompleto {
+    width: 100px !important;
+    text-align: center !important;
+}
+
+.table-global .mat-column-tipoOrden {
+    width: 130px !important;
+    text-align: center !important;
+}
+
+.table-global .mat-column-qnaProceso {
+    width: 200px !important;
+    min-width: 200px !important;
+    max-width: 220px !important;
+    text-align: center !important;
+}
+
+.table-global .mat-column-estatus {
+    width: 150px !important;
+    text-align: center !important;
+}
+
+.table-global .mat-column-acciones {
+    width: 130px !important;
+    text-align: center !important;
+}
+
+/* HEADERS CON SELECTS */
+.header-column {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 2px !important;
+}
+
+.header-select {
+    width: 100% !important;
+    max-width: 110px !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+.qna-filters-container {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+.qna-select {
+    width: 95px !important;
+    min-width: 95px !important;
+    max-width: 95px !important;
+    text-align: center !important;
+    margin: 0 !important;
+}
+
+/* OVERRIDES DE MATERIAL DESIGN */
+:host ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none !important;
+}
+
+:host ::ng-deep .mat-mdc-form-field {
+    margin-bottom: 0 !important;
+}
+
+:host ::ng-deep .header-select .mat-mdc-form-field,
+:host ::ng-deep .qna-select .mat-mdc-form-field {
+    text-align: center !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+}
+
+:host ::ng-deep .header-select .mat-mdc-form-field-infix,
+:host ::ng-deep .qna-select .mat-mdc-form-field-infix {
+    min-height: 28px !important;
+    padding-top: 2px !important;
+    padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .header-select .mat-mdc-text-field-wrapper,
+:host ::ng-deep .qna-select .mat-mdc-text-field-wrapper {
+    height: 32px !important;
+}
+
+:host ::ng-deep .header-select .mat-mdc-select-trigger,
+:host ::ng-deep .qna-select .mat-mdc-select-trigger {
+    justify-content: center !important;
+    text-align: center !important;
+}
+
+/* SEARCH FIELD */
+:host ::ng-deep .qna-compact {
+    width: 680px !important;
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-form-field-infix {
+    min-height: 40px !important;
+    display: flex;
+    align-items: center;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-text-field-wrapper {
+    height: 40px !important;
+    display: flex;
+    align-items: center;
+}
+
+:host ::ng-deep .qna-compact input.mat-mdc-input-element {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
