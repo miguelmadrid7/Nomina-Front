@@ -59,7 +59,7 @@ export class ConsultaTerceros {
   ngOnInit() {
     this.form = this.fb.group({ 
       busqueda: this.fb.group({
-        tipoConcepto: [1],
+        tipoConcepto: [2],
         concepto: [null]
       }),
     });
@@ -90,7 +90,7 @@ export class ConsultaTerceros {
       );
 
       // default
-      this.conceptosFiltrados = this.conceptosInstitucionales;
+      this.conceptosFiltrados = this.conceptosNoInstitucionales;
 
       this.cd.detectChanges();
     },
