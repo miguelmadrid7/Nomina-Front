@@ -66,11 +66,17 @@ export const routes: Routes = [
       },
 
       {
-        path: 'pension/alimenticia',
-        loadComponent: () =>
-          import('./features/nomina/pension-alimenticia/pension-alimenticia')
-            .then(m => m.PensionAlimenticia),
-        data: { roles: [1], breadcrumb: 'Pensión alimenticia' }
+        path: 'pensiones',
+        data: { breadcrumb: 'Pensiones' },
+        children: [
+          {
+            path: 'registro-alimenticia',
+            loadComponent: () =>
+              import('./features/nomina/pension-alimenticia/pension-alimenticia')
+                .then(m => m.PensionAlimenticia),
+            data: { roles: [1], breadcrumb: 'Pensión alimenticia' }
+          },
+        ]
       },
 
       {
