@@ -157,3 +157,25 @@
     height: 32px !important;
 }
 
+
+/* Radios */
+.radio-group {
+  margin-bottom: 16px;
+}
+
+.rad {
+  margin-bottom: 16px;
+  margin-left: 10px;
+
+}
+
+.mat-mdc-radio-button ~ .mat-mdc-radio-button {
+  margin-left: 10px;
+  margin-bottom: 5px;
+}
+
+.global-search {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* 👈 separación entre radio y select */
+}

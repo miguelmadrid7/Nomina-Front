@@ -19,13 +19,17 @@
         </div>
     </div>
 
-
     <form [formGroup]="form">
         <div formGroupName="busqueda" class="global-search">
+            <mat-radio-group aria-label="Select an option" formControlName="tipoConcepto">
+                <mat-radio-button class="rad" [value]="2">No Institucionales</mat-radio-button>
+                 <mat-radio-button [value]="1">Institucionales</mat-radio-button>
+            </mat-radio-group>
+
             <mat-form-field appearance="outline" class="compact-field qna-compact concepto-wi" floatLabel="always">
                 <mat-label>Concepto</mat-label>
                     <mat-select formControlName ="concepto">
-                        <mat-option *ngFor="let c of concepto" [value]="c">{{ c.cve }} - {{ c.descripcion }}</mat-option>
+                        <mat-option *ngFor="let c of conceptosFiltrados" [value]="c">{{ c.cve }} - {{ c.descripcion }}</mat-option>
                     </mat-select>
             </mat-form-field>
         </div>
