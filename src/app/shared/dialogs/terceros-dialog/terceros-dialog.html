@@ -100,6 +100,14 @@
                 La QNA final no puede ser menor que la inicial
               </mat-error>
         </mat-form-field>
+
+        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+          <mat-label>Fecha registro*</mat-label>
+          <mat-icon matPrefix>calendar_today</mat-icon>
+          <input matInput [matDatepicker]="picker" formControlName="fechaRegistro" placeholder="Selecciona fecha">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
       </div>
     </div>
   </mat-dialog-content>

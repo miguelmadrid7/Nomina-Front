@@ -5,7 +5,8 @@ import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatOption, MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
+import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { qnaMinimaValidator, qnaRangoValidator } from '../../validators/validaciones.validators';
 
@@ -22,6 +23,10 @@ import { qnaMinimaValidator, qnaRangoValidator } from '../../validators/validaci
     MatOptionModule,
     MatOption,
     MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule      
+
+
   ],
   templateUrl: './terceros-dialog.html',
   styleUrl: './terceros-dialog.css'
@@ -54,7 +59,8 @@ export class TercerosDialog {
       importeMensual: [this.data.importeMensual],
       qnaDesde: [currentQna.aaaaqq],
       qnaHasta: [''],
-      estatus: [this.data.estatus]
+      estatus: [this.data.estatus],
+      fechaRegistro: [{ value: this.data.fechaRegistro || new Date(), disabled: true }]
     },
     {
       validators: [
@@ -94,8 +100,14 @@ export class TercerosDialog {
   }
 
   guardar() {
+    const value = this.form.getRawValue();
     console.log(this.form.value);
+    value.fechaRegistro = this.formatDate(value.fechaRegistro);
     this.ref.close(this.form.value);
+  }
+
+  formatDate(date: Date): string {
+    return date.toISOString().split('T')[0]; // yyyy-MM-dd
   }
 
   cerrar() {
