@@ -36,6 +36,7 @@
     "@angular/ssr": "^20.2.0",
     "bootstrap": "^5.3.8",
     "express": "^5.1.0",
+    "flatpickr": "^4.6.13",
     "rxjs": "~7.8.0",
     "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3",
