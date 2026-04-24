@@ -48,6 +48,8 @@ export class TercerosDialog {
   ngOnInit(): void {
     const currentQna = this.getCurrentQna();
     const minQna = this.nextQna(currentQna.aaaaqq).aaaaqq;
+    const now = new Date();
+    const horaActual = now.toTimeString().slice(0, 5);
 
     this.form = this.fb.group({
       rfc: [this.data.rfc],
@@ -61,7 +63,8 @@ export class TercerosDialog {
       qnaDesde: [currentQna.aaaaqq],
       qnaHasta: [''],
       estatus: [this.data.estatus],
-      fechaRegistro: [{ value: this.data.fechaRegistro || new Date(), disabled: true }]
+      fechaRegistro: [{ value: this.data.fechaRegistro || new Date(), disabled: true }],
+      horaRegistro: [{ value: horaActual, disabled: true }] 
     },
     {
       validators: [
@@ -111,13 +114,19 @@ export class TercerosDialog {
 
   guardar() {
     const value = this.form.getRawValue();
-    console.log(this.form.value);
-    value.fechaRegistro = this.formatDate(value.fechaRegistro);
+    const fecha = new Date(value.fechaRegistro);
+
+    const [hours, minutes] = value.horaRegistro.split(':');
+    fecha.setHours(+hours);
+    fecha.setMinutes(+minutes);
+
+    value.fechaRegistro = fecha.toISOString();
+
     this.ref.close(value);
   }
 
   formatDate(date: Date): string {
-    return date.toISOString().split('T')[0]; // yyyy-MM-dd
+    return new Date(date).toLocaleString();
   }
 
   cerrar() {

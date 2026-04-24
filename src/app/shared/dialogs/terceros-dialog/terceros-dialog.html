@@ -76,7 +76,7 @@
 
       <div class="grid-empty"></div>
 
-      <div class="name-row span-3">
+      <div class="datetime-row span-3">
         <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
           <mat-label>Desde*</mat-label>
             <mat-icon matPrefix>calendar_today</mat-icon>
@@ -89,7 +89,7 @@
         <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
           <mat-label>Hasta*</mat-label>
             <mat-icon matPrefix>calendar_today</mat-icon>
-            <input matInput formControlName="qnaHasta">
+            <input matInput formControlName="qnaHasta" maxlength="6"  pattern="[0-9]*">
               <mat-error *ngIf="form.hasError('qnaMenorActual')">
                 No puede ser menor a la quincena actual
               </mat-error>
@@ -99,13 +99,21 @@
               </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-          <mat-label>Fecha registro*</mat-label>
-          <mat-icon matPrefix>calendar_today</mat-icon>
-          <input matInput [matDatepicker]="picker" formControlName="fechaRegistro" placeholder="Selecciona fecha">
-          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
+        <div class="datetime-row span-3">
+          <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+            <mat-label>Fecha registro*</mat-label>
+            <mat-icon matPrefix>calendar_today</mat-icon>
+            <input matInput [matDatepicker]="picker" formControlName="fechaRegistro">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+            <mat-label>Hora registro*</mat-label>
+            <mat-icon matPrefix>schedule</mat-icon>
+            <input matInput type="time" formControlName="horaRegistro" readonly>
+          </mat-form-field>
+        </div>
       </div>
     </div>
   </mat-dialog-content>
