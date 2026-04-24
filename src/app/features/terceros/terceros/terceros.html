@@ -75,54 +75,12 @@
                             </ng-container>
 
                             <ng-container matColumnDef="tipoOrden">
-                                <th mat-header-cell *matHeaderCellDef class="header-with-select"> ORDEN
-                                    <div class="header-column estatus-column">
-                                
-                                        <mat-form-field appearance="outline" class="header-select">
-                                            <mat-select formControlName ="tipoOrden" >
-                                                <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t">
-                                                    {{ t.label }}
-                                                </mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </div>
-                                </th>
+                                <th mat-header-cell *matHeaderCellDef class="header-with-select"> ORDEN </th>
                                 <td mat-cell *matCellDef="let e">{{ e.tipoOrden }}</td>
                             </ng-container>
 
-                            <ng-container matColumnDef="qnaProceso">
-                                <th mat-header-cell *matHeaderCellDef>QUINCENA PROCESO
-                                    <div class="header-column qna-proceso-column">
-                                        <div class="qna-filters-container">
-                                            <mat-form-field appearance="outline" class="header-select" floatLabel="always">
-                                                <mat-label>AÑO</mat-label>
-                                                    <mat-select formControlName="anio" (selectionChange)="onQnaChange()">
-                                                        <mat-option *ngFor="let anio of anio" [value]="anio">{{ anio }}</mat-option>
-                                                    </mat-select>
-                                            </mat-form-field>
-
-                                            <mat-form-field appearance="outline" class="header-select" floatLabel="always">
-                                                <mat-label>QNA</mat-label>
-                                                    <mat-select formControlName ="quincena" (selectionChange)="onQnaChange()">
-                                                        <mat-option *ngFor="let q of quincena" [value]="q">{{ q.toString().padStart(2,'0') }}</mat-option>
-                                                    </mat-select>
-                                            </mat-form-field>
-                                            </div>
-                                    </div>
-                                </th>
-                                <td mat-cell *matCellDef="let e">{{ e.qnaProceso }}</td>
-                            </ng-container>
-
                             <ng-container matColumnDef="estatus">
-                                <th mat-header-cell *matHeaderCellDef> ESTATUS
-                                    <div class="header-column estatus-column">
-                                        <mat-form-field appearance="outline" class="header-select" floatLabel="always">
-                                            <mat-select (selectionChange)="filterEstatus($event.value)">
-                                                <mat-option *ngFor="let e of estatusOptions" [value]="e.label">{{ e.label }}</mat-option>
-                                            </mat-select>
-                                        </mat-form-field>
-                                    </div>
-                                </th>
+                                <th mat-header-cell *matHeaderCellDef> ESTATUS </th>
                                 <td mat-cell *matCellDef="let e">{{ e.estatus }}</td>
                             </ng-container>
 

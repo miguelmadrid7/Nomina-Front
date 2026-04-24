@@ -50,7 +50,7 @@ export class Terceros {
 
   dataSource = new MatTableDataSource<NominaRow>([]);
   filterValues: any = { search: '', estatus: '' };
-  displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'tipoOrden', 'qnaProceso', 'estatus', 'acciones'];
+  displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'tipoOrden', 'estatus', 'acciones'];
   tipoOrdenOptions = [
     { label: 'Alta' },
     { label: 'Baja' },
