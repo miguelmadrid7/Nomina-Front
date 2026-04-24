@@ -37,6 +37,7 @@ export class TercerosDialog {
 
   estatusOptions = ['Registrado', 'Pendiente', 'Aprobado'];
   tipoOrdenOptions = ['Alta', 'Baja', 'Cambio'];
+  esAltaFlag = false;
 
   constructor(
     private fb: FormBuilder,
@@ -70,6 +71,7 @@ export class TercerosDialog {
     });
 
     this.form.get('tipoOrden')?.valueChanges.subscribe((valor) => {
+      this.esAltaFlag = valor?.toLowerCase() === 'alta';
       if (valor === 'Alta') {
         this.form.get('estatus')?.setValue('Registrado');
         this.form.get('estatus')?.disable(); 
@@ -77,6 +79,14 @@ export class TercerosDialog {
         this.form.get('estatus')?.enable(); 
       }
     });
+
+    const inicial = this.form.get('tipoOrden')?.value;
+    this.esAltaFlag = inicial?.toLowerCase() === 'alta';
+  }
+
+  get esAlta(): boolean {
+    const valor = this.form?.get('tipoOrden')?.value;
+    return valor?.toLowerCase() === 'alta';
   }
 
   getCurrentQna(): { anio: number; qna: number; aaaaqq: number } {
@@ -103,7 +113,7 @@ export class TercerosDialog {
     const value = this.form.getRawValue();
     console.log(this.form.value);
     value.fechaRegistro = this.formatDate(value.fechaRegistro);
-    this.ref.close(this.form.value);
+    this.ref.close(value);
   }
 
   formatDate(date: Date): string {

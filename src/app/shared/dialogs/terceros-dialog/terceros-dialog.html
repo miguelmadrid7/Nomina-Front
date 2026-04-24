@@ -66,13 +66,11 @@
         <input matInput type="number" formControlName="importeMensual">
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+      <mat-form-field *ngIf="!esAltaFlag" appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>Estatus*</mat-label>
         <mat-icon matPrefix>rule</mat-icon>
         <mat-select formControlName="estatus">
-          <mat-option *ngFor="let e of estatusOptions" [value]="e">
-            {{ e }}
-          </mat-option>
+          <mat-option *ngFor="let e of estatusOptions" [value]="e"> {{ e }} </mat-option>
         </mat-select>
       </mat-form-field>
 
