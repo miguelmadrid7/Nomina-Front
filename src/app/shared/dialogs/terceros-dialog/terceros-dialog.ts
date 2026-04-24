@@ -10,6 +10,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { qnaMinimaValidator, qnaRangoValidator } from '../../validators/validaciones.validators';
 import flatpickr from 'flatpickr';
+import { Spanish } from 'flatpickr/dist/l10n/es';
 
 @Component({
   selector: 'app-terceros-dialog',
@@ -92,7 +93,8 @@ export class TercerosDialog  {
     enableTime: true,
     dateFormat: 'Y-m-d H:i',
     defaultDate: new Date(),
-    time_24hr: true
+    time_24hr: true,
+    locale: Spanish,
   });
 }
 
