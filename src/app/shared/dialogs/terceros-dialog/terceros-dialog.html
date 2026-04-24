@@ -99,21 +99,16 @@
               </mat-error>
         </mat-form-field>
 
-        <div class="datetime-row span-3">
-          <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-            <mat-label>Fecha registro*</mat-label>
+        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+            <mat-label>Fecha y hora registro*</mat-label>
             <mat-icon matPrefix>calendar_today</mat-icon>
-            <input matInput [matDatepicker]="picker" formControlName="fechaRegistro">
-              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
+            <input 
+              matInput 
+              formControlName="fechaRegistro"
+              id="fechaHoraInput"
+              placeholder="Selecciona fecha y hora"
+              readonly>
           </mat-form-field>
-
-          <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-            <mat-label>Hora registro*</mat-label>
-            <mat-icon matPrefix>schedule</mat-icon>
-            <input matInput type="time" formControlName="horaRegistro" readonly>
-          </mat-form-field>
-        </div>
       </div>
     </div>
   </mat-dialog-content>

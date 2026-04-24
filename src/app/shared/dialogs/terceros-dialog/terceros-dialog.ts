@@ -9,6 +9,7 @@ import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
 import { qnaMinimaValidator, qnaRangoValidator } from '../../validators/validaciones.validators';
+import flatpickr from 'flatpickr';
 
 @Component({
   selector: 'app-terceros-dialog',
@@ -31,7 +32,7 @@ import { qnaMinimaValidator, qnaRangoValidator } from '../../validators/validaci
   templateUrl: './terceros-dialog.html',
   styleUrl: './terceros-dialog.css'
 })
-export class TercerosDialog {
+export class TercerosDialog  {
 
   form!: FormGroup;
 
@@ -64,7 +65,6 @@ export class TercerosDialog {
       qnaHasta: [''],
       estatus: [this.data.estatus],
       fechaRegistro: [{ value: this.data.fechaRegistro || new Date(), disabled: true }],
-      horaRegistro: [{ value: horaActual, disabled: true }] 
     },
     {
       validators: [
@@ -86,6 +86,15 @@ export class TercerosDialog {
     const inicial = this.form.get('tipoOrden')?.value;
     this.esAltaFlag = inicial?.toLowerCase() === 'alta';
   }
+
+  ngAfterViewInit() {
+  flatpickr('#fechaHoraInput', {
+    enableTime: true,
+    dateFormat: 'Y-m-d H:i',
+    defaultDate: new Date(),
+    time_24hr: true
+  });
+}
 
   get esAlta(): boolean {
     const valor = this.form?.get('tipoOrden')?.value;
@@ -114,12 +123,9 @@ export class TercerosDialog {
 
   guardar() {
     const value = this.form.getRawValue();
+
+    // Flatpickr ya devuelve fecha completa
     const fecha = new Date(value.fechaRegistro);
-
-    const [hours, minutes] = value.horaRegistro.split(':');
-    fecha.setHours(+hours);
-    fecha.setMinutes(+minutes);
-
     value.fechaRegistro = fecha.toISOString();
 
     this.ref.close(value);
