@@ -16,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import { ApiResponse } from '../../../models/api-Response.model';
 import { TercerosDialog } from '../../../shared/dialogs/terceros-dialog/terceros-dialog';
+import { PensionAlimenDialog } from '../../../features/nomina/pension-alimen-dialog/pension-alimen-dialog';
 import { LoaderService } from '../../../core/services/loader.service';
 import { finalize } from 'rxjs';
 
@@ -457,7 +458,7 @@ export class Terceros {
           importe: Number(d.importe) || 0,
         }));
 
-  this.dialog.open(TercerosDialog, {
+  const dialogRef = this.dialog.open(TercerosDialog, {
     width: '1200px',
     maxWidth: '92vw',
     maxHeight: '90vh',
@@ -478,6 +479,29 @@ export class Terceros {
       detalles
     }
   });
+
+  dialogRef.afterClosed().subscribe(result => {
+  if (!result) return; // cancelado
+
+  // 1) aquí llamas a tu servicio para guardar en backend (POST/PUT)
+  this.terceroService.guardarTercero(result).subscribe({
+    next: () => {
+      // 2) aquí ya confirmaste que guardó
+      this.dialog.open(PensionAlimenDialog, {
+        width: '500px',
+        disableClose: true,
+        data: { mensaje: 'Se guardó correctamente' }
+      });
+
+      // 3) opcional: recargar tabla / refrescar datos
+      // this.getNomina(); o lo que uses
+    },
+    error: (err) => {
+      // opcional: mostrar error
+      this.showSnack('Error al guardar', 'Cerrar', 4000);
+    }
+  });
+});
 }
 
   cargarNominaTercero() {
