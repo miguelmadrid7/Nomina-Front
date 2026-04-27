@@ -47,7 +47,7 @@
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>Número documento</mat-label>
         <mat-icon matPrefix>description</mat-icon>
-        <input matInput formControlName="numeroDocumento">
+        <input matInput formControlName="numeroDocumento" (input)="enforceUppercase($event)">
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">

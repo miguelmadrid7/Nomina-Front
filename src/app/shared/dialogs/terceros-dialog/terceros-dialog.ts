@@ -140,4 +140,9 @@ export class TercerosDialog  {
   cerrar() {
     this.ref.close();
   }
+
+  enforceUppercase(evt: Event) {
+    const input = evt.target as HTMLInputElement;
+    input.value = (input.value ?? '').toUpperCase();
+  }
 }
