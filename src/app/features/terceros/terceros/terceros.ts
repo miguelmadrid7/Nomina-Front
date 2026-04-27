@@ -463,7 +463,7 @@ export class Terceros {
     maxHeight: '90vh',
     panelClass: 'terceros-dialog-panel',
     autoFocus: false,
-    position: { top: '80px' },
+    //position: { top: '80px' },
 
     data: {
       rfc: row.rfc,
