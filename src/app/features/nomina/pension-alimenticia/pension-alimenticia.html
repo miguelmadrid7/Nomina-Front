@@ -18,7 +18,7 @@
         </button>
   </div>
 
-  <form [formGroup]="form" (ngSubmit)="guardar()">
+  <form [formGroup]="form" (ngSubmit)="saveEmployee()">
     <div class="global-search">
         <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
           <mat-icon matPrefix>search</mat-icon>
@@ -31,7 +31,7 @@
               (input)="onSearchInputChange()"
               appUppercase
               (keydown.enter)="$event.preventDefault(); searchEmployee()">
-          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayEmpleado" (optionSelected)="onOptionSelected($event.option.value)">
+          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayEmployee" (optionSelected)="onOptionSelected($event.option.value)">
             <mat-option *ngFor="let emp of resultados" [value]="emp"> {{ emp?.rfc || '—' }} · {{ emp?.curp || '—' }} · {{ emp?.nombreCompleto || '—' }} </mat-option>
           </mat-autocomplete>
         </mat-form-field>
@@ -204,7 +204,7 @@
 
         <!-- CLABE -->
         <div>
-          <label class="field-title" for="numeroDocumento">CLABE interbancaria*</label>
+          <label class="field-title" for="numeroDocumento">Clabe interbancaria*</label>
           <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
             <mat-icon matPrefix>credit_card</mat-icon>
             <input
