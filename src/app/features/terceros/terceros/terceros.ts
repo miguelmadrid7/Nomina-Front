@@ -497,7 +497,7 @@ export class Terceros {
       noComprobante: row[0] ?? '—',
       ur: row[1] ?? '',
       periodo: row[2] ?? '',
-      qnaProceso: null, // o calcula si tienes el dato
+      qnaProceso: null, 
       tipoNomina: row[3] ?? '',
       clavePlaza: row[4] ?? '',
       curp: row[5] ?? '',
@@ -509,8 +509,6 @@ export class Terceros {
       importe: Number(row[13]) || 0,
       baseCalculoIsr: Number(row[14]) || 0,
     }));
-
-    // 🔥 AGRUPAR IGUAL QUE NOMINA
     const groupedMap = mapped.reduce((map, r) => {
       const key = `${r.rfc}|${r.curp}|${r.noComprobante}`;
 
