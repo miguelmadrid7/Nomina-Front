@@ -36,14 +36,8 @@ export class ConsultaTerceros {
   filtrosTabla!: FormGroup;
   anio: number[] = [2026, 2025, 2024];
   quincena: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
-  conceptosInstitucionalesCodigos = [
-    '03','55','64','vt','sf','5l','6l','21'
-  ];
-
-  conceptosNoInstitucionalesCodigos = [
-    'vp','61','cs','ce','fj','gf','51','57','iv','np','sg','bs','lb','oh','su','tc','tm','tn'
-  ];
-
+  conceptosInstitucionalesCodigos = ['03','08','12','55','56','64','vt','sf','5l','6l','21'];
+  conceptosNoInstitucionalesCodigos = ['vp','53','61','cs','ce','fj','gf','51','57','ia','ic','im','iv','np','sg','bs','br','ef','ko','lb','oh','su','tc','tm','tn'];
   conceptosInstitucionales: any[] = [];
   conceptosNoInstitucionales: any[] = [];
   conceptosFiltrados: any[] = [];
@@ -82,11 +76,23 @@ export class ConsultaTerceros {
       const data = resp?.data ?? resp;
 
       this.conceptosInstitucionales = data.filter((c: any) =>
-        this.conceptosInstitucionalesCodigos.includes(c.cve?.toLowerCase())
+        this.conceptosInstitucionalesCodigos.includes((c.cve ?? '').toLowerCase())
+      );
+
+      this.conceptosInstitucionales = this.dedupeByCve(this.conceptosInstitucionales);
+      this.conceptosInstitucionales = this.ordenarPorPrioridad(
+        this.conceptosInstitucionales,
+        this.conceptosInstitucionalesCodigos
       );
 
       this.conceptosNoInstitucionales = data.filter((c: any) =>
-        this.conceptosNoInstitucionalesCodigos.includes(c.cve?.toLowerCase())
+        this.conceptosNoInstitucionalesCodigos.includes((c.cve ?? '').toLowerCase())
+      );
+
+      this.conceptosNoInstitucionales = this.dedupeByCve(this.conceptosNoInstitucionales);
+      this.conceptosNoInstitucionales = this.ordenarPorPrioridad(
+        this.conceptosNoInstitucionales,
+        this.conceptosNoInstitucionalesCodigos
       );
 
       // default
@@ -107,6 +113,39 @@ export class ConsultaTerceros {
       this.conceptosFiltrados = this.conceptosNoInstitucionales;
     }
     this.form.get('busqueda.concepto')?.setValue(null);
+  }
+
+
+  private ordenarPorPrioridad(conceptos: any[], codigosPrioridad: string[]): any[] {
+    const rank = new Map<string, number>();
+    codigosPrioridad.forEach((c, i) => rank.set(c.toLowerCase(), i));
+
+    return [...conceptos].sort((a, b) => {
+      const ca = (a?.cve ?? '').toString().toLowerCase();
+      const cb = (b?.cve ?? '').toString().toLowerCase();
+
+      const ra = rank.has(ca) ? rank.get(ca)! : Number.POSITIVE_INFINITY;
+      const rb = rank.has(cb) ? rank.get(cb)! : Number.POSITIVE_INFINITY;
+
+      if (ra !== rb) return ra - rb;
+
+      // desempate (opcional): por cve o descripción
+      return ca.localeCompare(cb);
+    });
+  }
+
+  private dedupeByCve(conceptos: any[]): any[] {
+    const map = new Map<string, any>();
+
+    for (const c of conceptos ?? []) {
+      const key = (c?.cve ?? '').toString().toLowerCase().trim();
+      if (!key) continue;
+
+      // conserva el primero (o cambia si quieres conservar el último)
+      if (!map.has(key)) map.set(key, c);
+    }
+
+    return Array.from(map.values());
   }
 
 }
