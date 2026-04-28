@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/materia
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatOption, MatSelectModule } from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatIconModule } from '@angular/material/icon';
@@ -35,16 +35,11 @@ import { UppercaseDirective } from "../../../shared/directives/upperCase.directi
 export class TercerosDialog  {
 
   form!: FormGroup;
-
   estatusOptions = ['Registrado', 'Pendiente', 'Aprobado'];
   tipoOrdenOptions = ['Alta', 'Baja', 'Cambio'];
   esAltaFlag = false;
 
-  constructor(
-    private fb: FormBuilder,
-    private ref: MatDialogRef<TercerosDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
+  constructor(private fb: FormBuilder, private ref: MatDialogRef<TercerosDialog>, @Inject(MAT_DIALOG_DATA) public data: any) {}
 
   ngOnInit(): void {
     const currentQna = this.getCurrentQna();
@@ -88,14 +83,14 @@ export class TercerosDialog  {
   }
 
   ngAfterViewInit() {
-  flatpickr('#fechaHoraInput', {
-    enableTime: true,
-    dateFormat: 'Y-m-d H:i',
-    defaultDate: new Date(),
-    time_24hr: true,
-    locale: Spanish,
-  });
-}
+    flatpickr('#fechaHoraInput', {
+      enableTime: true,
+      dateFormat: 'Y-m-d H:i',
+      defaultDate: new Date(),
+      time_24hr: true,
+      locale: Spanish,
+    });
+  }
 
   get esAlta(): boolean {
     const valor = this.form?.get('tipoOrden')?.value;
@@ -124,11 +119,8 @@ export class TercerosDialog  {
 
   guardar() {
     const value = this.form.getRawValue();
-
-    // Flatpickr ya devuelve fecha completa
     const fecha = new Date(value.fechaRegistro);
     value.fechaRegistro = fecha.toISOString();
-
     this.ref.close(value);
   }
 
@@ -138,10 +130,5 @@ export class TercerosDialog  {
 
   cerrar() {
     this.ref.close();
-  }
-
-  enforceUppercase(evt: Event) {
-    const input = evt.target as HTMLInputElement;
-    input.value = (input.value ?? '').toUpperCase();
   }
 }
