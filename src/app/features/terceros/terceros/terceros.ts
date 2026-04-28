@@ -19,6 +19,8 @@ import { TercerosDialog } from '../../../shared/dialogs/terceros-dialog/terceros
 import { PensionAlimenDialog } from '../../../features/nomina/pension-alimen-dialog/pension-alimen-dialog';
 import { LoaderService } from '../../../core/services/loader.service';
 import { finalize } from 'rxjs';
+import { Empleado } from '../../servicios/empleado';
+import { EmpleadoItem } from '../../../models/emplado.model';
 
 @Component({
   selector: 'app-terceros',
@@ -34,7 +36,7 @@ import { finalize } from 'rxjs';
     MatPaginatorModule,
     MatAutocompleteModule,
     MatInputModule,
-],
+  ],
   templateUrl: './terceros.html',
   styleUrl: './terceros.css'
 })
@@ -52,17 +54,8 @@ export class Terceros {
   dataSource = new MatTableDataSource<NominaRow>([]);
   filterValues: any = { search: '', estatus: '' };
   displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'tipoOrden', 'estatus', 'acciones'];
-  tipoOrdenOptions = [
-    { label: 'Alta' },
-    { label: 'Baja' },
-    { label: 'Cambio' }
-  ];
-
-   estatusOptions = [
-    { label: 'Registrado' },
-    { label: 'Pendiente' },
-    { label: 'Aprobado' }
-  ];
+  tipoOrdenOptions = [ { label: 'Alta' }, { label: 'Baja' }, { label: 'Cambio' } ];
+  estatusOptions = [ { label: 'Registrado' }, { label: 'Pendiente' }, { label: 'Aprobado' } ];
 
 
   form!: FormGroup;
@@ -76,7 +69,9 @@ export class Terceros {
   anioSeleccionado: number | null = null;
   quincenaSeleccionada: number | null = null;
   selectedRow: any;
-  resultado: BeneficiarioJMRequest[] = [];
+
+
+  resultado: EmpleadoItem[] = [];
 
   cargandoBusqueda = false;
   showFilters = true;
@@ -88,19 +83,19 @@ export class Terceros {
   
   constructor(
     private fb: FormBuilder, 
-    private terceroService: TerceroService,
     private snackBar: MatSnackBar,
     private zone: NgZone,
     private cd: ChangeDetectorRef,
     private dialog: MatDialog,
+    private terceroService: TerceroService,
     private loaderService: LoaderService,
   ) {}
 
 
   ngOnInit() {
     this.form = this.fb.group({ 
-      anio: [''],
-      quincena: [''],
+      anio: [null],
+      quincena: [null],
       concepto: [null],
       tipoOrden: [null],
       estatus: [null],
@@ -140,18 +135,19 @@ export class Terceros {
     };
   }
 
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (this.paginator) {
+        this.dataSource.paginator = this.paginator;
+      }
+    }, 0);
+  }
 
   filterEstatus(value: string) {
   this.filterValues.estatus = value;
   this.dataSource.filter = JSON.stringify(this.filterValues);
-}
-  ngAfterViewInit(): void {
-  setTimeout(() => {
-    if (this.paginator) {
-      this.dataSource.paginator = this.paginator;
-    }
-  }, 0);
-}
+  }
+
 
   private showSnack(message: string, action: string, duration: number): void {
     this.zone.runOutsideAngular(() => {
@@ -161,6 +157,7 @@ export class Terceros {
     });
   }
 
+  //  Busqueda del empleado
   buscarEmpleado() {
     const value = this.form.get('busqueda.searchText')?.value;
     if (value && typeof value === 'object') return;
@@ -180,30 +177,86 @@ export class Terceros {
     }
 
     this.cargandoBusqueda = true;
-    this.terceroService.getBuscarEmpleado(texto).subscribe({
-      next: (resp: ApiResponse<BeneficiarioJMRequest[]>) => {
-        const lista = resp?.data ?? [];
+    this.terceroService.searchEmployees(texto).subscribe({
+      next: (lista: EmpleadoItem[]) => {
+        this.resultado = (lista ?? []).filter(e => {
+          const rfc = (e.rfc ?? e.RFC ?? '').trim();
+          const curp = (e.curp ?? e.CURP ?? '').trim();
+          const pa = (e.primerApellido ?? e.primer_apellido ?? '').trim();
+          const sa = (e.segundoApellido ?? e.segundo_apellido ?? '').trim();
+          const nombre = (e.nombre ?? '').trim();
+          const empleadoStr = (e.empleado ?? '').trim();
+          const nombreCompleto = (e.nombreCompleto ?? '').trim();
 
-        // Filtra entradas sin datos útiles para evitar “— · — · — · —”
-        this.resultado = lista.filter(e =>
-          (e?.rfc && e.rfc.trim()) ||
-          (e?.primerApellido && e.primerApellido.trim()) ||
-          (e?.segundoApellido && e.segundoApellido.trim()) ||
-          (e?.nombre && e.nombre.trim())
-        );
+          return !!(rfc || curp || pa || sa || nombre || empleadoStr || nombreCompleto);
+        });
 
         this.cargandoBusqueda = false;
-        if (this.resultado.length > 0) {
-          setTimeout(() => this.autocompleteTrigger?.openPanel());
-        } else {
-          this.autocompleteTrigger?.closePanel();
-        }
+          if (this.resultado.length > 0) {
+            setTimeout(() => this.autocompleteTrigger?.openPanel());
+          } else {
+            this.autocompleteTrigger?.closePanel();
+          }
       },
       error: () => {
         this.cargandoBusqueda = false;
         this.showSnack('Error en la busqueda', 'Cerrar', 4000);
       }
     });
+  }
+
+  //  Seleccion de empleado
+  empleadoSeleccionado(emp: EmpleadoItem): void {
+    let rfc = (emp.rfc ?? emp.RFC ?? '').trim();
+    let curp = (emp.curp ?? emp.CURP ?? '').trim();
+    let nombre = (emp.nombreCompleto ?? '').trim();
+
+      if (!nombre) {
+        const fullName = [
+          emp.primerApellido ?? emp.primer_apellido ?? '',
+          emp.segundoApellido ?? emp.segundo_apellido ?? '',
+          emp.nombre ?? ''
+        ].map(x => x.trim()).filter(Boolean).join(' ');
+        nombre = fullName.trim();
+      }
+
+    const empleadoStr = (emp.empleado ?? '').trim();
+      if (empleadoStr) {
+        const parts = empleadoStr.split(' - ').map(p => p.trim());
+        if (!rfc && parts.length >= 1) rfc = parts[0] ?? '';
+        if (!curp && parts.length >= 2) curp = parts[1] ?? '';
+        if (!nombre && parts.length >= 3) nombre = parts.slice(2).join(' - ').trim();
+      }
+
+    const row: any = {
+      rfc,
+      curp,
+      nombreEmpleado: nombre
+    };
+
+    this.dataSource.data = [row];
+    this.totalElements = 1;
+
+    this.resultado = [];
+    this.autocompleteTrigger?.closePanel();
+    this.cargarNominaTercero();
+  }
+
+  //  Muestra lista de empleados
+  displayEmpleado(emp: EmpleadoItem | string | null): string {
+    if (!emp) return '';
+    if (typeof emp === 'string') return emp;
+
+    const rfc = (emp.rfc ?? emp.RFC ?? '').trim();
+
+    const fullName = [
+      emp.primerApellido ?? emp.primer_apellido ?? '',
+      emp.segundoApellido ?? emp.segundo_apellido ?? '',
+      emp.nombre ?? ''
+    ].map(x => x.trim()).filter(Boolean).join(' ');
+
+    const etiqueta = (emp.nombreCompleto ?? '').trim() || fullName || (emp.empleado ?? '').trim();
+    return [rfc, etiqueta].filter(Boolean).join(' - ');
   }
 
   onQnaChange(): void {
@@ -325,8 +378,6 @@ export class Terceros {
     this.getNomina();
   }
   
-
-
   cargarNominaPorPeriodo(anio: number, qna: number) {
     this.terceroService.getNominaCheque(anio, qna).subscribe(resp => {
 
@@ -378,66 +429,6 @@ export class Terceros {
     return sinCodigosInicio.replace(/\s{2,}/g, ' ').trim();
   }
 
-  private repartirNombre(emp: BeneficiarioJMRequest): { primerApellido: string; segundoApellido: string; nombre: string } {
-    const limpia = (x?: string) => (x ?? '').toString().trim().replace(/\s{2,}/g, ' ');
-    let pa = limpia(emp.primerApellido);
-    let sa = limpia(emp.segundoApellido);
-    let no = limpia(emp.nombre);
-
-    no = this.limpiarNombreCompleto(no);
-    if (pa && sa && no) return { 
-      primerApellido: pa, 
-      segundoApellido: sa, nombre: no 
-    };
-
-    const tokens = no.split(/\s+/).filter(Boolean);
-
-    if ((!pa || !sa) && tokens.length >= 3) {
-      if (!pa) pa = tokens[0];
-      if (!sa) sa = tokens[1];
-      no = tokens.slice(2).join(' ');
-    } else if ((!pa || !no) && tokens.length === 2) {
-      if (!pa) pa = tokens[0];
-      no = tokens[1];
-    }
-    return { primerApellido: limpia(pa), segundoApellido: limpia(sa), nombre: limpia(no) };
-  }
-
-  empleadoSeleccionado(emp: BeneficiarioJMRequest) {
-    const partes = this.repartirNombre(emp);
-    const partesRaw = (emp as any).empleado?.split(' - ') ?? [];
-    const rfc = partesRaw[0] ?? '';
-    const curp = partesRaw[1] ?? '';
-
-    const row: any = {
-      rfc: partesRaw[0] ?? '',
-      curp: partesRaw[1] ?? '',
-      nombreEmpleado: partesRaw[2] ?? `${partes.primerApellido} ${partes.segundoApellido} ${partes.nombre}`
-    };
-
-    this.dataSource.data = [row];
-    this.totalElements = 1;
-
-    this.resultado = [];
-    this.autocompleteTrigger?.closePanel();
-    this.cargarNominaTercero();
-  }
-
-  displayEmpleado(emp: BeneficiarioJMRequest | string | null): string {
-    if (!emp) return '';
-    if (typeof emp === 'string') return emp;
-  
-    const isCode = (s?: string) => !!s && /^[A-Z0-9]{13,18}$/.test(s.trim());
-  
-    const fullName = [emp.primerApellido, emp.segundoApellido, emp.nombre]
-      .filter(x => x && !isCode(x))
-      .join(' ')
-      .replace(/\s{2,}/g, ' ')
-      .trim();
-  
-    // Si no hay nombre limpio, muestra solo RFC; si lo hay, RFC - Nombre
-    return [emp.rfc || '', fullName || ''].filter(Boolean).join(' - ');
-  }
 
   verNomina(row: any) {
 
@@ -481,81 +472,74 @@ export class Terceros {
   });
 
   dialogRef.afterClosed().subscribe(result => {
-  if (!result) return; // cancelado
+  if (!result) return;
 
-  // 1) aquí llamas a tu servicio para guardar en backend (POST/PUT)
   this.terceroService.guardarTercero(result).subscribe({
     next: () => {
-      // 2) aquí ya confirmaste que guardó
       this.dialog.open(PensionAlimenDialog, {
         width: '500px',
         disableClose: true,
-        data: { mensaje: 'Se guardó correctamente' }
+        data: {
+           mensaje: 'Se guardó correctamente' 
+          }
       });
-
-      // 3) opcional: recargar tabla / refrescar datos
-      // this.getNomina(); o lo que uses
     },
     error: (err) => {
-      // opcional: mostrar error
       this.showSnack('Error al guardar', 'Cerrar', 4000);
     }
   });
 });
-}
+  }
 
   cargarNominaTercero() {
-  const anio = this.form.get('anio')?.value;
-  const qna = this.form.get('quincena')?.value;
   const row = this.dataSource.data[0];
+    this.terceroService.getNominaCheque(
+      undefined,
+      undefined,
+      row?.rfc,
+      row?.curp
+    ).subscribe(resp => {
+      const raw = resp?.data ?? [];
 
-  this.terceroService.getNominaCheque(
-    anio,
-    qna,
-    row?.rfc,
-    row?.curp
-  ).subscribe(resp => {
-    const raw = resp?.data ?? [];
+      const mapped: NominaRow[] = raw.map((row: any[]) => ({
+        noComprobante: row[0] ?? '—',
+        ur: row[1] ?? '',
+        periodo: row[2] ?? '',
+        qnaProceso: null, 
+        tipoNomina: row[3] ?? '',
+        clavePlaza: row[4] ?? '',
+        curp: row[5] ?? '',
+        rfc: row[6] ?? '',
+        nombreEmpleado: `${row[7] ?? ''} ${row[8] ?? ''} ${row[9] ?? ''}`.trim(),
+        tipoConcepto: row[10] ?? '',
+        concepto: row[11] ?? '',
+        descConcepto: row[12] ?? '',
+        importe: Number(row[13]) || 0,
+        baseCalculoIsr: Number(row[14]) || 0,
+      }));
+      const groupedMap = mapped.reduce((map, r) => {
+        const key = `${r.rfc}|${r.curp}|${r.noComprobante}`;
 
-    const mapped: NominaRow[] = raw.map((row: any[]) => ({
-      noComprobante: row[0] ?? '—',
-      ur: row[1] ?? '',
-      periodo: row[2] ?? '',
-      qnaProceso: null, 
-      tipoNomina: row[3] ?? '',
-      clavePlaza: row[4] ?? '',
-      curp: row[5] ?? '',
-      rfc: row[6] ?? '',
-      nombreEmpleado: `${row[7] ?? ''} ${row[8] ?? ''} ${row[9] ?? ''}`.trim(),
-      tipoConcepto: row[10] ?? '',
-      concepto: row[11] ?? '',
-      descConcepto: row[12] ?? '',
-      importe: Number(row[13]) || 0,
-      baseCalculoIsr: Number(row[14]) || 0,
-    }));
-    const groupedMap = mapped.reduce((map, r) => {
-      const key = `${r.rfc}|${r.curp}|${r.noComprobante}`;
+        if (!map.has(key)) {
+          map.set(key, { ...r, detalles: [] as any[] });
+        }
 
-      if (!map.has(key)) {
-        map.set(key, { ...r, detalles: [] as any[] });
-      }
+        const holder = map.get(key)!;
+        holder.detalles.push({
+          noComprobante: r.noComprobante,
+          tipoConcepto: r.tipoConcepto,
+          concepto: r.concepto,
+          importe: r.importe
+        });
 
-      const holder = map.get(key)!;
-      holder.detalles.push({
-        noComprobante: r.noComprobante,
-        tipoConcepto: r.tipoConcepto,
-        concepto: r.concepto,
-        importe: r.importe
-      });
+        return map;
+      }, new Map<string, any>());
 
-      return map;
-    }, new Map<string, any>());
+      const grouped = Array.from(groupedMap.values());
 
-    const grouped = Array.from(groupedMap.values());
-
-    this.dataSource.data = grouped;
-    this.totalElements = grouped.length;
-  });
+      this.dataSource.data = grouped;
+      this.totalElements = grouped.length;
+    });
   }
 
   clearFilters(): void {
@@ -575,23 +559,15 @@ export class Terceros {
         nombre: ''
       }
     }, { emitEvent: false });
-
-    this.resultado = [];
-    this.autocompleteTrigger?.closePanel();
-
-    this.dataSource.data = [];
-
-    this.beneficiarios = [];
-    this.totalElements = 0;
-
-    this.anioSeleccionado = null;
-    this.quincenaSeleccionada = null;
-    this.form.get('anio')?.reset(null, { emitEvent: false });
-    this.form.get('quincena')?.reset(null, { emitEvent: false });
-
-    this.paginator?.firstPage?.();
-
-    this.cd.markForCheck();
+      this.resultado = [];
+      this.autocompleteTrigger?.closePanel();
+      this.dataSource.data = [];
+      this.beneficiarios = [];
+      this.totalElements = 0;
+      this.anioSeleccionado = null;
+      this.quincenaSeleccionada = null;
+      this.paginator?.firstPage?.();
+      this.cd.markForCheck();
   }
 
   enforceUppercase(evt: Event) {
