@@ -108,7 +108,7 @@ export const routes: Routes = [
           {    
             path: 'registro-terceros-institucionales',
             loadComponent: () =>
-              import('./features/terceros/registro-tercero-5-l/registro-tercero-5-l')
+              import('./features/terceros/registro-tercero-5-l/registro-tercero-institucional')
                 .then(m => m.RegistroTercero5L),
             data: { roles: [1], breadcrumb: 'Registro terceros institucionales' }
           },
