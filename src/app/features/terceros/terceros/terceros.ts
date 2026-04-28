@@ -88,7 +88,6 @@ export class Terceros {
     private cd: ChangeDetectorRef,
     private dialog: MatDialog,
     private terceroService: TerceroService,
-    private loaderService: LoaderService,
   ) {}
 
 
@@ -118,7 +117,6 @@ export class Terceros {
         nombreCompleto: [''],
         qnaProceso: ['']
     });
-    this.cargarConceptos();
     this.dataSource.filterPredicate = (data: any, filter: string) => {
     const filters = JSON.parse(filter);
 
@@ -142,12 +140,6 @@ export class Terceros {
       }
     }, 0);
   }
-
-  filterEstatus(value: string) {
-  this.filterValues.estatus = value;
-  this.dataSource.filter = JSON.stringify(this.filterValues);
-  }
-
 
   private showSnack(message: string, action: string, duration: number): void {
     this.zone.runOutsideAngular(() => {
@@ -236,10 +228,8 @@ export class Terceros {
 
     this.dataSource.data = [row];
     this.totalElements = 1;
-
     this.resultado = [];
     this.autocompleteTrigger?.closePanel();
-    this.cargarNominaTercero();
   }
 
   //  Muestra lista de empleados
@@ -258,153 +248,7 @@ export class Terceros {
     const etiqueta = (emp.nombreCompleto ?? '').trim() || fullName || (emp.empleado ?? '').trim();
     return [rfc, etiqueta].filter(Boolean).join(' - ');
   }
-
-  onQnaChange(): void {
-    this.anioSeleccionado = this.form.get('anio')?.value;
-    this.quincenaSeleccionada = this.form.get('quincena')?.value;
-
-    if (!this.showRecords || !this.filtersReady) return;
-
-    clearTimeout(this.qnaDebounceId);
-
-    this.qnaDebounceId = setTimeout(() => {
-      if (this.anioSeleccionado && !this.quincenaSeleccionada) {
-        this.loaderService.show();
-        this.dataSource.data = [];
-        this.totalElements = 0;
-
-        setTimeout(() => this.loaderService.hide(), 4000);
-        return;
-      }
-
-    const key = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
-
-      if (this.lastQnaKey !== key && !this.isRefreshing) {
-        this.lastQnaKey = key;
-        this.loadNomina();
-      }
-    }, 0);
-  }
   
-  getNomina(): void {
-      if (this.isRefreshing) return;
-        this.isRefreshing = true;
-        this.loaderService.show();
-  
-        this.terceroService.getNominaChequ().pipe(
-          finalize(() => {
-            this.loaderService.hide();
-            this.isRefreshing = false;
-          })
-        ).subscribe({
-          next: (response) => {
-            if (!response.success) {
-              this.showSnack(response.message || 'Error', 'Cerrar', 4000);
-              return;
-            }
-  
-        const raw = response?.data ?? [];
-        const mapped: NominaRow[] = raw.map((row: any[]) => ({
-          noComprobante: row[0],
-          ur: row[1],
-          periodo: row[2],
-          qnaProceso: (() => {
-            const per = String(row[2] ?? '');
-            const m = per.match(/^(\d{1,2})\/(\d{4})$/);
-            if (m) {
-              const q = m[1].padStart(2,'0');
-              const y = m[2];
-              return parseInt(`${y}${q}`, 10);
-            }
-            return null;
-          })(),
-            tipoNomina: row[3],
-            clavePlaza: row[4],
-            curp: row[5],
-            rfc: row[6],
-            nombreEmpleado: `${row[7]} ${row[8]} ${row[9]}`,
-            tipoConcepto: row[10],
-            concepto: row[11],
-            descConcepto: row[12],
-            importe: Number(row[13]) || 0,
-            baseCalculoIsr: Number(row[14]) || 0
-          })
-        );
-  
-        const targetQna = parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada?.toString().padStart(2,'0')}`, 10);
-        const filtered = mapped.filter(r => r.qnaProceso === targetQna);
-  
-        // Agrupar por empleado/comprobante para evitar duplicados en la tabla
-        const groupedMap = filtered.reduce((map, r) => {
-          const key = `${r.rfc}|${r.curp}|${r.qnaProceso}|${r.noComprobante}`;
-          if (!map.has(key)) {
-            map.set(key, { ...r, detalles: [] as NominaRow['detalles'] });
-          }
-          const holder = map.get(key)!;
-          holder.detalles!.push({
-            noComprobante: r.noComprobante,
-            tipoConcepto: r.tipoConcepto,
-            concepto: r.concepto,
-            importe: r.importe,
-          });
-          return map;
-        }, new Map<string, NominaRow>());
-  
-        const grouped = Array.from(groupedMap.values());
-  
-        this.dataSource.data = grouped;
-        this.totalElements = grouped.length;
-      },
-      error: () => {
-        this.dataSource.data = [];
-        this.totalElements = 0;
-        this.showSnack('Error al obtener la nómina', 'Cerrar', 4000);
-      }
-    });
-  }
-
-  loadNomina(): void {
-    const qna = this.anioSeleccionado && this.quincenaSeleccionada
-      ? parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada.toString().padStart(2,'0')}`, 10)
-      : null;
-
-    if (!qna) {
-      this.dataSource.data = [];
-      this.totalElements = 0;
-      return;
-    }
-    this.qnaProceso = qna;
-    this.lastQnaKey = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
-    this.getNomina();
-  }
-  
-  cargarNominaPorPeriodo(anio: number, qna: number) {
-    this.terceroService.getNominaCheque(anio, qna).subscribe(resp => {
-
-      const raw = resp?.data ?? [];
-
-      const mapped: NominaRow[] = raw.map((row: any[]) => ({
-        noComprobante: row[0] ?? '—',
-        ur: row[1] ?? '',
-        periodo: row[2] ?? '',
-        qnaProceso: qna,
-        tipoNomina: row[3] ?? '',
-        clavePlaza: row[4] ?? '',
-        curp: row[5] ?? '',
-        rfc: row[6] ?? '',
-        nombreEmpleado: `${row[7] ?? ''} ${row[8] ?? ''} ${row[9] ?? ''}`.trim(),
-        tipoConcepto: row[10] ?? '',
-        concepto: row[11] ?? '',
-        descConcepto: row[12] ?? '',
-        importe: Number(row[13]) || 0,
-        baseCalculoIsr: Number(row[14]) || 0,
-      }));
-
-      this.dataSource.data = mapped;
-      this.totalElements = mapped.length;
-    });
-  }
-
   editar(row: any) {
     this.selectedRow = row;
     this.detailForm.patchValue(row);
@@ -414,135 +258,62 @@ export class Terceros {
     console.log('Eliminar:', this.selectedRow);
   }
 
-  applyFilter(column: 'curp' | 'rfc' | 'nombreEmpleado', value: string) {
-    this.filterValues[column] = (value ?? '').trim().toUpperCase();
-    this.dataSource.filter = JSON.stringify(this.filterValues);
-  }
+  verDetalles(row: any) {
+    const nombreCompleto = (row.nombreEmpleado || '').trim().split(' ');
+    const apellidoPaterno = nombreCompleto[0] || '';
+    const apellidoMaterno = nombreCompleto[1] || '';
+    const nombres = nombreCompleto.slice(2).join(' ') || '';
+    const detalles = (row.detalles && row.detalles.length)
+      ? row.detalles
+      : (this.dataSource.data as NominaRow[])
+          .filter(d => d.noComprobante === row.noComprobante && d.rfc === row.rfc && d.curp === row.curp)
+          .map(d => ({
+            noComprobante: d.noComprobante,
+            tipoConcepto: d.tipoConcepto,
+            concepto: d.concepto,
+            importe: Number(d.importe) || 0,
+          }));
 
-  // Quita prefijos tipo "RFC - CURP - " y códigos tipo RFC/CURP al inicio
-  private limpiarNombreCompleto(s?: string): string {
-    const raw = (s ?? '').toString().replace(/\s{2,}/g, ' ').trim();
-    if (!raw) return '';
-
-    const lastSeg = raw.split('-').map(x => x.trim()).filter(Boolean).pop() ?? raw;
-    const sinCodigosInicio = lastSeg.replace(/^(?:[A-Z0-9]{13,18}\s*)+/, '').trim();
-    return sinCodigosInicio.replace(/\s{2,}/g, ' ').trim();
-  }
-
-
-  verNomina(row: any) {
-
-  const nombreCompleto = (row.nombreEmpleado || '').trim().split(' ');
-
-  const apellidoPaterno = nombreCompleto[0] || '';
-  const apellidoMaterno = nombreCompleto[1] || '';
-  const nombres = nombreCompleto.slice(2).join(' ') || '';
-
-  const detalles = (row.detalles && row.detalles.length)
-    ? row.detalles
-    : (this.dataSource.data as NominaRow[])
-        .filter(d => d.noComprobante === row.noComprobante && d.rfc === row.rfc && d.curp === row.curp)
-        .map(d => ({
-          noComprobante: d.noComprobante,
-          tipoConcepto: d.tipoConcepto,
-          concepto: d.concepto,
-          importe: Number(d.importe) || 0,
-        }));
-
-  const dialogRef = this.dialog.open(TercerosDialog, {
-    width: '1200px',
-    maxWidth: '92vw',
-    maxHeight: '90vh',
-    panelClass: 'terceros-dialog-panel',
-    autoFocus: false,
-    //position: { top: '80px' },
-
-    data: {
-      rfc: row.rfc,
-      curp: row.curp,
-      apellidoPaterno,
-      apellidoMaterno,
-      nombres,
-      numeroDocumento: row.numeroDocumento,
-      tipoOrden: row.tipoOrden,
-      importeMensual: row.importeMensual,
-      estatus: row.estatus,
-      detalles
-    }
-  });
-
-  dialogRef.afterClosed().subscribe(result => {
-  if (!result) return;
-
-  this.terceroService.guardarTercero(result).subscribe({
-    next: () => {
-      this.dialog.open(PensionAlimenDialog, {
-        width: '500px',
-        disableClose: true,
+    const dialogRef = this.dialog.open(TercerosDialog, {
+      width: '1200px',
+      maxWidth: '92vw',
+      maxHeight: '90vh',
+      panelClass: 'terceros-dialog-panel',
+      autoFocus: false,
         data: {
-           mensaje: 'Se guardó correctamente' 
-          }
-      });
-    },
-    error: (err) => {
-      this.showSnack('Error al guardar', 'Cerrar', 4000);
-    }
-  });
-});
-  }
-
-  cargarNominaTercero() {
-  const row = this.dataSource.data[0];
-    this.terceroService.getNominaCheque(
-      undefined,
-      undefined,
-      row?.rfc,
-      row?.curp
-    ).subscribe(resp => {
-      const raw = resp?.data ?? [];
-
-      const mapped: NominaRow[] = raw.map((row: any[]) => ({
-        noComprobante: row[0] ?? '—',
-        ur: row[1] ?? '',
-        periodo: row[2] ?? '',
-        qnaProceso: null, 
-        tipoNomina: row[3] ?? '',
-        clavePlaza: row[4] ?? '',
-        curp: row[5] ?? '',
-        rfc: row[6] ?? '',
-        nombreEmpleado: `${row[7] ?? ''} ${row[8] ?? ''} ${row[9] ?? ''}`.trim(),
-        tipoConcepto: row[10] ?? '',
-        concepto: row[11] ?? '',
-        descConcepto: row[12] ?? '',
-        importe: Number(row[13]) || 0,
-        baseCalculoIsr: Number(row[14]) || 0,
-      }));
-      const groupedMap = mapped.reduce((map, r) => {
-        const key = `${r.rfc}|${r.curp}|${r.noComprobante}`;
-
-        if (!map.has(key)) {
-          map.set(key, { ...r, detalles: [] as any[] });
+          rfc: row.rfc,
+          curp: row.curp,
+          apellidoPaterno,
+          apellidoMaterno,
+          nombres,
+          numeroDocumento: row.numeroDocumento,
+          tipoOrden: row.tipoOrden,
+          importeMensual: row.importeMensual,
+          estatus: row.estatus,
+          detalles
         }
+    });
 
-        const holder = map.get(key)!;
-        holder.detalles.push({
-          noComprobante: r.noComprobante,
-          tipoConcepto: r.tipoConcepto,
-          concepto: r.concepto,
-          importe: r.importe
+    dialogRef.afterClosed().subscribe(result => {
+      if (!result) return;
+        this.terceroService.guardarTercero(result).subscribe({
+          next: () => {
+            this.dialog.open(PensionAlimenDialog, {
+              width: '500px',
+              disableClose: true,
+              data: {
+                mensaje: 'Se guardó correctamente' 
+              }
+            });
+          },
+          error: (err) => {
+            this.showSnack('Error al guardar', 'Cerrar', 4000);
+          }
         });
-
-        return map;
-      }, new Map<string, any>());
-
-      const grouped = Array.from(groupedMap.values());
-
-      this.dataSource.data = grouped;
-      this.totalElements = grouped.length;
     });
   }
 
-  clearFilters(): void {
+clearFilters(): void {
     this.form.patchValue({
       busqueda: {
         searchText: '',
@@ -569,22 +340,9 @@ export class Terceros {
       this.paginator?.firstPage?.();
       this.cd.markForCheck();
   }
-
   enforceUppercase(evt: Event) {
     const input = evt.target as HTMLInputElement;
     input.value = (input.value ?? '').toUpperCase();
   }
 
-  cargarConceptos(){
-    this.terceroService.obtenerConceptos().subscribe({
-      next: (resp) => {
-        const data = resp?.data ?? resp;
-        this.concepto = data;
-        this.cd.detectChanges();
-      },
-      error: (err) => {
-        console.error('Error al cargar conceptos:', err);
-      }
-    });
-  }
 }
