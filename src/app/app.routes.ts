@@ -104,7 +104,29 @@ export const routes: Routes = [
               import('./features/terceros/consulta-terceros/consulta-terceros')
                 .then(m => m.ConsultaTerceros),
             data: { roles: [1], breadcrumb: 'Consulta terceros' }
-          }
+          },
+          {    
+            path: 'registro-terceros-5L',
+            loadComponent: () =>
+              import('./features/terceros/registro-tercero-5-l/registro-tercero-5-l')
+                .then(m => m.RegistroTercero5L),
+            data: { roles: [1], breadcrumb: 'Registro terceros 5L' }
+          },
+          {    
+            path: 'registro-terceros-6L',
+            loadComponent: () =>
+              import('./features/terceros/registro-tercero-6-l/registro-tercero-6-l')
+                .then(m => m.RegistroTercero6L),
+            data: { roles: [1], breadcrumb: 'Registro terceros 6L' }
+          },
+          {    
+            path: 'registro-terceros-21',
+            loadComponent: () =>
+              import('./features/terceros/registro-tercero-21/registro-tercero-21')
+                .then(m => m.RegistroTercero21),
+            data: { roles: [1], breadcrumb: 'Registro terceros 21' }
+          },
+
         ]
       },
     ]
