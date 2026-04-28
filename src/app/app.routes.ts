@@ -108,8 +108,8 @@ export const routes: Routes = [
           {    
             path: 'registro-terceros-institucionales',
             loadComponent: () =>
-              import('./features/terceros/registro-tercero-5-l/registro-tercero-institucional')
-                .then(m => m.RegistroTercero5L),
+              import('./features/terceros/registro-tercero-institucional/registro-tercero-institucional')
+                .then(m => m.RegistroTerceroInstitucional),
             data: { roles: [1], breadcrumb: 'Registro terceros institucionales' }
           },
         ]
