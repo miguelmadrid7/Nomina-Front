@@ -3,76 +3,18 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../../models/api-Response.model';
-import { BeneficiarioJMRequest } from '../../models/beneficiario-jm-request.model';
-
-type AnyRow = Record<string, any>;
+import { Empleado } from '../../features/servicios/empleado';
 
 @Injectable({ providedIn: 'root' })
 export class TerceroService {
-    private base = environment.apiUrl;
 
+    private base = environment.apiUrl;
     constructor(private http: HttpClient) {}
 
     //Buscador para search del empleado
-    getBuscarEmpleado(search: string) {
-        const q = (search ?? '').trim();
-        return this.http
-          .get<ApiResponse<AnyRow[]>>(`${this.base}/employee/by/${encodeURIComponent(q)}/search`)
-          .pipe(
-            map((resp) => {
-              const raw: AnyRow[] = (resp as any)?.data ?? (resp as any) ?? [];
-              const toNumber = (v: any) => Number.isFinite(Number(v)) ? Number(v) : null;
-              const data: BeneficiarioJMRequest[] = raw.map((e: AnyRow) => ({
-                id: toNumber(
-                  e?.['id'] ??
-                  e?.['empleadoId'] ??
-                  e?.['tabEmpleadosId'] ??
-                  e?.['tab_empleados_id']
-                ) ?? undefined,
-
-                empleado: e?.['empleado'] ?? '', 
-    
-                rfc:
-                  e?.['rfc'] ??
-                  e?.['RFC'] ??
-                  e?.['rfc_empleado'] ??
-                  e?.['rfcEmpleado'] ??
-                  '',
-
-                curp:   
-                  e?.['curp'] ??
-                  e?.['CURP'] ??
-                  e?.['curp_empleado'] ??
-                  e?.['curpEmpleado'] ??
-                  '',
-                    
-                primerApellido:
-                  e?.['primerApellido'] ??
-                  e?.['apellidoPaterno'] ??
-                  e?.['primer_apellido'] ??
-                  e?.['apePat'] ??
-                  e?.['ape_pat'] ??
-                  '',
-    
-                segundoApellido:
-                  e?.['segundoApellido'] ??
-                  e?.['apellidoMaterno'] ??
-                  e?.['segundo_apellido'] ??
-                  e?.['apeMat'] ??
-                  e?.['ape_mat'] ??
-                  '',
-    
-                nombre:
-                  e?.['nombre'] ??
-                  e?.['nombres'] ??
-                  e?.['nombreEmpleado'] ??
-                  e?.['nombre_empleado'] ??
-                  (typeof e?.['empleado'] === 'string' ? e?.['empleado'] : '')
-              }));
-    
-              return { ...(resp as any), data };
-            })
-          );
+    searchEmployees(search: string): Observable<Empleado[]> {
+      const q = encodeURIComponent(search.trim());
+      return this.http.get<ApiResponse<Empleado[]>>(`${this.base}/employee/by/${q}/search`) .pipe(map(res => res.data ?? []));
     }
 
     // Se obtienen los conceptos de la bd
@@ -80,15 +22,22 @@ export class TerceroService {
       return this.http.get<any>(`${this.base}/tercero/conceptos`);
     }
 
+    //Se guarda el formulario en la bd
+    guardarTercero(payload: any): Observable<ApiResponse<any>> {
+      return this.http.post<ApiResponse<any>>(`${this.base}/tercero/guardar`, payload);
+    }
+
     getNominaChequ(): Observable<ApiResponse<any[]>> {
       return this.http.get<ApiResponse<any[]>>(`${this.base}/calculation/nomina-cheque`);
     }
 
-    getNominaCheque(anio: number, qna: number, rfc?: string, curp?: string) {
-      let params: any = { anio: anio, qna: qna };
-        if (rfc) params.rfc = rfc;
-        if (curp) params.curp = curp;
-      return this.http.get<ApiResponse<any[]>>(`${this.base}/nomina/cheque`,{ params });
+    getNominaCheque(anio?: number, qna?: number, rfc?: string, curp?: string) {
+      const params: Record<string, string> = {};
+        if (anio != null) params['anio'] = String(anio);
+        if (qna != null) params['qna'] = String(qna);
+        if (rfc) params['rfc'] = rfc;
+        if (curp) params['curp'] = curp;
+      return this.http.get<ApiResponse<any[]>>(`${this.base}/nomina/cheque`, { params });
     }
 
 }
