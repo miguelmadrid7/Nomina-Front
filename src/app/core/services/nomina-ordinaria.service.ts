@@ -17,7 +17,7 @@ export class NominaService {
   }
 
   executePayrollProcess(qnaProceso: number): Observable<ApiResponse<number>> {
-    return this.http.post<ApiResponse<number>>(`${this.base}/calculation/execute`, { qnaProceso });
+    return this.http.post<ApiResponse<number>>(`${this.base}/calculation/execute`, { qnaProceso } );
   }
 
   getJobStatus(id: number): Observable<ApiResponse<any>> {
@@ -25,18 +25,10 @@ export class NominaService {
   }
 
   exportarAnexoV() {
-    return this.http.post(
-      `${this.base}/calculation/export-anexo-v`,
-      null,
-      { responseType: 'blob' }
-    );
+    return this.http.post(`${this.base}/calculation/export-anexo-v`, null, { responseType: 'blob' } );
   }
 
   exportarAnexoVI() {
-    return this.http.post(
-      `${this.base}/calculation/export-anexo-VI`,
-      null,
-      { responseType: 'blob' }
-    );
+    return this.http.post(`${this.base}/calculation/export-anexo-VI`,null,{ responseType: 'blob' } );
   }
 }
