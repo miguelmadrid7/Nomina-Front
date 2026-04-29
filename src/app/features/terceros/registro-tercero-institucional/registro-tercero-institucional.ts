@@ -221,8 +221,7 @@ export class RegistroTerceroInstitucional {
           const tipoMovimientoTexto = result.tipoOrden === 1 ? 'ALTA' : result.tipoOrden === 2 ? 'BAJA' : '';
 
           this.terceroService.registrarNp(result).subscribe({
-            next: (res) => {
-              console.log('RESPUESTA registrarNp:', res);
+            next: () => {
               const data = [...this.dataSource.data];
                 if (data.length > 0) {
                   data[0] = {
