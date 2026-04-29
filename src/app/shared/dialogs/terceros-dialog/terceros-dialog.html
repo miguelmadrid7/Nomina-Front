@@ -5,7 +5,7 @@
       </button>
   </div>
 
-  <mat-dialog-content [formGroup]="form" class="dlg-content">
+  <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
     
     <div class="dlg-bar-title">Editar Tercero</div>
 
@@ -47,15 +47,15 @@
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>Número documento</mat-label>
         <mat-icon matPrefix>description</mat-icon>
-        <input matInput formControlName="numeroDocumento" appUppercase>
+        <input matInput type="number" formControlName="numeroDocumento">
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>Orden*</mat-label>
         <mat-icon matPrefix>reorder</mat-icon>
         <mat-select formControlName="tipoOrden">
-          <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t">
-            {{ t }}
+          <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t.value">
+            {{ t.label }}
           </mat-option>
         </mat-select>
       </mat-form-field>
@@ -72,6 +72,12 @@
         <mat-select formControlName="estatus">
           <mat-option *ngFor="let e of estatusOptions" [value]="e"> {{ e }} </mat-option>
         </mat-select>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="form?.get('concepto')" appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Concepto*</mat-label>
+        <mat-icon matPrefix>reorder</mat-icon>
+          <input matInput formControlName="concepto" readonly>
       </mat-form-field>
 
       <div class="grid-empty"></div>

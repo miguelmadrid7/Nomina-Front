@@ -36,7 +36,7 @@ export class TercerosDialog  {
 
   form!: FormGroup;
   estatusOptions = ['Registrado', 'Pendiente', 'Aprobado'];
-  tipoOrdenOptions = ['Alta', 'Baja', 'Cambio'];
+  tipoOrdenOptions = [{ label: 'Alta', value: 1 }, { label: 'Pendiente', value: 2 }, { label: 'Aprobado', value: 3 }];
   esAltaFlag = false;
 
   constructor(private fb: FormBuilder, private ref: MatDialogRef<TercerosDialog>, @Inject(MAT_DIALOG_DATA) public data: any) {}
@@ -44,8 +44,8 @@ export class TercerosDialog  {
   ngOnInit(): void {
     const currentQna = this.getCurrentQna();
     const minQna = this.nextQna(currentQna.aaaaqq).aaaaqq;
-    const now = new Date();
-    const horaActual = now.toTimeString().slice(0, 5);
+   
+
 
     this.form = this.fb.group({
       rfc: [this.data.rfc],
@@ -54,8 +54,9 @@ export class TercerosDialog  {
       apellidoMaterno: [this.data.apellidoMaterno],
       nombres: [this.data.nombres],
       numeroDocumento: [this.data.numeroDocumento],
-      tipoOrden: [this.data.tipoOrden],
+      tipoOrden: [this.mapTipoOrdenFromData(this.data.tipoOrden)],
       importeMensual: [this.data.importeMensual],
+      concepto: [this.data.concepto ?? null],
       qnaDesde: [currentQna.aaaaqq],
       qnaHasta: [''],
       estatus: [this.data.estatus],
@@ -69,8 +70,8 @@ export class TercerosDialog  {
     });
 
     this.form.get('tipoOrden')?.valueChanges.subscribe((valor) => {
-      this.esAltaFlag = valor?.toLowerCase() === 'alta';
-      if (valor === 'Alta') {
+     this.esAltaFlag = valor === 1;
+      if (valor === 1) {
         this.form.get('estatus')?.setValue('Registrado');
         this.form.get('estatus')?.disable(); 
       } else {
@@ -119,13 +120,26 @@ export class TercerosDialog  {
 
   guardar() {
     const value = this.form.getRawValue();
-    const fecha = new Date(value.fechaRegistro);
-    value.fechaRegistro = fecha.toISOString();
+    value.numeroDocumento =
+      value.numeroDocumento !== null && value.numeroDocumento !== undefined && value.numeroDocumento !== ''
+        ? Number(value.numeroDocumento)
+        : null;
     this.ref.close(value);
   }
 
   formatDate(date: Date): string {
     return new Date(date).toLocaleString();
+  }
+
+  private mapTipoOrdenFromData(valor: any): number | null {
+    if (valor == null) return null;
+    if (typeof valor === 'number') return valor;
+
+    const v = String(valor).toLowerCase();
+    if (v === 'alta') return 1;
+    if (v === 'baja') return 2;
+    if (v === 'cambio') return 3;
+    return null;
   }
 
   cerrar() {
