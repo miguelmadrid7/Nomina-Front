@@ -77,18 +77,8 @@
                                 <td mat-cell *matCellDef="let e">{{ e.nombreEmpleado }}</td>
                             </ng-container>
 
-                            <ng-container matColumnDef="tipoOrden">
-                                <th mat-header-cell *matHeaderCellDef class="header-with-select"> ORDEN </th>
-                                <td mat-cell *matCellDef="let e">{{ e.tipoOrden }}</td>
-                            </ng-container>
-
-                            <ng-container matColumnDef="estatus">
-                                <th mat-header-cell *matHeaderCellDef> ESTATUS </th>
-                                <td mat-cell *matCellDef="let e">{{ e.estatus }}</td>
-                            </ng-container>
-
                             <ng-container matColumnDef="acciones">
-                                <th mat-header-cell *matHeaderCellDef>ACCIONES</th>
+                                <th mat-header-cell *matHeaderCellDef>Detallar registro</th>
                                     <td mat-cell *matCellDef="let e">
                                         <div class="table-actions">
                                             <div class="bttn-group">

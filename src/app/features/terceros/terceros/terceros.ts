@@ -44,7 +44,7 @@ export class Terceros {
 
   dataSource = new MatTableDataSource<NominaRow>([]);
   filterValues: any = { search: '', estatus: '' };
-  displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'tipoOrden', 'estatus', 'acciones'];
+  displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'acciones'];
   estatusOptions = [ { label: 'Registrado' }, { label: 'Pendiente' }, { label: 'Aprobado' } ];
 
   form!: FormGroup;
