@@ -136,6 +136,15 @@ export class Terceros {
     });
   }
 
+  private getCurrentQna(): { anio: number; qna: number; aaaaqq: number } {
+    const now = new Date();
+    const anio = now.getFullYear();
+    const mes = now.getMonth() + 1;
+    const qnaDelMes = (now.getDate() <= 15) ? 1 : 2;
+    const qna = (mes - 1) * 2 + qnaDelMes;
+    return { anio, qna, aaaaqq: anio * 100 + qna };
+  }
+
   buscarEmpleado() {
     const value = this.form.get('busqueda.searchText')?.value;
     if (value && typeof value === 'object') return;
@@ -261,10 +270,7 @@ export class Terceros {
             importe: Number(d.importe) || 0,
           }));
 
-    const anio = this.form.get('anio')?.value;
-    const quincena = this.form.get('quincena')?.value;
-    const qnaProceso = anio && quincena ? (Number(anio) * 100 + Number(quincena)) : null;
-
+    const qnaProceso = this.getCurrentQna().aaaaqq;
     const dialogRef = this.dialog.open(TercerosDialog, {
       width: '1200px',
       maxWidth: '92vw',
