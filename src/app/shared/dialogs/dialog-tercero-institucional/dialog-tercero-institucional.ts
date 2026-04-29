@@ -31,7 +31,7 @@ import { MatSelectModule } from '@angular/material/select';
 export class DialogTerceroInstitucional {
 
   form!: FormGroup;
-  tipoOrdenOptions = ['Alta', 'Baja'];
+  tipoOrdenOptions = [{ label: 'Alta', value: 1 }, { label: 'Baja', value: 2 },];
 
   constructor(private fb: FormBuilder, private ref: MatDialogRef<DialogTerceroInstitucional>, @Inject(MAT_DIALOG_DATA) public data: any) {}
 
@@ -46,6 +46,7 @@ export class DialogTerceroInstitucional {
       concepto: [null], 
       qnaDesde: [''],
       qnaHasta: [''],
+      importeMensual: [null],
     });
     this.form.patchValue({
       apellidoPaterno: this.data?.apellidoPaterno ?? '',
@@ -56,6 +57,7 @@ export class DialogTerceroInstitucional {
       concepto: this.data?.concepto ?? null,
       qnaDesde: this.data?.qnaDesde ?? currentQna.aaaaqq,
       qnaHasta: this.data?.qnaHasta ?? '',
+      importeMensual: this.data?.importeMensual ?? null,
     }, 
     { emitEvent: false });
   }
@@ -70,7 +72,35 @@ export class DialogTerceroInstitucional {
   }
 
   guardar() {
-    
+    console.log('CLICK guardar', this.form?.value, this.form?.valid, this.form?.errors);
+
+  if (this.form.invalid) {
+    console.log('Form inválido');
+    this.form.markAllAsTouched();
+    return;
+  }
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+
+    const v = this.form.getRawValue();
+    const conceptoObj = v.concepto;
+    const qnaProceso = Number(v.qnaDesde);
+    const payload: any = {
+      rfc: v.rfc,
+      apellidoPaterno: v.apellidoPaterno,
+      apellidoMaterno: v.apellidoMaterno,
+      nombres: v.nombres,
+      tipoOrden: v.tipoOrden,
+      concepto: (conceptoObj?.cve ?? null) ? String(conceptoObj.cve).trim().toLowerCase() : null,
+      qnaProceso,   
+      qnaIni: Number(v.qnaDesde),
+      qnaFin: Number(v.qnaHasta),
+      importeMensual: Number(v.importeMensual),
+      detalles: this.data?.detalles ?? []
+    };
+    this.ref.close(payload);
   }
 
   cerrar() {

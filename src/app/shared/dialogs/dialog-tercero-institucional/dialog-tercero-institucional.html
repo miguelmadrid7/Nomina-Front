@@ -42,7 +42,7 @@
                     <mat-label>Orden*</mat-label>
                     <mat-icon matPrefix>reorder</mat-icon>
                         <mat-select formControlName="tipoOrden">
-                            <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t"> {{ t }} </mat-option>
+                            <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t.value"> {{ t.label }} </mat-option>
                         </mat-select>
                 </mat-form-field>
 
@@ -54,6 +54,13 @@
                         matInput
                         [value]="form.value?.concepto ? (form.value.concepto.cve + ' - ' + form.value.concepto.descripcion) : ''"
                         readonly>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>Importe mensual*</mat-label>
+                    <mat-icon matPrefix>payments</mat-icon>
+                    <input matInput formControlName="importeMensual" inputmode="decimal">
+                    <mat-error *ngIf="form.get('importeMensual')?.hasError('required')">El importe mensual es requerido </mat-error>
                 </mat-form-field>
             </div>
 
