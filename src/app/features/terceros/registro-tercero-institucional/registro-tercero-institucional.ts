@@ -15,6 +15,8 @@ import { MatInputModule } from '@angular/material/input';
 import { PensionAlimenDialog } from '../../nomina/pension-alimen-dialog/pension-alimen-dialog';
 import { DialogTerceroInstitucional } from '../../../shared/dialogs/dialog-tercero-institucional/dialog-tercero-institucional';
 import { MatDialog } from '@angular/material/dialog';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-registro-tercero-institucional',
@@ -28,6 +30,8 @@ import { MatDialog } from '@angular/material/dialog';
     MatInputModule,
     MatPaginatorModule,
     MatTableModule,
+    MatSelectModule,
+    MatOptionModule,
     UppercaseDirective 
   ],
   templateUrl: './registro-tercero-institucional.html',
@@ -39,7 +43,9 @@ export class RegistroTerceroInstitucional {
   resultado: EmpleadoItem[] = [];
   cargandoBusqueda = false;
   totalElements = 0;
+  conceptosFiltrados: any[] = [];
   displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'tipoMovimiento', 'acciones'];
+  readonly conceptosPermitidos = ['5l', '6l', '21'];
   dataSource = new MatTableDataSource<NominaRow>([]);
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
@@ -61,14 +67,17 @@ export class RegistroTerceroInstitucional {
     });
   }
 
-   ngOnInit() {
+  ngOnInit() {
      this.form = this.fb.group({ 
        busqueda: this.fb.group({
         empleadoId: [null],
-        searchText: ['']
+        searchText: [''],
+        concepto: [null],
+        tipoConcepto: [2],
         }),
       });
-   }
+      this.cargarConceptos();
+  }
 
   buscarEmpleado() {
       const value = this.form.get('busqueda.searchText')?.value;
@@ -168,7 +177,8 @@ export class RegistroTerceroInstitucional {
       this.autocompleteTrigger?.closePanel();
   }
 
-   verDetalles(row: any) {
+  verDetalles(row: any) {
+      const conceptoSeleccionado = this.form.get('busqueda.concepto')?.value ?? null;
       const nombreCompleto = (row.nombreEmpleado || '').trim().split(' ');
       const apellidoPaterno = nombreCompleto[0] || '';
       const apellidoMaterno = nombreCompleto[1] || '';
@@ -200,28 +210,92 @@ export class RegistroTerceroInstitucional {
             tipoOrden: row.tipoOrden,
             importeMensual: row.importeMensual,
             estatus: row.estatus,
+            concepto: conceptoSeleccionado,
             detalles
           }
       });
   
       dialogRef.afterClosed().subscribe(result => {
         if (!result) return;
-          this.terceroService.guardarTercero(result).subscribe({
-            next: () => {
+
+          const tipoMovimientoTexto = result.tipoOrden === 1 ? 'ALTA' : result.tipoOrden === 2 ? 'BAJA' : '';
+
+          this.terceroService.registrarNp(result).subscribe({
+            next: (res) => {
+              console.log('RESPUESTA registrarNp:', res);
+              const data = [...this.dataSource.data];
+                if (data.length > 0) {
+                  data[0] = {
+                    ...data[0],
+                    tipoMovimiento: tipoMovimientoTexto
+                  };
+                  this.dataSource.data = data;
+                }
               this.dialog.open(PensionAlimenDialog, {
                 width: '500px',
                 disableClose: true,
                 data: {
-                  mensaje: 'Se guardó correctamente' 
+                  type: 'success',
+                  title: 'Éxito',
+                  message: 'Se guardó correctamente'
                 }
               });
             },
             error: (err) => {
-              this.showSnack('Error al guardar', 'Cerrar', 4000);
+              const msg = err?.error?.message ||  err?.error?.mensaje ||'Error al guardar';
+              this.showSnack(msg, 'Cerrar', 4000);
             }
           });
       });
+  }
+
+  cargarConceptos(): void {
+    this.terceroService.obtenerConceptos().subscribe({
+      next: (data) => {
+        this.conceptosFiltrados = (data ?? []).filter((c: any) =>
+          this.conceptosPermitidos.includes((c?.cve ?? '').toString().toLowerCase())
+        );
+
+        this.conceptosFiltrados = this.dedupeByCve(this.conceptosFiltrados);
+        this.conceptosFiltrados = this.ordenarPorPrioridad(
+          this.conceptosFiltrados,
+          this.conceptosPermitidos
+        );
+
+        this.cd.markForCheck();
+      },
+      error: (err) => console.error('Error al cargar conceptos:', err),
+    });
+  }
+
+  private ordenarPorPrioridad(conceptos: any[], codigosPrioridad: string[]): any[] {
+  const rank = new Map<string, number>();
+  codigosPrioridad.forEach((c, i) => rank.set(c.toLowerCase(), i));
+
+  return [...conceptos].sort((a, b) => {
+    const ca = (a?.cve ?? '').toString().toLowerCase();
+    const cb = (b?.cve ?? '').toString().toLowerCase();
+
+    const ra = rank.has(ca) ? rank.get(ca)! : Number.POSITIVE_INFINITY;
+    const rb = rank.has(cb) ? rank.get(cb)! : Number.POSITIVE_INFINITY;
+
+    if (ra !== rb) return ra - rb;
+    return ca.localeCompare(cb);
+  });
+  }
+
+  private dedupeByCve(conceptos: any[]): any[] {
+    const map = new Map<string, any>();
+
+    for (const c of conceptos ?? []) {
+      const key = (c?.cve ?? '').toString().toLowerCase().trim();
+      if (!key) continue;
+
+      if (!map.has(key)) map.set(key, c);
     }
+
+    return Array.from(map.values());
+  }
 
   clearFilters(): void {
     this.form.patchValue({

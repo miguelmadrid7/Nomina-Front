@@ -42,6 +42,13 @@
                     </mat-option>
                 </mat-autocomplete>
             </mat-form-field>
+
+            <mat-form-field appearance="outline" class="compact-field qna-compact concepto-wi" floatLabel="always">
+                <mat-label>Concepto</mat-label>
+                    <mat-select formControlName ="concepto">
+                        <mat-option *ngFor="let c of conceptosFiltrados" [value]="c">{{ c.cve }} - {{ c.descripcion }}</mat-option>
+                    </mat-select>
+            </mat-form-field>
         </div>
 
         <div class="section-divider"></div>
