@@ -160,3 +160,16 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px 16px;
 }
+
+.orden-field {
+  width: 300px;      /* ajusta a tu gusto: 180-260px normalmente */
+  max-width: 280px;
+  justify-self: start; /* si está dentro de un grid, evita que se “centre/estire” raro */
+}
+
+.orden-concepto-row {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 0 !important;
+  align-items: start;
+}

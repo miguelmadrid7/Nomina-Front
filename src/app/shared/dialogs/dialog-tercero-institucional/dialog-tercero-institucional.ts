@@ -36,6 +36,7 @@ export class DialogTerceroInstitucional {
   constructor(private fb: FormBuilder, private ref: MatDialogRef<DialogTerceroInstitucional>, @Inject(MAT_DIALOG_DATA) public data: any) {}
 
   ngOnInit() {
+    const currentQna = this.getCurrentQna();
     this.form = this.fb.group({
       apellidoPaterno: [''],
       apellidoMaterno: [''],
@@ -45,8 +46,27 @@ export class DialogTerceroInstitucional {
       concepto: [null], 
       qnaDesde: [''],
       qnaHasta: [''],
-      fechaRegistro: [''],
     });
+    this.form.patchValue({
+      apellidoPaterno: this.data?.apellidoPaterno ?? '',
+      apellidoMaterno: this.data?.apellidoMaterno ?? '',
+      nombres: this.data?.nombres ?? '',
+      rfc: this.data?.rfc ?? '',
+      tipoOrden: this.data?.tipoOrden ?? null,
+      concepto: this.data?.concepto ?? null,
+      qnaDesde: this.data?.qnaDesde ?? currentQna.aaaaqq,
+      qnaHasta: this.data?.qnaHasta ?? '',
+    }, 
+    { emitEvent: false });
+  }
+
+  private getCurrentQna(): { anio: number; qna: number; aaaaqq: number } {
+    const now = new Date();
+    const anio = now.getFullYear();
+    const mes = now.getMonth() + 1;
+    const qnaDelMes = (now.getDate() <= 15) ? 1 : 2;
+    const qna = (mes - 1) * 2 + qnaDelMes;
+    return { anio, qna, aaaaqq: anio * 100 + qna };
   }
 
   guardar() {

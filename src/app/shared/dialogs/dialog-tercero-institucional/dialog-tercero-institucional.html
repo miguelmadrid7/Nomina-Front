@@ -37,25 +37,31 @@
                 </mat-form-field>
             </div>
 
-            <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-                <mat-label>Orden*</mat-label>
-                <mat-icon matPrefix>reorder</mat-icon>
-                    <mat-select formControlName="tipoOrden">
-                        <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t"> {{ t }} </mat-option>
-                    </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-                    <mat-label>Importe*</mat-label>
-                    <mat-icon matPrefix>badge</mat-icon>
-                    <input matInput formControlName="rfc" class="uppercase-input">
+            <div class="orden-concepto-row">
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator orden-field" floatLabel="always">
+                    <mat-label>Orden*</mat-label>
+                    <mat-icon matPrefix>reorder</mat-icon>
+                        <mat-select formControlName="tipoOrden">
+                            <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t"> {{ t }} </mat-option>
+                        </mat-select>
                 </mat-form-field>
+
+                
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>Concepto seleccionado</mat-label>
+                    <mat-icon matPrefix>info</mat-icon>
+                    <input
+                        matInput
+                        [value]="form.value?.concepto ? (form.value.concepto.cve + ' - ' + form.value.concepto.descripcion) : ''"
+                        readonly>
+                </mat-form-field>
+            </div>
 
             <div class="datetime-row span-3">
                 <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
                     <mat-label>Desde*</mat-label>
                     <mat-icon matPrefix>calendar_today</mat-icon>
-                    <input matInput formControlName="qnaDesde">
+                    <input matInput formControlName="qnaDesde" readonly>
                     <mat-error *ngIf="form.hasError('qnaMenorActual')">No puede ser menor a la quincena actual</mat-error>
                 </mat-form-field>
 
@@ -66,21 +72,7 @@
                         <mat-error *ngIf="form.hasError('qnaMenorActual')">No puede ser menor a la quincena actual</mat-error>
                         <mat-error *ngIf="form.hasError('rangoInvalido')"> La QNA final no puede ser menor que la inicial</mat-error>
                 </mat-form-field>
-
-                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-                    <mat-label>Fecha y hora registro*</mat-label>
-                    <mat-icon matPrefix>calendar_today</mat-icon>
-                    <input matInput 
-                           formControlName="fechaRegistro"
-                           id="fechaHoraInput"
-                           placeholder="Selecciona fecha y hora"
-                           readonly>
-                </mat-form-field>
-      </div>
-
-            
-
-
+            </div>
         </div>
     </mat-dialog-content>
 
@@ -88,5 +80,4 @@
         <button class="btn btn-primary" (click)="guardar()">Guardar</button>
         <button class="btn btn-danger" (click)="cerrar()">Cancelar</button>
     </div>
-
 </div>
