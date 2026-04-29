@@ -56,6 +56,19 @@
     transform: translateY(-1px);
 }
 
+.btn-primary {
+    background: transparent;
+    color: #2563eb;
+    border-color: #2563eb;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+    transform: translateY(-1px);
+}
+
 /* TABLA GLOBAL */
 .table-global {
     width: 100%;
@@ -177,5 +190,5 @@
 .global-search {
   display: flex;
   align-items: center;
-  gap: 16px; /* 👈 separación entre radio y select */
+  gap: 16px; 
 }

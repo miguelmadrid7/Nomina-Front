@@ -1,8 +1,8 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NominaRow } from '../../../models/nomina-Row.model';
 import { CommonModule } from '@angular/common';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,6 +29,8 @@ import { MatRadioModule } from '@angular/material/radio';
 })
 export class ConsultaTerceros {
 
+  @ViewChild(MatPaginator) paginator?: MatPaginator;
+
   dataSource = new MatTableDataSource<NominaRow>([]);
   displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'numeroOrden', 'tipoOrden', 'importeMensual', 'concepto', 'qnaProceso', 'estatus'];
 
@@ -43,41 +45,59 @@ export class ConsultaTerceros {
   conceptosFiltrados: any[] = [];
   totalElements = 0;
 
+  tipoOrdenOptions = [ { label: 'Alta', value: 1 }, { label: 'Pendiente', value: 2 }, { label: 'Aprobado', value: 3 }];
+  estatusOptions = [ { label: 'Registrado', value: 1 }, { label: 'Pendiente', value: 2 }, { label: 'Aprobado', value: 3 },];
+
+  pageIndex = 0;
+  pageSize = 50
+
    constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private cd: ChangeDetectorRef,
     private terceroService: TerceroService,
     private loaderService: LoaderService,
   ) {}
 
   ngOnInit() {
-    this.form = this.fb.group({ 
+    this.form = this.fb.group({
       busqueda: this.fb.group({
         tipoConcepto: [2],
         concepto: [null]
       }),
     });
-    
+
     this.filtrosTabla = this.fb.group({
-        tipoOrden: [null],  
-        anio: [null],    
+        tipoOrden: [null],
+        anio: [null],
         quincena: [null],
-      
+
     });
       this.cargarConceptos();
       this.form.get('busqueda.tipoConcepto')?.valueChanges.subscribe(tipo => {
       this.actualizarConceptos(tipo);
     });
+
+    this.form.get('busqueda.concepto')?.valueChanges.subscribe(() => {
+      this.pageIndex = 0;
+      this.paginator?.firstPage();
+      this.loadRegistros(0, this.pageSize);
+    });
+
+    this.filtrosTabla.valueChanges.subscribe(() => {
+      this.pageIndex = 0;
+      this.paginator?.firstPage();
+      this.loadRegistros(0, this.pageSize);
+    });
   }
 
   cargarConceptos(){
   this.terceroService.obtenerConceptos().subscribe({
-    next: (resp) => {
-      const data = resp?.data ?? resp;
+    next: (data: any[]) => {
 
-      this.conceptosInstitucionales = data.filter((c: any) =>
-        this.conceptosInstitucionalesCodigos.includes((c.cve ?? '').toLowerCase())
+      this.conceptosInstitucionales = (data ?? []).filter((c: any) =>
+      this.conceptosInstitucionalesCodigos.includes((c.cve ?? '').toLowerCase())
       );
+
 
       this.conceptosInstitucionales = this.dedupeByCve(this.conceptosInstitucionales);
       this.conceptosInstitucionales = this.ordenarPorPrioridad(
@@ -112,9 +132,8 @@ export class ConsultaTerceros {
     } else {
       this.conceptosFiltrados = this.conceptosNoInstitucionales;
     }
-    this.form.get('busqueda.concepto')?.setValue(null);
+    this.form.get('busqueda.concepto')?.setValue(null, { emitEvent: false });
   }
-
 
   private ordenarPorPrioridad(conceptos: any[], codigosPrioridad: string[]): any[] {
     const rank = new Map<string, number>();
@@ -148,4 +167,70 @@ export class ConsultaTerceros {
     return Array.from(map.values());
   }
 
+  private buildQnaProceso(): number | null {
+    const anio = this.filtrosTabla.get('anio')?.value;
+    const quincena = this.filtrosTabla.get('quincena')?.value;
+    if (!anio || !quincena) return null;
+    return Number(anio) * 100 + Number(quincena);
+  }
+
+  loadRegistros(pageIndex = this.pageIndex, pageSize = this.pageSize): void {
+    const concepto: string | null = this.form.get('busqueda.concepto')?.value ?? null;
+    const qnaProceso = this.buildQnaProceso();
+
+    if (!concepto) {
+      this.dataSource.data = [];
+      this.totalElements = 0;
+      return;
+    }
+
+    this.loaderService.show(); // si tu LoaderService tiene show/hide
+    this.terceroService.obtenerRegistrosNp({
+      concepto,
+      qnaProceso,
+      page: pageIndex,
+      size: pageSize,
+    }).subscribe({
+      next: (res) => {
+        this.dataSource.data = res.rows;
+        this.totalElements = res.total;
+
+        this.pageIndex = pageIndex;
+        this.pageSize = pageSize;
+
+        this.cd.detectChanges();
+        this.loaderService.hide();
+      },
+      error: (err) => {
+        console.error('Error al cargar registros NP:', err);
+        this.dataSource.data = [];
+        this.totalElements = 0;
+        this.loaderService.hide();
+      }
+    });
+  }
+
+  clearFilters(): void {
+    this.form.patchValue(
+      { busqueda: { tipoConcepto: 2, concepto: null } },
+      { emitEvent: false }
+    );
+
+    this.filtrosTabla.reset(
+      { tipoOrden: null, anio: null, quincena: null },
+      { emitEvent: false }
+    );
+
+    this.pageIndex = 0;
+    this.pageSize = 50;
+    this.paginator?.firstPage();
+    this.actualizarConceptos(2);
+    this.dataSource.data = [];
+    this.totalElements = 0;
+    this.cd.detectChanges();
+  }
+
+  onPage(e: PageEvent): void {
+    this.loadRegistros(e.pageIndex, e.pageSize);
+  }
 }
