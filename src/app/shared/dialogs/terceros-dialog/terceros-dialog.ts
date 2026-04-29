@@ -57,6 +57,7 @@ export class TercerosDialog  {
       tipoOrden: [this.mapTipoOrdenFromData(this.data.tipoOrden)],
       importeMensual: [this.data.importeMensual],
       concepto: [this.data.concepto ?? null],
+      qnaProceso: [this.data.qnaProceso ?? null],
       qnaDesde: [currentQna.aaaaqq],
       qnaHasta: [''],
       estatus: [this.data.estatus],
@@ -80,7 +81,7 @@ export class TercerosDialog  {
     });
 
     const inicial = this.form.get('tipoOrden')?.value;
-    this.esAltaFlag = inicial?.toLowerCase() === 'alta';
+    this.esAltaFlag = Number(inicial) === 1;
   }
 
   ngAfterViewInit() {
@@ -94,8 +95,7 @@ export class TercerosDialog  {
   }
 
   get esAlta(): boolean {
-    const valor = this.form?.get('tipoOrden')?.value;
-    return valor?.toLowerCase() === 'alta';
+    return Number(this.form?.get('tipoOrden')?.value) === 1;
   }
 
   getCurrentQna(): { anio: number; qna: number; aaaaqq: number } {
@@ -120,6 +120,30 @@ export class TercerosDialog  {
 
   guardar() {
     const value = this.form.getRawValue();
+
+    value.nombreTrabajador = [
+    value.apellidoPaterno,
+    value.apellidoMaterno,
+    value.nombres,
+      ].map((x: any) => (x ?? '').toString().trim())
+        .filter(Boolean)
+        .join(' ')
+        .trim();
+    
+    const desdeNum =
+      value.qnaDesde !== null && value.qnaDesde !== undefined && value.qnaDesde !== ''
+        ? Number(value.qnaDesde)
+        : null;
+
+    const hastaNum =
+      value.qnaHasta !== null && value.qnaHasta !== undefined && value.qnaHasta !== ''
+        ? Number(value.qnaHasta)
+        : null;
+
+    value.desde = desdeNum;
+    value.qnaIni = desdeNum;
+    value.qnaFin = hastaNum; 
+    
     value.numeroDocumento =
       value.numeroDocumento !== null && value.numeroDocumento !== undefined && value.numeroDocumento !== ''
         ? Number(value.numeroDocumento)
