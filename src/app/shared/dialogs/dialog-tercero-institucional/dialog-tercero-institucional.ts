@@ -42,6 +42,7 @@ export class DialogTerceroInstitucional {
       nombres: [''],
       rfc: [''],
       tipoOrden: [null],
+      concepto: [null], 
       qnaDesde: [''],
       qnaHasta: [''],
       fechaRegistro: [''],
