@@ -19,4 +19,6 @@ export interface NominaRow {
     concepto: string;
     importe: number;
   }>;
+
+  tipoMovimiento?: string;
 }
