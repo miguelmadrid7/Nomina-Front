@@ -79,8 +79,18 @@
     padding: 10px 8px !important;
 }
 
-.table-global .mat-column-tipoOrden {
+.table-global .mat-column-numeroOrden {
     width: 130px !important;
+    text-align: center !important;
+}
+
+.table-global .mat-column-importeMensual {
+    width: 130px !important;
+    text-align: center !important;
+}
+
+.table-global .mat-column-tipoOrden {
+    width: 150px !important;
     text-align: center !important;
 }
 
@@ -97,7 +107,7 @@
 }
 
 .table-global .mat-column-concepto {
-  width: 150px;
+  width: 120px;
   text-align: center;
 }
 
@@ -112,7 +122,7 @@
 }
 
 :host ::ng-deep .concepto-wi .mat-mdc-form-field-infix {
-  min-height: 40px !important;
+  min-height: 45px !important;
   padding-top: 10px;
   padding-bottom: 4px;
 }
@@ -144,6 +154,10 @@
     max-width: 110px !important;
     margin: 0 auto !important;
     text-align: center !important;
+}
+
+.header-select-orden {
+  max-width: 150px !important; /* prueba 140/160/180 según te guste */
 }
 
 .qna-filters-container {

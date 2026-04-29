@@ -10,6 +10,8 @@ import { TerceroService } from '../../../core/services/tercero.service';
 import { LoaderService } from '../../../core/services/loader.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
+import { finalize } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-consulta-terceros',
@@ -32,7 +34,7 @@ export class ConsultaTerceros {
   @ViewChild(MatPaginator) paginator?: MatPaginator;
 
   dataSource = new MatTableDataSource<NominaRow>([]);
-  displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'numeroOrden', 'tipoOrden', 'importeMensual', 'concepto', 'qnaProceso', 'estatus'];
+  displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'numeroOrden', 'tipoOrden', 'importeMensual', 'concepto', 'qnaProceso', 'estatus'];
 
   form!: FormGroup;
   filtrosTabla!: FormGroup;
@@ -54,6 +56,7 @@ export class ConsultaTerceros {
    constructor(
     private fb: FormBuilder,
     private cd: ChangeDetectorRef,
+    private snackBar: MatSnackBar,
     private terceroService: TerceroService,
     private loaderService: LoaderService,
   ) {}
@@ -62,7 +65,7 @@ export class ConsultaTerceros {
     this.form = this.fb.group({
       busqueda: this.fb.group({
         tipoConcepto: [2],
-        concepto: [null]
+        concepto: [null],
       }),
     });
 
@@ -70,6 +73,7 @@ export class ConsultaTerceros {
         tipoOrden: [null],
         anio: [null],
         quincena: [null],
+        estatus: [null],
 
     });
       this.cargarConceptos();
@@ -184,28 +188,53 @@ export class ConsultaTerceros {
       return;
     }
 
-    this.loaderService.show(); // si tu LoaderService tiene show/hide
+    const start = Date.now();
+    this.loaderService.show()
+    
     this.terceroService.obtenerRegistrosNp({
       concepto,
       qnaProceso,
       page: pageIndex,
       size: pageSize,
-    }).subscribe({
+    }).pipe(
+      finalize(() => {
+        const elapsed = Date.now() - start;
+        const remaining = Math.max(0, 4000 - elapsed); // 300ms mínimo
+          setTimeout(() => this.loaderService.hide(), remaining);
+    })
+
+    ).subscribe({
       next: (res) => {
         this.dataSource.data = res.rows;
-        this.totalElements = res.total;
+        const tipoOrdenSel = this.filtrosTabla.get('tipoOrden')?.value; 
+        const estatusSel = this.filtrosTabla.get('estatus')?.value;     
+        let rows = res.rows ?? [];
 
+        if (tipoOrdenSel != null && tipoOrdenSel !== '') {
+          const tipoOrdenNum = Number(tipoOrdenSel);
+          rows = rows.filter((r: any) => Number(r?.tipoOrden) === tipoOrdenNum);
+        }
+
+        if (estatusSel != null && estatusSel !== '') {
+          rows = rows.filter((r: any) => String(r?.estatus ?? '').trim() === String(estatusSel).trim());
+        }
+
+        this.dataSource.data = rows;
+        this.totalElements = res.total;
         this.pageIndex = pageIndex;
         this.pageSize = pageSize;
-
         this.cd.detectChanges();
         this.loaderService.hide();
       },
       error: (err) => {
-        console.error('Error al cargar registros NP:', err);
         this.dataSource.data = [];
         this.totalElements = 0;
-        this.loaderService.hide();
+        const msg =
+          err?.error?.message ||
+          err?.message ||
+          'Error al cargar registros NP';
+
+        this.snackBar.open(msg, 'Cerrar', { duration: 4000 });
       }
     });
   }
