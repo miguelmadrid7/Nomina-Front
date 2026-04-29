@@ -39,20 +39,28 @@ export class CalculoNominaComponent {
 
 
   steps = [
-  { label: 'Inicializando proceso', progress: 5 },              // truncate
-  { label: 'Insertando nómina cheque plaza', progress: 10 },    // insertNomChequePza
-  { label: 'Insertando nómina cheque concepto', progress: 15},  // insertNomChequeCptoTab
-  { label: 'Calculando concepto H0', progress: 30 },            // cpto_ho
-  { label: 'Calculando concepto informados', progress: 35 },    // cpto_informados
-  { label: 'Calculando concepto quinquenios', progress: 40 },   // cpto_quinquenios
-  { label: 'Calculando nómina cheque concepto primas', progress: 50 }, // nom_cheque_cpto_primas
-  { label: 'Calculando concepto 01', progress: 55 },            // cpto_01
-  { label: 'Calculando concepto 02', progress: 60 },            // cpto_02
-  { label: 'Calculando concepto 04', progress: 70 },            // cpto_04
-  { label: 'Calculando concepto 58', progress: 75 },            // cpto_58
-  { label: 'Calculando concepto 77', progress: 80 },            // cpto_77
-  { label: 'Calculando concepto 62', progress: 85},             // cpto_62
-  { label: 'Calculando deducciones informadas', progress: 88},  // deducciones informadas
+  { label: 'Inicializando proceso', progress: 4 },              // truncate
+  { label: 'Insertando nómina cheque plaza', progress: 8 },    // insertNomChequePza
+  { label: 'Insertando nómina cheque concepto', progress: 12},  // insertNomChequeCptoTab
+  { label: 'Calculando concepto H0', progress: 16 },            // cpto_ho
+  { label: 'Calculando concepto E2', progress: 20 },            // cpto_E2
+  { label: 'Calculando concepto informados', progress: 24 },    // cpto_informados
+  { label: 'Calculando concepto quinquenios', progress: 26 },   // cpto_quinquenios
+  { label: 'Calculando nómina cheque concepto primas', progress: 30 }, // nom_cheque_cpto_primas
+  { label: 'Calculando concepto 01', progress: 34 },            // cpto_01
+  { label: 'Calculando concepto 02', progress: 36 },            // cpto_02
+  { label: 'Calculando concepto 04', progress: 40 },            // cpto_04
+  { label: 'Calculando concepto 58', progress: 44 },            // cpto_58
+  { label: 'Calculando concepto 77', progress: 46 },            // cpto_77
+  { label: 'Calculando concepto 62', progress: 48 },             // cpto_62
+  { label: 'Calculando deducciones informadas', progress: 50 },  // deducciones informadas
+  { label: 'Calculando bonos BA', progress: 54 },               // bono_BA
+  { label: 'Calculando bonos BE', progress: 56 },               // bono_BE
+  { label: 'Calculando bonos BI', progress: 60 },               // bono_BI 
+  { label: 'Calculando bonos DM', progress: 64 },               // bono_DM
+  { label: 'Calculando bonos IC', progress: 66 },               // bono_IC
+  { label: 'Calculando bonos IH', progress: 70 },               // bono_IH
+  { label: 'Calculando bonos RM', progress: 74 },               // bono_RM
   { label: 'Actualizando importes', progress: 90 },             // updateImportes
   { label: 'Preparando entregable', progress: 95 },             // preparar
   { label: 'Finalizando proceso', progress: 99 },               // complete (previo al 100)
