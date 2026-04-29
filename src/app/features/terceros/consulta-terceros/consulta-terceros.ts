@@ -46,6 +46,10 @@ export class ConsultaTerceros {
   conceptosNoInstitucionales: any[] = [];
   conceptosFiltrados: any[] = [];
   totalElements = 0;
+  
+  conteoPorConcepto = new Map<string, number>();
+  loadingConteos = false;
+
 
   tipoOrdenOptions = [ { label: 'Alta', value: 1 }, { label: 'Pendiente', value: 2 }, { label: 'Aprobado', value: 3 }];
   estatusOptions = [ { label: 'Registrado', value: 1 }, { label: 'Pendiente', value: 2 }, { label: 'Aprobado', value: 3 },];
@@ -90,6 +94,7 @@ export class ConsultaTerceros {
     this.filtrosTabla.valueChanges.subscribe(() => {
       this.pageIndex = 0;
       this.paginator?.firstPage();
+      this.loadConteos();
       this.loadRegistros(0, this.pageSize);
     });
   }
@@ -171,11 +176,53 @@ export class ConsultaTerceros {
     return Array.from(map.values());
   }
 
-  private buildQnaProceso(): number | null {
+  buildQnaProceso(): number | null {
     const anio = this.filtrosTabla.get('anio')?.value;
     const quincena = this.filtrosTabla.get('quincena')?.value;
     if (!anio || !quincena) return null;
     return Number(anio) * 100 + Number(quincena);
+  }
+
+  private loadConteos(): void {
+  const qnaProceso = this.buildQnaProceso();
+
+  this.conteoPorConcepto.clear();
+
+  if (!qnaProceso) {
+    this.cd.detectChanges();
+    return;
+  }
+
+  this.loadingConteos = true;
+
+  this.terceroService.obtenerConteoPorConcepto(qnaProceso)
+    .pipe(finalize(() => {
+      this.loadingConteos = false;
+      this.cd.detectChanges();
+    }))
+    .subscribe({
+      next: (rows) => {
+        const map = new Map<string, number>();
+        for (const r of rows ?? []) {
+          const key = (r.cve ?? '').toLowerCase().trim();
+          if (!key) continue;
+          map.set(key, Number(r.total ?? 0));
+        }
+        this.conteoPorConcepto = map;
+      },
+      error: (err) => {
+        console.error('Error conteos por concepto', err);
+        this.conteoPorConcepto.clear();
+      }
+    });
+  }
+
+  get totalConceptoSeleccionado(): number | null {
+    const concepto = this.form.get('busqueda.concepto')?.value;
+    if (!concepto) return null;
+
+    const key = String(concepto).toLowerCase().trim();
+    return this.conteoPorConcepto.get(key) ?? 0;
   }
 
   loadRegistros(pageIndex = this.pageIndex, pageSize = this.pageSize): void {
@@ -256,6 +303,7 @@ export class ConsultaTerceros {
     this.actualizarConceptos(2);
     this.dataSource.data = [];
     this.totalElements = 0;
+    this.conteoPorConcepto.clear();
     this.cd.detectChanges();
   }
 

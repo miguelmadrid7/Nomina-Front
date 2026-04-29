@@ -13,7 +13,7 @@
      <div class="actions-right">
         <div class="btn-group">
             <button class="btn btn-primary">
-                <mat-icon>delete_outline</mat-icon>
+                <mat-icon>task_alt</mat-icon>
                 <span>Validar</span>
             </button>
         </div>
@@ -34,9 +34,14 @@
             <mat-form-field appearance="outline" class="compact-field qna-compact concepto-wi" floatLabel="always">
                 <mat-label>Concepto</mat-label>
                     <mat-select formControlName ="concepto">
-                        <mat-option *ngFor="let c of conceptosFiltrados" [value]="c.cve">{{ c.cve }} - {{ c.descripcion }}</mat-option>
+                        <mat-option *ngFor="let c of conceptosFiltrados" [value]="c.cve">{{ c.cve }} - {{ c.descripcion }} </mat-option>
                     </mat-select>
             </mat-form-field>
+
+            <div class="concepto-total" *ngIf="buildQnaProceso() && form.get('busqueda.concepto')?.value">
+                Número de registros de este concepto:
+                <strong>{{ totalConceptoSeleccionado }}</strong>
+            </div>
         </div>
     </form>
 
@@ -123,9 +128,6 @@
                                         <td mat-cell *matCellDef="let e">{{ e.estatus }}</td>
                                 </ng-container>
                             </div>
-
-
-
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
