@@ -11,16 +11,13 @@ import { TerceroService } from '../../../core/services/tercero.service';
 import { NominaRow } from '../../../models/nomina-Row.model';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BeneficiarioJMRequest } from '../../../models/beneficiario-jm-request.model';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
-import { ApiResponse } from '../../../models/api-Response.model';
 import { TercerosDialog } from '../../../shared/dialogs/terceros-dialog/terceros-dialog';
 import { PensionAlimenDialog } from '../../../features/nomina/pension-alimen-dialog/pension-alimen-dialog';
-import { LoaderService } from '../../../core/services/loader.service';
-import { finalize } from 'rxjs';
-import { Empleado } from '../../servicios/empleado';
 import { EmpleadoItem } from '../../../models/emplado.model';
+import { Observable } from 'rxjs';
+import { MatOptionModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-terceros',
@@ -36,27 +33,19 @@ import { EmpleadoItem } from '../../../models/emplado.model';
     MatPaginatorModule,
     MatAutocompleteModule,
     MatInputModule,
+    MatOptionModule
   ],
   templateUrl: './terceros.html',
   styleUrl: './terceros.css'
 })
 export class Terceros {
-
-  private filtersReady = true;
-  private isRefreshing = false;
-  private lastQnaKey: string | null = null;
-  private qnaDebounceId: any;
-
-
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
 
   dataSource = new MatTableDataSource<NominaRow>([]);
   filterValues: any = { search: '', estatus: '' };
   displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'tipoOrden', 'estatus', 'acciones'];
-  tipoOrdenOptions = [ { label: 'Alta' }, { label: 'Baja' }, { label: 'Cambio' } ];
   estatusOptions = [ { label: 'Registrado' }, { label: 'Pendiente' }, { label: 'Aprobado' } ];
-
 
   form!: FormGroup;
   detailForm!: FormGroup;
@@ -69,18 +58,13 @@ export class Terceros {
   anioSeleccionado: number | null = null;
   quincenaSeleccionada: number | null = null;
   selectedRow: any;
-
-
   resultado: EmpleadoItem[] = [];
-
   cargandoBusqueda = false;
   showFilters = true;
-
   search: string = '';
   qnaProceso!: number;
+  conceptosOptions$!: Observable<any[]>;
 
-
-  
   constructor(
     private fb: FormBuilder, 
     private snackBar: MatSnackBar,
@@ -95,13 +79,14 @@ export class Terceros {
     this.form = this.fb.group({ 
       anio: [null],
       quincena: [null],
-      concepto: [null],
       tipoOrden: [null],
       estatus: [null],
 
       busqueda: this.fb.group({
         empleadoId: [null],
-        searchText: ['']
+        searchText: [''],
+        concepto: [null],
+        tipoOrden: [null]
       }),
 
       empleado: this.fb.group({
@@ -131,6 +116,8 @@ export class Terceros {
 
     return matchSearch && matchEstatus;
     };
+
+    this.conceptosOptions$ = this.terceroService.obtenerConceptos();
   }
 
   ngAfterViewInit(): void {
@@ -149,7 +136,6 @@ export class Terceros {
     });
   }
 
-  //  Busqueda del empleado
   buscarEmpleado() {
     const value = this.form.get('busqueda.searchText')?.value;
     if (value && typeof value === 'object') return;
@@ -171,7 +157,7 @@ export class Terceros {
     this.cargandoBusqueda = true;
     this.terceroService.searchEmployees(texto).subscribe({
       next: (lista: EmpleadoItem[]) => {
-        this.resultado = (lista ?? []).filter(e => {
+        const filtrados = (lista ?? []).filter(e => {
           const rfc = (e.rfc ?? e.RFC ?? '').trim();
           const curp = (e.curp ?? e.CURP ?? '').trim();
           const pa = (e.primerApellido ?? e.primer_apellido ?? '').trim();
@@ -179,25 +165,29 @@ export class Terceros {
           const nombre = (e.nombre ?? '').trim();
           const empleadoStr = (e.empleado ?? '').trim();
           const nombreCompleto = (e.nombreCompleto ?? '').trim();
-
           return !!(rfc || curp || pa || sa || nombre || empleadoStr || nombreCompleto);
         });
 
-        this.cargandoBusqueda = false;
+        setTimeout(() => {
+          this.resultado = filtrados;
+          this.cargandoBusqueda = false;
+
           if (this.resultado.length > 0) {
-            setTimeout(() => this.autocompleteTrigger?.openPanel());
+            this.autocompleteTrigger?.openPanel();
           } else {
             this.autocompleteTrigger?.closePanel();
           }
+        }, 0);
       },
       error: () => {
-        this.cargandoBusqueda = false;
-        this.showSnack('Error en la busqueda', 'Cerrar', 4000);
+        setTimeout(() => {
+          this.cargandoBusqueda = false;
+          this.showSnack('Error en la busqueda', 'Cerrar', 4000);
+        }, 0);
       }
     });
   }
 
-  //  Seleccion de empleado
   empleadoSeleccionado(emp: EmpleadoItem): void {
     let rfc = (emp.rfc ?? emp.RFC ?? '').trim();
     let curp = (emp.curp ?? emp.CURP ?? '').trim();
@@ -232,7 +222,6 @@ export class Terceros {
     this.autocompleteTrigger?.closePanel();
   }
 
-  //  Muestra lista de empleados
   displayEmpleado(emp: EmpleadoItem | string | null): string {
     if (!emp) return '';
     if (typeof emp === 'string') return emp;
@@ -254,15 +243,13 @@ export class Terceros {
     this.detailForm.patchValue(row);
   }
 
-  eliminar(row: any) {
-    console.log('Eliminar:', this.selectedRow);
-  }
-
   verDetalles(row: any) {
     const nombreCompleto = (row.nombreEmpleado || '').trim().split(' ');
     const apellidoPaterno = nombreCompleto[0] || '';
     const apellidoMaterno = nombreCompleto[1] || '';
     const nombres = nombreCompleto.slice(2).join(' ') || '';
+    const conceptoSeleccionado = this.form.get('busqueda.concepto')?.value;
+    console.log('conceptoSeleccionado:', conceptoSeleccionado);
     const detalles = (row.detalles && row.detalles.length)
       ? row.detalles
       : (this.dataSource.data as NominaRow[])
@@ -273,6 +260,10 @@ export class Terceros {
             concepto: d.concepto,
             importe: Number(d.importe) || 0,
           }));
+
+    const anio = this.form.get('anio')?.value;
+    const quincena = this.form.get('quincena')?.value;
+    const qnaProceso = anio && quincena ? (Number(anio) * 100 + Number(quincena)) : null;
 
     const dialogRef = this.dialog.open(TercerosDialog, {
       width: '1200px',
@@ -290,30 +281,38 @@ export class Terceros {
           tipoOrden: row.tipoOrden,
           importeMensual: row.importeMensual,
           estatus: row.estatus,
+          concepto: conceptoSeleccionado,
+          qnaProceso,
           detalles
         }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (!result) return;
-        this.terceroService.guardarTercero(result).subscribe({
-          next: () => {
-            this.dialog.open(PensionAlimenDialog, {
-              width: '500px',
-              disableClose: true,
-              data: {
-                mensaje: 'Se guardó correctamente' 
-              }
-            });
+        this.terceroService.registrarNp(result).subscribe({
+          next: (res: any) => {
+            if (res?.success) {
+              this.dialog.open(PensionAlimenDialog, {
+                width: '500px',
+                disableClose: true,
+                data: {
+                  mensaje: 'Se guardó correctamente'
+                }
+              });
+              return;
+            }
+
+            const msg = res?.message || 'Error al guardar';
+            this.showSnack(msg, 'Cerrar', 5000);
           },
-          error: (err) => {
+          error: () => {
             this.showSnack('Error al guardar', 'Cerrar', 4000);
           }
         });
     });
   }
 
-clearFilters(): void {
+  clearFilters(): void {
     this.form.patchValue({
       busqueda: {
         searchText: '',
@@ -340,6 +339,7 @@ clearFilters(): void {
       this.paginator?.firstPage?.();
       this.cd.markForCheck();
   }
+
   enforceUppercase(evt: Event) {
     const input = evt.target as HTMLInputElement;
     input.value = (input.value ?? '').toUpperCase();
