@@ -72,8 +72,6 @@ export class DialogTerceroInstitucional {
   }
 
   guardar() {
-    console.log('CLICK guardar', this.form?.value, this.form?.valid, this.form?.errors);
-
   if (this.form.invalid) {
     console.log('Form inválido');
     this.form.markAllAsTouched();
