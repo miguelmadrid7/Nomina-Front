@@ -348,75 +348,71 @@ console.log('NC:', emp.nombreCompleto);
   }
 
   abrirAgregar(): void {
-  const emp = this.empleadoActual;
-  const conceptoSeleccionado = this.form.get('busqueda.concepto')?.value ?? null;
+    const emp = this.empleadoActual;
+    const conceptoSeleccionado = this.form.get('busqueda.concepto')?.value ?? null;
 
-  if (!emp) {
-    this.showSnack('Selecciona un empleado', 'Cerrar', 3000);
-    return;
-  }
-  if (!conceptoSeleccionado?.cve) {
-    this.showSnack('Selecciona un concepto', 'Cerrar', 3000);
-    return;
-  }
-
-  let rfc = String(emp.rfc ?? emp.RFC ?? '').trim();
-
-  if (!rfc) {
-    const empleadoStr = String(emp.empleado ?? '').trim();
-    const parts = empleadoStr.split(' - ').map(p => p.trim());
-    if (parts.length >= 1) rfc = parts[0] ?? '';
-  }
-  const curp = String(emp.curp ?? emp.CURP ?? '').trim();
-
-
-
-  const empleadoStr = String(emp.empleado ?? '').trim();
-const [rfcRaw, curpRaw, ...nombrePartsRaw] = empleadoStr.split(' - ').map(s => s.trim());
-
-
-const nombreCompleto = nombrePartsRaw.join(' - ').trim(); // por si el nombre trae " - "
-
-const p = nombreCompleto.split(' ').filter(Boolean);
-const apellidoPaterno = p[0] ?? '';
-const apellidoMaterno = p[1] ?? '';
-const nombres = p.slice(2).join(' ');
-  const dialogRef = this.dialog.open(DialogTerceroInstitucional, {
-    width: '1200px',
-    maxWidth: '92vw',
-    maxHeight: '90vh',
-    panelClass: 'terceros-dialog-panel',
-    autoFocus: false,
-    data: {
-      rfc,
-      curp,
-      apellidoPaterno,
-      apellidoMaterno,
-      nombres,
-      concepto: conceptoSeleccionado,
-      detalles: []
+    if (!emp) {
+      this.showSnack('Selecciona un empleado', 'Cerrar', 3000);
+      return;
     }
-  });
 
-  dialogRef.afterClosed().subscribe(result => {
-    if (!result) return;
+    if (!conceptoSeleccionado?.cve) {
+      this.showSnack('Selecciona un concepto', 'Cerrar', 3000);
+      return;
+    }
 
-    this.terceroService.registrarNp(result).subscribe({
-      next: () => {
-        this.buscarRegistrosNp(this.paginator?.pageIndex ?? 0, this.paginator?.pageSize ?? 50);
-        this.dialog.open(PensionAlimenDialog, {
-          width: '500px',
-          disableClose: true,
-          data: { type: 'success', title: 'Éxito', message: 'Se guardó correctamente' }
+    let rfc = String(emp.rfc ?? emp.RFC ?? '').trim();
+
+    if (!rfc) {
+      const empleadoStr = String(emp.empleado ?? '').trim();
+      const parts = empleadoStr.split(' - ').map(p => p.trim());
+      if (parts.length >= 1) rfc = parts[0] ?? '';
+    }
+
+    const curp = String(emp.curp ?? emp.CURP ?? '').trim();
+    const empleadoStr = String(emp.empleado ?? '').trim();
+    const [ ...nombrePartsRaw] = empleadoStr.split(' - ').map(s => s.trim());
+    const nombreCompleto = nombrePartsRaw.join(' - ').trim();
+    const p = nombreCompleto.split(' ').filter(Boolean);
+    const apellidoPaterno = p[0] ?? '';
+    const apellidoMaterno = p[1] ?? '';
+    const nombres = p.slice(2).join(' ');
+      const dialogRef = this.dialog.open(DialogTerceroInstitucional, {
+        width: '1200px',
+        maxWidth: '92vw',
+        maxHeight: '90vh',
+        panelClass: 'terceros-dialog-panel',
+        autoFocus: false,
+        data: {
+          rfc,
+          curp,
+          apellidoPaterno,
+          apellidoMaterno,
+          nombres,
+          concepto: conceptoSeleccionado,
+          detalles: []
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (!result) return;
+
+        this.terceroService.registrarNp(result).subscribe({
+          next: () => {
+            this.buscarRegistrosNp(this.paginator?.pageIndex ?? 0, this.paginator?.pageSize ?? 50);
+            this.dialog.open(PensionAlimenDialog, {
+              width: '500px',
+              disableClose: true,
+              data: { type: 'success', title: 'Éxito', message: 'Se guardó correctamente' }
+            });
+          },
+          error: (err) => {
+            const msg = err?.error?.message || err?.error?.mensaje || 'Error al guardar';
+            this.showSnack(msg, 'Cerrar', 4000);
+          }
         });
-      },
-      error: (err) => {
-        const msg = err?.error?.message || err?.error?.mensaje || 'Error al guardar';
-        this.showSnack(msg, 'Cerrar', 4000);
-      }
-    });
-  });
-}
+      });
+  }
 
 
   onPageChange(e: any): void {
