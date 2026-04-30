@@ -79,12 +79,26 @@
     padding: 10px 8px !important;
 }
 
-.table-global .mat-column-numeroOrden {
-    width: 130px !important;
-    text-align: center !important;
+.table-global .mat-column-validar {
+  width: 80px;
+  text-align: center;
 }
 
-.table-global .mat-column-importeMensual {
+.table-global .mat-column-rfc {
+  width: 120px !important;
+  min-width: 120px !important;
+  max-width: 120px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-nombreCompleto {
+  width: 150px !important;
+  min-width: 150px !important;
+  max-width: 150px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-numeroOrden {
     width: 130px !important;
     text-align: center !important;
 }
@@ -93,6 +107,17 @@
     width: 150px !important;
     text-align: center !important;
 }
+
+.table-global .mat-column-importeMensual {
+    width: 130px !important;
+    text-align: center !important;
+}
+
+.table-global .mat-column-concepto {
+  width: 80px;
+  text-align: center;
+}
+
 
 .table-global .mat-column-qnaProceso {
     width: 200px !important;
@@ -106,15 +131,6 @@
     text-align: center !important;
 }
 
-.table-global .mat-column-concepto {
-  width: 120px;
-  text-align: center;
-}
-
-.table-global .mat-column-validar {
-  width: 100px;
-  text-align: center;
-}
 
 .table-global .mat-column-fechaRegistro {
   width: 120px;
