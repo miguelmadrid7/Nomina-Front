@@ -102,6 +102,29 @@
     border-color: #2563eb;
 }
 
+.ico-btn-success {
+    background: transparent;
+    color: #2e7d32;
+    border-color: #2e7d32;
+}
+
+.btn-success {
+  background: transparent;
+  color: #2e7d32;
+  border-color: #2e7d32;
+  width: 120px;
+  height: 36px;
+  padding: 0 16px;
+}
+
+.btn-success:hover {
+  background: #2e7d32;
+  color: #ffffff;
+  border-color: #2e7d32;
+  transform: translateY(-1px);
+}
+
+
 /* SEARCH Y SELECTS */
 .global-search {
     display: flex;

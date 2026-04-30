@@ -46,6 +46,7 @@ export class RegistroTerceroInstitucional {
   conceptosFiltrados: any[] = [];
   displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'tipoMovimiento', 'acciones'];
   readonly conceptosPermitidos = ['5l', '6l', '21'];
+  empleadoActual: EmpleadoItem | null = null;
   dataSource = new MatTableDataSource<NominaRow>([]);
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
@@ -162,6 +163,11 @@ export class RegistroTerceroInstitucional {
   }
 
   empleadoSeleccionado(emp: EmpleadoItem): void {
+    console.log('EMP SELECCIONADO:', emp);
+console.log('AP:', emp.primerApellido, emp.primer_apellido);
+console.log('AM:', emp.segundoApellido, emp.segundo_apellido);
+console.log('N:', emp.nombre);
+console.log('NC:', emp.nombreCompleto);
       let rfc = (emp.rfc ?? emp.RFC ?? '').trim();
       let curp = (emp.curp ?? emp.CURP ?? '').trim();
       let nombre = (emp.nombreCompleto ?? '').trim();
@@ -189,6 +195,8 @@ export class RegistroTerceroInstitucional {
         nombreEmpleado: nombre
       };
 
+      
+      this.empleadoActual = emp;
       this.dataSource.data = [row];
       this.totalElements = 1;
       this.resultado = [];
@@ -235,34 +243,25 @@ export class RegistroTerceroInstitucional {
   
       dialogRef.afterClosed().subscribe(result => {
         if (!result) return;
-
-          const tipoMovimientoTexto = result.tipoOrden === 1 ? 'ALTA' : result.tipoOrden === 2 ? 'BAJA' : '';
-
-          this.terceroService.registrarNp(result).subscribe({
-            next: () => {
-              const data = [...this.dataSource.data];
-                if (data.length > 0) {
-                  data[0] = {
-                    ...data[0],
-                    tipoMovimiento: tipoMovimientoTexto
-                  };
-                  this.dataSource.data = data;
-                }
-              this.dialog.open(PensionAlimenDialog, {
-                width: '500px',
-                disableClose: true,
-                data: {
-                  type: 'success',
-                  title: 'Éxito',
-                  message: 'Se guardó correctamente'
-                }
-              });
-            },
-            error: (err) => {
-              const msg = err?.error?.message ||  err?.error?.mensaje ||'Error al guardar';
-              this.showSnack(msg, 'Cerrar', 4000);
-            }
-          });
+        const req$ = row?.id ? this.terceroService.editarRegistroNp(row.id, result) : this.terceroService.registrarNp(result);
+        req$.subscribe({
+          next: () => {
+            this.buscarRegistrosNp(this.paginator?.pageIndex ?? 0, this.paginator?.pageSize ?? 50);
+            this.dialog.open(PensionAlimenDialog, {
+              width: '500px',
+              disableClose: true,
+              data: {
+                type: 'success',
+                title: 'Éxito',
+                message: row?.id ? 'Se actualizó correctamente' : 'Se guardó correctamente'
+              }
+            });
+          },
+          error: (err) => {
+            const msg = err?.error?.message || err?.error?.mensaje || 'Error al guardar';
+            this.showSnack(msg, 'Cerrar', 4000);
+          }
+        });
       });
   }
 
@@ -336,6 +335,7 @@ export class RegistroTerceroInstitucional {
       next: (res) => {
         this.totalElements = res.total ?? 0;
         const rows: NominaRow[] = (res.rows ?? []).map((r: any) => ({
+          id: r.id,
           rfc: r.rfc,
           nombreEmpleado: r.nombreTrabajador ?? r.nombre_empleado ?? '',
           tipoMovimiento: r.tipoOrden === 1 ? 'ALTA' : r.tipoOrden === 2 ? 'BAJA' : '',
@@ -346,6 +346,77 @@ export class RegistroTerceroInstitucional {
       error: () => this.showSnack('Error al consultar registros NP', 'Cerrar', 4000),
     });
   }
+
+  abrirAgregar(): void {
+  const emp = this.empleadoActual;
+  const conceptoSeleccionado = this.form.get('busqueda.concepto')?.value ?? null;
+
+  if (!emp) {
+    this.showSnack('Selecciona un empleado', 'Cerrar', 3000);
+    return;
+  }
+  if (!conceptoSeleccionado?.cve) {
+    this.showSnack('Selecciona un concepto', 'Cerrar', 3000);
+    return;
+  }
+
+  let rfc = String(emp.rfc ?? emp.RFC ?? '').trim();
+
+  if (!rfc) {
+    const empleadoStr = String(emp.empleado ?? '').trim();
+    const parts = empleadoStr.split(' - ').map(p => p.trim());
+    if (parts.length >= 1) rfc = parts[0] ?? '';
+  }
+  const curp = String(emp.curp ?? emp.CURP ?? '').trim();
+
+
+
+  const empleadoStr = String(emp.empleado ?? '').trim();
+const [rfcRaw, curpRaw, ...nombrePartsRaw] = empleadoStr.split(' - ').map(s => s.trim());
+
+
+const nombreCompleto = nombrePartsRaw.join(' - ').trim(); // por si el nombre trae " - "
+
+const p = nombreCompleto.split(' ').filter(Boolean);
+const apellidoPaterno = p[0] ?? '';
+const apellidoMaterno = p[1] ?? '';
+const nombres = p.slice(2).join(' ');
+  const dialogRef = this.dialog.open(DialogTerceroInstitucional, {
+    width: '1200px',
+    maxWidth: '92vw',
+    maxHeight: '90vh',
+    panelClass: 'terceros-dialog-panel',
+    autoFocus: false,
+    data: {
+      rfc,
+      curp,
+      apellidoPaterno,
+      apellidoMaterno,
+      nombres,
+      concepto: conceptoSeleccionado,
+      detalles: []
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    if (!result) return;
+
+    this.terceroService.registrarNp(result).subscribe({
+      next: () => {
+        this.buscarRegistrosNp(this.paginator?.pageIndex ?? 0, this.paginator?.pageSize ?? 50);
+        this.dialog.open(PensionAlimenDialog, {
+          width: '500px',
+          disableClose: true,
+          data: { type: 'success', title: 'Éxito', message: 'Se guardó correctamente' }
+        });
+      },
+      error: (err) => {
+        const msg = err?.error?.message || err?.error?.mensaje || 'Error al guardar';
+        this.showSnack(msg, 'Cerrar', 4000);
+      }
+    });
+  });
+}
 
 
   onPageChange(e: any): void {
