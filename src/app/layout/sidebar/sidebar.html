@@ -22,9 +22,7 @@
           <div class="collapse show" id="catalogos-collapse">
             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
               <li>
-                 <a
-                    routerLink="/empleados/list"
-                    class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                 <a routerLink="/home/empleados/list" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                      <i class="fa-solid fa-folder me-2"></i>
                      <span class="label">Empleado</span>
                   </a>
@@ -103,54 +101,42 @@
             <div class="collapse show" id="nomina-collapse">
               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                 <li>
-                  <a *ngIf="hasAnyRole([1, 2])"
-                      routerLink="nomina/calculo-nomina-ordinaria"
-                      class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <a *ngIf="hasAnyRole([1, 2])" routerLink="/home/nomina/calculo-nomina-ordinaria" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="fa-solid fa-calculator me-2"></i>
                     <span class="label">Cálculo nómina ordinaria</span>
                   </a>
                 </li>
 
                 <li>
-                  <a *ngIf="hasAnyRole([1, 2])"
-                    routerLink="nomina/ordinaria"
-                    class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <a *ngIf="hasAnyRole([1, 2])" routerLink="/home/nomina/ordinaria" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="fa-solid fa-list-check me-2"></i>
                     <span class="label">Consulta nómina ordinaria</span>
                   </a>
                 </li>
 
                  <li>
-                    <a *ngIf="hasAnyRole([1, 2])"
-                      routerLink="nomina/extraordinaria"
-                      class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                    <a *ngIf="hasAnyRole([1, 2])" routerLink="/home/nomina/extraordinaria" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                       <i class="fa-solid fa-star me-2"></i> 
                       <span class="label">Visualizar nómina extraordinaria</span>
                     </a>
                   </li>
 
                 <li>
-                  <a *ngIf="hasAnyRole([1, 2])"
-                    routerLink="nomina/aguinaldo"
-                    class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <a *ngIf="hasAnyRole([1, 2])" routerLink="/home/nomina/aguinaldo"  class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="fa-solid fa-gift me-2"></i> 
                     <span class="label">Calcular aguinaldo</span>
                   </a>
                 </li>
 
                 <li>
-                  <a *ngIf="hasAnyRole([1, 2])"
-                      routerLink="nomina/extraordinaria"
-                      class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                    <i class="fa-solid fa-arrow-trend-up me-2"></i>
+                  <a *ngIf="hasAnyRole([1, 2])" routerLink="/home/nomina/extraordinaria"  class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                    <i class="fa-solid fa-arrow-trend-up me-2"></i> 
                     <span class="label">Calcular incremento</span>
                   </a>
                 </li>
 
                 <li>
-                  <a *ngIf="hasAnyRole([1, 2])"
-                      routerLink="nomina/generar-producto"
-                      class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <a *ngIf="hasAnyRole([1, 2])" routerLink="/home/nomina/generar-producto" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="fa-solid fa-file-arrow-down me-2"></i>
                     <span class="label">Generar entregables</span>
                   </a>
@@ -174,8 +160,7 @@
           <div class="collapse show" id="pensiones-collapse">
              <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
               <li>
-                <a routerLink="pensiones/registro-alimenticia" routerLinkActive="active"  class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                  <i class="fa-solid fa-hand-holding-heart me-2"></i>
+                <a routerLink="/home/pensiones/registro-alimenticia" routerLinkActive="active"  class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                   <span class="label">Registro pension</span>
                 </a>
               </li>
@@ -200,10 +185,7 @@
             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
 
               <li>
-                <a
-                    routerLink="juicios/juicios-mercantiles"
-                    routerLinkActive="active" 
-                    class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                <a routerLink="/home/juicios/juicios-mercantiles"  routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                   <i class="fa-solid fa-gavel me-2"></i>
                   <span class="label">Registro juicios</span>
                 </a>
@@ -227,21 +209,21 @@
           <div class="collapse show" id="terceros-collapse">
             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
               <li>
-                <a routerLink="terceros/registro-terceros" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                <a routerLink="/home/terceros/registro-terceros" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                   <i class="fa-solid fa-user-plus me-2"></i>
                   <span class="label">Registro terceros</span>
                 </a>
               </li>
 
               <li>
-                <a routerLink="terceros/consulta-terceros" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                <a routerLink="/home/terceros/consulta-terceros" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                   <i class="fa-solid fa-address-book"></i>
                   <span class="label">Consulta terceros</span>
                 </a>
               </li>
 
               <li>
-                <a routerLink="terceros/registro-terceros-institucionales" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                <a routerLink="/home/terceros/registro-terceros-institucionales" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                   <i class="fa-solid fa-address-book"></i>
                   <span class="label">Registro terceros institucionales</span>
                 </a>
@@ -254,9 +236,7 @@
 
           <!-- Dashboard -->
           <li class="mb-1">
-            <a routerLink="/home"
-              routerLinkActive="active"
-              class="nav-link d-flex align-items-center text-decoration-none rounded">
+            <a routerLink="/home"  routerLinkActive="active"  class="nav-link d-flex align-items-center text-decoration-none rounded">
                <i class="fa-solid fa-gauge me-2"></i>
               <span class="label">Dashboard</span>
             </a>
@@ -265,8 +245,7 @@
 
            <!-- Dashboard -->
           <li class="mb-1">
-            <a (click)="logout()" 
-              class="nav-link d-flex align-items-center text-decoration-none rounded">
+            <a (click)="logout()" class="nav-link d-flex align-items-center text-decoration-none rounded">
               <i class="fas fa-sign-out-alt"></i>
                 <span class="label">Salir</span>
             </a>
