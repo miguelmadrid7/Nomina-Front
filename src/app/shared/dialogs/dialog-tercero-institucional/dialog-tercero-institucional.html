@@ -11,6 +11,14 @@
         <div class="section-divider"></div>
 
         <div class="form-grid">
+            <div class="nam-row span-3">
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>RFC*</mat-label>
+                    <mat-icon matPrefix>badge</mat-icon>
+                    <input matInput formControlName="rfc" class="uppercase-input">
+                </mat-form-field>
+            </div>
+
             <div class="name-row span-3">
                 <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
                     <mat-label>Apellido paterno*</mat-label>
@@ -29,12 +37,6 @@
                     <mat-icon matPrefix>person</mat-icon>
                     <input matInput formControlName="nombres" class="uppercase-input">
                 </mat-form-field>
-
-                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-                    <mat-label>RFC*</mat-label>
-                    <mat-icon matPrefix>badge</mat-icon>
-                    <input matInput formControlName="rfc" class="uppercase-input">
-                </mat-form-field>
             </div>
 
             <div class="orden-concepto-row">
@@ -46,7 +48,6 @@
                         </mat-select>
                 </mat-form-field>
 
-                
                 <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
                     <mat-label>Concepto seleccionado</mat-label>
                     <mat-icon matPrefix>info</mat-icon>

@@ -49,7 +49,13 @@
 /* Fila interna: 3 columnas para los 3 campos */
 .name-row {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px 16px; 
+}
+
+.nam-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 4px 16px; 
 }
 
