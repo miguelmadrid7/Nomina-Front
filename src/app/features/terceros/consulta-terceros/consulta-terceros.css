@@ -111,6 +111,11 @@
   text-align: center;
 }
 
+.table-global .mat-column-fechaRegistro {
+  width: 120px;
+  text-align: center;
+}
+
 
 .concepto-wide {
   width: 150px;
