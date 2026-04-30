@@ -74,9 +74,27 @@ export class RegistroTerceroInstitucional {
         searchText: [''],
         concepto: [null],
         tipoConcepto: [2],
+        qnaProceso: [null],
         }),
+
+      
       });
+      this.form.patchValue({
+        busqueda: { 
+          qnaProceso: this.getCurrentQna() 
+        }
+      }, { emitEvent: false });
       this.cargarConceptos();
+       this.form.get('busqueda.concepto')?.valueChanges
+        .subscribe((c) => {
+          if (!c?.cve) {
+            this.dataSource.data = [];
+            this.totalElements = 0;
+            return;
+          }
+        this.paginator?.firstPage?.();
+        this.buscarRegistrosNp(0, this.paginator?.pageSize ?? 50);
+      });
   }
 
   buscarEmpleado() {
@@ -296,6 +314,44 @@ export class RegistroTerceroInstitucional {
     return Array.from(map.values());
   }
 
+  private getCurrentQna(): number {
+    const now = new Date();
+    const anio = now.getFullYear();
+    const mes = now.getMonth() + 1;
+    const qnaDelMes = (now.getDate() <= 15) ? 1 : 2;
+    const qna = (mes - 1) * 2 + qnaDelMes;
+    return anio * 100 + qna;
+  }
+
+  buscarRegistrosNp(pageIndex: number = 0, pageSize: number = 50): void {
+    const conceptoObj = this.form.get('busqueda.concepto')?.value ?? null;
+    const concepto = conceptoObj?.cve ? String(conceptoObj.cve).trim() : null;
+    const qnaProceso = this.form.get('busqueda.qnaProceso')?.value ?? null; 
+    this.terceroService.obtenerRegistrosNp({
+      qnaProceso,
+      concepto,
+      page: pageIndex,
+      size: pageSize,
+    }).subscribe({
+      next: (res) => {
+        this.totalElements = res.total ?? 0;
+        const rows: NominaRow[] = (res.rows ?? []).map((r: any) => ({
+          rfc: r.rfc,
+          nombreEmpleado: r.nombreTrabajador ?? r.nombre_empleado ?? '',
+          tipoMovimiento: r.tipoOrden === 1 ? 'ALTA' : r.tipoOrden === 2 ? 'BAJA' : '',
+        } as any));
+        this.dataSource.data = rows;
+        this.cd.markForCheck();
+      },
+      error: () => this.showSnack('Error al consultar registros NP', 'Cerrar', 4000),
+    });
+  }
+
+
+  onPageChange(e: any): void {
+    this.buscarRegistrosNp(e.pageIndex, e.pageSize);
+  }
+
   clearFilters(): void {
     this.form.patchValue({
       busqueda: {
@@ -304,7 +360,8 @@ export class RegistroTerceroInstitucional {
         rfc: '',
         primerApellido: '',
         segundoApellido: '',
-        nombre: ''
+        nombre: '',
+        concepto: null,
       },
       empleado: {
         rfc: '',
