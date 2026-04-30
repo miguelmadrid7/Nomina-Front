@@ -258,7 +258,6 @@ export class Terceros {
     const apellidoMaterno = nombreCompleto[1] || '';
     const nombres = nombreCompleto.slice(2).join(' ') || '';
     const conceptoSeleccionado = this.form.get('busqueda.concepto')?.value;
-    console.log('conceptoSeleccionado:', conceptoSeleccionado);
     const detalles = (row.detalles && row.detalles.length)
       ? row.detalles
       : (this.dataSource.data as NominaRow[])
