@@ -44,7 +44,7 @@ export class RegistroTerceroInstitucional {
   cargandoBusqueda = false;
   totalElements = 0;
   conceptosFiltrados: any[] = [];
-  displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'tipoMovimiento', 'concepto', 'acciones'];
+  displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'tipoMovimiento', 'concepto', 'qnaProceso', 'acciones'];
   readonly conceptosPermitidos = ['5l', '6l', '21'];
   empleadoActual: EmpleadoItem | null = null;
   dataSource = new MatTableDataSource<NominaRow>([]);
@@ -335,6 +335,7 @@ export class RegistroTerceroInstitucional {
           nombreEmpleado: r.nombreTrabajador ?? r.nombre_empleado ?? '',
           tipoMovimiento: r.tipoOrden === 1 ? 'ALTA' : r.tipoOrden === 2 ? 'BAJA' : '',
           concepto: r.conceptoDescuento ?? r.concepto_descuento ?? r.concepto ?? '',
+          qnaProceso: r.qnaProceso ?? r.qna_proceso ?? null,
         } as any));
         this.dataSource.data = rows;
         this.cd.markForCheck();
