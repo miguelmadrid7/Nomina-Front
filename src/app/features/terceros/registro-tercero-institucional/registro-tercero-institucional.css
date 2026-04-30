@@ -148,6 +148,11 @@
     padding: 10px 8px !important;
 }
 
+.table-global .mat-column-concepto {
+  width: 120px;
+  text-align: center;
+}
+
 .table-global .mat-column-tipoMovimiento {
   width: 120px;
   text-align: center;

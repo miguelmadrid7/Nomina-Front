@@ -75,8 +75,13 @@
                                 </ng-container>
 
                                 <ng-container matColumnDef="tipoMovimiento">
-                                    <th mat-header-cell *matHeaderCellDef class="header-with-select"> Tipo movimiento </th>
+                                    <th mat-header-cell *matHeaderCellDef class="header-with-select"> TIPO MOVIMIENTO </th>
                                     <td mat-cell *matCellDef="let e">{{ e.tipoMovimiento }}</td>
+                                </ng-container>
+
+                                 <ng-container matColumnDef="concepto">
+                                    <th mat-header-cell *matHeaderCellDef class="header-with-select"> CONCEPTO </th>
+                                    <td mat-cell *matCellDef="let e">{{ e.concepto }}</td>
                                 </ng-container>
 
                                 <ng-container matColumnDef="acciones">

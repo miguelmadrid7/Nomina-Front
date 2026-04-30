@@ -44,7 +44,7 @@ export class RegistroTerceroInstitucional {
   cargandoBusqueda = false;
   totalElements = 0;
   conceptosFiltrados: any[] = [];
-  displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'tipoMovimiento', 'acciones'];
+  displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'tipoMovimiento', 'concepto', 'acciones'];
   readonly conceptosPermitidos = ['5l', '6l', '21'];
   empleadoActual: EmpleadoItem | null = null;
   dataSource = new MatTableDataSource<NominaRow>([]);
@@ -163,11 +163,6 @@ export class RegistroTerceroInstitucional {
   }
 
   empleadoSeleccionado(emp: EmpleadoItem): void {
-    console.log('EMP SELECCIONADO:', emp);
-console.log('AP:', emp.primerApellido, emp.primer_apellido);
-console.log('AM:', emp.segundoApellido, emp.segundo_apellido);
-console.log('N:', emp.nombre);
-console.log('NC:', emp.nombreCompleto);
       let rfc = (emp.rfc ?? emp.RFC ?? '').trim();
       let curp = (emp.curp ?? emp.CURP ?? '').trim();
       let nombre = (emp.nombreCompleto ?? '').trim();
@@ -339,6 +334,7 @@ console.log('NC:', emp.nombreCompleto);
           rfc: r.rfc,
           nombreEmpleado: r.nombreTrabajador ?? r.nombre_empleado ?? '',
           tipoMovimiento: r.tipoOrden === 1 ? 'ALTA' : r.tipoOrden === 2 ? 'BAJA' : '',
+          concepto: r.conceptoDescuento ?? r.concepto_descuento ?? r.concepto ?? '',
         } as any));
         this.dataSource.data = rows;
         this.cd.markForCheck();
