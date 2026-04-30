@@ -366,14 +366,26 @@ export class RegistroTerceroInstitucional {
       if (parts.length >= 1) rfc = parts[0] ?? '';
     }
 
+    let apellidoPaterno = String(emp.primerApellido ?? emp.primer_apellido ?? '').trim();
+    let apellidoMaterno = String(emp.segundoApellido ?? emp.segundo_apellido ?? '').trim();
+    let nombres = String(emp.nombre ?? '').trim();
+
+    if (!apellidoPaterno && !apellidoMaterno && !nombres) {
+      const empleadoStr = String(emp.empleado ?? '').trim();
+      const parts = empleadoStr.split(' - ').map(p => p.trim());
+      const nombreCompleto = parts.slice(2).join(' - ').trim();
+      const p = nombreCompleto.split(' ').filter(Boolean);
+      apellidoPaterno = p[0] ?? '';
+      apellidoMaterno = p[1] ?? '';
+      nombres = p.slice(2).join(' ');
+    }
+
     const curp = String(emp.curp ?? emp.CURP ?? '').trim();
     const empleadoStr = String(emp.empleado ?? '').trim();
     const [ ...nombrePartsRaw] = empleadoStr.split(' - ').map(s => s.trim());
     const nombreCompleto = nombrePartsRaw.join(' - ').trim();
     const p = nombreCompleto.split(' ').filter(Boolean);
-    const apellidoPaterno = p[0] ?? '';
-    const apellidoMaterno = p[1] ?? '';
-    const nombres = p.slice(2).join(' ');
+   
       const dialogRef = this.dialog.open(DialogTerceroInstitucional, {
         width: '1200px',
         maxWidth: '92vw',
