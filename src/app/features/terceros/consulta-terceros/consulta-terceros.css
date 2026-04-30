@@ -111,6 +111,11 @@
   text-align: center;
 }
 
+.table-global .mat-column-validar {
+  width: 100px;
+  text-align: center;
+}
+
 .table-global .mat-column-fechaRegistro {
   width: 120px;
   text-align: center;

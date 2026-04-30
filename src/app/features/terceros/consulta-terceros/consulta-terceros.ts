@@ -12,6 +12,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { finalize } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-consulta-terceros',
@@ -24,7 +25,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatIconModule,
     MatTableModule,
     MatPaginatorModule,
-    MatRadioModule
+    MatRadioModule,
+    MatCheckboxModule
   ],
   templateUrl: './consulta-terceros.html',
   styleUrl: './consulta-terceros.css'
@@ -34,7 +36,7 @@ export class ConsultaTerceros {
   @ViewChild(MatPaginator) paginator?: MatPaginator;
 
   dataSource = new MatTableDataSource<NominaRow>([]);
-  displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'numeroOrden', 'tipoOrden', 'importeMensual', 'concepto', 'qnaProceso', 'estatus', 'fechaRegistro'];
+  displayedColumns: string[] = [ 'validar', 'rfc', 'nombreCompleto', 'numeroOrden', 'tipoOrden', 'importeMensual', 'concepto', 'qnaProceso', 'estatus', 'fechaRegistro'];
 
   form!: FormGroup;
   filtrosTabla!: FormGroup;
@@ -305,6 +307,28 @@ export class ConsultaTerceros {
     this.totalElements = 0;
     this.conteoPorConcepto.clear();
     this.cd.detectChanges();
+  }
+
+  isAllChecked(): boolean {
+    const rows = this.dataSource.data ?? [];
+    return rows.length > 0 && rows.every(r => !!(r as any).validado);
+  }
+
+  isSomeChecked(): boolean {
+    const rows = this.dataSource.data ?? [];
+    const checked = rows.filter(r => !!(r as any).validado).length;
+    return checked > 0 && checked < rows.length;
+  }
+
+  toggleAll(checked: boolean): void {
+    const rows = this.dataSource.data ?? [];
+    rows.forEach(r => (r as any).validado = checked);
+    this.dataSource.data = [...rows]; // fuerza refresh de tabla
+  }
+
+  toggleRow(row: any, checked: boolean): void {
+    row.validado = checked;
+    this.dataSource.data = [...this.dataSource.data]; // fuerza refresh
   }
 
   onPage(e: PageEvent): void {
