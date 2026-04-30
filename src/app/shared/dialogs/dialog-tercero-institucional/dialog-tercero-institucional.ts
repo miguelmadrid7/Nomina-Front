@@ -85,8 +85,15 @@ export class DialogTerceroInstitucional {
     const v = this.form.getRawValue();
     const conceptoObj = v.concepto;
     const qnaProceso = Number(v.qnaDesde);
+    const nombreTrabajador = [
+      v.apellidoPaterno,
+      v.apellidoMaterno,
+      v.nombres
+    ].map(x => (x ?? '').trim()).filter(Boolean).join(' ');
+
     const payload: any = {
       rfc: v.rfc,
+      nombreTrabajador,
       apellidoPaterno: v.apellidoPaterno,
       apellidoMaterno: v.apellidoMaterno,
       nombres: v.nombres,
