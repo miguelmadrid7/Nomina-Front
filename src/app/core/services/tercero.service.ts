@@ -69,21 +69,24 @@ export class TerceroService {
         );
     }
 
-  obtenerConteoPorConcepto(qnaProceso: number): Observable<Array<{ cve: string; total: number }>> {
-    const params = new HttpParams().set('qnaProceso', String(qnaProceso));
+    obtenerConteoPorConcepto(qnaProceso: number): Observable<Array<{ cve: string; total: number }>> {
+      const params = new HttpParams().set('qnaProceso', String(qnaProceso));
+      return this.http
+        .get<ApiResponse<any>>(`${this.base}/nom-emp-pza-cpto/conteo-por-concepto`, { params })
+        .pipe(
+          map(res => res?.data ?? []),
+          map((rows: any[]) =>
+            rows.map(r => ({
+              cve: String(r?.cve ?? '').trim(),
+              total: Number(r?.total ?? 0),
+            }))
+          )
+        );
+    }
 
-    return this.http
-      .get<ApiResponse<any>>(`${this.base}/nom-emp-pza-cpto/conteo-por-concepto`, { params })
-      .pipe(
-        map(res => res?.data ?? []),
-        map((rows: any[]) =>
-          rows.map(r => ({
-            cve: String(r?.cve ?? '').trim(),
-            total: Number(r?.total ?? 0),
-          }))
-        )
-      );
-  }
+    editarRegistroNp(id: number, payload: any) {
+      return this.http.put<ApiResponse<any>>(`${this.base}/nom-emp-pza-cpto/registro-np/${id}`, payload);
+    }
 
 
 }
