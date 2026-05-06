@@ -36,7 +36,7 @@ export class ConsultaTerceros {
   @ViewChild(MatPaginator) paginator?: MatPaginator;
 
   dataSource = new MatTableDataSource<NominaRow>([]);
-  displayedColumns: string[] = [ 'validar', 'rfc', 'nombreCompleto', 'numeroOrden', 'tipoOrden', 'importeMensual', 'concepto', 'qnaProceso', 'estatus', 'fechaRegistro'];
+  displayedColumns: string[] = [ 'validar', 'rfc', 'curp', 'nombreCompleto', 'numeroOrden', 'tipoOrden', 'importeMensual', 'concepto', 'qnaProceso', 'estatus', 'fechaRegistro'];
 
   form!: FormGroup;
   filtrosTabla!: FormGroup;

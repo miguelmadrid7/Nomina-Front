@@ -74,6 +74,11 @@
                                 <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
                             </ng-container>
 
+                             <ng-container matColumnDef="curp">
+                                <th mat-header-cell *matHeaderCellDef> CURP </th>
+                                <td mat-cell *matCellDef="let e">{{ e.curp }}</td>
+                            </ng-container>
+
                             <ng-container matColumnDef="nombreCompleto">
                                 <th mat-header-cell *matHeaderCellDef>NOMBRE COMPLETO</th>
                                 <td mat-cell *matCellDef="let e">{{ e.nombreTrabajador  }}</td>
