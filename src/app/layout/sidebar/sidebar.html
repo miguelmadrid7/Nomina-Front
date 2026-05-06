@@ -7,7 +7,7 @@
   </a>
 
   <ul class="list-unstyled ps-0">
-     <li class="mb-1">
+      <li class="mb-1"  *ngIf="hasAnyRole([2])">
         <button
           class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
           data-bs-toggle="collapse"
@@ -45,8 +45,7 @@
           </div>
       </li>
 
-
-       <li class="mb-1">
+      <li class="mb-1" *ngIf="hasAnyRole([2])">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -82,10 +81,10 @@
                   </li>
               </ul>
             </div>
-        </li>
+      </li>
 
-        <!-- Nómina -->
-        <li class="mb-1">
+      <!-- Nómina -->
+      <li class="mb-1">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -143,9 +142,9 @@
                 </li>
               </ul>
             </div>
-        </li>
+      </li>
 
-        <li class="mb-1">
+      <li class="mb-1"  *ngIf="hasAnyRole([2])">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -167,9 +166,9 @@
 
              </ul>
           </div>
-        </li>
+      </li>
 
-        <li class="mb-1">
+      <li class="mb-1" *ngIf="hasAnyRole([2])">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -192,9 +191,9 @@
               </li>
             </ul>
           </div>
-        </li>
+      </li>
 
-        <li class="mb-1">
+      <li class="mb-1">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -230,26 +229,23 @@
               </li>
             </ul>
           </div>
-        </li>
+      </li>
 
-
-
-          <!-- Dashboard -->
-          <li class="mb-1">
+      <!-- Dashboard -->
+      <li class="mb-1">
             <a routerLink="/home"  routerLinkActive="active"  class="nav-link d-flex align-items-center text-decoration-none rounded">
                <i class="fa-solid fa-gauge me-2"></i>
               <span class="label">Dashboard</span>
             </a>
-          </li>
+      </li>
 
-
-           <!-- Dashboard -->
-          <li class="mb-1">
+      <!-- Dashboard -->
+      <li class="mb-1">
             <a (click)="logout()" class="nav-link d-flex align-items-center text-decoration-none rounded">
               <i class="fas fa-sign-out-alt"></i>
                 <span class="label">Salir</span>
             </a>
-          </li>
+      </li>
   </ul>
 
   <!-- <div class="dropdown position-fixed bottom-0 mb-3">
