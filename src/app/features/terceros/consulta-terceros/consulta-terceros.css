@@ -69,6 +69,20 @@
     transform: translateY(-1px);
 }
 
+.btn-success {
+  background: transparent;
+  color: #2e7d32;
+  border-color: #2e7d32;
+  min-width: 150px;
+}
+
+.btn-success:hover {
+  background: #2e7d32;
+  color: #ffffff;
+  border-color: #2e7d32;
+  transform: translateY(-1px);
+}
+
 /* TABLA GLOBAL */
 .table-global {
     width: 100%;
