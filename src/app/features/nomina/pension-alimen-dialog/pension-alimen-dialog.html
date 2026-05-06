@@ -7,10 +7,11 @@
 </div>
 
 <div mat-dialog-content class="dialog-content">
-  <h2 class="dialog-title">{{ data.title || 'Éxito' }}</h2>
   {{ data.message || 'Se guardó correctamente tus datos.' }}
 </div>
 
-<div mat-dialog-actions align="end" class="dialog-actions">
-  <button mat-flat-button class="btn" (click)="close()">Aceptar</button>
+<div class="section-divider"></div>
+
+<div mat-dialog-actions align="center" class="dialog-actions">
+  <button class="btn btn-success" (click)="close()">Aceptar</button>
 </div>
