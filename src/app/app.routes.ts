@@ -91,6 +91,13 @@ export const routes: Routes = [
         path: 'terceros',
         data: { breadcrumb: 'Terceros' },
         children: [
+           {    
+            path: 'gestion-terceros',
+            loadComponent: () =>
+              import('./features/terceros/gestion-terceros/gestion-terceros')
+                .then(m => m.GestionTerceros),
+            data: { roles: [1], breadcrumb: 'Gestion terceros' }
+          },
           {    
             path: 'registro-terceros',
             loadComponent: () =>

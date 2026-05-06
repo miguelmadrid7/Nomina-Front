@@ -7,6 +7,14 @@
   </a>
 
   <ul class="list-unstyled ps-0">
+      <!-- Dashboard -->
+      <li class="mb-1">
+            <a routerLink="/home"  routerLinkActive="active"  class="nav-link d-flex align-items-center text-decoration-none rounded">
+               <i class="fa-solid fa-gauge me-2"></i>
+              <span class="label">Dashboard</span>
+            </a>
+      </li>
+      
       <li class="mb-1"  *ngIf="hasAnyRole([2])">
         <button
           class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
@@ -84,7 +92,7 @@
       </li>
 
       <!-- Nómina -->
-      <li class="mb-1">
+      <li class="mb-1"  *ngIf="hasAnyRole([2])">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -144,6 +152,7 @@
             </div>
       </li>
 
+      <!-- Pension alimenticia -->
       <li class="mb-1"  *ngIf="hasAnyRole([2])">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
@@ -168,6 +177,7 @@
           </div>
       </li>
 
+      <!-- Juicio mercantil -->
       <li class="mb-1" *ngIf="hasAnyRole([2])">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
@@ -193,7 +203,8 @@
           </div>
       </li>
 
-      <li class="mb-1">
+      <!-- Terceros -->
+      <li class="mb-1" *ngIf="hasAnyRole([1, 2])">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -207,6 +218,20 @@
 
           <div class="collapse show" id="terceros-collapse">
             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+               <li>
+                <a routerLink="/home/terceros/gestion-terceros" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <i class="fa-solid fa-user-plus me-2"></i>
+                  <span class="label">Gestion terceros</span>
+                </a>
+              </li>
+
+               <li>
+                <a routerLink="/home/terceros/registro-terceros-institucionales" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <i class="fa-solid fa-address-book"></i>
+                  <span class="label">Registro terceros institucionales</span>
+                </a>
+              </li>
+
               <li>
                 <a routerLink="/home/terceros/registro-terceros" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                   <i class="fa-solid fa-user-plus me-2"></i>
@@ -221,25 +246,11 @@
                 </a>
               </li>
 
-              <li>
-                <a routerLink="/home/terceros/registro-terceros-institucionales" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                  <i class="fa-solid fa-address-book"></i>
-                  <span class="label">Registro terceros institucionales</span>
-                </a>
-              </li>
             </ul>
           </div>
       </li>
 
-      <!-- Dashboard -->
-      <li class="mb-1">
-            <a routerLink="/home"  routerLinkActive="active"  class="nav-link d-flex align-items-center text-decoration-none rounded">
-               <i class="fa-solid fa-gauge me-2"></i>
-              <span class="label">Dashboard</span>
-            </a>
-      </li>
-
-      <!-- Dashboard -->
+      <!-- Salida -->
       <li class="mb-1">
             <a (click)="logout()" class="nav-link d-flex align-items-center text-decoration-none rounded">
               <i class="fas fa-sign-out-alt"></i>
