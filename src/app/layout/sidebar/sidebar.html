@@ -23,7 +23,7 @@
         </a>
       </li>
       
-      <li class="mb-1"  *ngIf="hasAnyRole([2])">
+      <li class="mb-1">
         <button
           class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
           data-bs-toggle="collapse"
@@ -61,7 +61,7 @@
           </div>
       </li>
 
-      <li class="mb-1" *ngIf="hasAnyRole([2])">
+      <li class="mb-1">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -100,7 +100,7 @@
       </li>
 
       <!-- Nómina -->
-      <li class="mb-1"  *ngIf="hasAnyRole([2])">
+      <li class="mb-1">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -116,42 +116,42 @@
             <div class="collapse show" id="nomina-collapse">
               <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                 <li>
-                  <a *ngIf="hasAnyRole([1, 2])" routerLink="/home/nomina/calculo-nomina-ordinaria" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <a routerLink="/home/nomina/calculo-nomina-ordinaria" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="fa-solid fa-calculator me-2"></i>
                     <span class="label">Cálculo nómina ordinaria</span>
                   </a>
                 </li>
 
                 <li>
-                  <a *ngIf="hasAnyRole([1, 2])" routerLink="/home/nomina/ordinaria" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <a  routerLink="/home/nomina/ordinaria" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="fa-solid fa-list-check me-2"></i>
                     <span class="label">Consulta nómina ordinaria</span>
                   </a>
                 </li>
 
                  <li>
-                    <a *ngIf="hasAnyRole([1, 2])" routerLink="/home/nomina/extraordinaria" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                    <a routerLink="/home/nomina/extraordinaria" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                       <i class="fa-solid fa-star me-2"></i> 
                       <span class="label">Visualizar nómina extraordinaria</span>
                     </a>
                   </li>
 
                 <li>
-                  <a *ngIf="hasAnyRole([1, 2])" routerLink="/home/nomina/aguinaldo"  class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <a routerLink="/home/nomina/aguinaldo"  class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="fa-solid fa-gift me-2"></i> 
                     <span class="label">Calcular aguinaldo</span>
                   </a>
                 </li>
 
                 <li>
-                  <a *ngIf="hasAnyRole([1, 2])" routerLink="/home/nomina/extraordinaria"  class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <a routerLink="/home/nomina/extraordinaria"  class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="fa-solid fa-arrow-trend-up me-2"></i> 
                     <span class="label">Calcular incremento</span>
                   </a>
                 </li>
 
                 <li>
-                  <a *ngIf="hasAnyRole([1, 2])" routerLink="/home/nomina/generar-producto" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                  <a routerLink="/home/nomina/generar-producto" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                     <i class="fa-solid fa-file-arrow-down me-2"></i>
                     <span class="label">Generar entregables</span>
                   </a>
@@ -161,7 +161,7 @@
       </li>
 
       <!-- Pension alimenticia -->
-      <li class="mb-1"  *ngIf="hasAnyRole([2])">
+      <li class="mb-1">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -186,7 +186,7 @@
       </li>
 
       <!-- Juicio mercantil -->
-      <li class="mb-1" *ngIf="hasAnyRole([2])">
+      <li class="mb-1">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -212,7 +212,7 @@
       </li>
 
       <!-- Terceros -->
-      <li class="mb-1" *ngIf="hasAnyRole([1, 2])">
+      <li class="mb-1">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
