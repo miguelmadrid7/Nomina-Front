@@ -19,6 +19,7 @@ import { UserService } from '../../../core/services/user.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UsuarioDialog } from '../../../shared/dialogs/usuario-dialog/usuario-dialog';
 import { PensionAlimenDialog } from '../../nomina/pension-alimen-dialog/pension-alimen-dialog';
+import { AltaUsuarioDialog } from '../../../shared/dialogs/alta-usuario-dialog/alta-usuario-dialog';
 
 @Component({
   selector: 'app-gestion-usuarios',
@@ -81,6 +82,47 @@ export class GestionUsuarios {
     });
     this.loadRoles();
     this.loadEmpleados();
+  }
+
+  openAltaUsuarioDialog(): void {
+    const ref = this.dialog.open(AltaUsuarioDialog, {
+      width: '900px',
+      maxWidth: '95vw',
+      autoFocus: false,
+      data: {
+        roles: this.roles,
+      }
+    });
+
+    ref.afterClosed().subscribe(payload => {
+      if (!payload) return;
+
+      this.loading = true;
+      this.userService.createUser(payload).subscribe({
+        next: () => {
+          this.loading = false;
+          this.loadEmpleados();
+          this.dialog.open(PensionAlimenDialog, {
+            width: '420px',
+            data: {
+              type: 'success',
+              message: 'Se creó correctamente el usuario.'
+            }
+          });
+        },
+        error: (err) => {
+          this.loading = false;
+          this.dialog.open(PensionAlimenDialog, {
+            width: '420px',
+            data: {
+              type: 'error',
+              message: 'Ocurrió un error al crear el usuario.'
+            }
+          });
+          console.error(err);
+        }
+      });
+    });
   }
 
   ngAfterViewInit() {
@@ -263,7 +305,7 @@ export class GestionUsuarios {
     const request: AssignRoleRequest = { userId, roleIds };
     this.loading = true;
 
-    this.userService.getRoles().subscribe({
+    this.userService.assignRoles(request.userId, request.roleIds).subscribe({
       next: () => {
         this.loading = false;
 
