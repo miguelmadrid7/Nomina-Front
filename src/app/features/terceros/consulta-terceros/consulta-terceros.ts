@@ -185,6 +185,67 @@ export class ConsultaTerceros {
     return Number(anio) * 100 + Number(quincena);
   }
 
+  private downloadBlob(blob: Blob, filename: string): void {
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  }
+
+  descargarExcel(): void {
+    const concepto: string | null = this.form.get('busqueda.concepto')?.value ?? null;
+    const qnaProceso = this.buildQnaProceso();
+
+    if (!concepto) {
+      this.snackBar.open('Selecciona un concepto', 'Cerrar', { duration: 4000 });
+      return;
+    }
+    if (!qnaProceso) {
+      this.snackBar.open('Selecciona año y quincena', 'Cerrar', { duration: 4000 });
+      return;
+    }
+
+    this.loaderService.show();
+    this.terceroService.descargarRegistrosNpExcel(qnaProceso, concepto)
+      .pipe(finalize(() => this.loaderService.hide()))
+      .subscribe({
+        next: (blob) => this.downloadBlob(blob, `registros_np_${concepto}_${qnaProceso}.xlsx`),
+        error: (err) => {
+          const msg = err?.error?.message || err?.message || 'Error al descargar Excel';
+          this.snackBar.open(msg, 'Cerrar', { duration: 4000 });
+        }
+      });
+  }
+
+  descargarPdf(): void {
+    const concepto: string | null = this.form.get('busqueda.concepto')?.value ?? null;
+    const qnaProceso = this.buildQnaProceso();
+
+    if (!concepto) {
+      this.snackBar.open('Selecciona un concepto', 'Cerrar', { duration: 4000 });
+      return;
+    }
+    if (!qnaProceso) {
+      this.snackBar.open('Selecciona año y quincena', 'Cerrar', { duration: 4000 });
+      return;
+    }
+
+    this.loaderService.show();
+    this.terceroService.descargarRegistrosNpPdf(qnaProceso, concepto)
+      .pipe(finalize(() => this.loaderService.hide()))
+      .subscribe({
+        next: (blob) => this.downloadBlob(blob, `registros_np_${concepto}_${qnaProceso}.pdf`),
+        error: (err) => {
+          const msg = err?.error?.message || err?.message || 'Error al descargar PDF';
+          this.snackBar.open(msg, 'Cerrar', { duration: 4000 });
+        }
+      });
+  }
+
   private loadConteos(): void {
   const qnaProceso = this.buildQnaProceso();
 
