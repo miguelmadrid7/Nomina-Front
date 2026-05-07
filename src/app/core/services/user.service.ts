@@ -1,5 +1,5 @@
 import { Injectable  } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable, map } from 'rxjs';
 import { ApiResponse } from '../../models/api-Response.model';
@@ -17,5 +17,26 @@ export class UserService {
 
     getRoles(): Observable<Role[]> {
       return this.http.get<ApiResponse<Role[]>>(`${this.base}/roles`).pipe(map(res => res.data ?? []));
+    }
+
+    createUser(payload: {
+      srl_emp: number;
+      password: string;
+      user: string;
+      area?: string | null;
+      task?: string | null;
+      roles: number[];
+      extras?: number[];
+      principal?: string | null;
+      organizationId?: number | null;
+      active?: boolean | null;
+      notifications?: number[];
+    }): Observable<any> {
+      return this.http.post<ApiResponse<any>>(`${this.base}/users`, payload);
+    }
+
+    assignRoles(userId: number, roleIds: number[]): Observable<any> {
+      const headers = new HttpHeaders({ userId: String(userId) });
+      return this.http.post<ApiResponse<any>>(`${this.base}/roles/roleByUser`, roleIds, { headers });
     }
 }
