@@ -8,3 +8,13 @@ export interface EmpleadoItem {
   empleado?: string;
   nombreCompleto?: string;
 }
+
+export interface Role {
+  id: number;
+  name: string;
+}
+
+export interface AssignRoleRequest {
+  userId: number;
+  roleIds: number[];
+}
