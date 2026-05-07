@@ -12,6 +12,7 @@ import { qnaMinimaValidator, qnaRangoValidator } from '../../validators/validaci
 import flatpickr from 'flatpickr';
 import { Spanish } from 'flatpickr/dist/l10n/es';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
+import { TerceroService } from '../../../core/services/tercero.service';
 
 @Component({
   selector: 'app-terceros-dialog',
@@ -27,7 +28,7 @@ import { UppercaseDirective } from "../../../shared/directives/upperCase.directi
     MatIconModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    UppercaseDirective     
+    UppercaseDirective
   ],
   templateUrl: './terceros-dialog.html',
   styleUrl: './terceros-dialog.css'
@@ -39,29 +40,38 @@ export class TercerosDialog  {
   tipoOrdenOptions = [{ label: 'Alta', value: 1 }, { label: 'Pendiente', value: 2 }, { label: 'Aprobado', value: 3 }];
   esAltaFlag = false;
 
-  constructor(private fb: FormBuilder, private ref: MatDialogRef<TercerosDialog>, @Inject(MAT_DIALOG_DATA) public data: any) {}
+  constructor(
+    private fb: FormBuilder,
+    private ref: MatDialogRef<TercerosDialog>,
+    private terceroService: TerceroService,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {}
 
   ngOnInit(): void {
+    if (!this.data) {
+      this.ref.close();
+      return;
+    }
+
     const currentQna = this.getCurrentQna();
     const minQna = this.nextQna(currentQna.aaaaqq).aaaaqq;
-   
 
 
     this.form = this.fb.group({
-      rfc: [this.data.rfc],
-      curp: [this.data.curp],
-      apellidoPaterno: [this.data.apellidoPaterno],
-      apellidoMaterno: [this.data.apellidoMaterno],
-      nombres: [this.data.nombres],
-      numeroDocumento: [this.data.numeroDocumento],
-      tipoOrden: [this.mapTipoOrdenFromData(this.data.tipoOrden)],
-      importeMensual: [this.data.importeMensual],
+      rfc: [this.data?.rfc ?? ''],
+      curp: [this.data?.curp ?? ''],
+      apellidoPaterno: [this.data?.apellidoPaterno ?? ''],
+      apellidoMaterno: [this.data?.apellidoMaterno ?? ''],
+      nombres: [this.data?.nombres ?? ''],
+      numeroDocumento: [this.data?.numeroDocumento ?? null],
+      tipoOrden: [this.mapTipoOrdenFromData(this.data?.tipoOrden)],
+      importeMensual: [this.data?.importeMensual ?? null],
       concepto: [this.data.concepto ?? null],
       qnaProceso: [this.data.qnaProceso ?? null],
       qnaDesde: [currentQna.aaaaqq],
       qnaHasta: [''],
-      estatus: [this.data.estatus],
-      fechaRegistro: [{ value: this.data.fechaRegistro || new Date(), disabled: true }],
+      estatus: [this.data?.estatus ?? null],
+      fechaRegistro: [{ value: this.data?.fechaRegistro || new Date(), disabled: true }],
     },
     {
       validators: [
@@ -69,6 +79,24 @@ export class TercerosDialog  {
         qnaRangoValidator()
       ]
     });
+
+    const rfc = this.form.get('rfc')?.value;
+    const concepto = this.form.get('concepto')?.value;
+    const qnaProceso = this.form.get('qnaProceso')?.value;
+
+    if (rfc && concepto) {
+      this.terceroService.getImporteMensualReal(rfc, concepto, qnaProceso).subscribe({
+        next: (data) => {
+          const importe = Number(data?.importeMensual);
+          if (!Number.isNaN(importe)) {
+            queueMicrotask(() => this.form.get('importeMensual')?.setValue(importe));
+          }
+        },
+        error: () => {
+          // sin-op: mantener el valor original
+        }
+      });
+    }
 
     this.form.get('tipoOrden')?.valueChanges.subscribe((valor) => {
      this.esAltaFlag = valor === 1;
