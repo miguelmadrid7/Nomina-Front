@@ -1,0 +1,112 @@
+<div class="dialog-shell">
+    <div class="dialog-header dlg-bar">
+        <button mat-icon-button class="dialog-close" (click)="cerrar()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
+         <div class="dlg-bar-title">Detalle de usuario</div>
+
+			<div class="top-info-grid">
+                    <div class="info-field">
+                        <mat-icon>person</mat-icon>
+                            <div class="info-content">
+                                <span class="info-label">ID</span>
+                                <span>{{ form.get('id')?.value || '—' }}</span>
+                            </div>
+                    </div>
+
+                <div class="info-field">
+                    <mat-icon>badge</mat-icon>
+                    <div class="info-content">
+                        <span class="info-label">catEmpleadoId</span>
+                        <span>{{ form.get('catEmpleadoId')?.value || '—' }}</span>
+                    </div>
+                </div>
+			</div>
+
+        <div class="section-divider"></div>
+
+        <div class="form-grid">
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>Usuario</mat-label>
+                    <mat-icon matPrefix>badge</mat-icon>
+                    <input matInput formControlName="username" class="uppercase-input">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>Email</mat-label>
+                    <mat-icon matPrefix>badge</mat-icon>
+                        <input matInput formControlName="email" class="uppercase-input">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>Area</mat-label>
+                    <mat-icon matPrefix>badge</mat-icon>
+                        <input matInput formControlName="area" class="uppercase-input">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>Task</mat-label>
+                    <mat-icon matPrefix>badge</mat-icon>
+                        <input matInput formControlName="task" class="uppercase-input">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>Active</mat-label>
+                    <mat-icon matPrefix>badge</mat-icon>
+                        <input matInput formControlName="active" class="uppercase-input">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>Deleted</mat-label>
+                    <mat-icon matPrefix>badge</mat-icon>
+                        <input matInput formControlName="deleted" class="uppercase-input">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>Verified</mat-label>
+                    <mat-icon matPrefix>badge</mat-icon>
+                        <input matInput formControlName="isVerified" class="uppercase-input">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>Has password</mat-label>
+                    <mat-icon matPrefix>badge</mat-icon>
+                        <input matInput formControlName="isPassword" class="uppercase-input">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>Principal</mat-label>
+                    <mat-icon matPrefix>badge</mat-icon>
+                    <input matInput formControlName="principal" class="uppercase-input">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>Extras</mat-label>
+                    <mat-icon matPrefix>badge</mat-icon>
+                    <input matInput formControlName="extras" class="uppercase-input">
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>Roles</mat-label>
+                    <mat-icon matPrefix>badge</mat-icon>
+                    <mat-select formControlName="roleIds" multiple>
+                        <mat-option *ngFor="let role of data.roles" [value]="role.id">
+                            {{ role.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+            </div>
+    </mat-dialog-content>
+
+    <div class="dlg-actions">
+        <button class="btn btn-primary" (click)="guardar()">Aceptar</button>
+        <button class="btn btn-danger" (click)="cerrar()">Cancelar</button>
+    </div>
+</div>
+
+
+
