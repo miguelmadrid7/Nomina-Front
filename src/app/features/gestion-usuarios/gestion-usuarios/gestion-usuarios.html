@@ -83,17 +83,4 @@
             </div>
         </div>
     </div>
-
-    <div *ngIf="empleadoActual">
-        <h3>Asignar roles a: {{ empleadoActual.nombreCompleto }}</h3>
-            <div *ngFor="let role of roles">
-                <mat-checkbox (change)="onRoleChange($event, role.id)"> {{ role.name }} </mat-checkbox>
-            </div>
-
-            <button class="btn btn-success" (click)="asignarRoles()">
-                Guardar roles
-            </button>
-    </div>
-
-
 </div>

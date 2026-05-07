@@ -60,6 +60,7 @@ export class GestionUsuarios {
   roles: Role[] = [];
   selectedUserId!: number;
   selectedRoles: number[] = [];
+  empleadoRolesIds: number[] = [];
   loading = false;
 
   constructor(
@@ -207,6 +208,7 @@ export class GestionUsuarios {
   usuarioSeleccionado(emp: EmpleadoItem): void {
     this.empleadoActual = emp;
     this.selectedRoles = [];
+    this.empleadoRolesIds = [];
     this.resultado = [];
     this.autocompleteTrigger?.closePanel();
 
@@ -221,14 +223,24 @@ export class GestionUsuarios {
 
   openUsuarioDialog(row: EmpleadoItem): void {
     this.usuarioSeleccionado(row);
+    const user = (row as any)?.raw ?? row;
 
-    const raw = (row as any)?.raw ?? row;
-    this.dialog.open(UsuarioDialog, {
-      width: '900px',
+    const ref = this.dialog.open(UsuarioDialog, {
+      width: '1200px',
       maxWidth: '95vw',
       maxHeight: '90vh',
       autoFocus: false,
-      data: raw,
+      data: {
+        user,
+        roles: this.roles,
+        selectedRoleIds: this.empleadoRolesIds ?? []
+      }
+    });
+
+    ref.afterClosed().subscribe(result => {
+      if (!result) return;
+      const roleIds = result.selectedRoleIds as number[];
+      this.asignarRoles(row.id!, roleIds);
     });
   }
 
@@ -254,12 +266,9 @@ export class GestionUsuarios {
     }
   }
 
-  asignarRoles(): void {
+  asignarRoles(userId: number, roleIds: number[]): void {
     if (!this.empleadoActual?.id) return;
-    const request: AssignRoleRequest = {
-      userId: this.empleadoActual.id,
-      roleIds: this.selectedRoles
-    };
+    const request: AssignRoleRequest = { userId, roleIds };
     this.loading = true;
     this.userService.getRoles().subscribe({
       next: (res) => {
