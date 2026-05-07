@@ -18,6 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { UserService } from '../../../core/services/user.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UsuarioDialog } from '../../../shared/dialogs/usuario-dialog/usuario-dialog';
+import { PensionAlimenDialog } from '../../nomina/pension-alimen-dialog/pension-alimen-dialog';
 
 @Component({
   selector: 'app-gestion-usuarios',
@@ -257,28 +258,35 @@ export class GestionUsuarios {
     return [rfc, etiqueta].filter(Boolean).join(' - ');
   }
 
-  onRoleChange(event: any, roleId: number): void {
-    if (event.checked) {
-      this.selectedRoles.push(roleId);
-    } else {
-      this.selectedRoles =
-        this.selectedRoles.filter(id => id !== roleId);
-    }
-  }
 
   asignarRoles(userId: number, roleIds: number[]): void {
-    if (!this.empleadoActual?.id) return;
     const request: AssignRoleRequest = { userId, roleIds };
     this.loading = true;
+
     this.userService.getRoles().subscribe({
-      next: (res) => {
-        console.log('Roles asignados', res);
-        this.selectedRoles = [];
+      next: () => {
         this.loading = false;
+
+        this.dialog.open(PensionAlimenDialog, {
+          width: '420px',
+          data: {
+            type: 'success',
+            message: 'Se guardó correctamente tus datos.'
+          }
+        });
       },
       error: (err) => {
-        console.error(err);
         this.loading = false;
+
+        this.dialog.open(PensionAlimenDialog, {
+          width: '420px',
+          data: {
+            type: 'error',
+            message: 'Ocurrió un error al guardar.'
+          }
+        });
+
+        console.error(err);
       }
     });
   }
