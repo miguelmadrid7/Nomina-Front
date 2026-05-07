@@ -16,6 +16,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { UserService } from '../../../core/services/user.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { UsuarioDialog } from '../../../shared/dialogs/usuario-dialog/usuario-dialog';
 
 @Component({
   selector: 'app-gestion-usuarios',
@@ -32,6 +34,7 @@ import { UserService } from '../../../core/services/user.service';
     MatPaginatorModule,
     MatCheckboxModule,
     MatSelectModule,
+    MatDialogModule,
     UppercaseDirective
   ],
   templateUrl: './gestion-usuarios.html',
@@ -59,7 +62,14 @@ export class GestionUsuarios {
   selectedRoles: number[] = [];
   loading = false;
 
-  constructor(private userService: UserService, private fb: FormBuilder, private snackBar: MatSnackBar, private zone: NgZone, private cd: ChangeDetectorRef,) {}
+  constructor(
+    private userService: UserService,
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar,
+    private zone: NgZone,
+    private cd: ChangeDetectorRef,
+    private dialog: MatDialog,
+  ) {}
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -117,6 +127,7 @@ export class GestionUsuarios {
             curp: u?.curp ?? u?.CURP,
             empleado: etiqueta,
             nombreCompleto: u?.nombreCompleto ?? etiqueta,
+            raw: u,
           } as EmpleadoItem;
         });
 
@@ -206,6 +217,19 @@ export class GestionUsuarios {
     }, { emitEvent: false });
 
     this.cd.markForCheck();
+  }
+
+  openUsuarioDialog(row: EmpleadoItem): void {
+    this.usuarioSeleccionado(row);
+
+    const raw = (row as any)?.raw ?? row;
+    this.dialog.open(UsuarioDialog, {
+      width: '900px',
+      maxWidth: '95vw',
+      maxHeight: '90vh',
+      autoFocus: false,
+      data: raw,
+    });
   }
 
   displayUsuario(emp: EmpleadoItem | string | null): string {
