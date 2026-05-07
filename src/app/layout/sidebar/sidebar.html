@@ -16,14 +16,14 @@
       </li>
 
       <!-- Gestion de usuarios -->
-      <li>
+      <li *ngIf="hasAnyRole([1])">
         <a routerLink="/home/usuarios/gestion-usuarios" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
           <i class="fa-solid fa-user-gear me-2"></i>
             <span class="label">Gestion usuarios</span>
         </a>
       </li>
       
-      <li class="mb-1">
+      <li class="mb-1" *ngIf="hasAnyRole([1])">
         <button
           class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
           data-bs-toggle="collapse"
@@ -61,7 +61,7 @@
           </div>
       </li>
 
-      <li class="mb-1">
+      <li class="mb-1" *ngIf="hasAnyRole([1])">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -100,7 +100,7 @@
       </li>
 
       <!-- Nómina -->
-      <li class="mb-1">
+      <li class="mb-1" *ngIf="hasAnyRole([1])">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -161,7 +161,7 @@
       </li>
 
       <!-- Pension alimenticia -->
-      <li class="mb-1">
+      <li class="mb-1" *ngIf="hasAnyRole([1])">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -186,7 +186,7 @@
       </li>
 
       <!-- Juicio mercantil -->
-      <li class="mb-1">
+      <li class="mb-1" *ngIf="hasAnyRole([1])">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -212,7 +212,7 @@
       </li>
 
       <!-- Terceros -->
-      <li class="mb-1">
+      <li class="mb-1" *ngIf="hasAnyRole([1,3])">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
@@ -233,14 +233,14 @@
                 </a>
               </li>
 
-               <li>
+               <li *ngIf="hasAnyRole([1])">
                 <a routerLink="/home/terceros/registro-terceros-institucionales" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                   <i class="fa-solid fa-address-book"></i>
                   <span class="label">Registro terceros institucionales</span>
                 </a>
               </li>
 
-              <li>
+              <li *ngIf="hasAnyRole([1])">
                 <a routerLink="/home/terceros/consulta-terceros" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                   <i class="fa-solid fa-address-book"></i>
                   <span class="label">Consulta terceros</span>
