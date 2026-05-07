@@ -129,6 +129,10 @@
     width: 650px;
 }
 
+.search-field.date {
+    width: 100px;
+}
+
 /* TABLA GLOBAL */
 .table-global {
     width: 100%;
@@ -252,6 +256,10 @@
 /* SEARCH FIELD */
 :host ::ng-deep .qna-compact {
     width: 680px !important;
+}
+
+:host ::ng-deep .qna-compact.search-field.date {
+    width: 160px !important;
 }
 
 :host ::ng-deep .qna-compact .mat-mdc-form-field-infix {
