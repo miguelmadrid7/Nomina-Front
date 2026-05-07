@@ -44,12 +44,18 @@
                 </mat-autocomplete>
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="compact-field qna-compact concepto-wi" floatLabel="always">
+            <mat-form-field *ngIf="!conceptoUnicoPermitido" appearance="outline" class="compact-field qna-compact concepto-wi" floatLabel="always">
                 <mat-label>Concepto*</mat-label>
                 <mat-icon matPrefix>reorder</mat-icon>
                     <mat-select formControlName="concepto">
                         <mat-option *ngFor="let c of (conceptosOptions$ | async) ?? []" [value]="c.cve"> {{ c.cve }} - {{ c.descripcion }} </mat-option>
                     </mat-select>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="conceptoUnicoPermitido" appearance="outline" class="compact-field qna-compact concepto-wi" floatLabel="always">
+                <mat-label>Concepto*</mat-label>
+                <mat-icon matPrefix>reorder</mat-icon>
+                <input matInput [value]="(conceptoUnicoPermitido?.cve ?? '') + ' - ' + (conceptoUnicoPermitido?.descripcion ?? '')" disabled>
             </mat-form-field>
         </div>
            

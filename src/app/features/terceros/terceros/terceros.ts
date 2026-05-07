@@ -16,8 +16,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { TercerosDialog } from '../../../shared/dialogs/terceros-dialog/terceros-dialog';
 import { PensionAlimenDialog } from '../../../features/nomina/pension-alimen-dialog/pension-alimen-dialog';
 import { EmpleadoItem } from '../../../models/emplado.model';
-import { Observable } from 'rxjs';
+import { Observable, tap, map } from 'rxjs';
 import { MatOptionModule } from '@angular/material/core';
+import { ConceptoAccesoService } from '../../../core/services/concepto-acceso.service';
 
 @Component({
   selector: 'app-terceros',
@@ -64,6 +65,7 @@ export class Terceros {
   search: string = '';
   qnaProceso!: number;
   conceptosOptions$!: Observable<any[]>;
+  conceptoUnicoPermitido: any | null = null;
 
   constructor(
     private fb: FormBuilder, 
@@ -72,6 +74,7 @@ export class Terceros {
     private cd: ChangeDetectorRef,
     private dialog: MatDialog,
     private terceroService: TerceroService,
+    private conceptoAccesoService: ConceptoAccesoService,
   ) {}
 
 
@@ -117,7 +120,24 @@ export class Terceros {
     return matchSearch && matchEstatus;
     };
 
-    this.conceptosOptions$ = this.terceroService.obtenerConceptos();
+    const permitidos = this.conceptoAccesoService.getConceptosPermitidosRegistroTerceros();
+
+    this.conceptosOptions$ = this.terceroService.obtenerConceptos().pipe(
+      map((rows: any[]) => {
+        if (!permitidos || permitidos.length === 0) return rows ?? [];
+        const allowed = new Set(permitidos.map(c => String(c).trim().toUpperCase()));
+        return (rows ?? []).filter(r => allowed.has(String(r?.cve ?? '').trim().toUpperCase()));
+      }),
+      tap((rows: any[]) => {
+        if ((permitidos?.length ?? 0) === 1 && (rows?.length ?? 0) === 1) {
+          this.conceptoUnicoPermitido = rows[0] ?? null;
+          this.form.get('busqueda.concepto')?.setValue(rows[0]?.cve ?? null, { emitEvent: false });
+          this.form.get('busqueda.concepto')?.disable({ emitEvent: false });
+        } else {
+          this.conceptoUnicoPermitido = null;
+        }
+      })
+    );
   }
 
   ngAfterViewInit(): void {
@@ -258,6 +278,17 @@ export class Terceros {
     const apellidoMaterno = nombreCompleto[1] || '';
     const nombres = nombreCompleto.slice(2).join(' ') || '';
     const conceptoSeleccionado = this.form.get('busqueda.concepto')?.value;
+
+    if (!row?.rfc) {
+      this.showSnack('Selecciona un empleado válido', 'Cerrar', 4000);
+      return;
+    }
+
+    if (!conceptoSeleccionado) {
+      this.showSnack('Selecciona un concepto', 'Cerrar', 4000);
+      return;
+    }
+
     const detalles = (row.detalles && row.detalles.length)
       ? row.detalles
       : (this.dataSource.data as NominaRow[])
