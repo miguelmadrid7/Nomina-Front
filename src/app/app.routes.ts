@@ -29,7 +29,19 @@ export const routes: Routes = [
             .then(m => m.FormEmpleado),
         data: { breadcrumb: 'Empleados formulario' }
       },
-
+      {
+        path: 'usuarios',
+        data: { breadcrumb: 'Usuarios' },
+        children: [
+           {    
+            path: 'gestion-usuarios',
+            loadComponent: () =>
+              import('./features/gestion-usuarios/gestion-usuarios/gestion-usuarios')
+                .then(m => m.GestionUsuarios),
+            data: { roles: [1], breadcrumb: 'Gestión usuarios' }
+          },
+        ]
+      },
       {
         path: 'nomina',
         data: { breadcrumb: 'Nómina' },
@@ -91,13 +103,6 @@ export const routes: Routes = [
         path: 'terceros',
         data: { breadcrumb: 'Terceros' },
         children: [
-          {    
-            path: 'gestion-terceros',
-            loadComponent: () =>
-              import('./features/terceros/gestion-terceros/gestion-terceros')
-                .then(m => m.GestionTerceros),
-            data: { roles: [1], breadcrumb: 'Gestión terceros' }
-          },
           {    
             path: 'registro-terceros',
             loadComponent: () =>

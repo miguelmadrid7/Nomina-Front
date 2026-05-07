@@ -14,6 +14,14 @@
               <span class="label">Dashboard</span>
             </a>
       </li>
+
+      <!-- Gestion de usuarios -->
+      <li>
+        <a routerLink="/home/usuarios/gestion-usuarios" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+          <i class="fa-solid fa-user-gear me-2"></i>
+            <span class="label">Gestion usuarios</span>
+        </a>
+      </li>
       
       <li class="mb-1"  *ngIf="hasAnyRole([2])">
         <button
@@ -218,13 +226,6 @@
 
           <div class="collapse show" id="terceros-collapse">
             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-               <li>
-                <a routerLink="/home/terceros/gestion-terceros" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-                  <i class="fa-solid fa-address-book me-2"></i>
-                  <span class="label">Gestion terceros</span>
-                </a>
-              </li>
-
               <li>
                 <a routerLink="/home/terceros/registro-terceros" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
                   <i class="fa-solid fa-user-plus me-2"></i>
