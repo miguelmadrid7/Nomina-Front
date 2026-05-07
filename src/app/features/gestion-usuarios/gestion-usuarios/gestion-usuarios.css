@@ -118,3 +118,41 @@
     padding-top: 0 !important;
     padding-bottom: 0 !important;
 }
+
+/* TABLA GLOBAL */
+.table-global {
+    width: 100%;
+}
+
+.table-global .mat-mdc-header-cell {
+    vertical-align: middle !important;
+    padding: 10px 8px !important;
+}
+
+.table-global .mat-column-id {
+  width: 10px !important;
+  min-width: 10px !important;
+  max-width: 10px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-nombreCompleto {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-empleado {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-acciones {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
