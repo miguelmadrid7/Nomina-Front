@@ -48,7 +48,7 @@ export class UsuarioDialog {
   ) {}
 
   ngOnInit(): void {
-    const user = this.data?.user ?? this.data; // fallback por si algún día mandas el user directo
+    const user = this.data?.user ?? this.data;
     const pre = this.data?.selectedRoleIds ?? [];
     this.selectedRoleIdsSet = new Set<number>(pre);
 

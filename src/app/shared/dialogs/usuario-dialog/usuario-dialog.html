@@ -7,15 +7,15 @@
 
     <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
          <div class="dlg-bar-title">Detalle de usuario</div>
-
-			<div class="top-info-grid">
-                    <div class="info-field">
-                        <mat-icon>person</mat-icon>
-                            <div class="info-content">
-                                <span class="info-label">ID</span>
-                                <span>{{ form.get('id')?.value || '—' }}</span>
-                            </div>
-                    </div>
+    
+            <mat-card-content class="form-grid">
+                <div class="info-field">
+                    <mat-icon>person</mat-icon>
+                        <div class="info-content">
+                            <span class="info-label">ID</span>
+                            <span>{{ form.get('id')?.value || '—' }}</span>
+                        </div>
+                </div>
 
                 <div class="info-field">
                     <mat-icon>badge</mat-icon>
@@ -24,7 +24,7 @@
                         <span>{{ form.get('catEmpleadoId')?.value || '—' }}</span>
                     </div>
                 </div>
-			</div>
+            </mat-card-content>
 
         <div class="section-divider"></div>
 
