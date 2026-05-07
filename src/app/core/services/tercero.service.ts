@@ -5,6 +5,7 @@ import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../../models/api-Response.model';
 import { Empleado } from '../../features/servicios/empleado';
 import { RegistroNp } from '../../models/terceros.model';
+import { Role } from '../../models/emplado.model';
 
 @Injectable({ providedIn: 'root' })
 export class TerceroService {
@@ -86,6 +87,36 @@ export class TerceroService {
 
     editarRegistroNp(id: number, payload: any) {
       return this.http.put<ApiResponse<any>>(`${this.base}/nom-emp-pza-cpto/registro-np/${id}`, payload);
+    }
+
+    // Se obtiene importe real mensual del concepto seleccionado
+    getImporteMensualReal(rfc: string, concepto: string, qnaProceso?: number | null) {
+      let params = new HttpParams().set('rfc', (rfc ?? '').trim()) .set('concepto', (concepto ?? '').trim());
+      if (qnaProceso != null) params = params.set('qnaProceso', String(qnaProceso));
+      return this.http.get<ApiResponse<any>>(`${this.base}/nom-emp-pza-cpto/importe-mensual-real`, { params }).pipe(map(res => res?.data ?? null));
+    }
+
+    descargarRegistrosNpExcel(qnaProceso?: number | null, concepto?: string | null): Observable<Blob> {
+      let params = new HttpParams();
+      if (qnaProceso != null) params = params.set('qnaProceso', String(qnaProceso));
+      if (concepto) params = params.set('concepto', String(concepto).trim());
+
+      return this.http.get(`${this.base}/nom-emp-pza-cpto/registros-np/excel`, {
+        params,
+        responseType: 'blob',
+      });
+    }
+
+    descargarRegistrosNpPdf(qnaProceso?: number | null, concepto?: string | null): Observable<Blob> {
+      let params = new HttpParams();
+      if (qnaProceso != null) params = params.set('qnaProceso', String(qnaProceso));
+      if (concepto) params = params.set('concepto', String(concepto).trim());
+      return this.http.get(`${this.base}/nom-emp-pza-cpto/registros-np/pdf`, {params,responseType: 'blob',});
+    }
+
+
+    getRoles(): Observable<Role[]> {
+      return this.http.get<ApiResponse<Role[]>>(`${this.base}/roles`).pipe(map(res => res.data ?? []));
     }
 
 
