@@ -1,0 +1,56 @@
+<div class="page-container">
+    <div class="page-header">
+        <h2 class="page-title">Asignar roles a terceros</h2>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="actions-right">
+        <div class="btn-group">
+            <button class="btn btn-danger" (click)="clearFilters()">
+                <mat-icon>delete_outline</mat-icon>
+                <span>Limpiar</span>
+            </button>
+        </div>
+        <button class="btn btn-primary">
+                <mat-icon>search</mat-icon>
+                <span>Buscar</span>
+            </button>
+    </div>
+
+    <form [formGroup]="form">
+        <div formGroupName="busqueda" class="global-search">
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
+                        <input
+                            matInput
+                            id="buscarEmpleado"
+                            formControlName="searchText"
+                            [matAutocomplete]="auto"
+                            #autocompleteTrigger="matAutocompleteTrigger" 
+                            (keyup.enter)="buscarEmpleado()"
+                            appUppercase>
+
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="empleadoSeleccionado($event.option.value)" [displayWith]="displayEmpleado">
+                        <mat-option *ngFor="let emp of resultado" [value]="emp">
+                            {{ displayEmpleado(emp) }} 
+                        </mat-option>
+                    </mat-autocomplete>
+            </mat-form-field>
+        </div>
+    </form>
+
+    <div *ngIf="empleadoActual">
+        <h3>Asignar roles a: {{ empleadoActual.nombreCompleto }}</h3>
+            <div *ngFor="let role of roles">
+                <mat-checkbox (change)="onRoleChange($event, role.id)"> {{ role.name }} </mat-checkbox>
+            </div>
+
+            <button class="btn btn-success" (click)="asignarRoles()">
+                Guardar roles
+            </button>
+    </div>
+
+    
+</div>
