@@ -33,12 +33,19 @@ export const routes: Routes = [
         path: 'usuarios',
         data: { breadcrumb: 'Usuarios' },
         children: [
-           {    
+          {    
             path: 'gestion-usuarios',
             loadComponent: () =>
               import('./features/gestion-usuarios/gestion-usuarios/gestion-usuarios')
                 .then(m => m.GestionUsuarios),
             data: { roles: [1], breadcrumb: 'Gestión usuarios' }
+          },
+          {    
+            path: 'roles-usuarios',
+            loadComponent: () =>
+              import('./features/gestion-usuarios/gestion-role-usuarios/gestion-role-usuarios')
+                .then(m => m.GestionRoleUsuarios),
+            data: { roles: [1], breadcrumb: 'Roles usuarios' }
           },
         ]
       },

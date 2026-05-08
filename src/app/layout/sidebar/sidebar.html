@@ -16,11 +16,32 @@
       </li>
 
       <!-- Gestion de usuarios -->
-      <li *ngIf="hasAnyRole([1])">
-        <a routerLink="/home/usuarios/gestion-usuarios" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
-          <i class="fa-solid fa-user-gear me-2"></i>
-            <span class="label">Gestion usuarios</span>
-        </a>
+      <li class="mb-1" *ngIf="hasAnyRole([1])">
+        <button
+          class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
+          data-bs-toggle="collapse"
+          data-bs-target="#usuarios-collapse">
+          <span class="d-flex align-items-center">
+           <i class="fa-solid fa-folder me-2"></i>
+            <span class="label">Gestion de usuarios</span>
+          </span>
+         <i class="bi bi-chevron-down caret"></i>
+        </button>
+
+        <div class="collapse show" id="usuarios-collapse">
+          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+            <a routerLink="/home/usuarios/gestion-usuarios" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+              <i class="fa-solid fa-user-gear me-2"></i>
+                <span class="label">Alta/Baja usuarios</span>
+            </a>
+
+            <a routerLink="/home/usuarios/roles-usuarios" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+              <i class="fa-solid fa-user-shield me-2"></i>
+                <span class="label">Alta/Baja roles</span>
+            </a>
+
+          </ul>
+        </div>
       </li>
       
       <li class="mb-1" *ngIf="hasAnyRole([1])">
