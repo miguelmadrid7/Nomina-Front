@@ -40,6 +40,11 @@ export class UserService {
       return this.http.patch<ApiResponse<any>>(`${this.base}/users/softdeleted`, null, { headers });
     }
 
+    updateUser(userId: number, payload: any): Observable<any> {
+      const headers = new HttpHeaders({ userId: String(userId) });
+      return this.http.patch<ApiResponse<any>>(`${this.base}/users`, payload, { headers });
+    }
+
     assignRoles(userId: number, roleIds: number[]): Observable<any> {
       const headers = new HttpHeaders({ userId: String(userId) });
       return this.http.post<ApiResponse<any>>(`${this.base}/roles/roleByUser`, roleIds, { headers });

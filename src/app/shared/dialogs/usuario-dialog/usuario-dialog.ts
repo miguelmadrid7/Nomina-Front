@@ -69,31 +69,35 @@ export class UsuarioDialog {
     });
   }
 
-  guardar() {
+  guardar(): void {
+    const roleIds = (this.form.get('roleIds')?.value ?? []) as number[];
+
+    const extras = String(this.form.get('extras')?.value ?? '')
+      .split(',')
+      .map(x => x.trim())
+      .filter(Boolean)
+      .map(x => Number(x))
+      .filter(n => Number.isFinite(n));
+
+    const payloadUser = {
+      srl_emp: this.form.get('catEmpleadoId')?.value ?? null,
+      user: this.form.get('username')?.value ?? null,
+      area: this.form.get('area')?.value ?? null,
+      task: this.form.get('task')?.value ?? null,
+      active: this.form.get('active')?.value ?? true,
+      roles: roleIds,
+      principal: this.form.get('principal')?.value ?? null,
+      extras,
+    };
+
     this.ref.close({
-      selectedRoleIds: (this.form.get('roleIds')?.value ?? []) as number[]
+      userPatch: payloadUser,
+      selectedRoleIds: roleIds,
     });
   }
   toggleRole(roleId: number, checked: boolean) {
     if (checked) this.selectedRoleIdsSet.add(roleId);
     else this.selectedRoleIdsSet.delete(roleId);
-  }
-
-  asignarRoles(userId: number, roleIds: number[]): void {
-    if (!this.empleadoActual?.id) return;
-    const request: AssignRoleRequest = { userId, roleIds };
-    this.loading = true;
-    this.userService.getRoles().subscribe({
-      next: (res) => {
-        console.log('Roles asignados', res);
-        this.selectedRoles = [];
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error(err);
-        this.loading = false;
-      }
-    });
   }
 
   cerrar() {
