@@ -6,6 +6,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { RolService } from '../../../core/services/rol.service';
 import { MatIconModule } from '@angular/material/icon';
+import { AltaRolDialog } from '../../../shared/dialogs/alta-rol-dialog/alta-rol-dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-gestion-role-usuarios',
@@ -27,7 +29,7 @@ export class GestionRoleUsuarios {
   displayedColumns: string[] = ['id', 'rol', 'acciones'];
   loading = false;
 
-  constructor(private rolService: RolService) {}
+  constructor(private rolService: RolService,  private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.loadRoles();
@@ -51,6 +53,30 @@ export class GestionRoleUsuarios {
         this.loading = false;
         console.error('Error cargando roles', err);
       },
+    });
+  }
+
+  openAltaRoleDialog(): void {
+    const ref = this.dialog.open(AltaRolDialog, {
+      width: '600px',
+      maxWidth: '95vw',
+      autoFocus: false,
+    });
+
+    ref.afterClosed().subscribe((payload) => {
+      if (!payload) return;
+
+      this.loading = true;
+      this.rolService.createRole(payload).subscribe({
+        next: () => {
+          this.loading = false;
+          this.loadRoles();
+        },
+        error: (err) => {
+          this.loading = false;
+          console.error('Error creando rol', err);
+        },
+      });
     });
   }
 
