@@ -1,0 +1,27 @@
+<div class="dialog-shell">
+  <div class="dialog-header dlg-bar">
+    <button mat-icon-button class="dialog-close" (click)="cerrar()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div mat-dialog-content class="dlg-content" [formGroup]="form">
+    <div class="dlg-bar-title">Alta de rol</div>
+    <div class="section-divider"></div>
+
+    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+      <mat-label>Nombre del rol</mat-label>
+      <input matInput formControlName="name" appUppercase/>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+      <mat-label>Descripción</mat-label>
+      <input matInput formControlName="description" appUppercase/>
+    </mat-form-field>
+  </div>
+
+  <div class="dlg-actions">
+    <button class="btn btn-danger" (click)="cerrar()">Cancelar</button>
+    <button class="btn btn-primary" (click)="guardar()">Guardar</button>
+  </div>
+</div>
