@@ -18,3 +18,11 @@ export interface AssignRoleRequest {
   userId: number;
   roleIds: number[];
 }
+
+export interface CreateRoleRequest {
+  name: string;
+  description?: string | null;
+  parentId?: number | null;
+  permissionId?: number | null;
+  modulesId?: number[];
+}
