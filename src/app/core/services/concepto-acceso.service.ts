@@ -8,8 +8,12 @@ export class ConceptoAccesoService {
   getConceptosPermitidosRegistroTerceros(): string[] | null {
     const roles = this.loginService.getRoles();
     if (roles.includes(1)) return null;
-    if (roles.includes(3)) return ['NP'];
-    if (roles.includes(7)) return ['5L'];
-    return null;
+
+    const permitidos: string[] = [];
+    if (roles.includes(3)) permitidos.push('NP');
+    if (roles.includes(7)) permitidos.push('5L');
+    if (roles.includes(8)) permitidos.push('6L');
+
+    return permitidos.length > 0 ? Array.from(new Set(permitidos)) : null;
   }
 }
