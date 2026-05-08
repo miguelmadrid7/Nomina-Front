@@ -39,6 +39,8 @@ export class TercerosDialog  {
   estatusOptions = ['Registrado', 'Pendiente', 'Aprobado'];
   tipoOrdenOptions = [{ label: 'Alta', value: 1 }, { label: 'Pendiente', value: 2 }, { label: 'Aprobado', value: 3 }];
   esAltaFlag = false;
+  archivoPdf: File | null = null;
+  archivoPdfError: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -122,6 +124,24 @@ export class TercerosDialog  {
     });
   }
 
+  onPdfSelected(event: Event): void {
+    const input = event.target as HTMLInputElement | null;
+    const file = input?.files?.[0] ?? null;
+    this.archivoPdfError = null;
+    this.archivoPdf = null;
+
+    if (!file) return;
+
+    const isPdf = (file.type || '').toLowerCase() === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    if (!isPdf) {
+      this.archivoPdfError = 'Solo se permite archivo PDF.';
+      if (input) input.value = '';
+      return;
+    }
+
+    this.archivoPdf = file;
+  }
+
   get esAlta(): boolean {
     return Number(this.form?.get('tipoOrden')?.value) === 1;
   }
@@ -176,7 +196,11 @@ export class TercerosDialog  {
       value.numeroDocumento !== null && value.numeroDocumento !== undefined && value.numeroDocumento !== ''
         ? Number(value.numeroDocumento)
         : null;
-    this.ref.close(value);
+
+    this.ref.close({
+      ...value,
+      archivoPdf: this.archivoPdf,
+    });
   }
 
   formatDate(date: Date): string {
