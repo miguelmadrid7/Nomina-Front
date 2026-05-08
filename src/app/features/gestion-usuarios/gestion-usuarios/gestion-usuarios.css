@@ -73,7 +73,7 @@
   background: transparent;
   color: #2e7d32;
   border-color: #2e7d32;
-  min-width: 150px;
+  min-width: 50px;
 }
 
 .btn-success:hover {
@@ -81,6 +81,56 @@
   color: #ffffff;
   border-color: #2e7d32;
   transform: translateY(-1px);
+}
+
+.btnn {
+    width: 40px;
+    height: 36px;
+    padding: 0 4px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: .2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: none !important;
+    transition: all .18s ease;
+    cursor: pointer;
+    position: relative;
+    background: transparent;
+    border: 2px solid;
+    margin-left: 8px;
+}
+
+
+
+.btn-succes {
+  background: transparent;
+  color: #2e7d32;
+  border-color: #2e7d32;
+}
+
+.btn-succes:hover {
+  background: #2e7d32;
+  color: #ffffff;
+  border-color: #2e7d32;
+  transform: translateY(-1px);
+}
+
+.btn-dangerr {
+    background: transparent;
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
+.btn-dangerr:hover {
+    background: #dc2626;
+    color: #ffffff;
+    border-color: #dc2626;
+    transform: translateY(-1px);
 }
 
 
