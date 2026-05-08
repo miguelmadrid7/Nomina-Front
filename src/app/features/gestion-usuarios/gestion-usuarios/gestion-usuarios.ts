@@ -20,6 +20,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UsuarioDialog } from '../../../shared/dialogs/usuario-dialog/usuario-dialog';
 import { PensionAlimenDialog } from '../../nomina/pension-alimen-dialog/pension-alimen-dialog';
 import { AltaUsuarioDialog } from '../../../shared/dialogs/alta-usuario-dialog/alta-usuario-dialog';
+import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-gestion-usuarios',
@@ -284,6 +285,64 @@ export class GestionUsuarios {
       if (!result) return;
       const roleIds = result.selectedRoleIds as number[];
       this.asignarRoles(row.id!, roleIds);
+    });
+  }
+
+  deleteUser(row: EmpleadoItem): void {
+    const userId = row?.id;
+    if (userId == null) {
+      this.dialog.open(PensionAlimenDialog, {
+        width: '420px',
+        data: {
+          type: 'error',
+          message: 'No se encontró el id del usuario.'
+        }
+      });
+      return;
+    }
+
+    const etiqueta = (row?.nombreCompleto ?? row?.empleado ?? '').toString().trim();
+
+    const confirmRef = this.dialog.open(ConfirmDialog, {
+      width: '500px',
+      autoFocus: false,
+      data: {
+        title: 'Eliminar usuario',
+        message: `¿Seguro que deseas eliminar este usuario${etiqueta ? `: ${etiqueta}` : ''}?`,
+        confirmText: 'Aceptar',
+        cancelText: 'Cancelar',
+        type: 'danger'
+      }
+    });
+
+    confirmRef.afterClosed().subscribe((ok: boolean) => {
+      if (!ok) return;
+
+      this.loading = true;
+      this.userService.softDeleteUser(userId).subscribe({
+        next: () => {
+          this.loading = false;
+          this.loadEmpleados();
+          this.dialog.open(PensionAlimenDialog, {
+            width: '500px',
+            data: {
+              type: 'success',
+              message: 'Se eliminó correctamente el usuario.'
+            }
+          });
+        },
+        error: (err) => {
+          this.loading = false;
+          this.dialog.open(PensionAlimenDialog, {
+            width: '500px',
+            data: {
+              type: 'error',
+              message: 'Ocurrió un error al eliminar el usuario.'
+            }
+          });
+          console.error(err);
+        }
+      });
     });
   }
 
