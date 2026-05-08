@@ -5,7 +5,6 @@ import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../../models/api-Response.model';
 import { Empleado } from '../../features/servicios/empleado';
 import { RegistroNp } from '../../models/terceros.model';
-import { Role } from '../../models/emplado.model';
 
 @Injectable({ providedIn: 'root' })
 export class TerceroService {
@@ -113,11 +112,4 @@ export class TerceroService {
       if (concepto) params = params.set('concepto', String(concepto).trim());
       return this.http.get(`${this.base}/nom-emp-pza-cpto/registros-np/pdf`, {params,responseType: 'blob',});
     }
-
-
-    getRoles(): Observable<Role[]> {
-      return this.http.get<ApiResponse<Role[]>>(`${this.base}/roles`).pipe(map(res => res.data ?? []));
-    }
-
-
 }
