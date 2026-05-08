@@ -9,6 +9,7 @@ export class ConceptoAccesoService {
     const roles = this.loginService.getRoles();
     if (roles.includes(1)) return null;
     if (roles.includes(3)) return ['NP'];
+    if (roles.includes(7)) return ['5L'];
     return null;
   }
 }
