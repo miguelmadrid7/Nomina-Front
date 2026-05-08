@@ -7,7 +7,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { RolService } from '../../../core/services/rol.service';
 import { MatIconModule } from '@angular/material/icon';
 import { AltaRolDialog } from '../../../shared/dialogs/alta-rol-dialog/alta-rol-dialog';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-gestion-role-usuarios',
@@ -18,6 +18,7 @@ import { MatDialog } from '@angular/material/dialog';
     MatPaginatorModule,
     MatTableModule,
     MatIconModule,
+    MatDialogModule
   ],
   templateUrl: './gestion-role-usuarios.html',
   styleUrl: './gestion-role-usuarios.css'
