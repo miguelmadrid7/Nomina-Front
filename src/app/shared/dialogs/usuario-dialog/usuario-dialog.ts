@@ -103,8 +103,7 @@ export class UsuarioDialog {
     const request: AssignRoleRequest = { userId, roleIds };
     this.loading = true;
     this.userService.getRoles().subscribe({
-      next: (res) => {
-        console.log('Roles asignados', res);
+      next: () => {
         this.selectedRoles = [];
         this.loading = false;
       },

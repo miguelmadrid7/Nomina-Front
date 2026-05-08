@@ -283,36 +283,8 @@ export class GestionUsuarios {
 
     ref.afterClosed().subscribe(result => {
       if (!result) return;
-
-      const userId = row?.id;
-      const payload = result?.userPatch;
-      if (userId == null || !payload) return;
-
-      this.loading = true;
-      this.userService.updateUser(userId, payload).subscribe({
-        next: () => {
-          this.loading = false;
-          this.loadEmpleados();
-          this.dialog.open(PensionAlimenDialog, {
-            width: '420px',
-            data: {
-              type: 'success',
-              message: 'Se actualizó correctamente el usuario.'
-            }
-          });
-        },
-        error: (err) => {
-          this.loading = false;
-          this.dialog.open(PensionAlimenDialog, {
-            width: '420px',
-            data: {
-              type: 'error',
-              message: 'Ocurrió un error al actualizar el usuario.'
-            }
-          });
-          console.error(err);
-        }
-      });
+      const roleIds = result.selectedRoleIds as number[];
+      this.asignarRoles(row.id!, roleIds);
     });
   }
 
