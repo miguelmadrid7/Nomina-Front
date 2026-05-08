@@ -1,0 +1,61 @@
+<div class="dialog-shell">
+  <div class="dialog-header dlg-bar">
+    <button mat-icon-button class="dialog-close" (click)="cerrar()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
+
+    <div class="dlg-bar-title">Alta de usuario</div>
+
+    <div class="section-divider"></div>
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Usuario (email)</mat-label>
+        <mat-icon matPrefix>email</mat-icon>
+        <input matInput formControlName="user" appUppercase/>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Contraseña</mat-label>
+        <mat-icon matPrefix>lock</mat-icon>
+        <input matInput type="password" formControlName="password" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>catEmpleadoId</mat-label>
+        <mat-icon matPrefix>badge</mat-icon>
+        <input matInput type="number" formControlName="srl_emp" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Área</mat-label>
+        <mat-icon matPrefix>domain</mat-icon>
+        <input matInput formControlName="area" appUppercase/>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Task</mat-label>
+        <mat-icon matPrefix>task</mat-icon>
+        <input matInput formControlName="task" appUppercase/>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Roles</mat-label>
+        <mat-icon matPrefix>admin_panel_settings</mat-icon>
+        <mat-select formControlName="roles" multiple>
+          <mat-option *ngFor="let role of (data?.roles ?? [])" [value]="role.id">
+            {{ role.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <div class="dlg-actions">
+    <button class="btn btn-danger" (click)="cerrar()">Cancelar</button>
+    <button class="btn btn-primary" (click)="guardar()">Guardar</button>
+  </div>
+</div>
