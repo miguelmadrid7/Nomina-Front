@@ -65,6 +65,7 @@ export class Terceros {
   cargandoBusqueda = false;
   showFilters = true;
   search: string = '';
+  private filters: { [key: string]: any } = {};
   qnaProceso!: number;
   conceptosOptions$!: Observable<any[]>;
   conceptoUnicoPermitido: any | null = null;
@@ -158,20 +159,16 @@ export class Terceros {
     );
 
   this.form.get('anio')?.valueChanges.subscribe(anioSeleccionado => {
-  const anio = anioSeleccionado ?? new Date().getFullYear();
-  this.terceroService.getCalendarioRecepcion(anio).subscribe({
-    next: (rows) => {
-      this.calendarioRecepcion = rows ?? [];
-      console.log('Padre - Año solicitado:', anio);
-    console.log('Padre - Calendario recibido:', rows);
-    console.log('Padre - Length:', this.calendarioRecepcion.length);
-  },
-  error: (err) => {
-    console.error('Padre - Error calendario:', err);
-    this.showSnack('No se pudo cargar el calendario de recepción', 'Cerrar', 4000);
-  },
+    const anio = anioSeleccionado ?? new Date().getFullYear();
+    this.terceroService.getCalendarioRecepcion(anio).subscribe({
+      next: (rows) => {
+        this.calendarioRecepcion = rows ?? [];
+    },
+    error: () => {
+      this.showSnack('No se pudo cargar el calendario de recepción', 'Cerrar', 4000);
+    },
+    });
   });
-});
   }
 
   ngAfterViewInit(): void {
