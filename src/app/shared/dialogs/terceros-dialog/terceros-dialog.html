@@ -6,7 +6,16 @@
   </div>
 
   <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
+    
     <div class="dlg-bar-title">Detalle Tercero</div>
+    
+    
+    <div class="dlg-recepcion" *ngIf="calRecSeleccionado">
+      <strong>Fecha de recepción:</strong> {{ fechaRecepcionInfo }}
+      <span *ngIf="calRecSeleccionado.noMovimientos"> | No movimientos</span>
+      <span *ngIf="calRecSeleccionado.soloBajas"> | Solo bajas</span>
+    </div>
+    
 
     <mat-card class="form-card">
       <mat-card-content class="form-grid">
@@ -40,6 +49,14 @@
               <div class="info-content">
                 <span class="info-label">CONCEPTO SELECCIONADO</span>
                 <span>{{ form.get('concepto')?.value || '—' }}</span>
+              </div>
+        </div>
+
+        <div class="info-field">
+          <mat-icon>person</mat-icon>
+              <div class="info-content">
+                <span class="info-label">QNA DE RECEPCION </span>
+                <span>{{ form.get('qnaRecepcion')?.value || '—' }}</span>
               </div>
         </div>
       </mat-card-content>
@@ -84,12 +101,8 @@
         <div class="login-field compact-field with-separator">
           <label class="mat-body-2">Archivo PDF</label>
           <input type="file" accept="application/pdf" (change)="onPdfSelected($event)">
-          <div *ngIf="archivoPdf" class="mat-caption">
-            {{ archivoPdf.name }}
-          </div>
-          <div *ngIf="archivoPdfError" class="mat-caption">
-            {{ archivoPdfError }}
-          </div>
+            <div *ngIf="archivoPdf" class="mat-caption"> {{ archivoPdf.name }}</div>
+            <div *ngIf="archivoPdfError" class="mat-caption"> {{ archivoPdfError }}</div>
         </div>
 
         <div *ngIf="pdfPreviewUrl" class="pdf-preview">

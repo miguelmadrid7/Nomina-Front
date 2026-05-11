@@ -14,6 +14,7 @@ import { Spanish } from 'flatpickr/dist/l10n/es';
 import { TerceroService } from '../../../core/services/tercero.service';
 import { MatCardModule } from '@angular/material/card';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { CalendarioRecepcion } from '../../../models/calendario-recepcion.model';
 
 @Component({
   selector: 'app-terceros-dialog',
@@ -43,12 +44,16 @@ export class TercerosDialog  implements OnDestroy {
   archivoPdf: File | null = null;
   archivoPdfError: string | null = null;
 
+  calRecSeleccionado: CalendarioRecepcion | null = null;
+
   pdfPreviewUrl: SafeResourceUrl | null = null;
   private pdfObjectUrl: string | null = null;
 
-  constructor(private fb: FormBuilder, private ref: MatDialogRef<TercerosDialog>, 
-              private terceroService: TerceroService,  @Inject(MAT_DIALOG_DATA) public data: any,
-              private sanitizer: DomSanitizer,) {}
+  constructor(private fb: FormBuilder, 
+              private ref: MatDialogRef<TercerosDialog>, 
+              private terceroService: TerceroService, 
+              @Inject(MAT_DIALOG_DATA) public data: any,
+              private sanitizer: DomSanitizer) {}
 
   ngOnInit(): void {
     if (!this.data) {
@@ -71,8 +76,9 @@ export class TercerosDialog  implements OnDestroy {
       importeMensual: [this.data?.importeMensual ?? null],
       concepto: [this.data.concepto ?? null],
       qnaProceso: [this.data.qnaProceso ?? null],
-      qnaDesde: [currentQna.aaaaqq],
+      qnaDesde: [this.data?.qnaDesde ?? this.getCurrentQna().aaaaqq],
       qnaHasta: [''],
+      qnaRecepcion: [this.data?.qnaRecepcionSugerida ?? this.getCurrentQna().aaaaqq],
       estatus: [this.data?.estatus ?? null],
       fechaRegistro: [{ value: this.data?.fechaRegistro || new Date(), disabled: true }],
     },
@@ -82,6 +88,15 @@ export class TercerosDialog  implements OnDestroy {
         qnaRangoValidator()
       ]
     });
+
+    console.log('Hijo - Data recibida:', {
+  calendarioRecepcion: this.data?.calendarioRecepcion?.length,
+  qnaRecepcionSugerida: this.data?.qnaRecepcionSugerida,
+  anioForm: this.form.get('anio')?.value
+});
+
+    this.updateCalInfo(this.form.get('qnaRecepcion')?.value);
+    this.form.get('qnaRecepcion')?.valueChanges.subscribe(v => this.updateCalInfo(v));
 
     const rfc = this.form.get('rfc')?.value;
     const concepto = this.form.get('concepto')?.value;
@@ -130,6 +145,19 @@ export class TercerosDialog  implements OnDestroy {
       URL.revokeObjectURL(this.pdfObjectUrl);
       this.pdfObjectUrl = null;
     }
+  }
+
+  private updateCalInfo(qna: any) {
+    const q = Number(qna);
+    const arr: CalendarioRecepcion[] = this.data?.calendarioRecepcion ?? [];
+    this.calRecSeleccionado = arr.find(x => Number(x.qnaRecepcion) === q) ?? null;
+  }
+
+  get fechaRecepcionInfo(): string {
+    const iso = this.calRecSeleccionado?.fechaRecepcion;
+    if (!iso) return '—';
+    const d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: '2-digit' });
   }
 
   onPdfSelected(event: Event): void {
