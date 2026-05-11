@@ -14,14 +14,14 @@
 
 /* La fila especial ocupa toda la anchura del grid padre (2 columnas) */
 .form-grid > .full {
-  grid-column: 1 / -1; 
+  grid-column: 1 / -1;
 }
 
 /* Fila interna: 3 columnas para los 3 campos */
 .name-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 4px 16px; 
+  gap: 4px 16px;
 }
 
 .span-3 {
@@ -36,26 +36,10 @@
   width: 100%;
 }
 
-/* ===== Botones ===== */
-.btn {
-  width: 120px;
-  height: 36px;
-  padding: 0 16px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  text-transform: none;
-  letter-spacing: .2px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: none !important;
-  transition: all .18s ease;
-  cursor: pointer;
-  position: relative;
-  background: transparent;
-  border: 2px solid;
+/* Separación extra debajo del bloque de carga de PDF */
+.pdf-upload-row {
+  margin-bottom: 12px;
+  display: block;
 }
 
 .btn-primary {
@@ -67,7 +51,7 @@
 .btn-primary:hover {
   background: #2563eb;
   color: #ffffff;
-  border-color: #2563eb;                           
+  border-color: #2563eb;
   transform: translateY(-1px);
 }
 
@@ -177,7 +161,7 @@ mat-form-field {
 
 :host ::ng-deep .compact-field .mat-mdc-form-field-infix {
   min-height: 40px;
-  padding-top: 4px;
+  padding-top: 8px;
   padding-bottom: 2px;
 }
 
@@ -201,13 +185,13 @@ mat-form-field {
   gap: 4px 16px;
 }
 
-.mat-caption { 
-  margin-top: 6px; 
+.mat-caption {
+  margin-top: 6px;
   color: #d32f2f;
 }
 
-.mat-body-2 { 
+.mat-body-2 {
   display: block;
   margin-bottom: 6px;
-  
+
 }

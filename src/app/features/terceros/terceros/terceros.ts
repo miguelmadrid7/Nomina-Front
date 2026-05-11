@@ -325,7 +325,8 @@ export class Terceros {
 
     dialogRef.afterClosed().subscribe(result => {
       if (!result) return;
-        this.terceroService.registrarNp(result).subscribe({
+        const { archivoPdf, ...payload } = result as any;
+        this.terceroService.registrarNp(payload).subscribe({
           next: (res: any) => {
             if (res?.success) {
               this.dialog.open(PensionAlimenDialog, {
