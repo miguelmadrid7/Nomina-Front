@@ -47,11 +47,11 @@
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>Número documento</mat-label>
         <mat-icon matPrefix>description</mat-icon>
-        <input matInput type="number" formControlName="numeroDocumento">
+        <input matInput formControlName="numeroDocumento" maxlength="9">
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-        <mat-label>Orden*</mat-label>
+        <mat-label>Tipo movimiento*</mat-label>
         <mat-icon matPrefix>reorder</mat-icon>
         <mat-select formControlName="tipoOrden">
           <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t.value">
@@ -84,15 +84,12 @@
 
       <div class="span-3">
         <div class="login-field compact-field with-separator">
-          <label class="mat-body-2" style="display:block; margin-bottom:6px;">Archivo PDF</label>
-          <input
-            type="file"
-            accept="application/pdf"
-            (change)="onPdfSelected($event)">
-          <div *ngIf="archivoPdf" class="mat-caption" style="margin-top:6px;">
+          <label class="mat-body-2">Archivo PDF</label>
+          <input type="file" accept="application/pdf" (change)="onPdfSelected($event)">
+          <div *ngIf="archivoPdf" class="mat-caption">
             {{ archivoPdf.name }}
           </div>
-          <div *ngIf="archivoPdfError" class="mat-caption" style="margin-top:6px; color:#d32f2f;">
+          <div *ngIf="archivoPdfError" class="mat-caption">
             {{ archivoPdfError }}
           </div>
         </div>

@@ -37,7 +37,7 @@ export class TercerosDialog  {
 
   form!: FormGroup;
   estatusOptions = ['Registrado', 'Pendiente', 'Aprobado'];
-  tipoOrdenOptions = [{ label: 'Alta', value: 1 }, { label: 'Pendiente', value: 2 }, { label: 'Aprobado', value: 3 }];
+  tipoOrdenOptions = [{ label: 'Alta', value: 1 }, { label: 'Baja', value: 2 }, { label: 'Cambio', value: 3 }];
   esAltaFlag = false;
   archivoPdf: File | null = null;
   archivoPdfError: string | null = null;
