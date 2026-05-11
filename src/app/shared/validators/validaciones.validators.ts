@@ -1,5 +1,27 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 
+export function busquedaEmpleadoValidator(): ValidatorFn {
+  const nombrePermitido = /^[A-ZÁÉÍÓÚÜÑ\s.\-']+$/i; // letras, espacios, . - '
+  const soloDigitos = /^\d+$/;
+
+  return (control: AbstractControl): ValidationErrors | null => {
+    const raw = control.value;
+    if (raw && typeof raw === 'object') return null;
+    const value = String(raw ?? '').trim();
+    if (!value) return null; 
+    if (value.length > 60) return { busquedaMax: { max: 60 } };
+    const upper = value.toUpperCase();
+    if (esRFC(upper) || esCURP(upper)) return null;
+    if (soloDigitos.test(upper)) {
+      if (upper.length > 10) return { empleadoLongitud: true };
+      return null;
+    }
+    if (upper.length < 3) return { busquedaMin: { min: 3 } };
+    if (!nombrePermitido.test(upper)) return { busquedaCaracteresInvalidos: true };
+    return null;
+  };
+}
+
 export function rfcValidator(): ValidatorFn {
   // Persona Moral: 3 letras/&/Ñ + yymmdd + 3 alfanum
   const moral = /^[A-Z&Ñ]{3}\d{6}[A-Z0-9]{3}$/;
