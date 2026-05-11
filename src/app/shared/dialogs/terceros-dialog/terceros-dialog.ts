@@ -11,7 +11,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { qnaMinimaValidator, qnaRangoValidator } from '../../validators/validaciones.validators';
 import flatpickr from 'flatpickr';
 import { Spanish } from 'flatpickr/dist/l10n/es';
-import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 import { TerceroService } from '../../../core/services/tercero.service';
 
 @Component({
@@ -28,7 +27,6 @@ import { TerceroService } from '../../../core/services/tercero.service';
     MatIconModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    UppercaseDirective
   ],
   templateUrl: './terceros-dialog.html',
   styleUrl: './terceros-dialog.css'
