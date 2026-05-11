@@ -20,6 +20,7 @@ import { Observable, tap, map } from 'rxjs';
 import { MatOptionModule } from '@angular/material/core';
 import { ConceptoAccesoService } from '../../../core/services/concepto-acceso.service';
 import { busquedaEmpleadoValidator } from '../../../shared/validators/validaciones.validators';
+import { CalendarioRecepcion } from '../../../models/calendario-recepcion.model';
 
 @Component({
   selector: 'app-terceros',
@@ -68,6 +69,8 @@ export class Terceros {
   conceptosOptions$!: Observable<any[]>;
   conceptoUnicoPermitido: any | null = null;
 
+  calendarioRecepcion: CalendarioRecepcion[] = [];
+
   constructor(
     private fb: FormBuilder, 
     private snackBar: MatSnackBar,
@@ -90,6 +93,7 @@ export class Terceros {
         empleadoId: [null],
         searchText: ['', [Validators.required, Validators.maxLength(60), busquedaEmpleadoValidator()]],
         concepto: [null, [Validators.required]],
+        anio: [null],
         tipoOrden: [null]
       }),
 
@@ -152,6 +156,22 @@ export class Terceros {
         }
       })
     );
+
+  this.form.get('anio')?.valueChanges.subscribe(anioSeleccionado => {
+  const anio = anioSeleccionado ?? new Date().getFullYear();
+  this.terceroService.getCalendarioRecepcion(anio).subscribe({
+    next: (rows) => {
+      this.calendarioRecepcion = rows ?? [];
+      console.log('Padre - Año solicitado:', anio);
+    console.log('Padre - Calendario recibido:', rows);
+    console.log('Padre - Length:', this.calendarioRecepcion.length);
+  },
+  error: (err) => {
+    console.error('Padre - Error calendario:', err);
+    this.showSnack('No se pudo cargar el calendario de recepción', 'Cerrar', 4000);
+  },
+  });
+});
   }
 
   ngAfterViewInit(): void {
@@ -177,6 +197,32 @@ export class Terceros {
     const qnaDelMes = (now.getDate() <= 15) ? 1 : 2;
     const qna = (mes - 1) * 2 + qnaDelMes;
     return { anio, qna, aaaaqq: anio * 100 + qna };
+  }
+
+  private sugerirQnaRecepcion(cal: CalendarioRecepcion[]): number | null {
+    if (!cal?.length) return null;
+
+    const hoy = new Date();
+    const anioCalendario = Math.floor(Number(cal[0]?.qnaRecepcion ?? 0) / 100);
+    const anioActual = new Date().getFullYear();
+    
+    // Si el calendario es del año actual, buscar QNA vigente
+    if (anioCalendario === anioActual) {
+      const validas = cal
+        .filter(x => !!x.fechaRecepcion && !x.noMovimientos)
+        .map(x => ({ ...x, d: new Date(String(x.fechaRecepcion) + 'T00:00:00') }))
+        .sort((a, b) => a.d.getTime() - b.d.getTime());
+
+      const vigente = validas.find(x => x.d.getTime() >= hoy.getTime());
+      return (vigente ?? validas[0])?.qnaRecepcion ?? null;
+    }
+    
+    // Si es año pasado, usar la primera QNA válida
+    const validas = cal
+      .filter(x => !!x.fechaRecepcion && !x.noMovimientos)
+      .sort((a, b) => Number(a.qnaRecepcion) - Number(b.qnaRecepcion));
+    
+    return validas[0]?.qnaRecepcion ?? null;
   }
 
   buscarEmpleado() {
@@ -293,6 +339,13 @@ export class Terceros {
     const nombres = nombreCompleto.slice(2).join(' ') || '';
     const conceptoSeleccionado = this.form.get('busqueda.concepto')?.value;
 
+    
+
+    if (!this.calendarioRecepcion || this.calendarioRecepcion.length === 0) {
+      this.showSnack('Calendario de recepción no cargado aún', 'Cerrar', 4000);
+      return;
+    }
+
     if (!row?.rfc) {
       this.showSnack('Selecciona un empleado válido', 'Cerrar', 4000);
       return;
@@ -314,7 +367,11 @@ export class Terceros {
             importe: Number(d.importe) || 0,
           }));
 
+    const qnaRecepcionSugerida = this.sugerirQnaRecepcion(this.calendarioRecepcion) ?? this.getCurrentQna().aaaaqq;
     const qnaProceso = this.getCurrentQna().aaaaqq;
+
+    const qnaDesde = qnaRecepcionSugerida;
+
     const dialogRef = this.dialog.open(TercerosDialog, {
       width: '1200px',
       maxWidth: '92vw',
@@ -333,6 +390,9 @@ export class Terceros {
           estatus: row.estatus,
           concepto: conceptoSeleccionado,
           qnaProceso,
+          qnaDesde,
+          calendarioRecepcion: this.calendarioRecepcion,
+          qnaRecepcionSugerida,
           detalles
         }
     });

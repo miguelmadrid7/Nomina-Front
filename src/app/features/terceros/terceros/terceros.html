@@ -23,6 +23,13 @@
     </div>
 
     <form *ngIf="form" [formGroup]="form">
+        <mat-form-field appearance="outline" class="login-field compact-field">
+            <mat-label>Año calendario</mat-label>
+                <mat-select formControlName="anio">
+                    <mat-option *ngFor="let a of anio" [value]="a">{{ a }}</mat-option>
+                </mat-select>
+        </mat-form-field>
+
         <div formGroupName="busqueda" class="global-search">
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                 <mat-icon matPrefix>search</mat-icon>
