@@ -32,12 +32,19 @@
                          #searchInput
                         id="buscarEmpleado"
                         formControlName="searchText"
+                        maxlength="60"
                         [matAutocomplete]="auto"
                         #autocompleteTrigger="matAutocompleteTrigger" 
                         (keyup.enter)="buscarEmpleado()"
                         (input)="enforceUppercase($event)">
 
-                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="empleadoSeleccionado($event.option.value)" [displayWith]="displayEmpleado">
+                            <mat-error *ngIf="form.get('busqueda.searchText')?.hasError('required')"> Captura un criterio de búsqueda </mat-error>
+                            <mat-error *ngIf="form.get('busqueda.searchText')?.hasError('maxlength') || form.get('busqueda.searchText')?.hasError('busquedaMax')"> Máximo 60 caracteres </mat-error>
+                            <mat-error *ngIf="form.get('busqueda.searchText')?.hasError('busquedaMin')"> Mínimo 3 caracteres </mat-error>
+                            <mat-error *ngIf="form.get('busqueda.searchText')?.hasError('empleadoLongitud')"> Número de empleado demasiado largo</mat-error>
+                            <mat-error *ngIf="form.get('busqueda.searchText')?.hasError('busquedaCaracteresInvalidos')"> Solo letras, números, espacios y - . ' </mat-error>
+
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="empleadoSeleccionado($event.option.value)" [displayWith]="displayEmpleado">
                     <mat-option *ngFor="let emp of resultado" [value]="emp">
                         {{ displayEmpleado(emp) }} 
                     </mat-option>

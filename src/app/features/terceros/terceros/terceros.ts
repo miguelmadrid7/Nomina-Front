@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild, NgZone, ChangeDetectorRef } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -19,6 +19,7 @@ import { EmpleadoItem } from '../../../models/emplado.model';
 import { Observable, tap, map } from 'rxjs';
 import { MatOptionModule } from '@angular/material/core';
 import { ConceptoAccesoService } from '../../../core/services/concepto-acceso.service';
+import { busquedaEmpleadoValidator } from '../../../shared/validators/validaciones.validators';
 
 @Component({
   selector: 'app-terceros',
@@ -87,8 +88,8 @@ export class Terceros {
 
       busqueda: this.fb.group({
         empleadoId: [null],
-        searchText: [''],
-        concepto: [null],
+        searchText: ['', [Validators.required, Validators.maxLength(60), busquedaEmpleadoValidator()]],
+        concepto: [null, [Validators.required]],
         tipoOrden: [null]
       }),
 
@@ -124,9 +125,22 @@ export class Terceros {
 
     this.conceptosOptions$ = this.terceroService.obtenerConceptos().pipe(
       map((rows: any[]) => {
-        if (!permitidos || permitidos.length === 0) return rows ?? [];
-        const allowed = new Set(permitidos.map(c => String(c).trim().toUpperCase()));
-        return (rows ?? []).filter(r => allowed.has(String(r?.cve ?? '').trim().toUpperCase()));
+        const input = rows ?? [];
+
+        const filtered = (!permitidos || permitidos.length === 0)
+          ? input
+          : (() => {
+              const allowed = new Set(permitidos.map(c => String(c).trim().toUpperCase()));
+              return input.filter(r => allowed.has(String(r?.cve ?? '').trim().toUpperCase()));
+            })();
+
+        const uniq = new Map<string, any>();
+        for (const r of filtered) {
+          const key = `${String(r?.cve ?? '').trim().toUpperCase()}|${String(r?.percDed ?? '').trim().toUpperCase()}`;
+          if (!uniq.has(key)) uniq.set(key, r);
+        }
+
+        return Array.from(uniq.values());
       }),
       tap((rows: any[]) => {
         if ((permitidos?.length ?? 0) === 1 && (rows?.length ?? 0) === 1) {
