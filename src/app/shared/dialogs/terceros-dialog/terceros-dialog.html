@@ -34,6 +34,14 @@
                 <span>{{ form.get('apellidoPaterno')?.value || '—' }} {{ form.get('apellidoMaterno')?.value || '—' }} {{ form.get('nombres')?.value || '—' }} </span>
               </div>
         </div>
+
+        <div class="info-field">
+          <mat-icon>person</mat-icon>
+              <div class="info-content">
+                <span class="info-label">CONCEPTO SELECCIONADO</span>
+                <span>{{ form.get('concepto')?.value || '—' }}</span>
+              </div>
+        </div>
       </mat-card-content>
     </mat-card>
 
@@ -58,12 +66,6 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-        <mat-label>Importe mensual*</mat-label>
-        <mat-icon matPrefix>attach_money</mat-icon>
-        <input matInput type="number" formControlName="importeMensual">
-      </mat-form-field>
-
       <mat-form-field *ngIf="!esAltaFlag" appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>Estatus*</mat-label>
         <mat-icon matPrefix>rule</mat-icon>
@@ -72,13 +74,11 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field *ngIf="form?.get('concepto')" appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-        <mat-label>Concepto*</mat-label>
-        <mat-icon matPrefix>reorder</mat-icon>
-          <input matInput formControlName="concepto" readonly>
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Importe mensual*</mat-label>
+        <mat-icon matPrefix>attach_money</mat-icon>
+        <input matInput type="number" formControlName="importeMensual">
       </mat-form-field>
-
-      <div class="grid-empty"></div>
 
       <div class="span-3 pdf-upload-row">
         <div class="login-field compact-field with-separator">
@@ -90,6 +90,14 @@
           <div *ngIf="archivoPdfError" class="mat-caption">
             {{ archivoPdfError }}
           </div>
+        </div>
+
+        <div *ngIf="pdfPreviewUrl" class="pdf-preview">
+          <div class="pdf-preview-toolbar">
+            <button type="button" class="btn btn-primary" (click)="abrirPdfEnNuevaPestana()">Abrir PDF </button>
+          </div>
+
+          <iframe [src]="pdfPreviewUrl" title="Previsualización PDF"></iframe>
         </div>
       </div>
 

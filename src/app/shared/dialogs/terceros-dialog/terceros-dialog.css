@@ -21,7 +21,7 @@
 
 .form-grid{
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   align-items: start;
   justify-content: start;
@@ -203,5 +203,28 @@ mat-form-field {
 .mat-body-2 {
   display: block;
   margin-bottom: 6px;
+}
 
+.pdf-preview {
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  height: 420px;
+}
+
+.pdf-preview-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+  background: #f9fafb;
+}
+
+.pdf-preview iframe {
+  width: 100%;
+  height: calc(100% - 50px);
+  border: 0;
+  display: block;
 }

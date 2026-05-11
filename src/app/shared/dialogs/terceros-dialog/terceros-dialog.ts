@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
@@ -13,6 +13,7 @@ import flatpickr from 'flatpickr';
 import { Spanish } from 'flatpickr/dist/l10n/es';
 import { TerceroService } from '../../../core/services/tercero.service';
 import { MatCardModule } from '@angular/material/card';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-terceros-dialog',
@@ -33,7 +34,7 @@ import { MatCardModule } from '@angular/material/card';
   templateUrl: './terceros-dialog.html',
   styleUrl: './terceros-dialog.css'
 })
-export class TercerosDialog  {
+export class TercerosDialog  implements OnDestroy {
 
   form!: FormGroup;
   estatusOptions = ['Registrado', 'Pendiente', 'Aprobado'];
@@ -42,12 +43,12 @@ export class TercerosDialog  {
   archivoPdf: File | null = null;
   archivoPdfError: string | null = null;
 
-  constructor(
-    private fb: FormBuilder,
-    private ref: MatDialogRef<TercerosDialog>,
-    private terceroService: TerceroService,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
+  pdfPreviewUrl: SafeResourceUrl | null = null;
+  private pdfObjectUrl: string | null = null;
+
+  constructor(private fb: FormBuilder, private ref: MatDialogRef<TercerosDialog>, 
+              private terceroService: TerceroService,  @Inject(MAT_DIALOG_DATA) public data: any,
+              private sanitizer: DomSanitizer,) {}
 
   ngOnInit(): void {
     if (!this.data) {
@@ -124,22 +125,47 @@ export class TercerosDialog  {
     });
   }
 
+  ngOnDestroy(): void {
+    if (this.pdfObjectUrl) {
+      URL.revokeObjectURL(this.pdfObjectUrl);
+      this.pdfObjectUrl = null;
+    }
+  }
+
   onPdfSelected(event: Event): void {
     const input = event.target as HTMLInputElement | null;
     const file = input?.files?.[0] ?? null;
+
     this.archivoPdfError = null;
     this.archivoPdf = null;
 
+    // Limpia preview anterior
+    this.pdfPreviewUrl = null;
+    if (this.pdfObjectUrl) {
+      URL.revokeObjectURL(this.pdfObjectUrl);
+      this.pdfObjectUrl = null;
+    }
+
     if (!file) return;
 
-    const isPdf = (file.type || '').toLowerCase() === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    const isPdf =
+      (file.type || '').toLowerCase() === 'application/pdf' ||
+      file.name.toLowerCase().endsWith('.pdf');
+
     if (!isPdf) {
       this.archivoPdfError = 'Solo se permite archivo PDF.';
       if (input) input.value = '';
       return;
     }
 
+    // PDF válido: asigna archivo + preview informativo
     this.archivoPdf = file;
+    this.pdfObjectUrl = URL.createObjectURL(file);
+    this.pdfPreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.pdfObjectUrl);
+  }
+
+  abrirPdfEnNuevaPestana(): void {
+    if (this.pdfObjectUrl) window.open(this.pdfObjectUrl, '_blank');
   }
 
   get esAlta(): boolean {
