@@ -221,9 +221,9 @@
 
 /* SELECT DE AÑO CALENDARIO MÁS CORTO */
 .anio-select-compact {
-  width: 150px !important;
-  min-width: 150px !important;
-  max-width: 150px !important;
+  width: 160px !important;
+  min-width: 160px !important;
+  max-width: 160px !important;
 }
 
 :host ::ng-deep .anio-select-compact .mat-mdc-form-field-infix {
