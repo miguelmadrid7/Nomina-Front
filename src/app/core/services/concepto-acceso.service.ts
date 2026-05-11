@@ -10,9 +10,9 @@ export class ConceptoAccesoService {
     if (roles.includes(1)) return null;
 
     const permitidos: string[] = [];
-    if (roles.includes(3)) permitidos.push('NP');
-    if (roles.includes(7)) permitidos.push('5L');
-    if (roles.includes(8)) permitidos.push('6L');
+      if (roles.includes(3)) permitidos.push('NP');
+      if (roles.includes(7)) permitidos.push('5L');
+      if (roles.includes(8)) permitidos.push('6L');
 
     return permitidos.length > 0 ? Array.from(new Set(permitidos)) : null;
   }
