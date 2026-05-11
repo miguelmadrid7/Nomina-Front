@@ -5,6 +5,7 @@ import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../../models/api-Response.model';
 import { Empleado } from '../../features/servicios/empleado';
 import { RegistroNp } from '../../models/terceros.model';
+import { CalendarioRecepcion } from '../../models/calendario-recepcion.model';
 
 @Injectable({ providedIn: 'root' })
 export class TerceroService {
@@ -43,6 +44,7 @@ export class TerceroService {
       );
     }
 
+    // Se obtienen los los registro por medio del concepto
     obtenerRegistrosNp(params: {
       qnaProceso?: number | null;
       concepto?: string | null;
@@ -69,6 +71,7 @@ export class TerceroService {
         );
     }
 
+    // Se obtienen el numero total de los registros por qna y por concepto
     obtenerConteoPorConcepto(qnaProceso: number): Observable<Array<{ cve: string; total: number }>> {
       const params = new HttpParams().set('qnaProceso', String(qnaProceso));
       return this.http
@@ -111,5 +114,23 @@ export class TerceroService {
       if (qnaProceso != null) params = params.set('qnaProceso', String(qnaProceso));
       if (concepto) params = params.set('concepto', String(concepto).trim());
       return this.http.get(`${this.base}/nom-emp-pza-cpto/registros-np/pdf`, {params,responseType: 'blob',});
+    }
+
+    getCalendarioRecepcion(anio: number) {
+      return this.http
+        .get<ApiResponse<CalendarioRecepcion[]>>(`${this.base}/nom-emp-pza-cpto`, {
+          params: { anio }
+        })
+        .pipe(
+          map(res => res?.data ?? [])
+        );
+    }
+
+    getCalendarioRecepcionPorQna(qnaRecepcion: number) {
+      return this.http
+        .get<ApiResponse<CalendarioRecepcion>>(`${this.base}/nom-emp-pza-cpto/${qnaRecepcion}`)
+        .pipe(
+          map(res => res?.data ?? null)
+        );
     }
 }
