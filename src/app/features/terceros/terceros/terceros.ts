@@ -65,7 +65,6 @@ export class Terceros {
   cargandoBusqueda = false;
   showFilters = true;
   search: string = '';
-  private filters: { [key: string]: any } = {};
   qnaProceso!: number;
   conceptosOptions$!: Observable<any[]>;
   conceptoUnicoPermitido: any | null = null;
