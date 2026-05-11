@@ -2,6 +2,8 @@
 .dlg-bar-title {
   justify-content: center;
   align-items: center;
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
 
 /* GRID LAYOUT */
@@ -15,6 +17,14 @@
 /* La fila especial ocupa toda la anchura del grid padre (2 columnas) */
 .form-grid > .full {
   grid-column: 1 / -1;
+}
+
+.form-grid{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  align-items: start;
+  justify-content: start;
 }
 
 /* Fila interna: 3 columnas para los 3 campos */

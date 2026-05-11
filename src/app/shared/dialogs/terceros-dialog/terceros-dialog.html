@@ -6,44 +6,42 @@
   </div>
 
   <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
-    
-    <div class="dlg-bar-title">Editar Tercero</div>
+    <div class="dlg-bar-title">Detalle Tercero</div>
+
+    <mat-card class="form-card">
+      <mat-card-content class="form-grid">
+        
+        <div class="info-field">
+          <mat-icon>person</mat-icon>
+            <div class="info-content">
+              <span class="info-label">CURP</span>
+              <span>{{ form.get('curp')?.value || '—' }}</span>
+            </div>
+        </div>
+
+        <div class="info-field">
+          <mat-icon>person</mat-icon>
+              <div class="info-content">
+                <span class="info-label">RFC</span>
+                <span>{{ form.get('rfc')?.value || '—' }}</span>
+              </div>
+        </div>
+
+        <div class="info-field">
+          <mat-icon>person</mat-icon>
+              <div class="info-content">
+                <span class="info-label">NOMBRE EMPLEADO</span>
+                <span>{{ form.get('apellidoPaterno')?.value || '—' }} {{ form.get('apellidoMaterno')?.value || '—' }} {{ form.get('nombres')?.value || '—' }} </span>
+              </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
 
     <div class="section-divider"></div>
 
+    <div class="dlg-bar-title">Registro de Tercero</div>
+
     <div class="form-grid">
-      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-        <mat-label>RFC*</mat-label>
-        <mat-icon matPrefix>badge</mat-icon>
-        <input matInput formControlName="rfc" class="uppercase-input">
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-        <mat-label>CURP*</mat-label>
-        <mat-icon matPrefix>fingerprint</mat-icon>
-        <input matInput formControlName="curp" class="uppercase-input">
-      </mat-form-field>
-
-      <div class="name-row span-3">
-        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-          <mat-label>Apellido paterno*</mat-label>
-          <mat-icon matPrefix>person</mat-icon>
-          <input matInput formControlName="apellidoPaterno" class="uppercase-input">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-          <mat-label>Apellido materno*</mat-label>
-          <mat-icon matPrefix>person</mat-icon>
-          <input matInput formControlName="apellidoMaterno" class="uppercase-input">
-        </mat-form-field>
-        
-        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-          <mat-label>Nombres</mat-label>
-          <mat-icon matPrefix>person</mat-icon>
-          <input matInput formControlName="nombres" class="uppercase-input">
-        </mat-form-field>
-      </div>
-
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>Número documento</mat-label>
         <mat-icon matPrefix>description</mat-icon>

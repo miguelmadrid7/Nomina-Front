@@ -12,6 +12,7 @@ import { qnaMinimaValidator, qnaRangoValidator } from '../../validators/validaci
 import flatpickr from 'flatpickr';
 import { Spanish } from 'flatpickr/dist/l10n/es';
 import { TerceroService } from '../../../core/services/tercero.service';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-terceros-dialog',
@@ -27,6 +28,7 @@ import { TerceroService } from '../../../core/services/tercero.service';
     MatIconModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatCardModule,
   ],
   templateUrl: './terceros-dialog.html',
   styleUrl: './terceros-dialog.css'
