@@ -107,6 +107,14 @@
   text-align: center;
 }
 
+.table-global .mat-column-curp {
+  width: 140px !important;
+  min-width: 140px !important;
+  max-width: 140px !important;
+  text-align: center;
+}
+
+
 .table-global .mat-column-nombreCompleto {
   width: 150px !important;
   min-width: 150px !important;
@@ -115,9 +123,9 @@
 }
 
 .table-global .mat-column-numeroOrden {
-    width: 120px !important;
-    min-width: 120px !important;
-    max-width: 120px !important;
+    width: 110px !important;
+    min-width: 110px !important;
+    max-width: 110px !important;
     text-align: center !important;
 }
 
@@ -129,9 +137,9 @@
 }
 
 .table-global .mat-column-importeMensual {
-    width: 120px !important;
-    min-width: 120px !important;
-    max-width: 120px !important;
+    width: 105px !important;
+    min-width: 105px !important;
+    max-width: 105px !important;
     text-align: center !important;
 }
 
@@ -159,9 +167,9 @@
 
 
 .table-global .mat-column-fechaRegistro {
-  width: 110px !important;
-  min-width: 110px !important;
-  max-width: 110px !important;
+  width: 180px !important;
+  min-width: 180px !important;
+  max-width: 180px !important;
   text-align: center;
 }
 
@@ -212,6 +220,23 @@
 
 .header-select-orden {
   max-width: 150px !important; /* prueba 140/160/180 según te guste */
+}
+
+.header-text-input {
+    width: 100% !important;
+    max-width: 100px !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+:host ::ng-deep .header-text-input .mat-mdc-form-field-infix {
+    min-height: 28px !important;
+    padding-top: 2px !important;
+    padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .header-text-input .mat-mdc-text-field-wrapper {
+    height: 32px !important;
 }
 
 .qna-filters-container {

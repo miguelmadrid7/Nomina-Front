@@ -64,6 +64,7 @@
                 <div class="table-content">
                     <div class="table-scroll">
                         <table mat-table [dataSource]="dataSource" class="table-global">
+                            
                             <ng-container matColumnDef="validar">
                                 <th mat-header-cell *matHeaderCellDef class="header-with-select"> VALIDAR
                                     <div class="header-column">
@@ -80,16 +81,6 @@
                                 </td>
                             </ng-container>
 
-                            <ng-container matColumnDef="rfc">
-                                <th mat-header-cell *matHeaderCellDef> RFC </th>
-                                <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
-                            </ng-container>
-
-                             <ng-container matColumnDef="curp">
-                                <th mat-header-cell *matHeaderCellDef> CURP </th>
-                                <td mat-cell *matCellDef="let e">{{ e.curp }}</td>
-                            </ng-container>
-
                             <ng-container matColumnDef="nombreCompleto">
                                 <th mat-header-cell *matHeaderCellDef>NOMBRE COMPLETO</th>
                                 <td mat-cell *matCellDef="let e">{{ e.nombreTrabajador  }}</td>
@@ -101,6 +92,33 @@
                             </ng-container>
 
                             <div [formGroup]="filtrosTabla">
+
+                                
+                            <ng-container matColumnDef="rfc">
+                                <th mat-header-cell *matHeaderCellDef class="header-with-select"> RFC
+                                    <div class="header-column">
+                                        <mat-form-field appearance="outline" class="header-text-input" floatLabel="always">
+                                            <mat-label>Buscar</mat-label>
+                                            <input matInput formControlName="rfc"  (keydown.enter)="buscar()">
+                                        </mat-form-field>
+                                    </div>
+                                </th>
+                                <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
+                            </ng-container>
+
+                             <ng-container matColumnDef="curp">
+                                <th mat-header-cell *matHeaderCellDef class="header-with-select"> CURP
+                                    <div class="header-column">
+                                        <mat-form-field appearance="outline" class="header-text-input" floatLabel="always">
+                                            <mat-label>Buscar</mat-label>
+                                            <input matInput formControlName="curp"  (keydown.enter)="buscar()">
+                                        </mat-form-field>
+                                    </div>
+                                </th>
+                                <td mat-cell *matCellDef="let e">{{ e.curp }}</td>
+                            </ng-container>
+
+
                                 <ng-container matColumnDef="tipoOrden">
                                         <th mat-header-cell *matHeaderCellDef class="header-with-select"> ORDEN
                                             <div class="header-column estatus-column">

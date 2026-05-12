@@ -13,6 +13,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { finalize } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-consulta-terceros',
@@ -26,7 +27,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatTableModule,
     MatPaginatorModule,
     MatRadioModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatInputModule
   ],
   templateUrl: './consulta-terceros.html',
   styleUrl: './consulta-terceros.css'
@@ -80,7 +82,8 @@ export class ConsultaTerceros {
         anio: [null],
         quincena: [null],
         estatus: [null],
-
+        rfc: [null],
+        curp: [null],
     });
       this.cargarConceptos();
       this.form.get('busqueda.tipoConcepto')?.valueChanges.subscribe(tipo => {
@@ -92,13 +95,14 @@ export class ConsultaTerceros {
       this.paginator?.firstPage();
       this.loadRegistros(0, this.pageSize);
     });
+  }
 
-    this.filtrosTabla.valueChanges.subscribe(() => {
-      this.pageIndex = 0;
-      this.paginator?.firstPage();
-      this.loadConteos();
-      this.loadRegistros(0, this.pageSize);
-    });
+  buscar(): void {
+    this.pageIndex = 0;
+    this.paginator?.firstPage();
+
+    this.loadConteos();
+    this.loadRegistros(0, this.pageSize);
   }
 
   cargarConceptos(){
@@ -317,7 +321,9 @@ export class ConsultaTerceros {
       next: (res) => {
         this.dataSource.data = res.rows;
         const tipoOrdenSel = this.filtrosTabla.get('tipoOrden')?.value; 
-        const estatusSel = this.filtrosTabla.get('estatus')?.value;     
+        const estatusSel = this.filtrosTabla.get('estatus')?.value;
+        const rfcSel = this.filtrosTabla.get('rfc')?.value;
+        const curpSel = this.filtrosTabla.get('curp')?.value;     
         let rows = res.rows ?? [];
 
         if (tipoOrdenSel != null && tipoOrdenSel !== '') {
@@ -327,6 +333,14 @@ export class ConsultaTerceros {
 
         if (estatusSel != null && estatusSel !== '') {
           rows = rows.filter((r: any) => String(r?.estatus ?? '').trim() === String(estatusSel).trim());
+        }
+
+        if (rfcSel != null && rfcSel !== '') {
+          rows = rows.filter((r: any) => String(r?.rfc ?? '').toLowerCase().includes(String(rfcSel).toLowerCase()));
+        }
+
+        if (curpSel != null && curpSel !== '') {
+          rows = rows.filter((r: any) => String(r?.curp ?? '').toLowerCase().includes(String(curpSel).toLowerCase()));
         }
 
         this.dataSource.data = rows;
@@ -356,7 +370,7 @@ export class ConsultaTerceros {
     );
 
     this.filtrosTabla.reset(
-      { tipoOrden: null, anio: null, quincena: null },
+      { tipoOrden: null, anio: null, quincena: null, rfc: null, curp: null },
       { emitEvent: false }
     );
 
