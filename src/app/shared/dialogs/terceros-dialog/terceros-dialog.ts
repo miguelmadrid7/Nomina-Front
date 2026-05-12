@@ -43,17 +43,14 @@ export class TercerosDialog  implements OnDestroy {
   esAltaFlag = false;
   archivoPdf: File | null = null;
   archivoPdfError: string | null = null;
-
   calRecSeleccionado: CalendarioRecepcion | null = null;
-
   pdfPreviewUrl: SafeResourceUrl | null = null;
   private pdfObjectUrl: string | null = null;
 
-  constructor(private fb: FormBuilder, 
-              private ref: MatDialogRef<TercerosDialog>, 
-              private terceroService: TerceroService, 
+  constructor(private fb: FormBuilder, private ref: MatDialogRef<TercerosDialog>, 
+              private terceroService: TerceroService, private sanitizer: DomSanitizer,
               @Inject(MAT_DIALOG_DATA) public data: any,
-              private sanitizer: DomSanitizer) {}
+            ) {}
 
   ngOnInit(): void {
     if (!this.data) {
@@ -88,12 +85,6 @@ export class TercerosDialog  implements OnDestroy {
         qnaRangoValidator()
       ]
     });
-
-    console.log('Hijo - Data recibida:', {
-  calendarioRecepcion: this.data?.calendarioRecepcion?.length,
-  qnaRecepcionSugerida: this.data?.qnaRecepcionSugerida,
-  anioForm: this.form.get('anio')?.value
-});
 
     this.updateCalInfo(this.form.get('qnaRecepcion')?.value);
     this.form.get('qnaRecepcion')?.valueChanges.subscribe(v => this.updateCalInfo(v));
@@ -133,7 +124,7 @@ export class TercerosDialog  implements OnDestroy {
   ngAfterViewInit() {
     flatpickr('#fechaHoraInput', {
       enableTime: true,
-      dateFormat: 'Y-m-d H:i',
+      dateFormat: 'd-m-Y h:i K',
       defaultDate: new Date(),
       time_24hr: true,
       locale: Spanish,

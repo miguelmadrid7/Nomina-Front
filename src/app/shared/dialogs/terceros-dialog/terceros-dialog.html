@@ -9,7 +9,6 @@
     
     <div class="dlg-bar-title">Detalle Tercero</div>
     
-    
     <div class="dlg-recepcion" *ngIf="calRecSeleccionado">
       <strong>Fecha de recepción:</strong> {{ fechaRecepcionInfo }}
       <span *ngIf="calRecSeleccionado.noMovimientos"> | No movimientos</span>
@@ -45,7 +44,7 @@
         </div>
 
         <div class="info-field">
-          <mat-icon>person</mat-icon>
+          <mat-icon>checklist</mat-icon>
               <div class="info-content">
                 <span class="info-label">CONCEPTO SELECCIONADO</span>
                 <span>{{ form.get('concepto')?.value || '—' }}</span>
@@ -53,7 +52,7 @@
         </div>
 
         <div class="info-field">
-          <mat-icon>person</mat-icon>
+          <mat-icon>event_available</mat-icon>
               <div class="info-content">
                 <span class="info-label">QNA DE RECEPCION </span>
                 <span>{{ form.get('qnaRecepcion')?.value || '—' }}</span>
