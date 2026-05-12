@@ -117,20 +117,30 @@ export class TerceroService {
     }
 
     getCalendarioRecepcion(anio: number) {
-      return this.http
-        .get<ApiResponse<CalendarioRecepcion[]>>(`${this.base}/nom-emp-pza-cpto`, {
-          params: { anio }
-        })
-        .pipe(
-          map(res => res?.data ?? [])
-        );
+      return this.http.get<ApiResponse<CalendarioRecepcion[]>>(`${this.base}/nom-emp-pza-cpto`, { params: { anio } })
+        .pipe( map(res => res?.data ?? []));
     }
 
     getCalendarioRecepcionPorQna(qnaRecepcion: number) {
-      return this.http
-        .get<ApiResponse<CalendarioRecepcion>>(`${this.base}/nom-emp-pza-cpto/${qnaRecepcion}`)
-        .pipe(
-          map(res => res?.data ?? null)
-        );
+      return this.http .get<ApiResponse<CalendarioRecepcion>>(`${this.base}/nom-emp-pza-cpto/${qnaRecepcion}`)
+        .pipe(map(res => res?.data ?? null));
     }
+
+    uploadDocumento(file: File, rfc: string, numeroDocumento: string, qnaProceso: number): Observable<ApiResponse<any>> {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('rfc', rfc);
+  formData.append('numeroDocumento', numeroDocumento);
+  formData.append('qnaProceso', qnaProceso.toString());
+  formData.append('usuarioId', '1');
+  return this.http.post<ApiResponse<any>>(`${this.base}/nom-emp-pza-cpto/upload`, formData);
+}
+
+obtenerDocumentosPorEmpleado(tabEmpleadoId: number) {
+  return this.http.get<ApiResponse<any[]>>(`${this.base}/nom-emp-pza-cpto/documentos/${tabEmpleadoId}`);
+}
+
+descargarPdf(documentoId: number) {
+  return this.http.get(`${this.base}/nom-emp-pza-cpto/download/${documentoId}`, {responseType: 'blob'});
+}
 }
