@@ -223,9 +223,9 @@
 }
 
 .header-text-input {
-    width: 100% !important;
-    max-width: 100px !important;
-    margin: 0 auto !important;
+    width: 140px !important;
+    max-width: 140px !important;
+    margin: 4px auto !important;
     text-align: center !important;
 }
 
