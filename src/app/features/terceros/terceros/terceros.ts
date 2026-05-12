@@ -21,6 +21,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { ConceptoAccesoService } from '../../../core/services/concepto-acceso.service';
 import { busquedaEmpleadoValidator } from '../../../shared/validators/validaciones.validators';
 import { CalendarioRecepcion } from '../../../models/calendario-recepcion.model';
+import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 
 @Component({
   selector: 'app-terceros',
@@ -36,8 +37,9 @@ import { CalendarioRecepcion } from '../../../models/calendario-recepcion.model'
     MatPaginatorModule,
     MatAutocompleteModule,
     MatInputModule,
-    MatOptionModule
-  ],
+    MatOptionModule,
+    UppercaseDirective
+],
   templateUrl: './terceros.html',
   styleUrl: './terceros.css'
 })
@@ -446,10 +448,4 @@ export class Terceros {
       this.paginator?.firstPage?.();
       this.cd.markForCheck();
   }
-
-  enforceUppercase(evt: Event) {
-    const input = evt.target as HTMLInputElement;
-    input.value = (input.value ?? '').toUpperCase();
-  }
-
 }

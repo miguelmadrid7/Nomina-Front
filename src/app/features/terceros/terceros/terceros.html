@@ -36,7 +36,7 @@
                         [matAutocomplete]="auto"
                         #autocompleteTrigger="matAutocompleteTrigger" 
                         (keyup.enter)="buscarEmpleado()"
-                        (input)="enforceUppercase($event)">
+                        appUppercase>
 
                             <mat-error *ngIf="form.get('busqueda.searchText')?.hasError('required')"> Captura un criterio de búsqueda </mat-error>
                             <mat-error *ngIf="form.get('busqueda.searchText')?.hasError('maxlength') || form.get('busqueda.searchText')?.hasError('busquedaMax')"> Máximo 60 caracteres </mat-error>
