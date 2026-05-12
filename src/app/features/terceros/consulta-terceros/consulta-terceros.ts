@@ -271,8 +271,6 @@ export class ConsultaTerceros {
   }
 
   verDocumentos(row: any) {
-     console.log('Datos completos de la fila:', row);
-    console.log('Campos disponibles:', Object.keys(row));
     if (!row.tabEmpleadoId) {
         this.showSnack('No se encontró ID del empleado', 'Cerrar', 4000);
         return;
@@ -280,20 +278,13 @@ export class ConsultaTerceros {
 
     this.terceroService.obtenerDocumentosPorEmpleado(row.tabEmpleadoId).subscribe({
         next: (res: any) => {
-            console.log('=== DEPURACIÓN OBTENER DOCUMENTOS ===');
-            console.log('Respuesta completa:', res);
-            console.log('res.success:', res?.success);
-            console.log('res.data:', res?.data);
-            console.log('res.data.length:', res?.data?.length);
-            console.log('=== FIN DEPURACIÓN ===');
             if (res?.success && res?.data?.length > 0) {
                 this.mostrarListaDocumentos(res.data, row);
             } else {
                 this.showSnack('No se encontraron documentos para este empleado', 'Cerrar', 4000);
             }
         },
-        error: (err) => {
-            console.log('Error al obtener documentos:', err);
+        error: () => {
             this.showSnack('Error al obtener documentos', 'Cerrar', 4000);
         }
     });

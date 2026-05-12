@@ -15,6 +15,7 @@ import { TerceroService } from '../../../core/services/tercero.service';
 import { MatCardModule } from '@angular/material/card';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CalendarioRecepcion } from '../../../models/calendario-recepcion.model';
+import { ApiResponse } from '../../../models/api-Response.model';
 
 @Component({
   selector: 'app-terceros-dialog',
@@ -215,13 +216,13 @@ export class TercerosDialog  implements OnDestroy {
     const value = this.form.getRawValue();
 
     value.nombreTrabajador = [
-    value.apellidoPaterno,
-    value.apellidoMaterno,
-    value.nombres,
-      ].map((x: any) => (x ?? '').toString().trim())
-        .filter(Boolean)
-        .join(' ')
-        .trim();
+      value.apellidoPaterno,
+      value.apellidoMaterno,
+      value.nombres,
+    ].map((x: any) => (x ?? '').toString().trim())
+      .filter(Boolean)
+      .join(' ')
+      .trim();
     
     const desdeNum =
       value.qnaDesde !== null && value.qnaDesde !== undefined && value.qnaDesde !== ''
@@ -242,12 +243,49 @@ export class TercerosDialog  implements OnDestroy {
         ? Number(value.numeroDocumento)
         : null;
 
-    this.ref.close({
-      ...value,
-      archivoPdf: this.archivoPdf,
-    });
+    // Si hay PDF, subirlo primero y luego guardar
+    if (this.archivoPdf) {
+      this.terceroService.uploadDocumento(
+        this.archivoPdf,
+        this.form.get('rfc')?.value || '',
+        this.form.get('numeroDocumento')?.value || '',
+        this.form.get('qnaProceso')?.value || 0
+      ).subscribe({
+        next: (response: ApiResponse<any>) => {
+          if (response.success) {
+            console.log('PDF subido exitosamente:', response.data);
+            // Ahora sí cerrar el diálogo con todos los datos
+            this.ref.close({
+              ...value,
+              archivoPdf: this.archivoPdf,
+              documentoInfo: response.data // Incluir info del documento guardado
+            });
+          } else {
+            console.error('Error al subir PDF:', response.message);
+            // Opcional: mostrar error al usuario pero continuar con el guardado
+            this.ref.close({
+              ...value,
+              archivoPdf: this.archivoPdf
+            });
+          }
+        },
+        error: (error) => {
+          console.error('Error al subir PDF:', error);
+          // Incluso si falla el upload, continuar con el guardado
+          this.ref.close({
+            ...value,
+            archivoPdf: this.archivoPdf
+          });
+        }
+      });
+    } else {
+      // Si no hay PDF, cerrar directamente
+      this.ref.close({
+        ...value,
+        archivoPdf: null
+      });
+    }
   }
-
   formatDate(date: Date): string {
     return new Date(date).toLocaleString();
   }
