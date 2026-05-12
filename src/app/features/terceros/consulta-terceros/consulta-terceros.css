@@ -165,6 +165,12 @@
     text-align: center !important;
 }
 
+.table-global .mat-column-documento {
+  width: 100px !important;
+  min-width: 100px !important;
+  max-width: 100px !important;
+  text-align: center;
+}
 
 .table-global .mat-column-fechaRegistro {
   width: 180px !important;
@@ -229,6 +235,19 @@
     text-align: center !important;
 }
 
+.header-text-input-small {
+    width: 110px !important;
+    max-width: 110px !important;
+    margin: 4px auto !important;
+    text-align: center !important;
+}
+
+:host ::ng-deep .header-text-input-small .mat-mdc-form-field-infix {
+    min-height: 28px !important;
+    padding-top: 2px !important;
+    padding-bottom: 0 !important;
+}
+
 :host ::ng-deep .header-text-input .mat-mdc-form-field-infix {
     min-height: 28px !important;
     padding-top: 2px !important;
@@ -236,6 +255,10 @@
 }
 
 :host ::ng-deep .header-text-input .mat-mdc-text-field-wrapper {
+    height: 32px !important;
+}
+
+:host ::ng-deep .header-text-input-small .mat-mdc-text-field-wrapper {
     height: 32px !important;
 }
 

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NominaRow } from '../../../models/nomina-Row.model';
 import { CommonModule } from '@angular/common';
@@ -14,6 +14,8 @@ import { finalize } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
+import { DocumentoTerceroDialog } from '../../../shared/dialogs/documento-tercero-dialog/documento-tercero-dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-consulta-terceros',
@@ -38,7 +40,7 @@ export class ConsultaTerceros {
   @ViewChild(MatPaginator) paginator?: MatPaginator;
 
   dataSource = new MatTableDataSource<NominaRow>([]);
-  displayedColumns: string[] = [ 'validar', 'rfc', 'curp', 'nombreCompleto', 'numeroOrden', 'tipoOrden', 'importeMensual', 'concepto', 'qnaProceso', 'estatus', 'fechaRegistro'];
+  displayedColumns: string[] = [ 'validar', 'rfc', 'curp', 'nombreCompleto', 'numeroOrden', 'importeMensual', 'concepto', 'qnaProceso', 'tipoOrden', 'estatus', 'documento', 'fechaRegistro'];
 
   form!: FormGroup;
   filtrosTabla!: FormGroup;
@@ -65,6 +67,8 @@ export class ConsultaTerceros {
     private fb: FormBuilder,
     private cd: ChangeDetectorRef,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog,
+    private zone: NgZone, 
     private terceroService: TerceroService,
     private loaderService: LoaderService,
   ) {}
@@ -102,6 +106,14 @@ export class ConsultaTerceros {
       this.pageIndex = 0;
       this.paginator?.firstPage();
       this.loadRegistros(0, this.pageSize);
+    });
+  }
+
+  private showSnack(message: string, action: string, duration: number): void {
+    this.zone.runOutsideAngular(() => {
+      setTimeout(() => {
+        this.zone.run(() => this.snackBar.open(message, action, { duration }));
+      }, 50);
     });
   }
 
@@ -256,6 +268,70 @@ export class ConsultaTerceros {
           this.snackBar.open(msg, 'Cerrar', { duration: 4000 });
         }
       });
+  }
+
+  verDocumentos(row: any) {
+     console.log('Datos completos de la fila:', row);
+    console.log('Campos disponibles:', Object.keys(row));
+    if (!row.tabEmpleadoId) {
+        this.showSnack('No se encontró ID del empleado', 'Cerrar', 4000);
+        return;
+    }
+
+    this.terceroService.obtenerDocumentosPorEmpleado(row.tabEmpleadoId).subscribe({
+        next: (res: any) => {
+            console.log('=== DEPURACIÓN OBTENER DOCUMENTOS ===');
+            console.log('Respuesta completa:', res);
+            console.log('res.success:', res?.success);
+            console.log('res.data:', res?.data);
+            console.log('res.data.length:', res?.data?.length);
+            console.log('=== FIN DEPURACIÓN ===');
+            if (res?.success && res?.data?.length > 0) {
+                this.mostrarListaDocumentos(res.data, row);
+            } else {
+                this.showSnack('No se encontraron documentos para este empleado', 'Cerrar', 4000);
+            }
+        },
+        error: (err) => {
+            console.log('Error al obtener documentos:', err);
+            this.showSnack('Error al obtener documentos', 'Cerrar', 4000);
+        }
+    });
+  }
+
+  mostrarListaDocumentos(documentos: any[], empleado: any) {
+    const dialogRef = this.dialog.open(DocumentoTerceroDialog, {
+        width: '800px',
+        maxWidth: '90vw',
+        data: {
+            documentos,
+            empleado
+        }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+        if (result?.action === 'download') {
+            this.descargarDocumento(result.documentoId);
+        }
+    });
+  }
+
+  descargarDocumento(documentoId: number) {
+    this.terceroService.descargarPdf(documentoId).subscribe({
+        next: (blob: Blob) => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `documento_${documentoId}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        },
+        error: () => {
+            this.showSnack('Error al descargar documento', 'Cerrar', 4000);
+        }
+    });
   }
 
   private loadConteos(): void {

@@ -97,7 +97,7 @@
                             <ng-container matColumnDef="rfc">
                                 <th mat-header-cell *matHeaderCellDef class="header-with-select"> RFC
                                     <div class="header-column">
-                                        <mat-form-field appearance="outline" class="header-text-input" floatLabel="always">
+                                        <mat-form-field appearance="outline" class="header-text-input-small" floatLabel="always">
                                             <mat-label>Buscar</mat-label>
                                             <input matInput formControlName="rfc"  (keydown.enter)="buscar()">
                                         </mat-form-field>
@@ -178,6 +178,19 @@
                                         <td mat-cell *matCellDef="let e">{{ e.estatus }}</td>
                                 </ng-container>
                             </div>
+
+                            <ng-container matColumnDef="documento">
+                                <th mat-header-cell *matHeaderCellDef>Documentos PDF</th>
+                                <td mat-cell *matCellDef="let e">
+                                    <div class="table-actions">
+                                        <div class="btn-group">
+                                            <button mat-icon-button class="btn btn-primary" (click)="verDocumentos(e)">
+                                                <mat-icon>picture_as_pdf</mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </ng-container>
 
                             <ng-container matColumnDef="fechaRegistro">
                                 <th mat-header-cell *matHeaderCellDef> FECHA Y HORA DE REGISTRO </th>
