@@ -85,7 +85,15 @@ export class ConsultaTerceros {
         rfc: [null],
         curp: [null],
     });
-      this.cargarConceptos();
+
+    this.filtrosTabla.valueChanges.subscribe(() => {
+      this.pageIndex = 0;
+      this.loadConteos();
+      this.paginator?.firstPage();
+      this.loadRegistros(0, this.pageSize);
+    });
+
+    this.cargarConceptos();
       this.form.get('busqueda.tipoConcepto')?.valueChanges.subscribe(tipo => {
       this.actualizarConceptos(tipo);
     });
@@ -251,37 +259,35 @@ export class ConsultaTerceros {
   }
 
   private loadConteos(): void {
-  const qnaProceso = this.buildQnaProceso();
-
-  this.conteoPorConcepto.clear();
-
-  if (!qnaProceso) {
-    this.cd.detectChanges();
-    return;
-  }
-
-  this.loadingConteos = true;
-
-  this.terceroService.obtenerConteoPorConcepto(qnaProceso)
-    .pipe(finalize(() => {
-      this.loadingConteos = false;
-      this.cd.detectChanges();
-    }))
-    .subscribe({
-      next: (rows) => {
-        const map = new Map<string, number>();
-        for (const r of rows ?? []) {
-          const key = (r.cve ?? '').toLowerCase().trim();
-          if (!key) continue;
-          map.set(key, Number(r.total ?? 0));
+    const qnaProceso = this.buildQnaProceso();
+      this.conteoPorConcepto.clear();
+        if (!qnaProceso) {
+          this.cd.detectChanges();
+          return;
         }
-        this.conteoPorConcepto = map;
-      },
-      error: (err) => {
-        console.error('Error conteos por concepto', err);
-        this.conteoPorConcepto.clear();
-      }
-    });
+
+      this.loadingConteos = true;
+
+      this.terceroService.obtenerConteoPorConcepto(qnaProceso)
+        .pipe(finalize(() => {
+          this.loadingConteos = false;
+          this.cd.detectChanges();
+        }))
+        .subscribe({
+          next: (rows) => {
+            const map = new Map<string, number>();
+              for (const r of rows ?? []) {
+                const key = (r.cve ?? '').toLowerCase().trim();
+                  if (!key) continue;
+                    map.set(key, Number(r.total ?? 0));
+              }
+            this.conteoPorConcepto = map;
+          },
+            error: (err) => {
+              console.error('Error conteos por concepto', err);
+              this.conteoPorConcepto.clear();
+            }
+          });
   }
 
   get totalConceptoSeleccionado(): number | null {
@@ -344,7 +350,7 @@ export class ConsultaTerceros {
         }
 
         this.dataSource.data = rows;
-        this.totalElements = res.total;
+        this.totalElements = rows.length;
         this.pageIndex = pageIndex;
         this.pageSize = pageSize;
         this.cd.detectChanges();
