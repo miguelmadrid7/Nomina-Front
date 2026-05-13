@@ -60,77 +60,76 @@ export class Terceros {
 
   constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private zone: NgZone, private dialog: MatDialog,private terceroService: TerceroService,private conceptoAccesoService: ConceptoAccesoService) {}
 
+    ngOnInit() {
+      this.form = this.fb.group({ 
+        anio: [new Date().getFullYear()],
 
-  ngOnInit() {
-    this.form = this.fb.group({ 
-      anio: [new Date().getFullYear()],
+        busqueda: this.fb.group({
+          searchText: ['', [Validators.required, Validators.maxLength(60), busquedaEmpleadoValidator()]],
+          concepto: [null, [Validators.required]],
+        }),
+      });
 
-      busqueda: this.fb.group({
-        searchText: ['', [Validators.required, Validators.maxLength(60), busquedaEmpleadoValidator()]],
-        concepto: [null, [Validators.required]],
-      }),
-    });
+      const permitidos = this.conceptoAccesoService.getConceptosPermitidosRegistroTerceros();
+      this.conceptosOptions$ = this.terceroService.obtenerConceptos().pipe(
+        map((rows: any[]) => {
+          const input = rows ?? [];
+          const filtered = (!permitidos || permitidos.length === 0) ? input : (() => {
+            const allowed = new Set(permitidos.map(c => String(c).trim().toUpperCase()));
+            return input.filter(r => allowed.has(String(r?.cve ?? '').trim().toUpperCase()));
+          })();
 
-    const permitidos = this.conceptoAccesoService.getConceptosPermitidosRegistroTerceros();
-    this.conceptosOptions$ = this.terceroService.obtenerConceptos().pipe(
-      map((rows: any[]) => {
-        const input = rows ?? [];
-        const filtered = (!permitidos || permitidos.length === 0) ? input : (() => {
-          const allowed = new Set(permitidos.map(c => String(c).trim().toUpperCase()));
-          return input.filter(r => allowed.has(String(r?.cve ?? '').trim().toUpperCase()));
-        })();
+          const uniq = new Map<string, any>();
+          for (const r of filtered) {
+            const key = `${String(r?.cve ?? '').trim().toUpperCase()}|${String(r?.percDed ?? '').trim().toUpperCase()}`;
+            if (!uniq.has(key)) uniq.set(key, r);
+          }
+          return Array.from(uniq.values());
+        }),
 
-        const uniq = new Map<string, any>();
-        for (const r of filtered) {
-          const key = `${String(r?.cve ?? '').trim().toUpperCase()}|${String(r?.percDed ?? '').trim().toUpperCase()}`;
-          if (!uniq.has(key)) uniq.set(key, r);
-        }
-        return Array.from(uniq.values());
-      }),
+        tap((rows: any[]) => {
+          if ((permitidos?.length ?? 0) === 1 && (rows?.length ?? 0) === 1) {
+            this.conceptoUnicoPermitido = rows[0] ?? null;
+            this.form.get('busqueda.concepto')?.setValue(rows[0]?.cve ?? null, { emitEvent: false });
+            this.form.get('busqueda.concepto')?.disable({ emitEvent: false });
+          } else {
+            this.conceptoUnicoPermitido = null;
+          }
+        })
+      );
 
-      tap((rows: any[]) => {
-        if ((permitidos?.length ?? 0) === 1 && (rows?.length ?? 0) === 1) {
-          this.conceptoUnicoPermitido = rows[0] ?? null;
-          this.form.get('busqueda.concepto')?.setValue(rows[0]?.cve ?? null, { emitEvent: false });
-          this.form.get('busqueda.concepto')?.disable({ emitEvent: false });
-        } else {
-          this.conceptoUnicoPermitido = null;
-        }
-      })
-    );
-
-  // Cargar calendario inicial con el año actual
-  const anioInicial = this.form.get('anio')?.value ?? new Date().getFullYear();
-  this.terceroService.getCalendarioRecepcion(anioInicial).subscribe({
-    next: (rows) => {
-      this.calendarioRecepcion = rows ?? [];
-    },
-    error: () => {
-      this.showSnack('No se pudo cargar el calendario de recepción', 'Cerrar', 4000);
-    },
-  });
-
-  // Suscribirse a cambios futuros del año
-  this.form.get('anio')?.valueChanges.subscribe(anioSeleccionado => {
-    const anio = anioSeleccionado ?? new Date().getFullYear();
-    this.terceroService.getCalendarioRecepcion(anio).subscribe({
+    // Cargar calendario inicial con el año actual
+    const anioInicial = this.form.get('anio')?.value ?? new Date().getFullYear();
+    this.terceroService.getCalendarioRecepcion(anioInicial).subscribe({
       next: (rows) => {
         this.calendarioRecepcion = rows ?? [];
-    },
-    error: () => {
-      this.showSnack('No se pudo cargar el calendario de recepción', 'Cerrar', 4000);
-    },
+      },
+      error: () => {
+        this.showSnack('No se pudo cargar el calendario de recepción', 'Cerrar', 4000);
+      },
     });
-  });
-  }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => {
-      if (this.paginator) {
-        this.dataSource.paginator = this.paginator;
-      }
-    }, 0);
-  }
+    // Suscribirse a cambios futuros del año
+    this.form.get('anio')?.valueChanges.subscribe(anioSeleccionado => {
+      const anio = anioSeleccionado ?? new Date().getFullYear();
+      this.terceroService.getCalendarioRecepcion(anio).subscribe({
+        next: (rows) => {
+          this.calendarioRecepcion = rows ?? [];
+      },
+      error: () => {
+        this.showSnack('No se pudo cargar el calendario de recepción', 'Cerrar', 4000);
+      },
+      });
+    });
+    }
+
+    ngAfterViewInit(): void {
+      setTimeout(() => {
+        if (this.paginator) {
+          this.dataSource.paginator = this.paginator;
+        }
+      }, 0);
+    }
 
   private showSnack(message: string, action: string, duration: number): void {
     this.zone.runOutsideAngular(() => {
