@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -48,10 +48,7 @@ export class TercerosDialog  implements OnDestroy {
   pdfPreviewUrl: SafeResourceUrl | null = null;
   private pdfObjectUrl: string | null = null;
 
-  constructor(private fb: FormBuilder, private ref: MatDialogRef<TercerosDialog>, 
-              private terceroService: TerceroService, private sanitizer: DomSanitizer,
-              @Inject(MAT_DIALOG_DATA) public data: any,
-            ) {}
+  constructor(private fb: FormBuilder, private ref: MatDialogRef<TercerosDialog>, private terceroService: TerceroService, private sanitizer: DomSanitizer, @Inject(MAT_DIALOG_DATA) public data: any) {}
 
   ngOnInit(): void {
     if (!this.data) {
@@ -61,7 +58,6 @@ export class TercerosDialog  implements OnDestroy {
 
     const currentQna = this.getCurrentQna();
     const minQna = this.nextQna(currentQna.aaaaqq).aaaaqq;
-
 
     this.form = this.fb.group({
       rfc: [this.data?.rfc ?? ''],
@@ -75,17 +71,12 @@ export class TercerosDialog  implements OnDestroy {
       concepto: [this.data.concepto ?? null],
       qnaProceso: [this.data.qnaProceso ?? null],
       qnaDesde: [this.data?.qnaDesde ?? this.getCurrentQna().aaaaqq],
-      qnaHasta: [''],
+      qnaHasta: [null, Validators.required],
       qnaRecepcion: [this.data?.qnaRecepcionSugerida ?? this.getCurrentQna().aaaaqq],
       estatus: [this.data?.estatus ?? null],
       fechaRegistro: [{ value: this.data?.fechaRegistro || new Date(), disabled: true }],
-    },
-    {
-      validators: [
-        qnaMinimaValidator(minQna),
-        qnaRangoValidator()
-      ]
-    });
+    }, { validators: [ qnaMinimaValidator(minQna), qnaRangoValidator() ] }
+    );
 
     this.updateCalInfo(this.form.get('qnaRecepcion')?.value);
     this.form.get('qnaRecepcion')?.valueChanges.subscribe(v => this.updateCalInfo(v));
@@ -214,34 +205,16 @@ export class TercerosDialog  implements OnDestroy {
 
   guardar() {
     const value = this.form.getRawValue();
-
-    value.nombreTrabajador = [
-      value.apellidoPaterno,
-      value.apellidoMaterno,
-      value.nombres,
-    ].map((x: any) => (x ?? '').toString().trim())
-      .filter(Boolean)
-      .join(' ')
-      .trim();
+    value.nombreTrabajador = [value.apellidoPaterno, value.apellidoMaterno, value.nombres, ].map((x: any) => (x ?? '').toString().trim())
+      .filter(Boolean).join(' ').trim();
     
-    const desdeNum =
-      value.qnaDesde !== null && value.qnaDesde !== undefined && value.qnaDesde !== ''
-        ? Number(value.qnaDesde)
-        : null;
-
-    const hastaNum =
-      value.qnaHasta !== null && value.qnaHasta !== undefined && value.qnaHasta !== ''
-        ? Number(value.qnaHasta)
-        : null;
+    const desdeNum = value.qnaDesde !== null && value.qnaDesde !== undefined && value.qnaDesde !== '' ? Number(value.qnaDesde) : null;
+    const hastaNum = value.qnaHasta !== null && value.qnaHasta !== undefined && value.qnaHasta !== '' ? Number(value.qnaHasta) : null;
 
     value.desde = desdeNum;
     value.qnaIni = desdeNum;
     value.qnaFin = hastaNum; 
-    
-    value.numeroDocumento =
-      value.numeroDocumento !== null && value.numeroDocumento !== undefined && value.numeroDocumento !== ''
-        ? Number(value.numeroDocumento)
-        : null;
+    value.numeroDocumento = value.numeroDocumento !== null && value.numeroDocumento !== undefined && value.numeroDocumento !== '' ? Number(value.numeroDocumento) : null;
 
     // Si hay PDF, subirlo primero y luego guardar
     if (this.archivoPdf) {
@@ -253,16 +226,14 @@ export class TercerosDialog  implements OnDestroy {
       ).subscribe({
         next: (response: ApiResponse<any>) => {
           if (response.success) {
-            console.log('PDF subido exitosamente:', response.data);
-            // Ahora sí cerrar el diálogo con todos los datos
             this.ref.close({
               ...value,
               archivoPdf: this.archivoPdf,
-              documentoInfo: response.data // Incluir info del documento guardado
+              documentoInfo: response.data
             });
           } else {
-            console.error('Error al subir PDF:', response.message);
-            // Opcional: mostrar error al usuario pero continuar con el guardado
+            console.log(value);
+
             this.ref.close({
               ...value,
               archivoPdf: this.archivoPdf
