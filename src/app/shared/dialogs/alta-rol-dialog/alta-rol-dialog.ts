@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { UppercaseDirective } from '../../directives/upperCase.directivas';
+import { Role } from '../../../models/emplado.model';
 
 @Component({
   selector: 'app-alta-rol-dialog',
@@ -26,14 +27,14 @@ export class AltaRolDialog {
 
   form!: FormGroup;
 
-  constructor(private  fb: FormBuilder, private  ref: MatDialogRef<AltaRolDialog>) {}
+  constructor(private  fb: FormBuilder, private  ref: MatDialogRef<AltaRolDialog>, @Inject(MAT_DIALOG_DATA) public data: Role | null) {}
 
   ngOnInit() {
     this.form = this.fb.group({
-      name: ['', [Validators.required]],
-      description: [''],
-      parentId: [null],
-      permissionId: [null],
+      name: [this.data?.name ?? '', [Validators.required]],
+      description: [this.data?.description ?? ''],
+      parentId: [this.data?.parentId ?? null],
+      permissionId: [this.data?.permissionId ?? null],
     });
   }
 
