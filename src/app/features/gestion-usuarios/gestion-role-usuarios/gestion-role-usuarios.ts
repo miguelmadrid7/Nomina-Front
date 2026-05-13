@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { EmpleadoItem, Role } from '../../../models/emplado.model';
+import { Role } from '../../../models/emplado.model';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -8,6 +8,7 @@ import { RolService } from '../../../core/services/rol.service';
 import { MatIconModule } from '@angular/material/icon';
 import { AltaRolDialog } from '../../../shared/dialogs/alta-rol-dialog/alta-rol-dialog';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { PensionAlimenDialog } from '../../nomina/pension-alimen-dialog/pension-alimen-dialog';
 
 @Component({
   selector: 'app-gestion-role-usuarios',
@@ -80,5 +81,40 @@ export class GestionRoleUsuarios {
       });
     });
   }
+
+  openEditRoleDialog(role: Role): void {
+  const ref = this.dialog.open(AltaRolDialog, {
+    width: '600px',
+    maxWidth: '95vw',
+    autoFocus: false,
+    data: role
+  });
+
+  ref.afterClosed().subscribe((payload) => {
+    if (!payload) return;
+
+    this.loading = true;
+
+    this.rolService.updateRole(role.id, payload).subscribe({
+      next: () => {
+        this.loading = false;
+        this.dialog.open(PensionAlimenDialog, {
+          width: '400px',
+          disableClose: true,
+          data: {
+            type: 'success',
+            title: 'Actualización correcta',
+            message: 'El rol se actualizó correctamente.'
+          }
+        });
+        this.loadRoles();
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Error actualizando rol', err);
+      }
+    });
+  });
+}
 
 }
