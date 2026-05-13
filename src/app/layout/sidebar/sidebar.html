@@ -34,18 +34,60 @@
               <i class="fa-solid fa-user-gear me-2"></i>
                 <span class="label">Alta/Baja usuarios</span>
             </a>
+          </ul>
+        </div>
+      </li>
 
+      <!-- Gestion de roles -->
+      <li class="mb-1" *ngIf="hasAnyRole([1])">
+         <button
+          class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
+          data-bs-toggle="collapse"
+          data-bs-target="#roles-collapse">
+          <span class="d-flex align-items-center">
+           <i class="fa-solid fa-folder me-2"></i>
+            <span class="label">Gestion de roles</span>
+          </span>
+         <i class="bi bi-chevron-down caret"></i>
+        </button>
+
+         <div class="collapse show" id="roles-collapse">
+           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
             <a routerLink="/home/usuarios/roles-usuarios" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
               <i class="fa-solid fa-user-shield me-2"></i>
                 <span class="label">Alta/Baja roles</span>
             </a>
 
-          </ul>
-        </div>
+           </ul>          
+         </div>
+      </li>
+
+       <!-- Gestion de roles -->
+      <li class="mb-1" *ngIf="hasAnyRole([1])">
+         <button
+          class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
+          data-bs-toggle="collapse"
+          data-bs-target="#roles-collapse">
+          <span class="d-flex align-items-center">
+           <i class="fa-solid fa-folder me-2"></i>
+            <span class="label">Gestion de modulos</span>
+          </span>
+         <i class="bi bi-chevron-down caret"></i>
+        </button>
+
+         <div class="collapse show" id="roles-collapse">
+           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+            <a routerLink="/home/usuarios/roles-usuarios" routerLinkActive="active" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+              <i class="fa-solid fa-user-shield me-2"></i>
+                <span class="label">Alta/Baja modulos</span>
+            </a>
+
+           </ul>          
+         </div>
       </li>
       
       <!-- Catalogos -->
-      <li class="mb-1" *ngIf="hasAnyRole([2])">
+      <li class="mb-1" *ngIf="hasAnyRole([1])">
         <button
           class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
           data-bs-toggle="collapse"
@@ -84,7 +126,7 @@
       </li>
 
       <!-- Movimientos -->
-      <li class="mb-1" *ngIf="hasAnyRole([2])">
+      <li class="mb-1" *ngIf="hasAnyRole([1])">
           <button
             class="btn btn-toggle w-100 d-flex align-items-center justify-content-between rounded border-0 collapsed"
             data-bs-toggle="collapse"
