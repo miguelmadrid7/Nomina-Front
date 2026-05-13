@@ -12,6 +12,9 @@ export interface EmpleadoItem {
 export interface Role {
   id: number;
   name: string;
+  description?: string;
+  parentId?: number | null;
+  permissionId?: number | null;
 }
 
 export interface AssignRoleRequest {
