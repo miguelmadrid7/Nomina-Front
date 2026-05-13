@@ -82,12 +82,14 @@
                             </ng-container>
 
                             <ng-container matColumnDef="nombreCompleto">
-                                <th mat-header-cell *matHeaderCellDef>NOMBRE COMPLETO</th>
-                                <td mat-cell *matCellDef="let e">{{ e.nombreTrabajador  }}</td>
+                                <th mat-header-cell *matHeaderCellDef>NOMBRE  <br> COMPLETO</th>
+                                <td mat-cell *matCellDef="let e">
+                                    {{ e.nombreTrabajador  }}
+                                </td>
                             </ng-container>
 
                             <ng-container matColumnDef="numeroOrden">
-                                <th mat-header-cell *matHeaderCellDef> NUMERO DE ORDEN</th>
+                                <th mat-header-cell *matHeaderCellDef> NUMERO  <br> DE <br>  ORDEN</th>
                                 <td mat-cell *matCellDef="let e">{{ e.numeroDocumento  }}</td>
                             </ng-container>
 
@@ -133,7 +135,7 @@
                                 </ng-container>
 
                                 <ng-container matColumnDef="importeMensual">
-                                    <th mat-header-cell *matHeaderCellDef> IMPORTE MENSUAL</th>
+                                    <th mat-header-cell *matHeaderCellDef> IMPORTE  <br> MENSUAL</th>
                                     <td mat-cell *matCellDef="let e">{{ e.importeMensual }}</td>
                                 </ng-container>
 
@@ -193,8 +195,16 @@
                             </ng-container>
 
                             <ng-container matColumnDef="fechaRegistro">
-                                <th mat-header-cell *matHeaderCellDef> FECHA Y HORA DE REGISTRO </th>
-                                <td mat-cell *matCellDef="let e"> {{ e.fechaRegistro | date:'dd/MM/yyyy hh:mm:ss a' }} </td>
+                                <th mat-header-cell *matHeaderCellDef> 
+                                    FECHA <br>
+                                    Y <br>
+                                    HORA DE REGISTRO </th>
+                                <td mat-cell *matCellDef="let e"> 
+                                    <div class="fecha-cell">
+                                        <span>{{ e.fechaRegistro | date:'dd/MM/yyyy' }}</span>
+                                        <span>{{ e.fechaRegistro | date:'hh:mm:ss a' }}</span>
+                                    </div>
+                                </td>
                             </ng-container>
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
