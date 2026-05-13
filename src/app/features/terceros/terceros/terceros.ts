@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -44,110 +44,50 @@ import { UppercaseDirective } from "../../../shared/directives/upperCase.directi
   styleUrl: './terceros.css'
 })
 export class Terceros {
+
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
-
   dataSource = new MatTableDataSource<NominaRow>([]);
-  filterValues: any = { search: '', estatus: '' };
   displayedColumns: string[] = [ 'rfc', 'curp', 'nombreCompleto', 'acciones'];
-  estatusOptions = [ { label: 'Registrado' }, { label: 'Pendiente' }, { label: 'Aprobado' } ];
-
   form!: FormGroup;
-  detailForm!: FormGroup;
   anio: number[] = [2026, 2025, 2024];
-  quincena: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
-  concepto: any[] = [];
-  beneficiarios: any[] = [];
   totalElements = 0;
-  showRecords = true;
-  anioSeleccionado: number | null = null;
-  quincenaSeleccionada: number | null = null;
-  selectedRow: any;
   resultado: EmpleadoItem[] = [];
   cargandoBusqueda = false;
-  showFilters = true;
-  search: string = '';
-  qnaProceso!: number;
   conceptosOptions$!: Observable<any[]>;
   conceptoUnicoPermitido: any | null = null;
-
   calendarioRecepcion: CalendarioRecepcion[] = [];
 
-  constructor(
-    private fb: FormBuilder, 
-    private snackBar: MatSnackBar,
-    private zone: NgZone,
-    private cd: ChangeDetectorRef,
-    private dialog: MatDialog,
-    private terceroService: TerceroService,
-    private conceptoAccesoService: ConceptoAccesoService,
-  ) {}
+  constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private zone: NgZone, private dialog: MatDialog,private terceroService: TerceroService,private conceptoAccesoService: ConceptoAccesoService) {}
 
 
   ngOnInit() {
     this.form = this.fb.group({ 
-      anio: [null],
-      quincena: [null],
-      tipoOrden: [null],
-      estatus: [null],
+      anio: [new Date().getFullYear()],
 
       busqueda: this.fb.group({
-        empleadoId: [null],
         searchText: ['', [Validators.required, Validators.maxLength(60), busquedaEmpleadoValidator()]],
         concepto: [null, [Validators.required]],
-        anio: [null],
-        tipoOrden: [null]
       }),
-
-      empleado: this.fb.group({
-        rfc: [''],
-        curp: [''],
-        primerApellido: [''],
-        segundoApellido: [''],
-        nombre: ['']
-      })
     });
-    this.detailForm = this.fb.group({
-        rfc: [''],
-        nombreCompleto: [''],
-        qnaProceso: ['']
-    });
-    this.dataSource.filterPredicate = (data: any, filter: string) => {
-    const filters = JSON.parse(filter);
-
-    const matchSearch =
-      !filters.search ||
-      (data.curp ?? '').toUpperCase().includes(filters.search) ||
-      (data.rfc ?? '').toUpperCase().includes(filters.search) ||
-      (data.nombreEmpleado ?? '').toUpperCase().includes(filters.search);
-
-    const matchEstatus =
-      !filters.estatus || data.estatus === filters.estatus;
-
-    return matchSearch && matchEstatus;
-    };
 
     const permitidos = this.conceptoAccesoService.getConceptosPermitidosRegistroTerceros();
-
     this.conceptosOptions$ = this.terceroService.obtenerConceptos().pipe(
       map((rows: any[]) => {
         const input = rows ?? [];
-
-        const filtered = (!permitidos || permitidos.length === 0)
-          ? input
-          : (() => {
-              const allowed = new Set(permitidos.map(c => String(c).trim().toUpperCase()));
-              return input.filter(r => allowed.has(String(r?.cve ?? '').trim().toUpperCase()));
-            })();
+        const filtered = (!permitidos || permitidos.length === 0) ? input : (() => {
+          const allowed = new Set(permitidos.map(c => String(c).trim().toUpperCase()));
+          return input.filter(r => allowed.has(String(r?.cve ?? '').trim().toUpperCase()));
+        })();
 
         const uniq = new Map<string, any>();
         for (const r of filtered) {
           const key = `${String(r?.cve ?? '').trim().toUpperCase()}|${String(r?.percDed ?? '').trim().toUpperCase()}`;
           if (!uniq.has(key)) uniq.set(key, r);
         }
-
         return Array.from(uniq.values());
       }),
+
       tap((rows: any[]) => {
         if ((permitidos?.length ?? 0) === 1 && (rows?.length ?? 0) === 1) {
           this.conceptoUnicoPermitido = rows[0] ?? null;
@@ -159,6 +99,18 @@ export class Terceros {
       })
     );
 
+  // Cargar calendario inicial con el año actual
+  const anioInicial = this.form.get('anio')?.value ?? new Date().getFullYear();
+  this.terceroService.getCalendarioRecepcion(anioInicial).subscribe({
+    next: (rows) => {
+      this.calendarioRecepcion = rows ?? [];
+    },
+    error: () => {
+      this.showSnack('No se pudo cargar el calendario de recepción', 'Cerrar', 4000);
+    },
+  });
+
+  // Suscribirse a cambios futuros del año
   this.form.get('anio')?.valueChanges.subscribe(anioSeleccionado => {
     const anio = anioSeleccionado ?? new Date().getFullYear();
     this.terceroService.getCalendarioRecepcion(anio).subscribe({
@@ -325,11 +277,6 @@ export class Terceros {
     return [rfc, etiqueta].filter(Boolean).join(' - ');
   }
   
-  editar(row: any) {
-    this.selectedRow = row;
-    this.detailForm.patchValue(row);
-  }
-
   verDetalles(row: any) {
     const nombreCompleto = (row.nombreEmpleado || '').trim().split(' ');
     const apellidoPaterno = nombreCompleto[0] || '';
@@ -423,29 +370,17 @@ export class Terceros {
 
   clearFilters(): void {
     this.form.patchValue({
+      anio: new Date().getFullYear(),
       busqueda: {
         searchText: '',
-        empleadoId: null,
-        rfc: '',
-        primerApellido: '',
-        segundoApellido: '',
-        nombre: ''
+        concepto: null,
       },
-      empleado: {
-        rfc: '',
-        primerApellido: '',
-        segundoApellido: '',
-        nombre: ''
-      }
+      
     }, { emitEvent: false });
       this.resultado = [];
       this.autocompleteTrigger?.closePanel();
       this.dataSource.data = [];
-      this.beneficiarios = [];
       this.totalElements = 0;
-      this.anioSeleccionado = null;
-      this.quincenaSeleccionada = null;
       this.paginator?.firstPage?.();
-      this.cd.markForCheck();
   }
 }
