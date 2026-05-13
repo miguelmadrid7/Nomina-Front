@@ -204,6 +204,11 @@ export class TercerosDialog  implements OnDestroy {
   }
 
   guardar() {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    
     const value = this.form.getRawValue();
     value.nombreTrabajador = [value.apellidoPaterno, value.apellidoMaterno, value.nombres, ].map((x: any) => (x ?? '').toString().trim())
       .filter(Boolean).join(' ').trim();
@@ -250,15 +255,11 @@ export class TercerosDialog  implements OnDestroy {
         }
       });
     } else {
-      // Si no hay PDF, cerrar directamente
       this.ref.close({
         ...value,
         archivoPdf: null
       });
     }
-  }
-  formatDate(date: Date): string {
-    return new Date(date).toLocaleString();
   }
 
   private mapTipoOrdenFromData(valor: any): number | null {
