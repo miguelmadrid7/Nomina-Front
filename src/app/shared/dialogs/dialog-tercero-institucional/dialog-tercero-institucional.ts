@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -23,6 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatInputModule,
     MatSelectModule,
     MatNativeDateModule,
+    MatCardModule,
 
   ],
   templateUrl: './dialog-tercero-institucional.html',

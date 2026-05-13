@@ -60,6 +60,22 @@
 }
 
 
+.form-grid{
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  align-items: start;
+  justify-content: start;
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
+  margin-top: 12px;
+}
+
  /* Botones */
 .btn {
   width: 120px;
