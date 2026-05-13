@@ -18,6 +18,10 @@ export class RolService {
         return this.http.post<ApiResponse<any>>(`${this.base}/roles`, payload);
     }
 
+    updateRole(roleId: number, payload: CreateRoleRequest): Observable<ApiResponse<any>> {
+        return this.http.patch<ApiResponse<any>>(`${this.base}/roles`, payload,{ headers: {roleId: roleId.toString()}});
+    }
+
 
 
 }
