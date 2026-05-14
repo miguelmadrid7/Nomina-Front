@@ -13,41 +13,50 @@
 
         <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
             <div class="form-grid">
-                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                     <mat-label>ID</mat-label>
                         <mat-icon matPrefix>email</mat-icon>
                             <input matInput formControlName="id" appUppercase/>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                     <mat-label>NOMBRE</mat-label>
                         <mat-icon matPrefix>email</mat-icon>
                             <input matInput formControlName="name" appUppercase/>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-                    <mat-label>DESCRIPCIÓN</mat-label>
-                        <mat-icon matPrefix>email</mat-icon>
-                            <input matInput formControlName="description" appUppercase/>
+                <mat-form-field  appearance="outline" class="qna-compact search-field with-separator description-field" floatLabel="always">
+                    <mat-label>Descripción</mat-label>
+                        <textarea matInput formControlName="description" rows="4" appUppercase></textarea>
                 </mat-form-field>
 
-                <div class="checkbox-field compact-field with-separator">
-                    <mat-checkbox formControlName="visible"> Visible  </mat-checkbox>
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>ROLES</mat-label>
+                        <mat-icon matPrefix>admin_panel_settings</mat-icon>
+
+                    <mat-select formControlName="rolesId" multiple>
+                        <mat-option *ngFor="let role of roles$ | async" [value]="role.id">  {{ role.name }} </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <div class="checkbox-field qna-compact with-separator">
+                     Visible 
+                    <mat-checkbox formControlName="visible"> </mat-checkbox>
                 </div>
 
-                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                     <mat-label>PADRE</mat-label>
                         <mat-icon matPrefix>email</mat-icon>
                             <input matInput formControlName="parentId"/>
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                     <mat-label>PATH</mat-label>
                         <mat-icon matPrefix>route</mat-icon>
                             <input matInput formControlName="path" />
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                     <mat-label>ÍCONO</mat-label>
                         <mat-icon matPrefix>email</mat-icon>
                             <input matInput formControlName="iconId"/>

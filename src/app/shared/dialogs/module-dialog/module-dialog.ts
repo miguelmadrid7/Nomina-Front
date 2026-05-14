@@ -9,6 +9,11 @@ import { ModuleService } from '../../../core/services/module.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
+import { Role } from '../../../models/emplado.model';
+import { UserService } from '../../../core/services/user.service';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-module-dialog',
@@ -21,7 +26,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatSelectModule
   ],
   templateUrl: './module-dialog.html',
   styleUrl: './module-dialog.css'
@@ -29,21 +35,23 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 export class ModuleDialog implements OnInit{
 
   form!: FormGroup;
+  roles$!: Observable<Role[]>;
 
-  constructor(private dialogRef: MatDialogRef<ModuleDialog>, @Inject(MAT_DIALOG_DATA) public data: ModuleDialogData, private fb: FormBuilder,private moduleService: ModuleService) {}
+  constructor(private dialogRef: MatDialogRef<ModuleDialog>, @Inject(MAT_DIALOG_DATA) public data: ModuleDialogData, private fb: FormBuilder,private moduleService: ModuleService, private userService: UserService,) {}
 
   ngOnInit(): void {
     const module = this.module;
-    this.form = this.fb.group({
-      id: [{ value: module.id ?? '', disabled: true }],
-      name: [module.name ?? '', Validators.required],
-      path: [module.path ?? '', Validators.required],
-      description: [module.description ?? ''],
-      visible: [module.visible ?? module.vista ?? true, Validators.required],
-      iconId: [module.iconId ?? null],
-      parentId: [module.parentId ?? null],
-      rolesId: [module.rolesId ?? []],
-    });
+      this.form = this.fb.group({
+        id: [{ value: module.id ?? '', disabled: true }],
+        name: [module.name ?? '', Validators.required],
+        path: [module.path ?? '', Validators.required],
+        description: [module.description ?? ''],
+        visible: [module.visible ?? module.vista ?? true, Validators.required],
+        iconId: [module.iconId ?? null],
+        parentId: [module.parentId ?? null],
+        rolesId: [module.rolesId ?? module.roles?.map(role => role.id) ?? []],
+      });
+      this.loadRoles();
   }
 
   get mode(): 'create' | 'edit' {
@@ -64,6 +72,13 @@ export class ModuleDialog implements OnInit{
       parentId: null,
       rolesId: [],
     };
+  }
+
+  loadRoles(): void {
+    this.roles$ = this.userService.getRoles().pipe(
+      map(roles => [...roles]),
+      catchError(() => of([]))
+    );
   }
 
   submit(): void {
