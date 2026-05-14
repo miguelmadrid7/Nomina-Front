@@ -1,0 +1,115 @@
+/* Dialog structure */
+.dialog-shell {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.dialog-header {
+  position: relative;
+  background: var(--brand);
+  color: #fff;
+  padding: 25px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+}
+
+/* Titulo modal */
+.dlg-bar-title {
+  justify-content: center;
+  align-items: center;
+}
+
+.dialog-content {
+  padding: 10px 18px 0 18px;
+  text-align: center;
+}
+
+.dialog-close {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.form-grid mat-form-field {
+  width: 100%;
+}
+
+/* ===== Botones ===== */
+.btn {
+  width: 120px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: .2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: none !important;
+  transition: all .18s ease;
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+  border: 2px solid;
+}
+
+.btn-primary {
+  background: transparent;
+  color: #2563eb;
+  border-color: #2563eb;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background: transparent;
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-form-field-infix {
+    min-height: 40px !important;
+    display: flex;
+    align-items: center;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .qna-compact input.mat-mdc-input-element {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
