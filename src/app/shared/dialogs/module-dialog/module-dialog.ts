@@ -47,7 +47,7 @@ export class ModuleDialog implements OnInit{
         path: [module.path ?? '', Validators.required],
         description: [module.description ?? ''],
         visible: [module.visible ?? module.vista ?? true, Validators.required],
-        iconId: [module.iconId ?? null],
+        iconId: [module.iconId ?? null, Validators.required],
         parentId: [module.parentId ?? null],
         rolesId: [module.rolesId ?? module.roles?.map(role => role.id) ?? []],
       });
@@ -87,12 +87,17 @@ export class ModuleDialog implements OnInit{
       return;
     }
     const raw = this.form.getRawValue();
+    if (!raw.iconId) {
+      this.form.get('iconId')?.setErrors({ required: true });
+      this.form.markAllAsTouched();
+      return;
+    }
     const payload: ModuleRequest = {
       name: raw.name,
       path: raw.path,
       description: raw.description || null,
       visible: raw.visible,
-      iconId: raw.iconId !== '' && raw.iconId !== null ? Number(raw.iconId) : null,
+      iconId: Number(raw.iconId),
       parentId: raw.parentId !== '' && raw.parentId !== null ? Number(raw.parentId) : null,
       rolesId: raw.rolesId ?? [],
     };
