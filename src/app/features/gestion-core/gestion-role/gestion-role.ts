@@ -21,10 +21,10 @@ import { PensionAlimenDialog } from '../../nomina/pension-alimen-dialog/pension-
     MatIconModule,
     MatDialogModule
   ],
-  templateUrl: './gestion-role-usuarios.html',
-  styleUrl: './gestion-role-usuarios.css'
+  templateUrl: './gestion-role.html',
+  styleUrl: './gestion-role.css'
 })
-export class GestionRoleUsuarios {
+export class GestionRole {
 
   @ViewChild(MatPaginator) paginator?: MatPaginator
   dataSource  = new MatTableDataSource<Role>([]);
