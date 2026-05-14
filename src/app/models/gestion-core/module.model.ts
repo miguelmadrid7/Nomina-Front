@@ -5,11 +5,18 @@ export interface ModuleItem {
   vista?: boolean;
   visible?: boolean;
   parent?: string | null;
-  icon?: string | null;
-  path?: string | null;
-  iconId?: number | null;
   parentId?: number | null;
+  
+  icon?: string | null;
+  iconId?: number | null;
+  path?: string | null;
+  roles?: ModuleRole[];
   rolesId?: number[];
+}
+
+export interface ModuleRole {
+  id: number;
+  name: string;
 }
 
 export interface ModuleRequest {
