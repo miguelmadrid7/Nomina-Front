@@ -31,21 +31,35 @@ export const routes: Routes = [
       },
       {
         path: 'usuarios',
-        data: { breadcrumb: 'Usuarios' },
+        data: { breadcrumb: 'Gestion' },
         children: [
           {    
             path: 'gestion-usuarios',
             loadComponent: () =>
-              import('./features/gestion-usuarios/gestion-usuarios/gestion-usuarios')
+              import('./features/gestion-core/gestion-usuarios/gestion-usuarios')
                 .then(m => m.GestionUsuarios),
             data: { roles: [1], breadcrumb: 'Gestión usuarios' }
           },
           {    
-            path: 'roles-usuarios',
+            path: 'roles',
             loadComponent: () =>
-              import('./features/gestion-usuarios/gestion-role-usuarios/gestion-role-usuarios')
-                .then(m => m.GestionRoleUsuarios),
+              import('./features/gestion-core/gestion-role/gestion-role')
+                .then(m => m.GestionRole),
             data: { roles: [1], breadcrumb: 'Roles usuarios' }
+          },
+          {    
+            path: 'modulos',
+            loadComponent: () =>
+              import('./features/gestion-core/gestion-modulos/gestion-modulos')
+                .then(m => m.GestionModulos),
+            data: { roles: [1], breadcrumb: 'Módulos' }
+          },
+          {    
+            path: 'iconos',
+            loadComponent: () =>
+              import('./features/gestion-core/gestion-icono/gestion-icono')
+                .then(m => m.GestionIcono),
+            data: { roles: [1], breadcrumb: 'Iconos' }
           },
         ]
       },
