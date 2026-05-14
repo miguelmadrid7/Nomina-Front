@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { LoginPayload } from '../../models/login.model';
 import { isPlatformBrowser } from '@angular/common';
+import { SidebarModule } from '../../models/sidebar.model';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
@@ -18,10 +19,7 @@ export class LoginService {
 
   // Cambiar a /login y observar headers
   login(payload: LoginPayload): Observable<HttpResponse<any>> {
-    return this.http.post(`${this.base}/login`, payload, {
-      headers: { 'Content-Type': 'application/json' },
-      observe: 'response'
-    });
+    return this.http.post(`${this.base}/login`, payload, { headers: { 'Content-Type': 'application/json' },observe: 'response' });
   }
 
   isAuthenticated(): boolean {
@@ -76,20 +74,35 @@ export class LoginService {
   }
 
   clearSession() {
-  if (!this.isBrowser()) return;
+    if (!this.isBrowser()) return;
+
     localStorage.removeItem('token');
     localStorage.removeItem('roles');
+    localStorage.removeItem('extras');
     localStorage.removeItem('permisos');
     localStorage.removeItem('userId');
+    localStorage.removeItem('config');
+    localStorage.removeItem('menuModules');
   }
 
   setSession(data: any) {
   if (!this.isBrowser()) return;
     localStorage.setItem('roles', JSON.stringify(data.roles));
-    localStorage.setItem('modules', JSON.stringify(data.config?.extras || []));
+    localStorage.setItem('extras', JSON.stringify(data.config?.extras || []));
     localStorage.setItem('permisos', JSON.stringify(data.permisos));
     localStorage.setItem('userId', data.userId);
     localStorage.setItem('config', JSON.stringify(data.config));
+  }
+
+  setMenuModules(modules: SidebarModule[]): void {
+    if (!this.isBrowser()) return;
+    localStorage.setItem('menuModules', JSON.stringify(modules));
+  }
+
+  getMenuModules(): SidebarModule[] {
+    if (!this.isBrowser()) return [];
+    const modules = localStorage.getItem('menuModules');
+    return modules ? JSON.parse(modules) : [];
   }
 
   getPrincipalRoute(): string {
