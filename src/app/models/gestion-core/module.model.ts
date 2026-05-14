@@ -22,10 +22,10 @@ export interface ModuleRole {
 export interface ModuleRequest {
   name: string;
   path: string;
-  description?: string | null;
+  description: string;
   visible: boolean;
-  iconId?: number | null;
-  parentId?: number | null;
+  iconId: number;
+  parentId: number;
   rolesId: number[];
 }
 

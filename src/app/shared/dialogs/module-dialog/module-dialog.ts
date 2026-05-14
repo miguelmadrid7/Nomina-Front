@@ -45,11 +45,11 @@ export class ModuleDialog implements OnInit{
         id: [{ value: module.id ?? '', disabled: true }],
         name: [module.name ?? '', Validators.required],
         path: [module.path ?? '', Validators.required],
-        description: [module.description ?? ''],
+        description: [module.description ?? '', Validators.required],
         visible: [module.visible ?? module.vista ?? true, Validators.required],
-        iconId: [module.iconId ?? null, Validators.required],
-        parentId: [module.parentId ?? null],
-        rolesId: [module.rolesId ?? module.roles?.map(role => role.id) ?? []],
+        iconId: [module.iconId ?? 1, Validators.required],
+        parentId: [module.parentId ?? 0, Validators.required],
+        rolesId: [module.rolesId ?? module.roles?.map(role => role.id) ?? [], Validators.required],
       });
       this.loadRoles();
   }
@@ -87,19 +87,19 @@ export class ModuleDialog implements OnInit{
       return;
     }
     const raw = this.form.getRawValue();
-    if (!raw.iconId) {
-      this.form.get('iconId')?.setErrors({ required: true });
+    if (!raw.rolesId?.length) {
+      this.form.get('rolesId')?.setErrors({ required: true });
       this.form.markAllAsTouched();
       return;
     }
     const payload: ModuleRequest = {
       name: raw.name,
       path: raw.path,
-      description: raw.description || null,
+      description: raw.description || '',
       visible: raw.visible,
-      iconId: Number(raw.iconId),
-      parentId: raw.parentId !== '' && raw.parentId !== null ? Number(raw.parentId) : null,
-      rolesId: raw.rolesId ?? [],
+      iconId: Number(raw.iconId || 1),
+      parentId: Number(raw.parentId),
+      rolesId: raw.rolesId,
     };
     const request$ = this.mode === 'edit' && this.data.module?.id ? this.moduleService.updateModule(this.data.module.id, payload) : this.moduleService.createModule(payload);
     request$.subscribe({

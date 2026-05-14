@@ -7,6 +7,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { UppercaseDirective } from '../../directives/upperCase.directivas';
 import { Role } from '../../../models/emplado.model';
+import { MatSelectModule } from '@angular/material/select';
+import { ModuleService } from '../../../core/services/module.service';
+import { ModuleItem } from '../../../models/gestion-core/module.model';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-alta-rol-dialog',
@@ -18,6 +23,7 @@ import { Role } from '../../../models/emplado.model';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
+    MatSelectModule,
     UppercaseDirective
   ],
   templateUrl: './alta-rol-dialog.html',
@@ -26,8 +32,9 @@ import { Role } from '../../../models/emplado.model';
 export class AltaRolDialog {
 
   form!: FormGroup;
+  modules$!: Observable<ModuleItem[]>;
 
-  constructor(private  fb: FormBuilder, private  ref: MatDialogRef<AltaRolDialog>, @Inject(MAT_DIALOG_DATA) public data: Role | null) {}
+  constructor(private  fb: FormBuilder, private  ref: MatDialogRef<AltaRolDialog>, @Inject(MAT_DIALOG_DATA) public data: Role | null, private moduleService: ModuleService) {}
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -35,7 +42,9 @@ export class AltaRolDialog {
       description: [this.data?.description ?? ''],
       parentId: [this.data?.parentId ?? null],
       permissionId: [this.data?.permissionId ?? null],
+      modulesId: [(this.data as any)?.modulesId ?? (this.data as any)?.modules?.map((module: ModuleItem) => module.id) ?? []],
     });
+    this.modules$ = this.moduleService.getAllModules().pipe(catchError(() => of([])));
   }
 
   guardar(): void {
@@ -50,7 +59,7 @@ export class AltaRolDialog {
       ...raw,
       parentId: raw.parentId ?? null,
       permissionId: raw.permissionId ?? null,
-      modulesId: [],
+      modulesId: raw.modulesId ?? [],
     });
   }
 

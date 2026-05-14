@@ -83,7 +83,9 @@ export class UsuarioDialog {
       extras: String(this.form.get('extras')?.value ?? '')
         .split(',')
         .map(x => x.trim())
-        .filter(Boolean),
+        .filter(Boolean)
+        .map(Number)
+        .filter(x => !Number.isNaN(x)),
     };
 
     this.ref.close({

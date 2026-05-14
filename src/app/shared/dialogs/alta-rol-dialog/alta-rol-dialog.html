@@ -21,6 +21,15 @@
         <mat-label>Descripción</mat-label>
           <textarea matInput formControlName="description" rows="4" appUppercase></textarea>
       </mat-form-field>
+
+      <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+        <mat-label>Módulos</mat-label>
+        <mat-select formControlName="modulesId" multiple>
+          <mat-option *ngFor="let module of modules$ | async" [value]="module.id">
+            {{ module.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
   </div>
 
