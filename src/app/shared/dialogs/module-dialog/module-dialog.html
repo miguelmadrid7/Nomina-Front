@@ -1,0 +1,64 @@
+<div class="dialog-shell">
+    <div class="dialog-header dlg-bar">
+         <button mat-icon-button class="dialog-close" (click)="close()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <div class="dialog-content">
+
+        <div class="dlg-bar-title"> {{ mode === 'edit' ? 'Detalle de módulo' : 'Agregar módulo' }}</div>
+
+        <div class="section-divider"></div>
+
+        <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
+            <div class="form-grid">
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>ID</mat-label>
+                        <mat-icon matPrefix>email</mat-icon>
+                            <input matInput formControlName="id" appUppercase/>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>NOMBRE</mat-label>
+                        <mat-icon matPrefix>email</mat-icon>
+                            <input matInput formControlName="name" appUppercase/>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>DESCRIPCIÓN</mat-label>
+                        <mat-icon matPrefix>email</mat-icon>
+                            <input matInput formControlName="description" appUppercase/>
+                </mat-form-field>
+
+                <div class="checkbox-field compact-field with-separator">
+                    <mat-checkbox formControlName="visible"> Visible  </mat-checkbox>
+                </div>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>PADRE</mat-label>
+                        <mat-icon matPrefix>email</mat-icon>
+                            <input matInput formControlName="parentId"/>
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>PATH</mat-label>
+                        <mat-icon matPrefix>route</mat-icon>
+                            <input matInput formControlName="path" />
+                </mat-form-field>
+
+                <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                    <mat-label>ÍCONO</mat-label>
+                        <mat-icon matPrefix>email</mat-icon>
+                            <input matInput formControlName="iconId"/>
+                </mat-form-field>
+            </div>
+        </mat-dialog-content>
+
+        <div class="dlg-actions">
+            <button class="btn btn-danger" (click)="close()">Cancelar</button>
+            <button class="btn btn-primary" (click)="submit()"> {{ mode === 'edit' ? 'Actualizar' : 'Guardar' }}</button>
+        </div>
+    </div>
+
+</div>

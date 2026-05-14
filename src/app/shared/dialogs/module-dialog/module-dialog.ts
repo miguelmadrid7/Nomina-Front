@@ -1,0 +1,96 @@
+import { CommonModule } from '@angular/common';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { ModuleDialogData, ModuleItem, ModuleRequest } from '../../../models/gestion-core/module.model';
+import { MatIconModule } from '@angular/material/icon';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ModuleService } from '../../../core/services/module.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
+@Component({
+  selector: 'app-module-dialog',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCheckboxModule
+  ],
+  templateUrl: './module-dialog.html',
+  styleUrl: './module-dialog.css'
+})
+export class ModuleDialog implements OnInit{
+
+  form!: FormGroup;
+
+  constructor(private dialogRef: MatDialogRef<ModuleDialog>, @Inject(MAT_DIALOG_DATA) public data: ModuleDialogData, private fb: FormBuilder,private moduleService: ModuleService) {}
+
+  ngOnInit(): void {
+    const module = this.module;
+    this.form = this.fb.group({
+      id: [{ value: module.id ?? '', disabled: true }],
+      name: [module.name ?? '', Validators.required],
+      path: [module.path ?? '', Validators.required],
+      description: [module.description ?? ''],
+      visible: [module.visible ?? module.vista ?? true, Validators.required],
+      iconId: [module.iconId ?? null],
+      parentId: [module.parentId ?? null],
+      rolesId: [module.rolesId ?? []],
+    });
+  }
+
+  get mode(): 'create' | 'edit' {
+    return this.data.mode;
+  }
+
+  get module(): ModuleItem {
+    return this.data.module ?? {
+      id: undefined,
+      name: '',
+      description: null,
+      vista: true,
+      visible: true,
+      parent: null,
+      icon: null,
+      path: null,
+      iconId: null,
+      parentId: null,
+      rolesId: [],
+    };
+  }
+
+  submit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const raw = this.form.getRawValue();
+    const payload: ModuleRequest = {
+      name: raw.name,
+      path: raw.path,
+      description: raw.description || null,
+      visible: raw.visible,
+      iconId: raw.iconId !== '' && raw.iconId !== null ? Number(raw.iconId) : null,
+      parentId: raw.parentId !== '' && raw.parentId !== null ? Number(raw.parentId) : null,
+      rolesId: raw.rolesId ?? [],
+    };
+    const request$ = this.mode === 'edit' && this.data.module?.id ? this.moduleService.updateModule(this.data.module.id, payload) : this.moduleService.createModule(payload);
+    request$.subscribe({
+      next: () => {
+        this.dialogRef.close(true);
+      },
+      error: () => {}
+    });
+  }
+
+  close(): void {
+    this.dialogRef.close();
+  }
+}
