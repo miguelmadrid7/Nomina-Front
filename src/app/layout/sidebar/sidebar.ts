@@ -88,8 +88,8 @@ export class Sidebar implements OnInit{
     return Array.from(groupsMap.values()).filter(group => group.children.length > 0);
   }
 
-    resolveRoute(config: string | null): string {
-      return config || '/home';
+    resolveRoute(item: SidebarModule): string {
+      return item.path || item.config || '/home';
     }
 
     toggle(): void {

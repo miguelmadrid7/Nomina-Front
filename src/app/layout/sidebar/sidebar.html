@@ -32,7 +32,7 @@
         <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
           <li *ngFor="let item of group.children">
             <a
-              [routerLink]="resolveRoute(item.config)"
+              [routerLink]="resolveRoute(item)"
               routerLinkActive="active"
               class="link-body-emphasis d-inline-flex text-decoration-none rounded">
               <i [class]="(item.icon || 'fa-solid fa-circle') + ' me-2'"></i>

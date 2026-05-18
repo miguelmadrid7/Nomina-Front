@@ -17,6 +17,7 @@ export class SidebarService {
                 moduleName: item.moduleName ?? item.modulename,
                 description: item.description ?? null,
                 config: item.config ?? null,
+                path: item.path ?? item.config ?? null,
                 parentId: item.parentId ?? item.parentid ?? null,
                 parentName: item.parentName ?? item.parentname ?? null,
                 icon: item.icon ?? null,

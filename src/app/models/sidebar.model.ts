@@ -3,6 +3,7 @@ export interface SidebarModule {
   moduleName: string;
   description: string | null;
   config: string | null;
+  path: string | null;
   parentId: number | null;
   parentName: string | null;
   icon: string | null;
