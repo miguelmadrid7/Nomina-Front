@@ -62,18 +62,20 @@ export class Login {
 
               const returnUrl = this.router.routerState.snapshot.root.queryParams['returnUrl'];
               this.router.navigate([returnUrl || this.loginService.getPrincipalRoute()]);
+              this.loading = false;
             },
             
             error: () => {
               this.error = 'No se pudieron cargar los módulos del usuario';
+              this.router.navigate([this.loginService.getPrincipalRoute()]);
               this.loading = false;
             }
           });
             
           } else {
             this.error = 'No se recibió token de autenticación';
-          }
             this.loading = false;
+          }
     },
     error: () => {
       this.error = 'Acceso denegado, verifique su usuario y contraseña';

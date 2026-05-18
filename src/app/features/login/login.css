@@ -94,6 +94,13 @@
   transform: scale(1.02);
 }
 
+.login-error {
+  color: #b00020;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
 .aux-links {
   margin-top: 4px;
   display: flex;
