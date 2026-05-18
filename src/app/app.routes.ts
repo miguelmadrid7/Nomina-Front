@@ -38,28 +38,28 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/gestion-core/gestion-usuarios/gestion-usuarios')
                 .then(m => m.GestionUsuarios),
-            data: { roles: [1], breadcrumb: 'Gestión usuarios' }
+            data: { breadcrumb: 'Gestión usuarios' }
           },
           {    
             path: 'roles',
             loadComponent: () =>
               import('./features/gestion-core/gestion-role/gestion-role')
                 .then(m => m.GestionRole),
-            data: { roles: [1], breadcrumb: 'Roles usuarios' }
+            data: { breadcrumb: 'Roles usuarios' }
           },
           {    
             path: 'modulos',
             loadComponent: () =>
               import('./features/gestion-core/gestion-modulos/gestion-modulos')
                 .then(m => m.GestionModulos),
-            data: { roles: [1], breadcrumb: 'Módulos' }
+            data: { breadcrumb: 'Módulos' }
           },
           {    
             path: 'iconos',
             loadComponent: () =>
               import('./features/gestion-core/gestion-icono/gestion-icono')
                 .then(m => m.GestionIcono),
-            data: { roles: [1], breadcrumb: 'Iconos' }
+            data: { breadcrumb: 'Iconos' }
           },
         ]
       },
@@ -72,28 +72,28 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/nomina/calculo-nomina/calculo-nomina.component')
                 .then(m => m.CalculoNominaComponent),
-            data: { roles: [1], breadcrumb: 'Cálculo nómina ordinaria' }
+            data: { breadcrumb: 'Cálculo nómina ordinaria' }
           },
           {
             path: 'ordinaria',
             loadComponent: () =>
               import('./features/nomina/nomina-ordinaria/nomina-ordinaria')
                 .then(m => m.NominaOrdinaria),
-            data: { roles: [1], breadcrumb: 'Visualizar nómina ordinaria' }
+            data: { breadcrumb: 'Visualizar nómina ordinaria' }
           },
           {
             path: 'extraordinaria',
             loadComponent: () =>
               import('./features/nomina/nomina-extraordinaria/nomina-extraordinaria')
                 .then(m => m.NominaExtraordinaria),
-            data: { roles: [1], breadcrumb: 'Cálculo nómina extraordinaria' }
+            data: { breadcrumb: 'Cálculo nómina extraordinaria' }
           },
           {
             path: 'generar-producto',
             loadComponent: () =>
               import('./features/nomina/generar-producto/generar-producto.component')
                 .then(m => m.GenerarProductoComponent),
-            data: { roles: [1], breadcrumb: 'Generar producto' }
+            data: { breadcrumb: 'Generar producto' }
           }
         ]
       },
@@ -107,17 +107,23 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/nomina/pension-alimenticia/pension-alimenticia')
                 .then(m => m.PensionAlimenticia),
-            data: { roles: [1], breadcrumb: 'Pensión alimenticia' }
+            data: { breadcrumb: 'Pensión alimenticia' }
           },
         ]
       },
 
       {
-        path: 'juicios/juicios-mercantiles',
-        loadComponent: () =>
-          import('./features/juicios/juicios-mercantiles/juicios-mercantiles')
-            .then(m => m.JuiciosMercantiles),
-        data: { roles: [1], breadcrumb: 'Juicios mercantiles' }
+        path: 'juicios',
+        data: { breadcrumb: 'Juicios' },
+        children: [
+          {
+            path: 'juicios-mercantiles',
+            loadComponent: () =>
+              import('./features/juicios/juicios-mercantiles/juicios-mercantiles')
+                .then(m => m.JuiciosMercantiles),
+            data: { breadcrumb: 'Juicios mercantiles' }
+          }
+        ]
       },
 
       {
@@ -129,21 +135,21 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/terceros/terceros/terceros')
                 .then(m => m.Terceros),
-            data: { roles: [1, 3, 7, 8], breadcrumb: 'Registro terceros' }
+            data: { breadcrumb: 'Registro terceros' }
           },
           {    
             path: 'consulta-terceros',
             loadComponent: () =>
               import('./features/terceros/consulta-terceros/consulta-terceros')
                 .then(m => m.ConsultaTerceros),
-            data: { roles: [1], breadcrumb: 'Consulta terceros' }
+            data: { breadcrumb: 'Consulta terceros' }
           },
           {    
             path: 'registro-terceros-institucionales',
             loadComponent: () =>
               import('./features/terceros/registro-tercero-institucional/registro-tercero-institucional')
                 .then(m => m.RegistroTerceroInstitucional),
-            data: { roles: [1], breadcrumb: 'Registro terceros institucionales' }
+            data: { breadcrumb: 'Registro terceros institucionales' }
           },
         ]
       },
