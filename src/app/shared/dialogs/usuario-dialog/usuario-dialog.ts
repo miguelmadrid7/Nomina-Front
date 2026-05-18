@@ -75,6 +75,7 @@ export class UsuarioDialog {
     const payloadUser = {
       srl_emp: this.form.get('catEmpleadoId')?.value ?? null,
       user: this.form.get('username')?.value ?? null,
+      email: this.form.get('email')?.value ?? null,
       area: this.form.get('area')?.value ?? null,
       task: this.form.get('task')?.value ?? null,
       active: this.form.get('active')?.value ?? true,
