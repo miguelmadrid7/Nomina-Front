@@ -13,7 +13,7 @@
 
         <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
             <div class="form-grid">
-                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-form-field *ngIf="mode === 'edit'" appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                     <mat-label>ID</mat-label>
                         <mat-icon matPrefix>email</mat-icon>
                             <input matInput formControlName="id" appUppercase/>

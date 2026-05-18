@@ -44,11 +44,11 @@ export class ModuleDialog implements OnInit{
       this.form = this.fb.group({
         id: [{ value: module.id ?? '', disabled: true }],
         name: [module.name ?? '', Validators.required],
-        path: [module.path ?? '', Validators.required],
+        path: [module.path ?? '', this.mode === 'create' ? Validators.required : []],
         description: [module.description ?? '', Validators.required],
         visible: [module.visible ?? module.vista ?? true, Validators.required],
         iconId: [module.iconId ?? 1, Validators.required],
-        parentId: [module.parentId ?? 0, Validators.required],
+        parentId: [module.parentId ?? null],
         rolesId: [module.rolesId ?? module.roles?.map(role => role.id) ?? [], Validators.required],
       });
       this.loadRoles();
@@ -92,13 +92,15 @@ export class ModuleDialog implements OnInit{
       this.form.markAllAsTouched();
       return;
     }
+    const parentId = raw.parentId === null || raw.parentId === undefined || raw.parentId === '' ? null : Number(raw.parentId);
+    const path = raw.path === null || raw.path === undefined || raw.path === '' ? null : raw.path;
     const payload: ModuleRequest = {
       name: raw.name,
-      path: raw.path,
+      path,
       description: raw.description || '',
       visible: raw.visible,
       iconId: Number(raw.iconId || 1),
-      parentId: Number(raw.parentId),
+      parentId,
       rolesId: raw.rolesId,
     };
     const request$ = this.mode === 'edit' && this.data.module?.id ? this.moduleService.updateModule(this.data.module.id, payload) : this.moduleService.createModule(payload);
