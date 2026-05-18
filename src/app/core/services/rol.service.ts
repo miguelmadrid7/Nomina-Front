@@ -22,6 +22,7 @@ export class RolService {
         return this.http.patch<ApiResponse<any>>(`${this.base}/roles`, payload,{ headers: {roleId: roleId.toString()}});
     }
 
-
-
+    softDeleteRole(roleId: number): Observable<ApiResponse<any>> {
+        return this.http.patch<ApiResponse<any>>(`${this.base}/roles/softdeleted`,null,{ headers: { roleId: roleId.toString() } });
+    }
 }

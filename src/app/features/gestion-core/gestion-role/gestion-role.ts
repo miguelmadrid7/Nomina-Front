@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { AltaRolDialog } from '../../../shared/dialogs/alta-rol-dialog/alta-rol-dialog';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PensionAlimenDialog } from '../../nomina/pension-alimen-dialog/pension-alimen-dialog';
+import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-gestion-role-usuarios',
@@ -115,6 +116,54 @@ export class GestionRole {
       }
     });
   });
-}
+  }
 
+ softDeleteRole(role: Role): void {
+  const ref = this.dialog.open(ConfirmDialog, {
+    width: '420px',
+    maxWidth: '95vw',
+    disableClose: true,
+    data: {
+      type: 'danger',
+      title: 'Eliminar rol',
+      message: `¿Seguro que deseas eliminar el rol "${role.name}"?`,
+      cancelText: 'Cancelar',
+      confirmText: 'Eliminar'
+    }
+  });
+
+  ref.afterClosed().subscribe((confirmed: boolean) => {
+    if (!confirmed) {
+      return;
+    }
+
+    this.loading = true;
+    this.rolService.softDeleteRole(role.id).subscribe({
+      next: () => {
+        this.loading = false;
+        this.dialog.open(PensionAlimenDialog, {
+          width: '420px',
+          data: {
+            type: 'success',
+            title: 'Eliminación correcta',
+            message: 'El rol se eliminó correctamente.'
+          }
+        });
+        this.loadRoles();
+      },
+      error: (err) => {
+        this.loading = false;
+        console.error('Error eliminando rol', err);
+        this.dialog.open(PensionAlimenDialog, {
+          width: '420px',
+          data: {
+            type: 'error',
+            title: 'Error',
+            message: 'No se pudo eliminar el rol.'
+          }
+        });
+      }
+    });
+  });
+}
 }
