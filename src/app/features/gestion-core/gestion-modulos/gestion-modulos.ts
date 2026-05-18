@@ -72,7 +72,12 @@ export class GestionModulos {
     this.cdr.markForCheck();
     this.moduleService.getModule(moduleId).subscribe({
       next: (module) => {
-        this.selectedModule = module;
+        const parentModule = module.parent ? this.modules.find(item => item.name === module.parent) : null;
+        const moduleWithParent = {
+          ...module,
+          parentId: module.parentId ?? parentModule?.id ?? null
+        };
+        this.selectedModule = moduleWithParent;
         this.loadingModuleId = null;
 
         const dialogRef = this.dialog.open(ModuleDialog, {
@@ -80,7 +85,7 @@ export class GestionModulos {
           maxWidth: '95vw',
           data: {
             mode: 'edit',
-            module
+            module: moduleWithParent
           }
         });
 
