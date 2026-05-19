@@ -215,7 +215,7 @@
 
 /* Centrar el contenido del sort header (texto + flecha) */
 ::ng-deep .table-global .mat-column-id .mat-sort-header-container,
-::ng-deep .table-global .mat-column-nombreCompleto,
+::ng-deep .table-global .mat-column-nombreCompleto .mat-sort-header-container,
 ::ng-deep .table-global .mat-column-empleado .mat-sort-header-container {
     justify-content: center;
 }
