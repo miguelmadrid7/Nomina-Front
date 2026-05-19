@@ -189,3 +189,30 @@
   max-width: 10px !important;
   text-align: center;
 }
+
+/* Centrar cabeceras ID y ROL */
+::ng-deep .table-global .mat-column-name.mat-mdc-header-cell,
+::ng-deep .table-global .mat-column-description.mat-mdc-header-cell,
+::ng-deep .table-global .mat-column-vista.mat-mdc-header-cell,
+::ng-deep .table-global .mat-column-parent.mat-mdc-header-cell,
+::ng-deep .table-global .mat-column-icon.mat-mdc-header-cell  {
+    text-align: center;
+}
+
+/* Centrar el contenido del sort header (texto + flecha) */
+::ng-deep .table-global .mat-column-name .mat-sort-header-container,
+::ng-deep .table-global .mat-column-description .mat-sort-header-container,
+::ng-deep .table-global .mat-column-vista .mat-sort-header-container,
+::ng-deep .table-global .mat-column-parent .mat-sort-header-container,
+::ng-deep .table-global .mat-column-icon .mat-sort-header-container {
+    justify-content: center;
+}
+
+/* Centrar celdas de datos */
+::ng-deep .table-global .mat-column-name.mat-mdc-cell,
+::ng-deep .table-global .mat-column-description.mat-mdc-cell,
+::ng-deep .table-global .mat-column-vista.mat-mdc-cell,
+::ng-deep .table-global .mat-column-parent.mat-mdc-cell,
+::ng-deep .table-global .mat-column-icon.mat-mdc-cell {
+    text-align: center;
+}
