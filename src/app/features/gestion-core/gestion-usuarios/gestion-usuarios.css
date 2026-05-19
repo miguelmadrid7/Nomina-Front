@@ -198,6 +198,28 @@
   text-align: center;
 }
 
+.table-global .mat-column-roles {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-padre {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-hijo {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
+
 .table-global .mat-column-acciones {
   width: 70px !important;
   min-width: 70px !important;
@@ -209,6 +231,8 @@
 /* Centrar cabeceras ID y ROL */
 ::ng-deep .table-global .mat-column-id.mat-mdc-header-cell,
 ::ng-deep .table-global .mat-column-nombreCompleto.mat-mdc-header-cell,
+::ng-deep .table-global .mat-column-roles.mat-mdc-header-cell,
+::ng-deep .table-global .mat-column-padre.mat-mdc-header-cell,
 ::ng-deep .table-global .mat-column-empleado.mat-mdc-header-cell {
     text-align: center;
 }
@@ -216,6 +240,8 @@
 /* Centrar el contenido del sort header (texto + flecha) */
 ::ng-deep .table-global .mat-column-id .mat-sort-header-container,
 ::ng-deep .table-global .mat-column-nombreCompleto .mat-sort-header-container,
+::ng-deep .table-global .mat-column-roles .mat-sort-header-container,
+::ng-deep .table-global .mat-column-padre .mat-sort-header-container,
 ::ng-deep .table-global .mat-column-empleado .mat-sort-header-container {
     justify-content: center;
 }
@@ -223,6 +249,8 @@
 /* Centrar celdas de datos */
 ::ng-deep .table-global .mat-column-id .mat-mdc-cell,
 ::ng-deep .table-global .mat-column-nombreCompleto .mat-mdc-cell,
+::ng-deep .table-global .mat-column-roles .mat-mdc-cell,
+::ng-deep .table-global .mat-column-padre .mat-mdc-cell,
 ::ng-deep .table-global .mat-column-empleado .mat-mdc-cell {
     text-align: center;
 }

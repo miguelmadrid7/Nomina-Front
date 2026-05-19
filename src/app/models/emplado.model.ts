@@ -7,6 +7,14 @@ export interface EmpleadoItem {
   nombre?: string;
   empleado?: string;
   nombreCompleto?: string;
+  rolesName?: string;
+  rolesname?: string;
+  modulesName?: string;
+  modulesname?: string;
+  parentModulesName?: string;
+  parentmodulesname?: string;
+  childModulesName?: string;
+  childmodulesname?: string;
 }
 
 export interface Role {

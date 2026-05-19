@@ -60,7 +60,7 @@ export class GestionUsuarios {
   totalElements = 0;
 
   usersDataSource = new MatTableDataSource<EmpleadoItem>([]);
-  displayedColumns: string[] = ['id', 'nombreCompleto', 'empleado', 'acciones'];
+  displayedColumns: string[] = ['id', 'nombreCompleto', 'empleado', 'roles', 'padre', 'hijo', 'acciones'];
 
 
   empleados: EmpleadoItem[] = [];
@@ -176,6 +176,10 @@ export class GestionUsuarios {
             curp: u?.curp ?? u?.CURP,
             empleado: etiqueta,
             nombreCompleto: u?.nombreCompleto ?? etiqueta,
+            rolesName: u?.rolesName ?? u?.rolesname,
+            modulesName: u?.modulesName ?? u?.modulesname,
+            parentModulesName: u?.parentModulesName ?? u?.parentmodulesname,
+            childModulesName: u?.childModulesName ?? u?.childmodulesname,
             raw: u,
           } as EmpleadoItem;
         });
@@ -193,6 +197,29 @@ export class GestionUsuarios {
         console.error('Error cargando usuarios', err);
       }
     });
+  }
+
+  getUserRoles(row: EmpleadoItem): string[] {
+    return this.splitList(row.rolesName ?? row.rolesname ?? '');
+  }
+
+  getUserModules(row: EmpleadoItem): string[] {
+    return this.splitList(row.modulesName ?? row.modulesname ?? '');
+  }
+
+  getUserParentModules(row: EmpleadoItem): string[] {
+    return this.splitList(row.parentModulesName ?? row.parentmodulesname ?? '');
+  }
+
+  getUserChildModules(row: EmpleadoItem): string[] {
+    return this.splitList(row.childModulesName ?? row.childmodulesname ?? '');
+  }
+
+  private splitList(value: string): string[] {
+    return value
+      .split(',')
+      .map(item => item.trim())
+      .filter(item => !!item);
   }
 
   buscarUsuario(): void {

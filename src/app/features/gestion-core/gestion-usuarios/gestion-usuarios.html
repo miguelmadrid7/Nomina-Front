@@ -67,6 +67,36 @@
                                 <td mat-cell *matCellDef="let row"> {{ row.empleado }} </td>
                             </ng-container>
 
+                            <ng-container matColumnDef="roles">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header="rolesName"> ROLES </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <ng-container *ngIf="getUserRoles(row).length; else noRoles">
+                                        <div *ngFor="let role of getUserRoles(row)">{{ role }}</div>
+                                    </ng-container>
+                                    <ng-template #noRoles>Sin roles</ng-template>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="padre">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header="parentModulesName"> PADRE </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <ng-container *ngIf="getUserParentModules(row).length; else noParentModules">
+                                        <div *ngFor="let module of getUserParentModules(row)">{{ module }}</div>
+                                    </ng-container>
+                                    <ng-template #noParentModules>Sin padre</ng-template>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="hijo">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header="childModulesName"> HIJO </th>
+                                <td mat-cell *matCellDef="let row">
+                                    <ng-container *ngIf="getUserChildModules(row).length; else noChildModules">
+                                        <div *ngFor="let module of getUserChildModules(row)">{{ module }}</div>
+                                    </ng-container>
+                                    <ng-template #noChildModules>Sin hijos</ng-template>
+                                </td>
+                            </ng-container>
+
                             <ng-container matColumnDef="acciones">
                                 <th mat-header-cell *matHeaderCellDef> ACCIONES </th>
                                 <td mat-cell *matCellDef="let row">
