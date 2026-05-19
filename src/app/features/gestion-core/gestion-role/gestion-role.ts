@@ -37,7 +37,7 @@ export class GestionRole {
   totalRoles = 0;
   pageSize = 10;
   pageIndex = 0;
-  activeSort: Sort = { active: 'id', direction: 'desc' };
+  activeSort: Sort = { active: 'id', direction: 'asc' };
   loading = false;
 
   constructor(private rolService: RolService,  private dialog: MatDialog) {}
@@ -64,7 +64,7 @@ export class GestionRole {
   }
 
   onSortChange(sort: Sort): void {
-    this.activeSort = sort.direction ? sort : { active: 'id', direction: 'desc' };
+    this.activeSort = sort.direction ? sort : { active: 'id', direction: 'asc' };
     this.pageIndex = 0;
     this.applyTableState();
   }
