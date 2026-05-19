@@ -109,6 +109,13 @@ export const routes: Routes = [
                 .then(m => m.PensionAlimenticia),
             data: { breadcrumb: 'Pensión alimenticia' }
           },
+          {
+            path: 'consulta-pension-alimenticia',
+            loadComponent: () =>
+              import('./features/pension-alimenticia/pension-alimenticia-consulta/pension-alimenticia-consulta')
+                .then(m => m.PensionAlimenticiaConsulta),
+            data: { breadcrumb: 'Consulta pensión alimenticia' }
+          },
         ]
       },
 
