@@ -19,7 +19,7 @@
             <div class="table-card card">
                 <div class="table-content">
                     <div class="table-scroll">
-                        <table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc" class="table-global">
+                        <table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="desc" (matSortChange)="onSortChange($event)" class="table-global">
 
                             <ng-container matColumnDef="id">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header = "id"> ID </th>
@@ -29,6 +29,11 @@
                             <ng-container matColumnDef="rol">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header = "name"> ROL </th>
                                 <td mat-cell *matCellDef="let row"> {{ row.name }} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="padre">
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header = "modulesName"> MÓDULOS </th>
+                                <td mat-cell *matCellDef="let row"> {{ row.modulesName || row.modulesname || 'Sin módulos' }} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="acciones">
@@ -47,8 +52,11 @@
                         </table>
 
                         <mat-paginator
-                            [pageSize]="10"
-                            [pageSizeOptions]="[5,10,25,50]">
+                            [length]="totalRoles"
+                            [pageSize]="pageSize"
+                            [pageIndex]="pageIndex"
+                            [pageSizeOptions]="[5,10,25,50]"
+                            (page)="onPageChange($event)">
                         </mat-paginator>
                     </div>
                 </div>
