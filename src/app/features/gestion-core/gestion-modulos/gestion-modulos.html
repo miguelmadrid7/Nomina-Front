@@ -66,7 +66,7 @@
                             </ng-container>
 
                         <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.inactive-row]="row?.status === 'INACTIVO'" [attr.aria-disabled]="row?.status === 'INACTIVO'"> </tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.inactive-row]="row?.status === 'INACTIVO'" [style.font-weight]="isParentModule(row) ? '700' : null" [attr.aria-disabled]="row?.status === 'INACTIVO'"> </tr>
                     </table>
                     <mat-paginator
                         [length]="totalElements"

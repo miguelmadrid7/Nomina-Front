@@ -143,6 +143,18 @@ export class GestionModulos {
     return (value ?? '').trim().toLowerCase();
   }
 
+  isParentModule(module: ModuleItem): boolean {
+    if (!module) {
+      return false;
+    }
+
+    return this.allModules.some(item => {
+      const hasParentById = !!module.id && item.parentId === module.id;
+      const hasParentByName = !!item.parent && this.normalizeText(item.parent) === this.normalizeText(module.name);
+      return hasParentById || hasParentByName;
+    });
+  }
+
   getAllModules(): void {
     this.loading = true;
     this.moduleService.getAllModules().subscribe({
