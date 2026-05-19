@@ -105,7 +105,7 @@ export const routes: Routes = [
           {
             path: 'registro-alimenticia',
             loadComponent: () =>
-              import('./features/nomina/pension-alimenticia/pension-alimenticia')
+              import('./features/pension-alimenticia/pension-alimenticia/pension-alimenticia')
                 .then(m => m.PensionAlimenticia),
             data: { breadcrumb: 'Pensión alimenticia' }
           },

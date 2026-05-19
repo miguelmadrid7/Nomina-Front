@@ -4,7 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { IconoDialog } from '../../../shared/dialogs/icono-dialog/icono-dialog';
-import { PensionAlimenDialog } from '../../nomina/pension-alimen-dialog/pension-alimen-dialog';
+import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 
 @Component({
   selector: 'app-gestion-icono',

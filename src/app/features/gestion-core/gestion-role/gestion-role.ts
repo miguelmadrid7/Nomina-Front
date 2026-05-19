@@ -8,7 +8,7 @@ import { RolService } from '../../../core/services/rol.service';
 import { MatIconModule } from '@angular/material/icon';
 import { AltaRolDialog } from '../../../shared/dialogs/alta-rol-dialog/alta-rol-dialog';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { PensionAlimenDialog } from '../../nomina/pension-alimen-dialog/pension-alimen-dialog';
+import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 

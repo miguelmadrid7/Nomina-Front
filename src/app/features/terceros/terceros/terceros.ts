@@ -14,7 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import { TercerosDialog } from '../../../shared/dialogs/terceros-dialog/terceros-dialog';
-import { PensionAlimenDialog } from '../../../features/nomina/pension-alimen-dialog/pension-alimen-dialog';
+import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { EmpleadoItem } from '../../../models/emplado.model';
 import { Observable, tap, map } from 'rxjs';
 import { MatOptionModule } from '@angular/material/core';

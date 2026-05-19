@@ -12,7 +12,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NominaRow } from '../../../models/nomina-Row.model';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
-import { PensionAlimenDialog } from '../../nomina/pension-alimen-dialog/pension-alimen-dialog';
+import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { DialogTerceroInstitucional } from '../../../shared/dialogs/dialog-tercero-institucional/dialog-tercero-institucional';
 import { MatDialog } from '@angular/material/dialog';
 import { MatOptionModule } from '@angular/material/core';

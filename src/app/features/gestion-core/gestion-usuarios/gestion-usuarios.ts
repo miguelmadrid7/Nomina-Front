@@ -18,7 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { UserService } from '../../../core/services/user.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UsuarioDialog } from '../../../shared/dialogs/usuario-dialog/usuario-dialog';
-import { PensionAlimenDialog } from '../../nomina/pension-alimen-dialog/pension-alimen-dialog';
+import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { AltaUsuarioDialog } from '../../../shared/dialogs/alta-usuario-dialog/alta-usuario-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { MatSort, MatSortModule } from '@angular/material/sort';
