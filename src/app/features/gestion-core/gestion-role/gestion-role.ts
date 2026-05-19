@@ -10,6 +10,7 @@ import { AltaRolDialog } from '../../../shared/dialogs/alta-rol-dialog/alta-rol-
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PensionAlimenDialog } from '../../nomina/pension-alimen-dialog/pension-alimen-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'app-gestion-role-usuarios',
@@ -20,13 +21,15 @@ import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-di
     MatPaginatorModule,
     MatTableModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatSortModule  
   ],
   templateUrl: './gestion-role.html',
   styleUrl: './gestion-role.css'
 })
 export class GestionRole {
 
+  @ViewChild(MatSort) sort?: MatSort;
   @ViewChild(MatPaginator) paginator?: MatPaginator
   dataSource  = new MatTableDataSource<Role>([]);
   displayedColumns: string[] = ['id', 'rol', 'acciones'];
@@ -35,21 +38,19 @@ export class GestionRole {
   constructor(private rolService: RolService,  private dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.loadRoles();
-  }
-
-  ngAfterViewInit(): void {
-    if (this.paginator) {
-      this.dataSource.paginator = this.paginator;
-    }
+     this.loadRoles();
   }
 
   loadRoles(): void {
     this.loading = true;
-
     this.rolService.getRoles().subscribe({
       next: (roles: Role[]) => {
         this.dataSource.data = roles;
+          setTimeout(() => {
+            this.dataSource.sort = this.sort!;
+            this.dataSource.paginator = this.paginator!;
+            this.sort!.sort({ id: 'id', start: 'desc', disableClear: false });
+        });
         this.loading = false;
       },
       error: (err) => {
@@ -60,24 +61,41 @@ export class GestionRole {
   }
 
   openAltaRoleDialog(): void {
-    const ref = this.dialog.open(AltaRolDialog, {
-      width: '600px',
-      maxWidth: '95vw',
-      autoFocus: false,
-    });
+  const ref = this.dialog.open(AltaRolDialog, {
+    width: '600px',
+    maxWidth: '95vw',
+    autoFocus: false,
+  });
 
     ref.afterClosed().subscribe((payload) => {
       if (!payload) return;
-
       this.loading = true;
       this.rolService.createRole(payload).subscribe({
         next: () => {
           this.loading = false;
+          this.dialog.open(PensionAlimenDialog, {
+            width: '400px',
+            disableClose: true,
+            data: {
+              type: 'success',
+              title: 'Alta correcta',
+              message: 'El rol se agregó correctamente.'
+            }
+          });
+
           this.loadRoles();
         },
         error: (err) => {
           this.loading = false;
           console.error('Error creando rol', err);
+          this.dialog.open(PensionAlimenDialog, {
+            width: '400px',
+            data: {
+              type: 'error',
+              title: 'Error',
+              message: 'No se pudo agregar el rol.'
+            }
+          });
         },
       });
     });
