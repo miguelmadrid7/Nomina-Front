@@ -105,6 +105,14 @@ export class GestionRole {
     }
   }
 
+  getRoleModules(row: Role): string[] {
+    const modules = row.modulesName ?? row.modulesname ?? '';
+    return modules
+      .split(',')
+      .map(module => module.trim())
+      .filter(module => !!module);
+  }
+
   openAltaRoleDialog(): void {
   const ref = this.dialog.open(AltaRolDialog, {
     width: '600px',

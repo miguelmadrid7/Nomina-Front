@@ -122,17 +122,17 @@
 }
 
 .table-global .mat-column-rol {
-  width: 10px !important;
-  min-width: 10px !important;
-  max-width: 10px !important;
-  text-align: center;
+  width: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  text-align: left;
 }
 
 .table-global .mat-column-padre {
-  width: 10px !important;
-  min-width: 10px !important;
-  max-width: 10px !important;
-  text-align: center;
+  width: 80px !important;
+  min-width: 80px !important;
+  max-width: 80px !important;
+  text-align: left;
 }
 
 .table-global .mat-column-acciones {

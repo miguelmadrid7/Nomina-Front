@@ -33,7 +33,12 @@
 
                             <ng-container matColumnDef="padre">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header = "modulesName"> MÓDULOS </th>
-                                <td mat-cell *matCellDef="let row"> {{ row.modulesName || row.modulesname || 'Sin módulos' }} </td>
+                                <td mat-cell *matCellDef="let row">
+                                    <ng-container *ngIf="getRoleModules(row).length; else noModules">
+                                        <div *ngFor="let module of getRoleModules(row)">{{ module }}</div>
+                                    </ng-container>
+                                    <ng-template #noModules>Sin módulos</ng-template>
+                                </td>
                             </ng-container>
 
                             <ng-container matColumnDef="acciones">
