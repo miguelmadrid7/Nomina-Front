@@ -151,16 +151,16 @@
 }
 
 .table-global .mat-column-name {
-  width: 10px !important;
-  min-width: 10px !important;
-  max-width: 10px !important;
+  width: 30px !important;
+  min-width: 30px !important;
+  max-width: 30px !important;
   text-align: center;
 }
 
 .table-global .mat-column-description {
-  width: 10px !important;
-  min-width: 10px !important;
-  max-width: 10px !important;
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
   text-align: center;
 }
 
