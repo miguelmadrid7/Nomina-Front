@@ -22,37 +22,37 @@
                     <table mat-table [dataSource]="modules" matSort (matSortChange)="sortModules($event)" class="table-global">
                             <!-- Nombre -->
                             <ng-container matColumnDef="name">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre </th>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> NOMBRE </th>
                                 <td mat-cell *matCellDef="let e">{{ e.name }}</td>
                             </ng-container>
 
                             <!-- Descripción -->
                             <ng-container matColumnDef="description">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Descripción </th>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> DESCRIPCIÓN </th>
                                 <td mat-cell *matCellDef="let e">{{ e.description }}</td>
                             </ng-container>
 
                             <!-- Visible -->
                             <ng-container matColumnDef="vista">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Visible </th>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> VISIBLE </th>
                                 <td mat-cell *matCellDef="let e"> {{ e.vista ? 'Sí' : 'No' }} </td>
                             </ng-container>
 
                             <!-- Parent -->
                             <ng-container matColumnDef="parent">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Padre </th>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> PADRE </th>
                                 <td mat-cell *matCellDef="let e">{{ e.parent }}</td>
                             </ng-container>
 
                             <!-- Icon -->
                             <ng-container matColumnDef="icon">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Ícono </th>
+                                <th mat-header-cell *matHeaderCellDef mat-sort-header> ÍCONO </th>
                                 <td mat-cell *matCellDef="let e">{{ e.icon }}</td>
                             </ng-container>
 
                             <!-- Acciones -->
                             <ng-container matColumnDef="actions">
-                                <th mat-header-cell *matHeaderCellDef> Acciones </th>
+                                <th mat-header-cell *matHeaderCellDef> ACCIONES </th>
                                 
                                 <td mat-cell *matCellDef="let e">
                                     <button class="btnn btnn-primary" type="button"  [disabled]="!e.id || detailLoading"  (click)="getModuleById(e.id)">
