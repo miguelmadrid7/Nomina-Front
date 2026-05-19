@@ -21,6 +21,7 @@ import { UsuarioDialog } from '../../../shared/dialogs/usuario-dialog/usuario-di
 import { PensionAlimenDialog } from '../../nomina/pension-alimen-dialog/pension-alimen-dialog';
 import { AltaUsuarioDialog } from '../../../shared/dialogs/alta-usuario-dialog/alta-usuario-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 
 @Component({
   selector: 'app-gestion-usuarios',
@@ -38,6 +39,7 @@ import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-di
     MatCheckboxModule,
     MatSelectModule,
     MatDialogModule,
+    MatSortModule,
     UppercaseDirective
   ],
   templateUrl: './gestion-usuarios.html',
@@ -45,6 +47,8 @@ import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-di
 })
 export class GestionUsuarios {
 
+
+  @ViewChild(MatSort) sort?: MatSort;
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
 
@@ -177,9 +181,11 @@ export class GestionUsuarios {
         });
 
         this.usersDataSource = new MatTableDataSource<EmpleadoItem>(this.empleados);
-        if (this.paginator) {
-          this.usersDataSource.paginator = this.paginator;
-        }
+          setTimeout(() => {
+            this.usersDataSource.sort = this.sort!;
+            this.usersDataSource.paginator = this.paginator!;
+            this.sort!.sort({ id: 'id', start: 'desc', disableClear: false });
+          });
         this.totalElements = this.empleados.length;
         this.cd.markForCheck();
       },
@@ -234,10 +240,11 @@ export class GestionUsuarios {
       this.resultado = filtrados;
       this.cargandoBusqueda = false;
 
-      this.usersDataSource = new MatTableDataSource<EmpleadoItem>(filtrados);
-      if (this.paginator) {
-        this.usersDataSource.paginator = this.paginator;
-      }
+       this.usersDataSource = new MatTableDataSource<EmpleadoItem>(filtrados);
+        setTimeout(() => {
+          this.usersDataSource.sort = this.sort!;
+          this.usersDataSource.paginator = this.paginator!;
+        });
       this.totalElements = filtrados.length;
 
       if (this.resultado.length > 0) {
@@ -426,9 +433,10 @@ export class GestionUsuarios {
     this.empleadoActual = null;
     this.selectedRoles = [];
     this.usersDataSource = new MatTableDataSource<EmpleadoItem>(this.empleados);
-    if (this.paginator) {
-      this.usersDataSource.paginator = this.paginator;
-    }
+      setTimeout(() => {
+        this.usersDataSource.sort = this.sort!;
+        this.usersDataSource.paginator = this.paginator!;
+      });
     this.totalElements = this.empleados.length;
     this.autocompleteTrigger?.closePanel();
     this.dataSource.data = [];
