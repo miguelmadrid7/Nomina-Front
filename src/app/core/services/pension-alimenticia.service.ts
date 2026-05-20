@@ -3,10 +3,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../models/api-Response.model';
 import { Banco } from '../../models/banco.model';
-import { BeneficiarioRequest } from '../../models/beneficiario.model';
+import { BeneficiarioDTO, BeneficiarioRequest } from '../../models/beneficiario.model';
 import { IdResponse } from '../../models/id-Response.model';
 import { BeneficiarioAlimRequest } from '../../models/pension-Alimenticia-model';
 import { Empleado } from '../../features/servicios/empleado';
+import { Observable } from 'rxjs';
 
 
 @Injectable({ providedIn: 'root' })
@@ -45,5 +46,13 @@ export class PensionAlimenticiaService {
 
     addBeneficario(payload: BeneficiarioRequest) {
         return this.http.post<ApiResponse<any>>(`${this.base}/beneficiarios`, payload);
+    }
+
+    getAllBeneficiarios(): Observable<ApiResponse<BeneficiarioDTO[]>> {
+        return this.http.get<ApiResponse<BeneficiarioDTO[]>>( `${this.base}/beneficiarios`);
+    }
+
+    getBeneficiario(beneficiarioId: number): Observable<ApiResponse<BeneficiarioDTO>> {
+        return this.http.get<ApiResponse<BeneficiarioDTO>>(`${this.base}/beneficiarios/${beneficiarioId}`);
     }
 }
