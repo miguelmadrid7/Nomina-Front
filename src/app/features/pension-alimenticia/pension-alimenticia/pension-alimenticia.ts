@@ -291,6 +291,7 @@ export class PensionAlimenticia {
           const beneficiarioPayload: BeneficiarioRequest = {
             tabEmpleadosId: this.empleadoId!,
             tabBeneficiariosAlimId: beneficiarioAlimId,
+            catBancoId: value.bancoSeleccionado,
             formaAplicacion: value.formaAplicacion as 'P' | 'C',
             factorImporte: factor,
             qnaini: Number(value.vigenciaInicio),

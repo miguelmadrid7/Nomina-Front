@@ -1,1 +1,93 @@
-<p>pension-alimenticia-consulta works!</p>
+<div class="page-container">
+
+    <div class="actions-right">
+        <div class="btn-group">
+            <button class="btn btn-primary" (click)="buscar()">
+                <mat-icon>search</mat-icon>
+                <span>Buscar</span>
+            </button>
+        </div>
+        <button class="btn btn-danger" (click)="clearFilters()">
+            <mat-icon>delete_outline</mat-icon>
+            <span>Limpiar</span>
+        </button>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="table-layout">
+        <div class="table-section">
+            <div class="table-card card">
+                <div class="table-content">
+                    <div class="table-scroll">
+
+                        <form [formGroup]="form">
+                            <table mat-table  [dataSource]="dataSource" class="table-global">
+                                
+                                <ng-container matColumnDef="nombreEmpleado">
+                                    <th mat-header-cell *matHeaderCellDef class="header-with-select"> NOMBRE EMPLEADO 
+                                        <div class="header-column">
+                                            <mat-form-field appearance="outline" class="header-text-input-small" floatLabel="always">
+                                                <mat-label>Buscar</mat-label>
+                                                <input matInput formControlName="rfc" (keydown.enter)="buscar()" appUppercase>
+                                            </mat-form-field>
+                                        </div> 
+                                    </th>
+                                    <td mat-cell *matCellDef="let e">
+                                        <span *ngIf="e.mostrarEmpleado"> {{ e.nombreEmpleado }} </span>
+                                    </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="nombreBeneficiario">
+                                    <th mat-header-cell *matHeaderCellDef> NOMBRE BENEFICIARIO  </th>
+                                    <td mat-cell *matCellDef="let e">{{ e.nombreBeneficiario  }}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="rfc">
+                                    <th mat-header-cell *matHeaderCellDef> RFC  </th>
+                                    <td mat-cell *matCellDef="let e">{{ e.rfc  }}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="noBeneficiario">
+                                    <th mat-header-cell *matHeaderCellDef> NUMERO  <br> DE <br>  BENEFICIARIO </th>
+                                    <td mat-cell *matCellDef="let e">{{ e.noBeneficiario  }}</td>
+                                </ng-container>
+
+                                
+
+                                <ng-container matColumnDef="qna">
+                                    <th mat-header-cell *matHeaderCellDef>QNA</th>
+                                    <td mat-cell *matCellDef="let e">{{ e.qna  }}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="acciones">
+                                    <th mat-header-cell *matHeaderCellDef>ACCIONES</th>
+                                        <td mat-cell *matCellDef="let e">
+                                            <div class="table-actions">
+                                                <div class="bttn-group">
+                                                    <button mat-icon-button class="bttn ico-btn-primary" >
+                                                        <mat-icon>edit</mat-icon>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                        </form>
+
+                         <mat-paginator
+                            [length]="totalElements"
+                            [pageSize]="50"
+                            [pageSizeOptions]="[50, 100, 150, 200]"
+                            showFirstLastButtons>
+                        </mat-paginator>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

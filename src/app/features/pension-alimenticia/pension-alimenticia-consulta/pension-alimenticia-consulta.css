@@ -1,0 +1,229 @@
+/* CONTENEDORES Y BOTONES */
+.actions-right {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0 0 14px;
+}
+
+.btn-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn {
+    width: 120px;
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: .2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: none !important;
+    transition: all .18s ease;
+    cursor: pointer;
+    position: relative;
+    background: transparent;
+    border: 2px solid;
+}
+
+.btn mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    transition: transform 0.2s ease;
+}
+
+.btn-primary {
+    background: transparent;
+    color: #2563eb;
+    border-color: #2563eb;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background: transparent;
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    color: #ffffff;
+    border-color: #dc2626;
+    transform: translateY(-1px);
+}
+
+.bttn-group {
+    display: flex;
+    gap: 10px;  
+    align-items: center;
+    justify-content: center;
+}
+
+.bttn {
+    width: 40px;
+    height: 36px;
+    padding: 0 5px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: .2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: none !important;
+    transition: all .18s ease;
+    cursor: pointer;
+    position: relative;
+    background: transparent;
+    border: 2px solid;
+}
+
+.ico-btn-primary {
+    background: transparent;
+    color: #2563eb;
+    border-color: #2563eb;
+}
+
+/* TABLA GLOBAL */
+.table-global {
+    width: 100%;
+}
+
+.table-global .mat-mdc-header-cell {
+    vertical-align: middle !important;
+    padding: 10px 8px !important;
+}
+
+.table-global .mat-column-nombreEmpleado {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-nombreBeneficiario {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-rfc {
+  width: 60px !important;
+  min-width: 60px !important;
+  max-width: 60px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-noBeneficiario {
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-formaAplicacion {
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-factorImporte {
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-banco {
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-qna {
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-acciones {
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+  text-align: center;
+}
+
+/* HEADERS CON SELECTS */
+.header-column {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 2px !important;
+}
+
+.header-select {
+    width: 100% !important;
+    max-width: 50px !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+.header-select-orden {
+  max-width: 50px !important; /* prueba 140/160/180 según te guste */
+}
+
+.header-text-input {
+    width: 50px !important;
+    max-width: 50px !important;
+    margin: 4px auto !important;
+    text-align: center !important;
+}
+
+.header-text-input-small {
+    width: 220px !important;
+    max-width: 220px !important;
+    margin: 4px auto !important;
+    text-align: center !important;
+}
+
+:host ::ng-deep .header-text-input-small .mat-mdc-form-field-infix {
+    min-height: 40px !important;
+    padding-top: 8px !important;
+    padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .header-text-input .mat-mdc-form-field-infix {
+    min-height: 40px !important;
+    padding-top: 8px !important;
+    padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .header-text-input .mat-mdc-text-field-wrapper {
+    height: 40px !important;
+}
