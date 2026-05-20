@@ -49,5 +49,6 @@ export interface FilaBeneficiario {
   formaAplicacion: string;   
   factorImporte: string;   
   banco: string;   
-  qna: string;   
+  qna: string;  
+  mostrarEmpleado?: boolean; 
 }
