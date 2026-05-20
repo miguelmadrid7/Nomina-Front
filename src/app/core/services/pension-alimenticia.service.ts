@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../models/api-Response.model';
 import { Banco } from '../../models/banco.model';
-import { BeneficiarioDTO, BeneficiarioRequest } from '../../models/beneficiario.model';
+import { BeneficiarioDetalleResponse, BeneficiarioDTO, BeneficiarioRequest } from '../../models/beneficiario.model';
 import { IdResponse } from '../../models/id-Response.model';
 import { BeneficiarioAlimRequest } from '../../models/pension-Alimenticia-model';
 import { Empleado } from '../../features/servicios/empleado';
@@ -52,7 +52,15 @@ export class PensionAlimenticiaService {
         return this.http.get<ApiResponse<BeneficiarioDTO[]>>( `${this.base}/beneficiarios`);
     }
 
-    getBeneficiario(beneficiarioId: number): Observable<ApiResponse<BeneficiarioDTO>> {
-        return this.http.get<ApiResponse<BeneficiarioDTO>>(`${this.base}/beneficiarios/${beneficiarioId}`);
+    getBeneficiario(id: number): Observable<ApiResponse<BeneficiarioDetalleResponse[]>> {
+    return this.http.get<ApiResponse<BeneficiarioDetalleResponse[]>>(`${this.base}/beneficiarios/${id}`);
+    }
+
+    updateBeneficiario(id: number, payload: BeneficiarioRequest): Observable<ApiResponse<any>> {
+        return this.http.patch<ApiResponse<any>>(`${this.base}/beneficiarios/${id}`, payload);
+    }
+
+    updateBeneficiarioAlim(id: number, payload: BeneficiarioAlimRequest): Observable<ApiResponse<any>> {
+        return this.http.patch<ApiResponse<any>>(`${this.base}/beneficiarios/alim/${id}`,payload);
     }
 }
