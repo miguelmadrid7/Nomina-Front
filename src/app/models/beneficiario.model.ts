@@ -10,6 +10,7 @@ export interface BeneficiarioRequest {
   numeroDocumento: string | null;
   numeroBenef?: number;
   catBancoId?: number;
+  numeroOficio?: string | null;
 }
 
 export interface BeneficiarioDTO {
