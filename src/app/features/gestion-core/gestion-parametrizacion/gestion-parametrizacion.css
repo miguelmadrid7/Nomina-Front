@@ -1,0 +1,111 @@
+/* Botones */
+.actions-right {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0px 0 15px;
+  margin-top: 15px;
+}
+
+.btn-group {
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn {
+  width: 120px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: .2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: none !important;
+  transition: all .18s ease;
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+  border: 2px solid;
+}
+
+.btn mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transition: transform 0.2s ease;
+}
+
+.btn-primary {
+  background: transparent;
+  color: #2563eb;
+  border-color: #2563eb;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+/* TABLA GLOBAL */
+.table-global {
+    width: 100%;
+}
+
+.table-global .mat-mdc-header-cell {
+    vertical-align: middle !important;
+    padding: 10px 8px !important;
+}
+
+
+.table-global .mat-column-anio {
+  width: 30px !important;
+  min-width: 30px !important;
+  max-width: 30px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-importeDiario {
+  width: 30px !important;
+  min-width: 30px !important;
+  max-width: 30px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-importeMensual {
+  width: 30px !important;
+  min-width: 30px !important;
+  max-width: 30px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-qnaInicio {
+  width: 30px !important;
+  min-width: 30px !important;
+  max-width: 30px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-qnaFin {
+  width: 30px !important;
+  min-width: 30px !important;
+  max-width: 30px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-actions {
+  width: 30px !important;
+  min-width: 30px !important;
+  max-width: 30px !important;
+  text-align: center;
+}
