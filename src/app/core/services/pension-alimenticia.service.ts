@@ -22,17 +22,12 @@ export class PensionAlimenticiaService {
 
     // Busca por RFC/CURP/NOMBRE usando header targetValue
     searchPorTarget(target: 'RFC' | 'CURP' | 'NOMBRE', value: string) {
-        return this.http.get<ApiResponse<Empleado[]>>(
-            `${this.base}/employee/by/${target}`,
-            this.extraHeaders('targetValue', value)
-        );
+        return this.http.get<ApiResponse<Empleado[]>>(`${this.base}/employee/by/${target}`,this.extraHeaders('targetValue', value));
     }
 
     // Búsqueda libre (una sola caja)
     searchEmpleadoLibre(search: string) {
-        return this.http.get<ApiResponse<Empleado[]>>(
-        `${this.base}/employee/by/${encodeURIComponent(search)}/search`
-        );
+        return this.http.get<ApiResponse<Empleado[]>>(`${this.base}/employee/by/${encodeURIComponent(search)}/search`);
     }
 
     //Se obtiene la lista de los banco que hay en la bd y los muestra el combobox
