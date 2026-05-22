@@ -1,0 +1,53 @@
+<div class="dialog-shell">
+     <div class="dialog-header dlg-bar">
+         <button mat-icon-button class="dialog-close" (click)="close()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    
+    <div class="dlg-bar-title"> {{ mode === 'update' ? 'Detalle de parametros' : 'Agregar parametros' }}</div>
+
+     <div class="dialog-content">
+
+        
+        <div class="section-divider"></div>
+
+        <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
+
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>Año</mat-label>
+                    <mat-icon matPrefix>email</mat-icon>
+                        <input matInput formControlName="anio" appUppercase/>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>Importe diario</mat-label>
+                    <mat-icon matPrefix>email</mat-icon>
+                        <input matInput formControlName="importeDiario" appUppercase/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>Importe mensual</mat-label>
+                    <mat-icon matPrefix>email</mat-icon>
+                        <input matInput formControlName="importeMensual" appUppercase/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>QNA inicio</mat-label>
+                    <mat-icon matPrefix>email</mat-icon>
+                        <input matInput formControlName="qnaInicio" appUppercase/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>QNA  fin</mat-label>
+                    <mat-icon matPrefix>email</mat-icon>
+                        <input matInput formControlName="qnaFin" appUppercase/>
+            </mat-form-field>
+        </mat-dialog-content>
+
+        <div class="dlg-actions">
+            <button class="btn btn-danger" (click)="close()">Cancelar</button>
+            <button class="btn btn-primary" (click)="guardar()"> {{ mode === 'update' ? 'Actualizar' : 'Guardar' }}</button>
+        </div>
+     </div>
+</div>
