@@ -9,7 +9,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { PensionAlimenticiaService } from '../../../core/services/pension-alimenticia.service';
 import { MatCardModule } from '@angular/material/card';
-import { BeneficiarioRequest } from '../../../models/beneficiario.model';
+import { BeneficiarioRequest, FilaBeneficiario } from '../../../models/beneficiario.model';
 import { BeneficiarioAlimRequest } from '../../../models/pension-Alimenticia-model';
 import { switchMap } from 'rxjs/operators';
 
@@ -34,7 +34,7 @@ export class ConsultaPensionesDialog implements OnInit{
   form!: FormGroup;
   detalle: any = null;
 
-  constructor(private  ref: MatDialogRef<ConsultaPensionesDialog>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public beneficiarioId: number,  private pensionService: PensionAlimenticiaService){}
+  constructor(private  ref: MatDialogRef<ConsultaPensionesDialog>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: FilaBeneficiario,  private pensionService: PensionAlimenticiaService){}
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -49,13 +49,14 @@ export class ConsultaPensionesDialog implements OnInit{
       clabe: [''],
       qnaInicio: [''],
       qnaFin: [''],
-      numeroDocumento: ['']
+      numeroDocumento: [''], 
+      numeroOficio: ['']
     });
     this.cargarDetalle();
   }
 
   cargarDetalle(): void {
-    this.pensionService.getBeneficiario(this.beneficiarioId).subscribe({
+    this.pensionService.getBeneficiario(this.data.id).subscribe({
       next: (resp) => {
         const arr = resp?.data as any[];
           if (!arr || arr.length === 0) {
@@ -69,6 +70,7 @@ export class ConsultaPensionesDialog implements OnInit{
             nombreBeneficiario: this.armarNombreBeneficiario(d),
             rfc: d.beneficiario_rfc || '—',
             numeroBeneficiario: d.numero_benef ?? '',
+            numeroOficio: d.numero_oficio ?? '',
             formaAplicacion: d.forma_aplicacion === 'P' ? 'Factor' : 'Importe fijo',
             factorImporte: d.forma_aplicacion === 'P' ? `${((d.factor_importe ?? 0) * 100).toFixed(0)}` : `${Number(d.factor_importe ?? 0).toFixed(2)}`,
             banco: d.nombre_banco || 'SIN BANCO',
@@ -100,7 +102,7 @@ export class ConsultaPensionesDialog implements OnInit{
   guardar(): void {
     const d = this.form.value;
     const alimId = this.detalle?.tab_beneficiario_alim_id;
-    const nomId  = this.beneficiarioId;
+    const nomId  = this.data.id;
 
     if (!alimId) {
       console.error('No se encontró tab_beneficiario_alim_id');
@@ -130,6 +132,7 @@ export class ConsultaPensionesDialog implements OnInit{
       qnaini: Number(d.qnaInicio),
       qnafin: Number(d.qnaFin),
       numeroDocumento: d.clabe,
+      numeroOficio: d.numeroOficio,
       numeroBenef: d.numeroBeneficiario
     };
 
