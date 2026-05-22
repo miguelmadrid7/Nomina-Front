@@ -25,7 +25,8 @@ export interface BeneficiarioDTO {
   tabEmpleadosId: number;      
   tabBeneficiariosAlimId: number;      
   formaAplicacion: 'P' | 'C';   
-  factorImporte: number;      
+  factorImporte: number; 
+  numeroOficio?: string;     
   qnaini: number;       
   qnafin: number;      
   numeroDocumento: string;    
@@ -48,6 +49,7 @@ export interface FilaBeneficiario {
   nombreBeneficiario: string;   
   rfc: string;
   noBeneficiario: number;
+  numeroOficio?: string;
   formaAplicacion: string;   
   factorImporte: string;   
   banco: string;   
