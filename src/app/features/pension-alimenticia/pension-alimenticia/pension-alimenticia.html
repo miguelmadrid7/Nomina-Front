@@ -1,27 +1,27 @@
 <div class="page-container">
   <div class="page-header"> 
-    <h2 class="page-title">Registro Beneficiarios De Pensión Alimenticia</h2>
+    <h2 class="page-title">Registro beneficiarios de pensión alimenticia</h2>
   </div>
 
   <div class="section-divider"></div>
 
   <div class="actions-right">
-        <div class="btn-group">
-            <button class="btn btn-danger" (click)="clearSearch()">
-              <mat-icon>delete_outline</mat-icon>
-              <span>Limpiar</span>
-            </button>
-        </div>
-        <button class="btn btn-primary" (click)="searchEmployee()">
-          <mat-icon>search</mat-icon>
-           <span>Buscar</span>
-        </button>
+    <div class="btn-group">
+      <button class="btn btn-danger" (click)="clearSearch()">
+        <mat-icon>delete_outline</mat-icon>
+        <span>Limpiar</span>
+      </button>
+    </div>
+    <button class="btn btn-primary" (click)="searchEmployee()">
+      <mat-icon>search</mat-icon>
+      <span>Buscar</span>
+    </button>
   </div>
 
   <form [formGroup]="form" (ngSubmit)="saveEmployee()">
     <div class="global-search">
-        <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-          <mat-icon matPrefix>search</mat-icon>
+      <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+        <mat-icon matPrefix>search</mat-icon>
           <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
             <input matInput
               id="buscarEmpleado"
@@ -31,15 +31,16 @@
               (input)="onSearchInputChange()"
               appUppercase
               (keydown.enter)="$event.preventDefault(); searchEmployee()">
-          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayEmployee" (optionSelected)="onOptionSelected($event.option.value)">
-            <mat-option *ngFor="let emp of resultados" [value]="emp"> {{ emp?.rfc || '—' }} · {{ emp?.curp || '—' }} · {{ emp?.nombreCompleto || '—' }} </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-  </div>
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayEmployee" (optionSelected)="onOptionSelected($event.option.value)">
+          <mat-option *ngFor="let emp of resultados" [value]="emp"> {{ emp?.rfc || '—' }} · {{ emp?.curp || '—' }} · {{ emp?.nombreCompleto || '—' }} </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
   <div class="section-divider"></div>
   
     <div class="section-header">
-        <h3>Agregar Beneficiaria(o)</h3>
+      <h3>Agregar Beneficiaria(o)</h3>
     </div>
 
     <div class="btn-group">
@@ -55,20 +56,11 @@
         <!-- Apellido paterno -->
         <div class="span-1">
           <label class="field-title" for="apellidoPaterno">Apellido paterno*</label>
-          <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
-            <mat-icon matPrefix>person</mat-icon>
-            <input
-              matInput
-              id="apellidoPaterno"
-              name="apellidoPaterno"
-              formControlName="apellidoPaterno"
-              appSoloLetras
-              appUppercase
-              placeholder="Ingresar Apellido Paterno"
-              required
-              minlength="2" />
-            <mat-error *ngIf="f['apellidoPaterno']?.invalid && f['apellidoPaterno']?.touched"> Ingresa el apellido paterno (mín. 2 caracteres). </mat-error>
-          </mat-form-field>
+            <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+              <mat-icon matPrefix>person</mat-icon>
+                <input matInput id="apellidoPaterno" name="apellidoPaterno" formControlName="apellidoPaterno" appSoloLetras appUppercase placeholder="Ingresa Apellido Paterno" required minlength="2" />
+              <mat-error *ngIf="f['apellidoPaterno']?.invalid && f['apellidoPaterno']?.touched"> Ingresa el apellido paterno (mín. 2 caracteres). </mat-error>
+            </mat-form-field>
         </div>
 
         <!-- Apellido materno -->
@@ -76,74 +68,40 @@
           <label class="field-title" for="apellidoMaterno">Apellido materno*</label>
           <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
             <mat-icon matPrefix>person</mat-icon>
-            <input
-              matInput
-              id="apellidoMaterno"
-              name="apellidoMaterno"
-              formControlName="apellidoMaterno"
-              appSoloLetras
-              appUppercase
-              placeholder="Ingresar Apellido Materno"
-              required
-              minlength="2" />
-            <mat-error *ngIf="f['apellidoMaterno']?.invalid && f['apellidoMaterno']?.touched">
-              Ingresa el apellido materno (mín. 2 caracteres).
-            </mat-error>
+              <input matInput id="apellidoMaterno" name="apellidoMaterno" formControlName="apellidoMaterno" appSoloLetras appUppercase placeholder="Ingresa Apellido Materno" required minlength="2" />
+            <mat-error *ngIf="f['apellidoMaterno']?.invalid && f['apellidoMaterno']?.touched"> Ingresa el apellido materno (mín. 2 caracteres). </mat-error>
           </mat-form-field>
         </div>
 
         <!-- Nombre completo -->
         <div>
           <label class="field-title" for="nombreCompleto">Nombre completo*</label>
-          <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
-            <mat-icon matPrefix>person</mat-icon>
-            <input
-              matInput
-              id="nombreCompleto"
-              name="nombreCompleto"
-              formControlName="nombreCompleto"
-              appSoloLetras
-              appUppercase
-              placeholder="Ingresar Nombre(s)"
-              required
-              minlength="2" />
-            <mat-error *ngIf="f['nombreCompleto']?.invalid && f['nombreCompleto']?.touched"> Ingresa el nombre (mín. 2 caracteres). </mat-error>
-          </mat-form-field>
+            <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+              <mat-icon matPrefix>person</mat-icon>
+                <input matInput id="nombreCompleto" name="nombreCompleto" formControlName="nombreCompleto" appSoloLetras appUppercase placeholder="Ingresa Nombre(s)" required minlength="2" />
+              <mat-error *ngIf="f['nombreCompleto']?.invalid && f['nombreCompleto']?.touched"> Ingresa el nombre (mín. 2 caracteres). </mat-error>
+            </mat-form-field>
         </div>
 
         <!-- RFC -->
         <div>
           <label class="field-title" for="rfc">RFC*</label>
-          <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
-            <mat-icon matPrefix>badge</mat-icon>
-            <input
-              matInput
-              id="rfc"
-              name="rfc"
-              formControlName="rfc"
-              placeholder="Ingresa RFC"
-              required
-              maxlength="13"
-              pattern="^[A-ZÑ&]{4}\d{6}[A-Z0-9]{3}$" />
-            <mat-error *ngIf="f['rfc']?.invalid && f['rfc']?.touched"> Ingresa un RFC válido (13 caracteres, mayúsculas y dígitos).</mat-error>
-          </mat-form-field>
+            <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+              <mat-icon matPrefix>badge</mat-icon>
+                <input matInput id="rfc" name="rfc" formControlName="rfc" placeholder="Ingresa RFC" required maxlength="13" pattern="^[A-ZÑ&]{4}\d{6}[A-Z0-9]{3}$" />
+              <mat-error *ngIf="f['rfc']?.invalid && f['rfc']?.touched"> Ingresa un RFC válido (13 caracteres, mayúsculas y dígitos).</mat-error>
+            </mat-form-field>
         </div>
 
         <!-- No. Beneficiaria (auto) -->
         <div>
           <label class="field-title" for="numeroBeneficiario">No. Beneficiaria(o)*</label>
-          <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
-            <mat-icon matPrefix>numbers</mat-icon>
-            <input
-              matInput
-              id="numeroBeneficiario"
-              formControlName="numeroBeneficiario"
-              placeholder="Se asigna automatico"
-              readonly
-              tabindex="-1" />
-            <mat-icon matSuffix>lock</mat-icon>
-            <mat-hint>Este número se automatico al guardar.</mat-hint>
-          </mat-form-field>
+            <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+              <mat-icon matPrefix>numbers</mat-icon>
+                <input matInput id="numeroBeneficiario" formControlName="numeroBeneficiario" placeholder="Se asigna automatico" readonly tabindex="-1" />
+              <mat-icon matSuffix>lock</mat-icon>
+              <mat-hint>Este número se automatico al guardar.</mat-hint>
+            </mat-form-field>
         </div>
 
         <!-- Forma de aplicación -->
@@ -187,15 +145,10 @@
 
         <!-- Banco -->
         <div>
-          <label class="field-title" for="bancoSeleccionado">Buscar banco*</label>
+          <label class="field-title" for="bancoSeleccionado">Buscar banco</label>
           <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
             <mat-icon matPrefix>account_balance</mat-icon>
-            <mat-select
-              id="bancoSeleccionado"
-              name="bancoSeleccionado"
-              placeholder="Seleccionar banco"
-              formControlName="bancoSeleccionado"
-              required>
+            <mat-select id="bancoSeleccionado" name="bancoSeleccionado" placeholder="Seleccionar banco" formControlName="bancoSeleccionado">
               <mat-option *ngFor="let bank of bancos" [value]="bank.id"> {{ bank.banco }} </mat-option>
             </mat-select>
             <mat-error *ngIf="f['bancoSeleccionado']?.invalid && f['bancoSeleccionado']?.touched"> Selecciona un banco. </mat-error>
@@ -204,59 +157,30 @@
 
         <!-- CLABE -->
         <div>
-          <label class="field-title" for="numeroDocumento">Clabe interbancaria*</label>
-          <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
-            <mat-icon matPrefix>credit_card</mat-icon>
-            <input
-              matInput
-              id="numeroDocumento"
-              name="numeroDocumento"
-              type="text"
-              formControlName="numeroDocumento"
-              placeholder="18 dígitos"
-              maxlength="18"
-              required
-              pattern="^\d{18}$" />
-            <mat-error *ngIf="f['numeroDocumento']?.invalid && f['numeroDocumento']?.touched"> La CLABE debe tener exactamente 18 dígitos numéricos. </mat-error>
-          </mat-form-field>
+          <label class="field-title" for="numeroDocumento">Clabe interbancaria</label>
+            <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+              <mat-icon matPrefix>credit_card</mat-icon>
+                <input matInput id="numeroDocumento" name="numeroDocumento" type="text" formControlName="numeroDocumento" placeholder="18 dígitos" maxlength="18" pattern="^\d{18}$" />
+              <mat-error *ngIf="f['numeroDocumento']?.invalid && f['numeroDocumento']?.touched"> La CLABE debe tener exactamente 18 dígitos numéricos. </mat-error>
+            </mat-form-field>
         </div>
 
         <!-- Inicio -->
         <div>
             <label class="field-title" for="vigenciaInicio">Inicio*</label>
-            <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
-              <mat-icon matPrefix>calendar_today</mat-icon>
-              <input
-                matInput
-                id="vigenciaInicio"
-                name="vigenciaInicio"
-                type="text"
-                formControlName="vigenciaInicio"
-                placeholder="AAAAQQ"
-                required
-                maxlength="6"
-                pattern="^\d{6}$"
-                (input)="onVigenciaInput('inicio')" />
+              <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+                <mat-icon matPrefix>calendar_today</mat-icon>
+                  <input matInput id="vigenciaInicio" name="vigenciaInicio" type="text" formControlName="vigenciaInicio" placeholder="AAAAQQ" required maxlength="6" pattern="^\d{6}$" (input)="onVigenciaInput('inicio')" />
               <mat-error *ngIf="f['vigenciaInicio']?.invalid && f['vigenciaInicio']?.touched"> Captura la vigencia de inicio, debe de ser menor a 6 dígitos. </mat-error>
-            </mat-form-field>
+              </mat-form-field>
         </div>
 
         <!-- Hasta -->
         <div>
-            <label class="field-title" for="vigenciaFin">Hasta*</label>
+          <label class="field-title" for="vigenciaFin">Hasta*</label>
             <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
               <mat-icon matPrefix>calendar_today</mat-icon>
-              <input
-                matInput
-                id="vigenciaFin"
-                name="vigenciaFin"
-                type="text"
-                formControlName="vigenciaFin"
-                placeholder="AAAAQQ"
-                required
-                maxlength="6"
-                pattern="^\d{6}$"
-                (input)="onVigenciaInput('fin')" />
+                <input matInput id="vigenciaFin" name="vigenciaFin" type="text" formControlName="vigenciaFin" placeholder="AAAAQQ" required maxlength="6" pattern="^\d{6}$" (input)="onVigenciaInput('fin')" />
               <mat-error *ngIf="f['vigenciaFin']?.invalid && f['vigenciaFin']?.touched"> Captura la vigencia de fin, debe de ser menor a 6 dígitos. </mat-error>
             </mat-form-field>
         </div>

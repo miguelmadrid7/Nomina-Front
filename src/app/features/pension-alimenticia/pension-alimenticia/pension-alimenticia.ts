@@ -87,8 +87,8 @@ export class PensionAlimenticia {
       rfc: ['', [Validators.required, rfcValidator()]],
       formaAplicacion: ['', Validators.required],
       factorImporte: [null, [Validators.required, factorImporteValidator()]],
-      bancoSeleccionado: [null, Validators.required],
-      numeroDocumento: [null, [Validators.required, Validators.pattern(/^\d{18}$/)]],
+      bancoSeleccionado: [null],
+      numeroDocumento: [null, [Validators.pattern(/^\d{18}$/)]],
       vigenciaInicio: ['', [Validators.required, vigenciaFormatoValidator()]],
       vigenciaFin: ['', [Validators.required, vigenciaFormatoValidator()]],
     },
@@ -258,11 +258,15 @@ export class PensionAlimenticia {
 
       // Normalizar y validar CLABE (18 dígitos)
       const clabe = String(value.numeroDocumento ?? '').trim().replace(/\D+/g, '');
-      if (!/^\d{18}$/.test(clabe)) return fail('La CLABE debe tener exactamente 18 dígitos numéricos.');
+        if (clabe && !/^\d{18}$/.test(clabe)) {
+          return fail('La CLABE debe tener exactamente 18 dígitos numéricos.');
+        }
+        
 
       this.pensionAlimenticiaService.addBeneficiarioAlim(beneficiarioAlimPayload).subscribe({
         next: (resp: ApiResponse<IdResponse>) =>{
           const beneficiarioAlimId = resp?.data?.id;
+          
           if (!beneficiarioAlimId) {
             this.dialog.open(PensionAlimenDialog, {
               width: '360px',
@@ -291,12 +295,12 @@ export class PensionAlimenticia {
           const beneficiarioPayload: BeneficiarioRequest = {
             tabEmpleadosId: this.empleadoId!,
             tabBeneficiariosAlimId: beneficiarioAlimId,
-            catBancoId: value.bancoSeleccionado,
+            catBancoId: value.bancoSeleccionado || null,
             formaAplicacion: value.formaAplicacion as 'P' | 'C',
             factorImporte: factor,
             qnaini: Number(value.vigenciaInicio),
             qnafin: Number(value.vigenciaFin),
-            numeroDocumento: clabe
+            numeroDocumento: clabe || null
           };
 
           if (value.numeroBeneficiario != null && !Number.isNaN(Number(value.numeroBeneficiario))) {
@@ -337,11 +341,10 @@ export class PensionAlimenticia {
       });
   }
 
-  // Limpia los campos del formulario de captura (no toca la búsqueda/empleado)
   private resetForm () {
    this.form.reset({
     numeroBeneficiario: null,
-    searchText: this.form.get('searchText')?.value, // Mantener el texto de búsqueda
+    searchText: this.form.get('searchText')?.value, 
     apellidoPaterno: '',
     apellidoMaterno: '',
     nombreCompleto: '',
@@ -352,31 +355,37 @@ export class PensionAlimenticia {
     numeroDocumento: null,
     vigenciaInicio: '',
     vigenciaFin: ''
-  });
+    });
+
+    Object.keys(this.form.controls).forEach(key => {
+      this.form.get(key)?.setErrors(null);
+      this.form.get(key)?.markAsPristine();
+      this.form.get(key)?.markAsUntouched();
+    });
+
+    this.form.markAsPristine();
+    this.form.markAsUntouched();
   }
 
   clearSearch () {
-   // Limpiar todo el formulario
-  this.form.reset({
-    numeroBeneficiario: null,
-    searchText: '',
-    apellidoPaterno: '',
-    apellidoMaterno: '',
-    nombreCompleto: '',
-    rfc: '',
-    formaAplicacion: '',
-    factorImporte: null,
-    bancoSeleccionado: null,
-    numeroDocumento: null,
-    vigenciaInicio: '',
-    vigenciaFin: ''
-  });
-  
-  // Limpiar variables de búsqueda
-  this.resultados = [];
-  this.cargandoBusqueda = false;
-  this.empleadoId = null;
-  this.autocompleteTrigger?.closePanel();
+    this.form.reset({
+      numeroBeneficiario: null,
+      searchText: '',
+      apellidoPaterno: '',
+      apellidoMaterno: '',
+      nombreCompleto: '',
+      rfc: '',
+      formaAplicacion: '',
+      factorImporte: null,
+      bancoSeleccionado: null,
+      numeroDocumento: null,
+      vigenciaInicio: '',
+      vigenciaFin: ''
+    });
+    this.resultados = [];
+    this.cargandoBusqueda = false;
+    this.empleadoId = null;
+    this.autocompleteTrigger?.closePanel();
   }
 
   formatearImporte () {
@@ -391,37 +400,36 @@ export class PensionAlimenticia {
     }
   }
 
-  // limpiar el valor al cambiar el tipo
   onFormaChange() {
     this.form.get('factorImporte')?.setValue(null);
   }
 
   onFactorImporteInput() {
-  const formaAplicacion = this.form.get('formaAplicacion')?.value;
-    const factorImporte = this.form.get('factorImporte')?.value;
-    if (factorImporte == null) return;
-    if (formaAplicacion === 'P') {
-      let valor = factorImporte.toString();
-      valor = valor.replace(/\D/g, '');
-      if (valor.length > 3) {
-        valor = valor.substring(0, 3);
+    const formaAplicacion = this.form.get('formaAplicacion')?.value;
+      const factorImporte = this.form.get('factorImporte')?.value;
+      if (factorImporte == null) return;
+      if (formaAplicacion === 'P') {
+        let valor = factorImporte.toString();
+        valor = valor.replace(/\D/g, '');
+        if (valor.length > 3) {
+          valor = valor.substring(0, 3);
+        }
+        let numero = Number(valor);
+        if (numero > 100) {
+          numero = 100;
+        }
+        this.form.get('factorImporte')?.setValue(numero);
+      } else {
+        let numero = Number(factorImporte);
+        if (isNaN(numero)) {
+          this.form.get('factorImporte')?.setValue(undefined as any);
+          return;
+        }
+        if (numero < 0) {
+          numero = 0;
+        }
+        this.form.get('factorImporte')?.setValue(numero);
       }
-      let numero = Number(valor);
-      if (numero > 100) {
-        numero = 100;
-      }
-      this.form.get('factorImporte')?.setValue(numero);
-    } else {
-      let numero = Number(factorImporte);
-      if (isNaN(numero)) {
-        this.form.get('factorImporte')?.setValue(undefined as any);
-        return;
-      }
-      if (numero < 0) {
-        numero = 0;
-      }
-      this.form.get('factorImporte')?.setValue(numero);
-    }
   }
 
   onVigenciaInput(tipo: 'inicio' | 'fin') {
