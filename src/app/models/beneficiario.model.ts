@@ -7,7 +7,7 @@ export interface BeneficiarioRequest {
   factorImporte: number;
   qnaini: number;
   qnafin: number;
-  numeroDocumento: string;
+  numeroDocumento: string | null;
   numeroBenef?: number;
   catBancoId?: number;
 }
@@ -42,6 +42,7 @@ export interface BeneficiarioAlimDTO {
 
 export interface FilaBeneficiario {
   id: number;
+  tabBeneficiariosAlimId: number;
   nombreEmpleado: string;
   nombreBeneficiario: string;   
   rfc: string;
