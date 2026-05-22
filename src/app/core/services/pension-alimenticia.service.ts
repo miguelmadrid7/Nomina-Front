@@ -63,4 +63,12 @@ export class PensionAlimenticiaService {
     updateBeneficiarioAlim(id: number, payload: BeneficiarioAlimRequest): Observable<ApiResponse<any>> {
         return this.http.patch<ApiResponse<any>>(`${this.base}/beneficiarios/alim/${id}`,payload);
     }
+
+    deleteBeneficiarioAlim(id: number): Observable<ApiResponse<any>> {
+        return this.http.delete<ApiResponse<any>>(`${this.base}/beneficiarios/alim/${id}`);
+    }
+
+    deleteBeneficiario(id: number): Observable<ApiResponse<any>> {
+        return this.http.delete<ApiResponse<any>>(`${this.base}/beneficiarios/${id}`);
+    }
 }
