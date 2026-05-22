@@ -86,6 +86,7 @@ export class PensionAlimenticia {
       nombreCompleto: ['', [Validators.required, Validators.minLength(2)]],
       rfc: ['', [Validators.required, rfcValidator()]],
       formaAplicacion: ['', Validators.required],
+      numeroOficio: ['',[Validators.required,Validators.pattern(/^[A-Z0-9\-]+$/)]],
       factorImporte: [null, [Validators.required, factorImporteValidator()]],
       bancoSeleccionado: [null],
       numeroDocumento: [null, [Validators.pattern(/^\d{18}$/)]],
@@ -300,7 +301,8 @@ export class PensionAlimenticia {
             factorImporte: factor,
             qnaini: Number(value.vigenciaInicio),
             qnafin: Number(value.vigenciaFin),
-            numeroDocumento: clabe || null
+            numeroDocumento: clabe || null,
+            numeroOficio: value.numeroOficio || null
           };
 
           if (value.numeroBeneficiario != null && !Number.isNaN(Number(value.numeroBeneficiario))) {

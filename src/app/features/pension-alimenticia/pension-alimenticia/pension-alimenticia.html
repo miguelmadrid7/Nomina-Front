@@ -93,6 +93,16 @@
             </mat-form-field>
         </div>
 
+        <!-- Numero de oficio -->
+        <div>
+          <label class="field-title" for="numeroOficio">No. de oficio*</label>
+            <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+              <mat-icon matPrefix>description</mat-icon>
+                <input matInput id="numeroOficio" formControlName="numeroOficio" placeholder="Captura número de oficio" type="text" appUppercase/>
+              <mat-hint>Este número debe ser capturado manualmente.</mat-hint>
+          </mat-form-field>
+        </div>
+
         <!-- No. Beneficiaria (auto) -->
         <div>
           <label class="field-title" for="numeroBeneficiario">No. Beneficiaria(o)*</label>
