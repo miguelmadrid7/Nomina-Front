@@ -67,7 +67,6 @@ export class ConsultaPensionesDialog implements OnInit{
             return;
           }
         const d = arr[0];
-        console.log('DETALLE COMPLETO =>', d);
         this.detalle = d;
           this.form.patchValue({
             nombreEmpleado: this.armarNombreEmpleado(d),
