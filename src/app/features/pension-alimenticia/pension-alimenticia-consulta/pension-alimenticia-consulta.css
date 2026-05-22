@@ -102,6 +102,12 @@
     border-color: #2563eb;
 }
 
+.ico-btn-danger {
+    background: transparent;
+    color: #dc2626;
+    border-color: #dc2626;
+}
+
 /* Filtros de quincena */
 .qna-filters {
   display: flex;
@@ -157,6 +163,13 @@
 }
 
 .table-global .mat-column-noBeneficiario {
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-numeroOficio {
   width: 50px !important;
   min-width: 50px !important;
   max-width: 50px !important;

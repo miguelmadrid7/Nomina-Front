@@ -77,6 +77,11 @@
                   <td mat-cell *matCellDef="let e">{{ e.noBeneficiario }}</td>
                 </ng-container>
 
+                <ng-container matColumnDef="numeroOficio">
+                  <th mat-header-cell *matHeaderCellDef>NUMERO <br> DE <br> OFICIO</th>
+                  <td mat-cell *matCellDef="let e">{{ e.numeroOficio }}</td>
+                </ng-container>
+
                 <ng-container matColumnDef="qna">
                   <th mat-header-cell *matHeaderCellDef>QNA</th>
                   <td mat-cell *matCellDef="let e">{{ e.qna }}</td>
@@ -89,6 +94,9 @@
                       <div class="bttn-group">
                         <button mat-icon-button class="bttn ico-btn-primary" (click)="abrirDialog(e)">
                           <mat-icon>edit</mat-icon>
+                        </button>
+                        <button mat-icon-button class="bttn ico-btn-danger" (click)="eliminarBeneficiario(e)">
+                          <mat-icon>delete_outline</mat-icon>
                         </button>
                       </div>
                     </div>

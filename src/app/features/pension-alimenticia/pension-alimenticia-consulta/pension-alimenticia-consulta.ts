@@ -35,7 +35,7 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  displayedColumns: string[] = ['nombreEmpleado', 'nombreBeneficiario', 'rfc', 'noBeneficiario', 'qna', 'acciones'];
+  displayedColumns: string[] = ['nombreEmpleado', 'nombreBeneficiario', 'rfc', 'noBeneficiario', 'numeroOficio', 'qna', 'acciones'];
   dataSource = new MatTableDataSource<FilaBeneficiario>([]);
   todosLosBeneficiarios: FilaBeneficiario[] = [];
 
@@ -54,11 +54,11 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      busqueda: this.fb.group({         // ✅ grupo anidado para los selects de QNA
+      busqueda: this.fb.group({         
         anio:     [null],
         quincena: [null]
       }),
-      rfc: ['']                         // ✅ filtro de nombre en el header de la tabla
+      rfc: ['']                         
     });
 
     this.cargarBeneficiarios();
@@ -68,7 +68,7 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  // ─── Filtro por nombre en la cabecera de la tabla ──────────────────
+
   buscar(): void {
     const texto = this.form.get('rfc')?.value?.toString().trim().toUpperCase();
     const filtrados = texto
@@ -81,27 +81,22 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
   }
 
 
-private aplicarFiltroQna(base: FilaBeneficiario[]): void {
-  const anio     = this.form.get('busqueda.anio')?.value;
-  const quincena = this.form.get('busqueda.quincena')?.value;
+  private aplicarFiltroQna(base: FilaBeneficiario[]): void {
+    const anio     = this.form.get('busqueda.anio')?.value;
+    const quincena = this.form.get('busqueda.quincena')?.value;
+    if (!anio || !quincena) {
+      this.actualizarTabla(base);
+      return;
+    }
+    const qnaSeleccionada = Number(`${anio}${String(quincena).padStart(2, '0')}`);
+    const filtrados = base.filter(b => {
+      return b.qnaIni === qnaSeleccionada;
+    });
 
-  if (!anio || !quincena) {
-    this.actualizarTabla(base);
-    return;
+    this.actualizarTabla(filtrados);
   }
 
-  const qnaSeleccionada = Number(`${anio}${String(quincena).padStart(2, '0')}`);
-
-  const filtrados = base.filter(b => {
-    // ✅ Solo registros que iniciaron EXACTAMENTE en la QNA seleccionada
-    return b.qnaIni === qnaSeleccionada;
-  });
-
-  this.actualizarTabla(filtrados);
-}
-
   private actualizarTabla(filas: FilaBeneficiario[]): void {
-    // Recalcula mostrarEmpleado para el agrupado visual
     const empleadosMostrados = new Set<string>();
     const filasConAgrupado = filas.map(fila => {
       if (!empleadosMostrados.has(fila.nombreEmpleado)) {
@@ -110,13 +105,11 @@ private aplicarFiltroQna(base: FilaBeneficiario[]): void {
       }
       return { ...fila, mostrarEmpleado: false };
     });
-
     this.dataSource.data = filasConAgrupado;
     this.totalElements   = filasConAgrupado.length;
     this.paginator?.firstPage();
   }
 
-  // ─── Carga inicial ─────────────────────────────────────────────────
   cargarBeneficiarios(): void {
     this.cargando = true;
     this.pensionAlimenticiaService.getAllBeneficiarios().subscribe({
@@ -147,15 +140,38 @@ private aplicarFiltroQna(base: FilaBeneficiario[]): void {
       maxHeight: '90vh',
       autoFocus: false,
       disableClose: true,
-      data: fila.id
+      data: fila
     });
     dialogRef.afterClosed().subscribe((resp: boolean) => {
       if (resp) this.cargarBeneficiarios();
     });
   }
 
+  eliminarBeneficiario(fila: FilaBeneficiario): void {
+    console.log('ID a eliminar:', fila.id);
+    
+    if (!confirm(`¿Estás seguro de eliminar la relación de pensión alimenticia?`)) {
+      return;
+    }
+
+    this.pensionAlimenticiaService.deleteBeneficiario(fila.id).subscribe({
+      next: () => {
+        this.cargarBeneficiarios();
+      },
+      error: (err: any) => {
+        console.error('Error al eliminar', err);
+        alert('Error al eliminar');
+      }
+    });
+  }
+
   clearFilters(): void {
-    this.form.reset({ busqueda: { anio: null, quincena: null }, rfc: '' });
+    this.form.reset({ 
+      busqueda: { 
+        anio: null, 
+        quincena: null 
+      }, rfc: '' 
+    });
     this.actualizarTabla(this.todosLosBeneficiarios);
   }
 
@@ -164,24 +180,20 @@ private aplicarFiltroQna(base: FilaBeneficiario[]): void {
     const emp  = b.empleado;
 
     return {
-      id:                 b.id,
-      nombreEmpleado:     emp
-                            ? [emp.primerApellido, emp.segundoApellido, emp.nombre].filter(Boolean).join(' ')
-                            : 'SIN EMPLEADO',
-      nombreBeneficiario: alim
-                            ? [alim.primerApellido, alim.segundoApellido, alim.nombre].filter(Boolean).join(' ')
-                            : `ID ${b.tabBeneficiariosAlimId}`,
-      rfc:                alim?.rfc ?? '—',
-      noBeneficiario:     b.numeroBenef,
-      formaAplicacion:    b.formaAplicacion === 'P' ? 'Factor' : 'Importe fijo',
-      factorImporte:      b.formaAplicacion === 'P'
-                            ? `${(b.factorImporte * 100).toFixed(0)}%`
-                            : `$${b.factorImporte.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`,
-      banco:              b.banco?.banco ?? 'SIN BANCO',
-      qna:                `${b.qnaini} → ${b.qnafin}`,
-      qnaIni:             b.qnaini,   // ✅ número raw para el filtro
-      qnaFin:             b.qnafin,   // ✅ número raw para el filtro
-      mostrarEmpleado:    false
+      id: b.id,
+      tabBeneficiariosAlimId: b.tabBeneficiariosAlimId,
+      nombreEmpleado: emp ? [emp.primerApellido, emp.segundoApellido, emp.nombre].filter(Boolean).join(' '): 'SIN EMPLEADO',
+      nombreBeneficiario: alim ? [alim.primerApellido, alim.segundoApellido, alim.nombre].filter(Boolean).join(' ')  : `ID ${b.tabBeneficiariosAlimId}`,
+      rfc: alim?.rfc ?? '—',
+      numeroOficio: b.numeroOficio ?? '—',
+      noBeneficiario: b.numeroBenef,
+      formaAplicacion: b.formaAplicacion === 'P' ? 'Factor' : 'Importe fijo',
+      factorImporte: b.formaAplicacion === 'P' ? `${(b.factorImporte * 100).toFixed(0)}%` : `$${b.factorImporte.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`,
+      banco: b.banco?.banco ?? 'SIN BANCO',
+      qna: `${b.qnaini} → ${b.qnafin}`,
+      qnaIni: b.qnaini,   
+      qnaFin: b.qnafin,   
+      mostrarEmpleado: false
     };
   }
 }
