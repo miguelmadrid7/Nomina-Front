@@ -12,3 +12,9 @@ export interface ParametrizacionRequest {
     qnaInicio: number;
     qnaFin: number;
 }
+
+
+export interface DialogData {
+  mode: 'create' | 'update';
+  param?: any;
+}
