@@ -29,6 +29,7 @@ export const routes: Routes = [
             .then(m => m.FormEmpleado),
         data: { breadcrumb: 'Empleados formulario' }
       },
+
       {
         path: 'usuarios',
         data: { breadcrumb: 'Gestion' },
@@ -61,8 +62,16 @@ export const routes: Routes = [
                 .then(m => m.GestionIcono),
             data: { breadcrumb: 'Iconos' }
           },
+          {    
+            path: 'parametrizacion',
+            loadComponent: () =>
+              import('./features/gestion-core/gestion-parametrizacion/gestion-parametrizacion')
+                .then(m => m.GestionParametrizacion),
+            data: { breadcrumb: 'Parametrizacion' }
+          },
         ]
       },
+
       {
         path: 'nomina',
         data: { breadcrumb: 'Nómina' },
