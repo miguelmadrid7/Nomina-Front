@@ -1,0 +1,103 @@
+<div class="dialog-shell">
+    <div class="dialog-header dlg-bar">
+        <button mat-icon-button class="dialog-close" (click)="cerrar()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <mat-dialog-content class="dlg-content">
+        <form [formGroup]="form">
+            <div class="dlg-bar-title" [formGroup]="form">Detalle de beneficiario</div>
+
+                <mat-card class="form-card">
+                    <mat-card-content class="info-grid">
+
+                            <div class="info-field">
+                                <mat-icon>fingerprint</mat-icon>
+                                    <div class="info-content">
+                                        <span class="info-label">NOMBRE EMPLEADO</span>
+                                        <span>{{ form.get('nombreEmpleado')?.value || '—' }}</span>
+                                    </div>
+                            </div>
+
+                            <div class="info-field">
+                                <mat-icon>fingerprint</mat-icon>
+                                    <div class="info-content">
+                                        <span class="info-label">NOMBRE BENEFICIARIO</span>
+                                        <span>{{ form.get('nombreBeneficiario')?.value || '—' }}</span>
+                                    </div>
+                            </div>
+
+                            <div class="info-field">
+                                <mat-icon>assignment_ind</mat-icon>
+                                    <div class="info-content">
+                                        <span class="info-label">RFC</span>
+                                        <span>{{ form.get('rfc')?.value || '—' }}</span>
+                                    </div>
+                            </div>
+
+                            <div class="info-field">
+                                <mat-icon>assignment_ind</mat-icon>
+                                    <div class="info-content">
+                                        <span class="info-label">NUMERO BENEFICIARIO</span>
+                                        <span>{{ form.get('numeroBeneficiario')?.value || '—' }}</span>
+                                    </div>
+                            </div>
+                    </mat-card-content>
+                </mat-card>
+
+                <div class="section-divider"></div>
+
+                <div class="dlg-bar-title">Registro de Tercero</div>
+
+                <div class="form-grid">
+                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                        <mat-label>Forma aplicacíon</mat-label>
+                            <mat-icon matPrefix>description</mat-icon>
+                                <input matInput formControlName="formaAplicacion">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                        <mat-label>Número documento</mat-label>
+                            <mat-icon matPrefix>description</mat-icon>
+                                <input matInput formControlName="numeroDocumento">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                        <mat-label>Factor / Importe</mat-label>
+                            <mat-icon matPrefix>description</mat-icon>
+                                <input matInput formControlName="factorImporte">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                        <mat-label>Banco</mat-label>
+                            <mat-icon matPrefix>description</mat-icon>
+                                <input matInput formControlName="banco">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                        <mat-label>Clabe interbancaria</mat-label>
+                            <mat-icon matPrefix>description</mat-icon>
+                                <input matInput formControlName="clabe" maxlength="18">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                        <mat-label>Inicio</mat-label>
+                            <mat-icon matPrefix>description</mat-icon>
+                                <input matInput formControlName="qnaInicio">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                        <mat-label>Hasta</mat-label>
+                            <mat-icon matPrefix>description</mat-icon>
+                                <input matInput formControlName="qnaFin">
+                    </mat-form-field>
+                </div>
+            </form>
+    </mat-dialog-content>
+
+    <div class="dlg-actions">
+            <button class="btn btn-danger" (click)="cerrar()"> Cancelar </button>
+            <button class="btn btn-primary" (click)="guardar()"> Guardar </button>
+    </div>
+</div>
