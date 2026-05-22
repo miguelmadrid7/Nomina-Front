@@ -7,7 +7,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
-import { UppercaseDirective } from '../../directives/upperCase.directivas';
 import { PensionAlimenticiaService } from '../../../core/services/pension-alimenticia.service';
 import { MatCardModule } from '@angular/material/card';
 import { BeneficiarioRequest } from '../../../models/beneficiario.model';
@@ -59,42 +58,43 @@ export class ConsultaPensionesDialog implements OnInit{
     this.pensionService.getBeneficiario(this.beneficiarioId).subscribe({
       next: (resp) => {
         const arr = resp?.data as any[];
-        if (!arr || arr.length === 0) return;
+          if (!arr || arr.length === 0) {
+            return;
+          }
         const d = arr[0];
-        this.detalle = d; 
-
-        this.form.patchValue({
-          nombreEmpleado: this.armarNombreEmpleado(d),
-          nombreBeneficiario: this.armarNombreBeneficiario(d),
-          rfc: d.beneficiario_rfc,
-          numeroBeneficiario: d.numero_benef,
-          formaAplicacion: d.forma_aplicacion === 'P' ? 'Factor' : 'Importe fijo',
-          factorImporte: d.forma_aplicacion === 'P'  ? `${(d.factor_importe * 100).toFixed(0)}` : `${Number(d.factor_importe).toFixed(2)}`,
-          banco: d.nombre_banco || 'SIN BANCO',
-          clabe: d.numero_documento,
-          qnaInicio: d.qnaini,
-          qnaFin: d.qnafin,
-          numeroDocumento: d.numero_documento
-        });
+        console.log('DETALLE COMPLETO =>', d);
+        this.detalle = d;
+          this.form.patchValue({
+            nombreEmpleado: this.armarNombreEmpleado(d),
+            nombreBeneficiario: this.armarNombreBeneficiario(d),
+            rfc: d.beneficiario_rfc || '—',
+            numeroBeneficiario: d.numero_benef ?? '',
+            formaAplicacion: d.forma_aplicacion === 'P' ? 'Factor' : 'Importe fijo',
+            factorImporte: d.forma_aplicacion === 'P' ? `${((d.factor_importe ?? 0) * 100).toFixed(0)}` : `${Number(d.factor_importe ?? 0).toFixed(2)}`,
+            banco: d.nombre_banco || 'SIN BANCO',
+            clabe: d.numero_documento || '',
+            qnaInicio: d.qnaini ?? '',
+            qnaFin: d.qnafin ?? '',
+            numeroDocumento: d.numero_documento || ''
+          });
       },
-      error: (err) => console.error('Error al cargar detalle', err)
+
+      error: (err) => {
+        console.error('Error al cargar detalle', err);
+      }
     });
   }
 
   private armarNombreEmpleado(d: any): string {
-    return [
-      d.empleado_primer_apellido,
-      d.empleado_segundo_apellido,
-      d.empleado_nombre
-    ].filter(Boolean).join(' ');
+    return [d.empleado_primer_apellido, d.empleado_segundo_apellido, d.empleado_nombre]
+      .filter(Boolean)
+      .join(' ');
   }
 
   private armarNombreBeneficiario(d: any): string {
-    return [
-      d.beneficiario_primer_apellido,
-      d.beneficiario_segundo_apellido,
-      d.beneficiario_nombre
-    ].filter(Boolean).join(' ');
+    return [d.beneficiario_primer_apellido, d.beneficiario_segundo_apellido,d.beneficiario_nombre]
+      .filter(Boolean)
+      .join(' ');
   }
 
   guardar(): void {
