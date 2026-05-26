@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, ChangeDetectionStrategy, Component, NgZone } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatStepperModule } from '@angular/material/stepper';
 import { NominaService } from '../../../core/services/nomina-ordinaria.service';
 import { environment } from '../../../../environments/environment';
@@ -71,13 +71,22 @@ export class CalculoNominaComponent {
   constructor(
     private nominaService: NominaService,
     private zone: NgZone,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef, 
+    private snackBar: MatSnackBar 
   ) {
     const total = this.steps.length;
     this.stepsWithProgress = this.steps.map((step, i) => ({
       ...step,
       progress: Math.round(((i + 1) / total) * 99)
     }));
+  }
+
+  private showSnack(message: string, action: string, duration: number): void {
+    this.zone.runOutsideAngular(() => {
+      setTimeout(() => {
+        this.zone.run(() => this.snackBar.open(message, action, { duration }));
+      }, 50);
+    });
   }
 
   private subscribeToJob(jobId: number): void {
@@ -113,19 +122,27 @@ export class CalculoNominaComponent {
   }
 
   private handleProgressUpdate(data: any): void {
-    setTimeout(() => {
-      this.progress = Math.max(this.progress, data.progress);
-      this.recomputeStepIndex();
-      if (data.progress === 100 || data.status === 'COMPLETED') {
-        this.deliverableReady = true;
-        this.processing = false;
-        if (this.stompClient) {
-          this.stompClient.disconnect(() => {});
-        }
+  setTimeout(() => {
+    this.progress = Math.max(this.progress, data.progress);
+    this.recomputeStepIndex();
+    if (data.status === 'ERROR') {
+      // Mostrar error al usuario
+      this.snackBar.open(data.errorMsg || 'Ocurrió un error en el cálculo', 'Cerrar', { duration: 8000 });
+      this.processing = false;
+      if (this.stompClient) {
+        this.stompClient.disconnect(() => {});
       }
-      this.cdr.markForCheck();
-    }, 0);
-  }
+    }
+    if (data.progress === 100 || data.status === 'COMPLETED') {
+      this.deliverableReady = true;
+      this.processing = false;
+      if (this.stompClient) {
+        this.stompClient.disconnect(() => {});
+      }
+    }
+    this.cdr.markForCheck();
+  }, 0);
+}
 
   get currentStepIndex(): number {
     return this.currentStepIdx;
