@@ -154,15 +154,14 @@ export class CalculoNominaComponent {
   }
 
   private recomputeStepIndex(): void {
-  const steps = this.stepsWithProgress;
-  const nextIncomplete = steps.findIndex((s) => this.progress < s.progress);
-  if (nextIncomplete === -1) {
-    this.currentStepIdx = steps.length - 1;
-  } else if (nextIncomplete === 0) {
-    this.currentStepIdx = 0;
-  } else {
-    this.currentStepIdx = nextIncomplete;
+    const steps = this.stepsWithProgress;
+    const nextIncomplete = steps.findIndex((s) => this.progress < s.progress);
+      if (nextIncomplete === -1) {
+        this.currentStepIdx = steps.length - 1;
+      } else if (nextIncomplete === 0) {
+        this.currentStepIdx = 0;
+      } else {
+        this.currentStepIdx = nextIncomplete;
+      }
   }
-}
-
 }
