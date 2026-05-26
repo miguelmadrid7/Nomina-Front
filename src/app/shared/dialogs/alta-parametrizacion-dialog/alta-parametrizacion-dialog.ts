@@ -3,12 +3,12 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { ModuleDialog } from '../module-dialog/module-dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ParametrizacionService } from '../../../core/services/parametrizacion.service';
 import { DialogData, ParametrizacionRequest } from '../../../models/gestion-core/parametrizacion.model';
 import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
+import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-alta-parametrizacion-dialog',
@@ -105,5 +105,17 @@ export class AltaParametrizacionDialog implements OnInit {
 
   close(): void {
     this.dialogRef.close();
+  }
+
+  private openSuccessDialog(message: string): void {
+    this.dialog.open(ConfirmDialog, {
+      width: '400px',
+      disableClose: true,
+        data: {
+          title: 'Operación exitosa',
+          message,
+          confirmText: 'Aceptar'
+        }
+      });
   }
 }
