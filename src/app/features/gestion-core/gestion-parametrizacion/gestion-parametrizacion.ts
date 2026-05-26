@@ -8,6 +8,7 @@ import { ParametrizacionService } from '../../../core/services/parametrizacion.s
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { AltaParametrizacionDialog } from '../../../shared/dialogs/alta-parametrizacion-dialog/alta-parametrizacion-dialog';
+import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-gestion-parametrizacion',
@@ -32,7 +33,6 @@ export class GestionParametrizacion {
 
 
   constructor(private parametrizacionService: ParametrizacionService, private zone: NgZone, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef, private dialog: MatDialog,) {}
-
 
   ngOnInit(): void {
     this.getAllParam();
@@ -96,24 +96,50 @@ export class GestionParametrizacion {
     });
   }
 
-  softDeleteParam(paramId: number){
-    const confirmed = confirm ('¿Seguro que deseas eliminar este parametro?');
+  softDeleteParam(paramId: number): void {
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '450px',
+      disableClose: true,
+      data: {
+        title: 'Eliminar parámetro',
+        message: '¿Seguro que deseas eliminar este parámetro?',
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar',
+        type: 'danger'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
       if (!confirmed) {
         return;
       }
-
+      this.loading = true;
       this.parametrizacionService.softDeleteParam(paramId).subscribe({
         next: () => {
-          this.showSnack('Parametro eliminado correctamente', 'Cerrar', 4000);
           this.getAllParam();
+          this.openSuccessDialog(
+            'Parámetro eliminado correctamente'
+          );
         },
         error: () => {
-          this.showSnack('No se pudo eliminar este parametros', 'Cerrar', 4000);
+          this.loading = false;
+          this.openSuccessDialog(
+            'No se pudo eliminar el parámetro'
+          );
         }
       });
-
+    });
   }
 
-
-
+  private openSuccessDialog(message: string): void {
+    this.dialog.open(ConfirmDialog, {
+      width: '400px',
+      disableClose: true,
+        data: {
+          title: 'Operación exitosa',
+          message,
+          confirmText: 'Aceptar'
+        }
+    });
+  }
 }
