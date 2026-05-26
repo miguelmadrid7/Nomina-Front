@@ -13,6 +13,8 @@
         <div class="section-divider"></div>
 
         <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
+            <div class="form-grid">
+
 
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                 <mat-label>Año</mat-label>
@@ -43,11 +45,12 @@
                     <mat-icon matPrefix>email</mat-icon>
                         <input matInput formControlName="qnaFin" appUppercase/>
             </mat-form-field>
+             </div>
         </mat-dialog-content>
 
         <div class="dlg-actions">
             <button class="btn btn-danger" (click)="close()">Cancelar</button>
-            <button class="btn btn-primary" (click)="guardar()"> {{ mode === 'update' ? 'Actualizar' : 'Guardar' }}</button>
+            <button class="btn btn-succes" (click)="guardar()"> {{ mode === 'update' ? 'Actualizar' : 'Guardar' }}</button>
         </div>
      </div>
 </div>
