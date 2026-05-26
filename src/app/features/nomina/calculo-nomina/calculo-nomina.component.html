@@ -44,34 +44,44 @@
       </div>
 
       <mat-progress-bar
-        class="progress-bar"
-        [color]="progress === 100 ? 'primary' : 'accent'"
-        [mode]="processing ? 'indeterminate' : 'determinate'"
-        [value]="processing ? 0 : progress">
-      </mat-progress-bar>
+  class="progress-bar"
+  [color]="progress === 100 ? 'primary' : 'accent'"
+  mode="determinate"
+  [value]="progress">
+</mat-progress-bar>
 
       <div class="process-steps" *ngIf="processing || progress === 100">
         <mat-vertical-stepper [selectedIndex]="currentStepIndex" linear>
-          <mat-step *ngFor="let step of steps; let i = index" [completed]="progress >= step.progress">
-            <ng-template matStepLabel>
-              <div class="step-label">
-                <mat-icon class="step-icon" [class.done]="progress >= step.progress">
-                  {{ progress >= step.progress ? 'check_circle' : 'schedule' }}
-                </mat-icon>
-                {{ step.label }}
-              </div>
-            </ng-template>
+          <mat-step *ngFor="let step of stepsWithProgress; let i = index" 
+          [completed]="progress >= step.progress">
 
-            <div class="step-content">
-              <ng-container *ngIf="progress < step.progress">
-                <mat-progress-spinner diameter="22" mode="indeterminate" strokeWidth="3"></mat-progress-spinner>
-                Ejecutando...
-              </ng-container>
-              <ng-container *ngIf="progress >= step.progress">
-                <span class="chip chip-done">Completado</span>
-              </ng-container>
-            </div>
-          </mat-step>
+      <ng-template matStepLabel>
+        <div class="step-label">
+          <mat-icon class="step-icon" [class.done]="progress >= step.progress" [class.running]="i === currentStepIndex && processing">
+              {{ progress >= step.progress ? 'check_circle' :
+              (i === currentStepIndex && processing) ? 'pending' : 'schedule' }}
+          </mat-icon>
+            {{ step.label }}
+        </div>
+      </ng-template>
+
+      <div class="step-content">
+        <ng-container *ngIf="progress >= step.progress">
+          <span class="chip chip-done">Completado</span>
+        </ng-container>
+
+        <ng-container *ngIf="progress < step.progress && i === currentStepIndex && processing">
+          <mat-progress-spinner diameter="22" mode="indeterminate" strokeWidth="3">
+          </mat-progress-spinner>
+          Ejecutando...
+        </ng-container>
+
+        <ng-container *ngIf="progress < step.progress && i !== currentStepIndex">
+          <span class="chip chip-pending">Pendiente</span>
+        </ng-container>
+
+      </div>
+    </mat-step>
         </mat-vertical-stepper>
       </div>
     </mat-card>
