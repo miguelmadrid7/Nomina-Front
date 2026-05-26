@@ -77,8 +77,7 @@
                 <input 
                   matInput 
                   formControlName="nombre" 
-                  placeholder="Ingresar Nombre Completo" 
-                  appSoloLetras/>
+                  placeholder="Ingresar Nombre Completo"/>
                 <mat-error *ngIf="form.get('beneficiario.nombre')?.invalid && (form.get('beneficiario.nombre')?.touched)">Ingresa el nombre (mín. 2 caracteres).</mat-error>
               </mat-form-field>
             </div>
@@ -189,6 +188,27 @@
                   El porcentaje no puede ser mayor a 100
                 </mat-error>
               </mat-form-field>
+            </div>
+
+            <!-- Estatus -->
+            <div>
+              <label class="field-title" for="estatus">Estatus*</label>
+              <mat-form-field appearance="outline" class="login-field compact-field full-width uppercase-input" floatLabel="always">
+                <mat-icon matPrefix>tune</mat-icon>
+                <mat-select formControlName="estatus" placeholder="Seleccionar estatus">
+                  <mat-option value="ACTIVO">Activo</mat-option>
+                  <mat-option value="INACTIVO">Inactivo</mat-option>
+                  <mat-option value="PAUSA">Pausa</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- Descripcion -->
+            <div>
+              <label class="field-title" for="descripcion">Descripción*</label>
+                <mat-form-field  appearance="outline" class="qna-compact search-field with-separator description-field" floatLabel="always">
+                  <textarea matInput formControlName="descripcion" rows="4" appUppercase></textarea>
+                </mat-form-field>
             </div>
           </div>
         </mat-card-content>

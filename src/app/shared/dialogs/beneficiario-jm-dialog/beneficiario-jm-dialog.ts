@@ -71,6 +71,8 @@ export class BeneficiarioJmDialog {
         importeTotal: [null, [Validators.min(0)]],
         citaBancaria: [null],
         ctaBancaria: [null, [Validators.pattern(/^\d{1,10}$/)]],
+        estatus: [null],
+        descripcion: [null],
         inicio: [null, [vigenciaFormatoValidator()]],
         fin: [null, [vigenciaFormatoValidator()]],
       })
