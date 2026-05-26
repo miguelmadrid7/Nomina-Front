@@ -118,8 +118,6 @@ export class JuiciosMercantiles {
         inicio: [''],
         fin: ['']
       }),
-      anio: [null],
-      quincena: [null],
     },
 
     { validators: [factorImporteValidator(), vigenciaRangoValidator()]}
@@ -508,20 +506,15 @@ export class JuiciosMercantiles {
         nombre: ''
       }
     }, { emitEvent: false });
-
     this.resultado = [];
     this.autocompleteTrigger?.closePanel();
-
     this.beneficiarios = [];
     this.totalElements = 0;
-
     this.anioSeleccionado = null;
     this.quincenaSeleccionada = null;
-    this.form.get('anio')?.reset(null, { emitEvent: false });
-    this.form.get('quincena')?.reset(null, { emitEvent: false });
-
+    this.form.get('busqueda.anio')?.reset(null, { emitEvent: false });
+    this.form.get('busqueda.quincena')?.reset(null, { emitEvent: false });
     this.paginator?.firstPage?.();
-
     this.cd.markForCheck();
   }
 }
