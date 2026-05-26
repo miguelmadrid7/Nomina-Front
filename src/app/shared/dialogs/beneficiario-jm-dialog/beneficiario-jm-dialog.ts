@@ -16,6 +16,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { vigenciaFormatoValidator } from '../../validators/validaciones.validators';
 import { SoloLetrasDirectiva } from '../../directives/solo-letras.directivas';
 import { startWith, distinctUntilChanged } from 'rxjs';
+import { UppercaseDirective } from '../../directives/upperCase.directivas';
 
 @Component({
   selector: 'app-beneficiario-jm-dialog',
@@ -29,7 +30,8 @@ import { startWith, distinctUntilChanged } from 'rxjs';
     MatInputModule,
     MatIconModule,
     MatButtonModule,
-    SoloLetrasDirectiva
+    SoloLetrasDirectiva, 
+    UppercaseDirective
   ],
   templateUrl: './beneficiario-jm-dialog.html',
   styleUrl: './beneficiario-jm-dialog.css'
