@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { IconoDialog } from '../../../shared/dialogs/icono-dialog/icono-dialog';
@@ -20,7 +20,7 @@ import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-di
 })
 export class GestionIcono {
 
-  constructor(private fb: FormBuilder, private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog) {}
 
   openCreateDialog(): void {
     const dialogRef = this.dialog.open(IconoDialog, {
