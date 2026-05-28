@@ -37,8 +37,6 @@ export class CalculoNominaComponent {
   processing = false;
   deliverableReady = false;
   private stompClient: any;
-
-  // Índice del paso actual precomputado para evitar cálculos durante CD
   currentStepIdx = 0;
 
   readonly stepsWithProgress: { label: string; progress: number }[];
@@ -147,8 +145,6 @@ export class CalculoNominaComponent {
   get currentStepIndex(): number {
     return this.currentStepIdx;
   }
-
-
 
   executePayrollProcess(): void {
     this.processing = true;
