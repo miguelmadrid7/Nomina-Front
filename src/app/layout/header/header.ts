@@ -16,24 +16,28 @@ import { RolService } from '../../core/services/rol.service';
 export class Header implements OnInit{
 
   @Output() toggleSidebarClick = new EventEmitter<void>();
-
   roleName: string | null = null;
 
-  constructor(
-    private loginService: LoginService,
-    private rolService: RolService,
-    private router: Router,
-  ) {}
+  constructor(private loginService: LoginService, private rolService: RolService, private router: Router,) {}
 
   ngOnInit(): void {
-  const roles = this.loginService.getRoles();
-  if (roles && roles.length > 0) {
-    const roleId = roles[0];
-    this.rolService.getRole(roleId).subscribe(role => {
-      this.roleName = role?.name || 'Rol desconocido';
+    // Suscríbete a los cambios de rol
+    this.loginService.getRoleChanged().subscribe(roleId => {
+      if (roleId) {
+        this.rolService.getRole(roleId).subscribe(role => {
+          this.roleName = role?.name || 'Rol desconocido';
+        });
+      }
     });
+
+    // Inicializa por si ya hay rol guardado
+    const roles = this.loginService.getRoles();
+    if (roles && roles.length > 0) {
+      this.rolService.getRole(roles[0]).subscribe(role => {
+        this.roleName = role?.name || 'Rol desconocido';
+      });
+    }
   }
-}
   
   onToggleClick() { 
     this.toggleSidebarClick.emit(); 

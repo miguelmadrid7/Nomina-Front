@@ -1,7 +1,7 @@
 import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { LoginPayload } from '../../models/login.model';
 import { isPlatformBrowser } from '@angular/common';
 import { SidebarModule } from '../../models/sidebar.model';
@@ -10,6 +10,7 @@ import { SidebarModule } from '../../models/sidebar.model';
 export class LoginService {
   private base = environment.apiUrl;
   private platformId = inject(PLATFORM_ID);
+  private roleChanged = new BehaviorSubject<number | null>(null);
 
   constructor(private http: HttpClient) {}
 
@@ -92,6 +93,8 @@ export class LoginService {
     localStorage.setItem('permisos', JSON.stringify(data.permisos));
     localStorage.setItem('userId', data.userId);
     localStorage.setItem('config', JSON.stringify(data.config));
+
+    this.roleChanged.next(data.roles?.[0] ?? null);
   }
 
   setMenuModules(modules: SidebarModule[]): void {
@@ -132,6 +135,10 @@ export class LoginService {
     if (!this.isBrowser()) return [];
     const modules = localStorage.getItem('modules');
     return modules ? JSON.parse(modules) : [];
+  }
+
+  getRoleChanged(): Observable<number | null> {
+    return this.roleChanged.asObservable();
   }
 
   logout() {
