@@ -58,12 +58,10 @@ export class NominaordConceptoDialog {
     const det = data.detalles ?? [];
     const tipo = (v: string) => (v || '').trim().toUpperCase().charAt(0); // 'P' o 'D'
 
-    this.percepciones = det
-      .filter(d => tipo(d.tipoConcepto) === 'P')
+    this.percepciones = det.filter(d => tipo(d.tipoConcepto) === 'P')
       .map(d => ({ tipo: 'P', concepto: d.concepto, importe: Number(d.importe) || 0 }));
 
-    this.deducciones = det
-      .filter(d => tipo(d.tipoConcepto) === 'D')
+    this.deducciones = det.filter(d => tipo(d.tipoConcepto) === 'D')
       .map(d => ({ tipo: 'D', concepto: d.concepto, importe: Number(d.importe) || 0 }));
 
     this.totalPercepciones = this.percepciones.reduce((a, c) => a + c.importe, 0);
