@@ -1,3 +1,10 @@
+/* Boton */
+.btn-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* Cards con más aire y separación */
 .actions-card,
 .progress-card {
@@ -61,11 +68,11 @@
 }
 
 .status-dot.running {
-   background: #f59e0b; 
+   background: #fa0202; 
 }
 
 .status-dot.done { 
-  background: #491D2A; 
+  background: #2563eb; 
 }
 
 .status-text { 
@@ -75,17 +82,17 @@
 
 .progress-number { 
   color: #6b7280; 
-  font-weight: 700; 
 }
 
 .progress-bar { 
-  margin: 8px 0 12px 0; 
+  margin: 20px 0 10px 0; 
 }
 
 /* Paso a paso (Stepper) */
 .process-steps { 
   margin-top: 20px; 
   max-width: 900px; 
+  width: 100%; 
 }
 
 
@@ -115,6 +122,69 @@
 :host ::ng-deep .mat-vertical-stepper-header {
   min-height: 44px;
   padding: 6px 8px;
+  width: 100%;      
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+:host ::ng-deep .mat-stepper-vertical {
+  width: 100%;
+}
+
+/* El header del paso activo que ocupe todo el ancho */
+:host ::ng-deep .mat-step-header:hover,
+:host ::ng-deep .mat-step-header.cdk-focused,
+:host ::ng-deep .mat-step-header[aria-selected="true"] {
+  width: 100%;
+  border-radius: 8px;
+}
+
+/* El ripple/fondo gris que genera Material al seleccionar */
+:host ::ng-deep .mat-step-header .mat-step-header-ripple,
+:host ::ng-deep .mat-step-header::after {
+  width: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  border-radius: 8px;
+}
+
+/* Asegura que el stepper y sus hijos no corten el ancho */
+:host ::ng-deep .mat-stepper-vertical,
+:host ::ng-deep .mat-step-header {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Fuerza el header a ocupar todo el ancho disponible */
+:host ::ng-deep .mat-step-header {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding-right: 16px !important;
+}
+
+/* El fondo gris (MDC usa ::before, no ripple) */
+:host ::ng-deep .mat-step-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;          
+  width: 100% !important;
+  border-radius: 8px;
+}
+
+/* El mat-card no debe recortar con overflow */
+:host ::ng-deep .mat-mdc-card {
+  padding: 16px 20px;
+  overflow: visible !important;
+}
+
+/* El stepper ocupa todo */
+:host ::ng-deep .mat-stepper-vertical {
+  width: 100% !important;
+}
+
+/* Contenedor de cada step también al 100% */
+:host ::ng-deep .mat-step {
+  width: 100% !important;
 }
 
 :host ::ng-deep .mat-vertical-content-container {
@@ -143,6 +213,14 @@
   top: 0; 
   z-index: 2; 
   background: #fff;
+}
+
+/* Centra verticalmente el contenido interno del botón MDC */
+:host ::ng-deep .btn-component .mdc-button__label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 4px; /* ← ajusta este valor a tu gusto (2px–4px) */
 }
 
 /* Responsive: apilar acciones en móvil */
