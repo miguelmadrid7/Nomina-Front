@@ -264,49 +264,32 @@ export class JuiciosMercantiles {
   return [emp.rfc || '', fullName || ''].filter(Boolean).join(' - ');
   }
 
-  // Quita prefijos tipo "RFC - CURP - " y códigos tipo RFC/CURP al inicio
   private limpiarNombreCompleto(s?: string): string {
     const raw = (s ?? '').toString().replace(/\s{2,}/g, ' ').trim();
     if (!raw) return '';
-
-    // Si viene con separadores "-", quédate con el último segmento (normalmente el nombre)
-    // Ej: "AAAA... - BBBB... - ALDANA ALDANA ALFREDO" => "ALDANA ALDANA ALFREDO"
     const lastSeg = raw.split('-').map(x => x.trim()).filter(Boolean).pop() ?? raw;
-
-    // Quita códigos tipo RFC/CURP (13 a 18 alfanum) al inicio
     const sinCodigosInicio = lastSeg.replace(/^(?:[A-Z0-9]{13,18}\s*)+/, '').trim();
     return sinCodigosInicio.replace(/\s{2,}/g, ' ').trim();
   }
 
-  // Reparte un nombre completo en [primerApellido, segundoApellido, nombre]
-  // Solo rellena lo que falte; si ya tienes apellidos, los respeta.
   private repartirNombre(emp: BeneficiarioJMRequest): { primerApellido: string; segundoApellido: string; nombre: string } {
     const limpia = (x?: string) => (x ?? '').toString().trim().replace(/\s{2,}/g, ' ');
     let pa = limpia(emp.primerApellido);
     let sa = limpia(emp.segundoApellido);
     let no = limpia(emp.nombre);
 
-    // Si nombre viene contaminado, límpialo
     no = this.limpiarNombreCompleto(no);
-
-    // Si ya están las 3 partes, respeta
     if (pa && sa && no) return { primerApellido: pa, segundoApellido: sa, nombre: no };
-
-    // Si faltan apellidos, intenta deducirlos desde 'no'
     const tokens = no.split(/\s+/).filter(Boolean);
 
     if ((!pa || !sa) && tokens.length >= 3) {
-      // Heurística MX más común: AP_PATERNO AP_MATERNO NOMBRES...
       if (!pa) pa = tokens[0];
       if (!sa) sa = tokens[1];
       no = tokens.slice(2).join(' ');
     } else if ((!pa || !no) && tokens.length === 2) {
-      // 2 tokens: asume AP_PATERNO + NOMBRES
       if (!pa) pa = tokens[0];
       no = tokens[1];
     }
-    // Con 1 token no hay mucho que repartir: lo dejamos como nombre
-
     return { primerApellido: limpia(pa), segundoApellido: limpia(sa), nombre: limpia(no) };
   }
 
