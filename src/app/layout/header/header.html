@@ -80,7 +80,8 @@
         </svg>
       </button>
 
-      <div class="ms-auto me-2 d-flex align-items-center">
+      <div class="ms-auto me-2 header-actions">
+        <span *ngIf="roleName" class="header-text">Bienvenido: {{ roleName }}</span>
         <button class="btn btn-outline-light" type="button" (click)="logout()">
           <i class="fas fa-sign-out-alt"></i>
           Salir

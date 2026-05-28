@@ -8,6 +8,13 @@ header.navbar {
   box-shadow: 0 2px 6px rgba(0,0,0,0.35);
   display: flex;                /* asegura centrado vertical */
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* o el espacio que prefieras */
 }
 
 .navbar-brand {
@@ -71,4 +78,13 @@ header.navbar {
 
 .breadcrumb a:hover{
   text-decoration:underline;
+}
+
+
+.header-text {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  flex: 1 1 auto;
+  min-width: 0;
 }

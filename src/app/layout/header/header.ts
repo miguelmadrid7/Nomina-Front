@@ -1,7 +1,8 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { LoginService } from '../../core/services/login.service';
+import { RolService } from '../../core/services/rol.service';
 
 @Component({
   selector: 'app-header',
@@ -12,14 +13,27 @@ import { LoginService } from '../../core/services/login.service';
   templateUrl: './header.html',
   styleUrls: ['./header.css']
 })
-export class Header {
+export class Header implements OnInit{
 
   @Output() toggleSidebarClick = new EventEmitter<void>();
 
+  roleName: string | null = null;
+
   constructor(
     private loginService: LoginService,
+    private rolService: RolService,
     private router: Router,
   ) {}
+
+  ngOnInit(): void {
+  const roles = this.loginService.getRoles();
+  if (roles && roles.length > 0) {
+    const roleId = roles[0];
+    this.rolService.getRole(roleId).subscribe(role => {
+      this.roleName = role?.name || 'Rol desconocido';
+    });
+  }
+}
   
   onToggleClick() { 
     this.toggleSidebarClick.emit(); 
