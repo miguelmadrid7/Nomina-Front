@@ -106,16 +106,4 @@ export class AltaParametrizacionDialog implements OnInit {
   close(): void {
     this.dialogRef.close();
   }
-
-  private openSuccessDialog(message: string): void {
-    this.dialog.open(ConfirmDialog, {
-      width: '400px',
-      disableClose: true,
-        data: {
-          title: 'Operación exitosa',
-          message,
-          confirmText: 'Aceptar'
-        }
-      });
-  }
 }
