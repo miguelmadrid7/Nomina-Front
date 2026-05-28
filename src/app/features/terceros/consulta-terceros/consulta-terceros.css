@@ -177,9 +177,9 @@
 }
 
 .table-global .mat-column-fechaRegistro {
-  width: 180px !important;
-  min-width: 180px !important;
-  max-width: 180px !important;
+  width: 120px !important;
+  min-width: 120px !important;
+  max-width: 120px !important;
   text-align: center;
   white-space: normal !important;
   word-break: break-word;
