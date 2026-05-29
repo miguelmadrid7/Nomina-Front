@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOption } from '@angular/material/core';
 import { NominaService } from '../../../core/services/nomina-ordinaria.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { NominaordConceptoDialog } from '../../nomina/nominaord-concepto-dialog/nominaord-concepto-dialog';
+import { NominaordConceptoDialog } from '../../../shared/dialogs/nominaord-concepto-dialog/nominaord-concepto-dialog';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NominaRow } from '../../../models/nomina-Row.model';
