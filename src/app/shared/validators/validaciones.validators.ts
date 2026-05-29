@@ -1,7 +1,8 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
+import { esCURP, esRFC } from "../helpers/helpers.helpers";
 
-export function busquedaEmpleadoValidator(): ValidatorFn {
-  const nombrePermitido = /^[A-ZÁÉÍÓÚÜÑ\s.\-']+$/i; // letras, espacios, . - '
+export function searchEmployeeValidator(): ValidatorFn {
+  const nombrePermitido = /^[A-ZÁÉÍÓÚÜÑ\s.\-']+$/i;
   const soloDigitos = /^\d+$/;
 
   return (control: AbstractControl): ValidationErrors | null => {
@@ -227,22 +228,3 @@ export function qnaRangoValidator(): ValidatorFn {
     return null;
   };
 }
-
-/* Helper de busquedads */
-export function esRFC(valor: string): boolean {
-  const moral = /^[A-Z&Ñ]{3}\d{6}[A-Z0-9]{3}$/;
-  const fisica = /^[A-Z&Ñ]{4}\d{6}[A-Z0-9]{3}$/;
-
-  valor = valor.toUpperCase().trim();
-
-  return valor.length === 12
-    ? moral.test(valor)
-    : valor.length === 13
-    ? fisica.test(valor)
-    : false;
-}
-
-export function esCURP(valor: string): boolean {
-  const curpRegex = /^[A-Z]{4}\d{6}[HM][A-Z]{5}[A-Z0-9]\d$/;
-  return curpRegex.test(valor.toUpperCase().trim());
-} 
