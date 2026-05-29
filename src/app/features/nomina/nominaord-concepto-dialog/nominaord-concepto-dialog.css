@@ -1,11 +1,18 @@
-/* Barra superior personalizada (fuera de mat-dialog-content) */
-.dlg-bar {
+/* Dialog structure */
+.dialog-shell {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.dialog-header {
+  position: relative;
   background: var(--brand);
   color: #fff;
   padding: 25px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
 }
 
 .dlg-bar-title {
@@ -22,21 +29,63 @@
   background: var(--bg);
 }
 
+.dialog-close {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 /* Acciones fijas al pie */
 .dlg-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
   padding: 10px 12px;
   border-top: 1px solid var(--line);
   background: #fff;
+  flex-shrink: 0;
 }
 
-.dlg-actions button[mat-stroked-button] {
-  border-color: var(--brand);
-  color: var(--brand);
-  font-weight: 600;
+/* ===== Botones ===== */
+.btn {
+  width: 120px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: .2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: none !important;
+  transition: all .18s ease;
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+  border: 2px solid;
 }
 
-.dlg-actions button[mat-stroked-button]:hover {
-  background: rgba(73,29,42,0.06); /* sutil, no tapa el texto */
+.btn-danger {
+  background: transparent;
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  transform: translateY(-1px);
 }
 
 /* Info de empleado */
