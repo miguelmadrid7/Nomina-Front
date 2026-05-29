@@ -20,10 +20,11 @@ import { IdResponse } from '../../../models/id-Response.model';
 import { Banco } from '../../../models/banco.model';
 import { BeneficiarioRequest } from '../../../models/beneficiario.model';
 import { ApiResponse } from '../../../models/api-Response.model';
-import { esCURP, esRFC, rfcValidator, vigenciaFormatoValidator } from '../../../shared/validators/validaciones.validators';
+import { rfcValidator, vigenciaFormatoValidator } from '../../../shared/validators/validaciones.validators';
 import { factorImporteValidator } from '../../../shared/validators/juicios.validators';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 import { SoloLetrasDirectiva } from "../../../shared/directives/solo-letras.directivas";
+import { esCURP, esRFC } from '../../../shared/helpers/helpers.helpers';
 
 @Component({
   selector: 'app-pension-alimenticia',
@@ -89,6 +90,7 @@ export class PensionAlimenticia {
       numeroOficio: ['',[Validators.required,Validators.pattern(/^[A-Z0-9\-]+$/)]],
       factorImporte: [null, [Validators.required, factorImporteValidator()]],
       bancoSeleccionado: [null],
+      reglas: [null],
       numeroDocumento: [null, [Validators.pattern(/^\d{18}$/)]],
       vigenciaInicio: ['', [Validators.required, vigenciaFormatoValidator()]],
       vigenciaFin: ['', [Validators.required, vigenciaFormatoValidator()]],
