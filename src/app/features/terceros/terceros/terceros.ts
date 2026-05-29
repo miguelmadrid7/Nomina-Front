@@ -19,7 +19,7 @@ import { EmpleadoItem } from '../../../models/emplado.model';
 import { Observable, tap, map } from 'rxjs';
 import { MatOptionModule } from '@angular/material/core';
 import { ConceptoAccesoService } from '../../../core/services/concepto-acceso.service';
-import { busquedaEmpleadoValidator } from '../../../shared/validators/validaciones.validators';
+import { searchEmployeeValidator } from '../../../shared/validators/validaciones.validators';
 import { CalendarioRecepcion } from '../../../models/calendario-recepcion.model';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 
@@ -65,7 +65,7 @@ export class Terceros {
         anio: [new Date().getFullYear()],
 
         busqueda: this.fb.group({
-          searchText: ['', [Validators.required, Validators.maxLength(60), busquedaEmpleadoValidator()]],
+          searchText: ['', [Validators.required, Validators.maxLength(60), searchEmployeeValidator()]],
           concepto: [null, [Validators.required]],
         }),
       });
