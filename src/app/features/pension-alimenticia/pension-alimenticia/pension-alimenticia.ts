@@ -70,6 +70,10 @@ export class PensionAlimenticia {
   cargandoBusqueda = false;
   guardando = false;
 
+  porcentajeTotal = 100;
+  porcentajeDisponible = 100;
+  beneficiariosCapturados: number[] = [];
+
 
   constructor(private fb: FormBuilder, private pensionAlimenticiaService: PensionAlimenticiaService, private dialog: MatDialog) {}
 
@@ -85,12 +89,12 @@ export class PensionAlimenticia {
       apellidoPaterno: ['', [Validators.required, Validators.minLength(2)]],
       apellidoMaterno: ['', [Validators.required, Validators.minLength(2)]],
       nombreCompleto: ['', [Validators.required, Validators.minLength(2)]],
-      rfc: ['', [Validators.required, rfcValidator()]],
+      rfc: ['', [Validators.required,Validators.pattern(/^.{13}$/)]],
+
       formaAplicacion: ['', Validators.required],
-      numeroOficio: ['',[Validators.required,Validators.pattern(/^[A-Z0-9\-]+$/)]],
+      numeroOficio: ['',[Validators.required,Validators.pattern(/^[A-Z0-9\/\-]+$/)]],
       factorImporte: [null, [Validators.required, factorImporteValidator()]],
       bancoSeleccionado: [null],
-      reglas: [null],
       numeroDocumento: [null, [Validators.pattern(/^\d{18}$/)]],
       vigenciaInicio: ['', [Validators.required, vigenciaFormatoValidator()]],
       vigenciaFin: ['', [Validators.required, vigenciaFormatoValidator()]],
@@ -204,6 +208,8 @@ export class PensionAlimenticia {
     return;
   }
   this.empleadoId = emp.id;
+  this.beneficiariosCapturados = [];
+  this.porcentajeDisponible = 100;
 
   }
 
@@ -322,6 +328,11 @@ export class PensionAlimenticia {
                 data: { title: 'Éxito', message: 'Se guardó correctamente tus datos.', type: 'success' }
               });
               this.guardando = false;
+              if (value.formaAplicacion === 'P') {
+                const porcentaje = Number(value.factorImporte);
+                this.beneficiariosCapturados.push(porcentaje);
+                this.recalcularDisponible();
+              }
               this.resetForm();
             },
             error: err => {
@@ -386,6 +397,8 @@ export class PensionAlimenticia {
       vigenciaInicio: '',
       vigenciaFin: ''
     });
+    this.beneficiariosCapturados = [];
+    this.porcentajeDisponible = 100;
     this.resultados = [];
     this.cargandoBusqueda = false;
     this.empleadoId = null;
@@ -412,6 +425,7 @@ export class PensionAlimenticia {
     const formaAplicacion = this.form.get('formaAplicacion')?.value;
       const factorImporte = this.form.get('factorImporte')?.value;
       if (factorImporte == null) return;
+      
       if (formaAplicacion === 'P') {
         let valor = factorImporte.toString();
         valor = valor.replace(/\D/g, '');
@@ -419,10 +433,18 @@ export class PensionAlimenticia {
           valor = valor.substring(0, 3);
         }
         let numero = Number(valor);
+        const acumulado = this.beneficiariosCapturados.reduce((a, b) => a + b, 0);
+
+        const disponibleReal = this.porcentajeTotal - acumulado;
+
+        if (numero > disponibleReal) {
+          numero = disponibleReal;
+        }
         if (numero > 100) {
           numero = 100;
         }
         this.form.get('factorImporte')?.setValue(numero);
+        this.recalcularDisponible(numero);
       } else {
         let numero = Number(factorImporte);
         if (isNaN(numero)) {
@@ -459,6 +481,17 @@ export class PensionAlimenticia {
         valor = valor.substring(0, 6);
       }
       this.form.get('vigenciaFin')?.setValue(valor);
+    }
+  }
+
+  recalcularDisponible(valorActual: number = 0) {
+    const acumulado = this.beneficiariosCapturados.reduce((a, b) => a + b, 0);
+
+    this.porcentajeDisponible =
+      this.porcentajeTotal - acumulado - valorActual;
+
+    if (this.porcentajeDisponible < 0) {
+      this.porcentajeDisponible = 0;
     }
   }
 

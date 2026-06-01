@@ -10,22 +10,39 @@
 
 .form-card mat-form-field {
   display: block;
-
 }
 
 /* Grid */
-.form-grid {
+.form-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.row {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
 }
 
-.grid-empty {
-  min-height: 1px;
+.row-single {
+  grid-template-columns: minmax(260px, 350px);
 }
 
-.start-new-row {
-  grid-column: 1 / -4;
+.row-2 {
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+}
+
+.row-4 {
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+
+.grid-empty {
+  min-height: 1px;
 }
 
 /* Divider */
@@ -41,13 +58,22 @@
 /* Search */
 .global-search {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   flex-wrap: wrap;
 }
 
 .search-field {
+  width: 100%;
   width: 750px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.field-break {
+  grid-column: 1 / 2;
 }
 
 .qna-filters {
@@ -58,7 +84,7 @@
 }
 
 .qna-filters mat-form-field {
-  width: 200px;
+  width: 40px;
   min-width: 100px;
 }
 
@@ -84,6 +110,41 @@
   align-items: center;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
+}
+
+/* El contenedor del outline (el borde visible) */
+:host ::ng-deep .qna-compact .mdc-notched-outline {
+  height: 40px !important;
+}
+
+/* El wrapper externo que envuelve todo */
+:host ::ng-deep .qna-compact .mat-mdc-form-field-flex {
+  height: 40px !important;
+  align-items: center;
+}
+
+
+.employee-percent-box{
+  min-width: 220px;
+   height: 40px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #f5f7fb;
+  border: 1px solid #dbe3f0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.employee-name{
+  font-size:13px;
+  color:#374151;
+}
+
+.employee-percent{
+  font-size:18px;
+  font-weight:700;
+  color:#2563eb;
 }
 
 /* Contenedor de botones */
@@ -184,3 +245,40 @@
   outline: 2px solid rgba(37, 99, 235, 0.35);
   outline-offset: 2px;
 }
+
+.conversion-text {
+  color: #666;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+@media (max-width: 768px) {
+
+  .row-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .row-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .row-single {
+    grid-template-columns: 1fr;
+  }
+
+  .search-field {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .actions-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn,
+  .btn-success {
+    width: 100%;
+  }
+}
+
