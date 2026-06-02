@@ -124,9 +124,10 @@
                                 <input matInput formControlName="qnaInicio" [disabled]="true">
                     </mat-form-field>
 
-                    <mat-slide-toggle formControlName="pensionTerminada">
-                        Finalizar pensión alimenticia
-                    </mat-slide-toggle>
+                    <section class="toggle-container">
+                        <label class="toggle-label"> Finalizar pensión alimenticia</label>
+                            <mat-slide-toggle formControlName="pensionTerminada"> </mat-slide-toggle>
+                    </section>
                 </div>
             </form>
     </mat-dialog-content>

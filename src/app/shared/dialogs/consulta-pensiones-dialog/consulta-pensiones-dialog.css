@@ -77,6 +77,32 @@
   gap: 16px;
 }
 
+.toggle-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 56px; 
+  gap: 6px;
+}
+
+.toggle-container mat-slide-toggle {
+  width: 100%;
+}
+
+.toggle-container .mdc-form-field {
+  width: 100%;
+}
+
+.toggle-container .mdc-label {
+  font-size: 14px;
+}
+
+.toggle-label {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
 /* GRID LAYOUT */
 .vigencia-grid {
   display: grid;
