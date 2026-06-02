@@ -49,7 +49,7 @@
               <table mat-table [dataSource]="dataSource" class="table-global">
 
                 <ng-container matColumnDef="nombreEmpleado">
-                  <th mat-header-cell *matHeaderCellDef class="header-with-select"> NOMBRE EMPLEADO
+                  <th mat-header-cell *matHeaderCellDef class="header-with-select"> NOMBRE <br> EMPLEADO
                     <div class="header-column">
                       <mat-form-field appearance="outline" class="header-text-input-small" floatLabel="always">
                         <mat-label>Buscar</mat-label>
@@ -63,19 +63,40 @@
                 </ng-container>
 
                 <ng-container matColumnDef="rfcEmpleado">
-                  <th mat-header-cell *matHeaderCellDef> RFC EMPLEADO </th>
+                  <th mat-header-cell *matHeaderCellDef> RFC <br> EMPLEADO 
+                    <div class="header-column">
+                      <mat-form-field appearance="outline" class="header-text-input-small" floatLabel="always">
+                        <mat-label>Buscar</mat-label>
+                        <input matInput formControlName="rfcEmpleado" (keydown.enter)="buscar()" appUppercase>
+                      </mat-form-field>
+                    </div>
+                  </th>
                     <td mat-cell *matCellDef="let e">
                       <span *ngIf="e.mostrarEmpleado"> {{ e.rfcEmpleado }} </span>
                     </td>
                 </ng-container>
 
                 <ng-container matColumnDef="nombreBeneficiario">
-                  <th mat-header-cell *matHeaderCellDef>NOMBRE BENEFICIARIO</th>
+                  <th mat-header-cell *matHeaderCellDef class="header-with-select"> NOMBRE <br> BENEFICIARIO
+                    <div class="header-column">
+                      <mat-form-field appearance="outline" class="header-text-input-small" floatLabel="always">
+                        <mat-label>Buscar</mat-label>
+                        <input matInput formControlName="nombreBeneficiario" (keydown.enter)="buscar()" appUppercase>
+                      </mat-form-field>
+                    </div>
+                  </th>
                   <td mat-cell *matCellDef="let e">{{ e.nombreBeneficiario }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="rfcReferencia">
-                  <th mat-header-cell *matHeaderCellDef>RFC REFERENCIA</th>
+                  <th mat-header-cell *matHeaderCellDef class="header-with-select"> RFC <br> REFERENCIA
+                    <div class="header-column">
+                      <mat-form-field appearance="outline" class="header-text-input-small" floatLabel="always">
+                        <mat-label>Buscar</mat-label>
+                        <input matInput formControlName="rfcReferencia" (keydown.enter)="buscar()" appUppercase>
+                      </mat-form-field>
+                    </div>
+                  </th>
                   <td mat-cell *matCellDef="let e">{{ e.rfcReferencia }}</td>
                 </ng-container>
 

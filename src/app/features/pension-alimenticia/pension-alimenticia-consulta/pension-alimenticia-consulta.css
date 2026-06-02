@@ -149,9 +149,9 @@
 }
 
 .table-global .mat-column-rfcEmpleado {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
   text-align: center;
 }
 
@@ -242,14 +242,14 @@
 }
 
 .header-text-input {
-    width: 50px !important;
-    max-width: 50px !important;
+    width: 40px !important;
+    max-width: 40px !important;
     margin: 4px auto !important;
     text-align: center !important;
 }
 
 .header-text-input-small {
-    width: 220px !important;
+    width: 150px !important;
     max-width: 220px !important;
     margin: 4px auto !important;
     text-align: center !important;

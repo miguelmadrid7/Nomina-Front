@@ -58,7 +58,9 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
         anio:     [null],
         quincena: [null]
       }),
-      rfcReferencia: ['']                         
+      rfcEmpleado: [''],
+      rfcReferencia: [''],
+      nombreBeneficiario: [''],                      
     });
 
     this.cargarBeneficiarios();
@@ -69,16 +71,35 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
   }
 
 
-  buscar(): void {
-    const texto = this.form.get('rfcReferencia')?.value?.toString().trim().toUpperCase();
-    const filtrados = texto
-      ? this.todosLosBeneficiarios.filter(b =>
-          b.nombreEmpleado?.toUpperCase().includes(texto)
-        )
-      : this.todosLosBeneficiarios;
+  // En buscar() agrega el filtro:
+buscar(): void {
+  const textoBusqueda      = this.form.get('rfcEmpleado')?.value?.toString().trim().toUpperCase();
+  const textoReferencia    = this.form.get('rfcReferencia')?.value?.toString().trim().toUpperCase();
+  const textoBeneficiario  = this.form.get('nombreBeneficiario')?.value?.toString().trim().toUpperCase(); // ← agrega
 
-    this.aplicarFiltroQna(filtrados);
+  let filtrados = this.todosLosBeneficiarios;
+
+  if (textoBusqueda) {
+    filtrados = filtrados.filter(b =>
+      b.nombreEmpleado?.toUpperCase().includes(textoBusqueda) ||
+      b.rfcEmpleado?.toUpperCase().includes(textoBusqueda)
+    );
   }
+
+  if (textoReferencia) {
+    filtrados = filtrados.filter(b =>
+      b.rfcReferencia?.toUpperCase().includes(textoReferencia)
+    );
+  }
+
+  if (textoBeneficiario) {                                          // ← agrega
+    filtrados = filtrados.filter(b =>
+      b.nombreBeneficiario?.toUpperCase().includes(textoBeneficiario)
+    );
+  }
+
+  this.aplicarFiltroQna(filtrados);
+}
 
 
   private aplicarFiltroQna(base: FilaBeneficiario[]): void {
