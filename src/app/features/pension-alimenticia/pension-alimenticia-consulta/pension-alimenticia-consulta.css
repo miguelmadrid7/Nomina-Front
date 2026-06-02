@@ -148,6 +148,13 @@
   text-align: center;
 }
 
+.table-global .mat-column-rfcEmpleado {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
 .table-global .mat-column-nombreBeneficiario {
   width: 70px !important;
   min-width: 70px !important;
@@ -155,7 +162,7 @@
   text-align: center;
 }
 
-.table-global .mat-column-rfc {
+.table-global .mat-column-rfcReferencia {
   width: 60px !important;
   min-width: 60px !important;
   max-width: 60px !important;

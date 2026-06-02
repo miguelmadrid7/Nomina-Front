@@ -62,14 +62,21 @@
                   </td>
                 </ng-container>
 
+                <ng-container matColumnDef="rfcEmpleado">
+                  <th mat-header-cell *matHeaderCellDef> RFC EMPLEADO </th>
+                    <td mat-cell *matCellDef="let e">
+                      <span *ngIf="e.mostrarEmpleado"> {{ e.rfcEmpleado }} </span>
+                    </td>
+                </ng-container>
+
                 <ng-container matColumnDef="nombreBeneficiario">
                   <th mat-header-cell *matHeaderCellDef>NOMBRE BENEFICIARIO</th>
                   <td mat-cell *matCellDef="let e">{{ e.nombreBeneficiario }}</td>
                 </ng-container>
 
-                <ng-container matColumnDef="rfc">
-                  <th mat-header-cell *matHeaderCellDef>RFC</th>
-                  <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
+                <ng-container matColumnDef="rfcReferencia">
+                  <th mat-header-cell *matHeaderCellDef>RFC REFERENCIA</th>
+                  <td mat-cell *matCellDef="let e">{{ e.rfcReferencia }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="noBeneficiario">

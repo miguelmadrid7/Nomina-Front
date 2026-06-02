@@ -35,7 +35,7 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  displayedColumns: string[] = ['nombreEmpleado', 'nombreBeneficiario', 'rfc', 'noBeneficiario', 'numeroOficio', 'qna', 'acciones'];
+  displayedColumns: string[] = ['nombreEmpleado', 'rfcEmpleado', 'nombreBeneficiario', 'rfcReferencia', 'noBeneficiario', 'numeroOficio', 'qna', 'acciones'];
   dataSource = new MatTableDataSource<FilaBeneficiario>([]);
   todosLosBeneficiarios: FilaBeneficiario[] = [];
 
@@ -58,7 +58,7 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
         anio:     [null],
         quincena: [null]
       }),
-      rfc: ['']                         
+      rfcReferencia: ['']                         
     });
 
     this.cargarBeneficiarios();
@@ -70,7 +70,7 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
 
 
   buscar(): void {
-    const texto = this.form.get('rfc')?.value?.toString().trim().toUpperCase();
+    const texto = this.form.get('rfcReferencia')?.value?.toString().trim().toUpperCase();
     const filtrados = texto
       ? this.todosLosBeneficiarios.filter(b =>
           b.nombreEmpleado?.toUpperCase().includes(texto)
@@ -170,7 +170,7 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
       busqueda: { 
         anio: null, 
         quincena: null 
-      }, rfc: '' 
+      }, rfcReferencia: '' 
     });
     this.actualizarTabla(this.todosLosBeneficiarios);
   }
@@ -183,8 +183,9 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
       id: b.id,
       tabBeneficiariosAlimId: b.tabBeneficiariosAlimId,
       nombreEmpleado: emp ? [emp.primerApellido, emp.segundoApellido, emp.nombre].filter(Boolean).join(' '): 'SIN EMPLEADO',
+      rfcEmpleado: emp?.rfc ?? '—',
       nombreBeneficiario: alim ? [alim.primerApellido, alim.segundoApellido, alim.nombre].filter(Boolean).join(' ')  : `ID ${b.tabBeneficiariosAlimId}`,
-      rfc: alim?.rfc ?? '—',
+      rfcReferencia: alim?.rfc ?? '—',
       numeroOficio: b.numeroOficio ?? '—',
       noBeneficiario: b.numeroBenef,
       formaAplicacion: b.formaAplicacion === 'P' ? 'Factor' : 'Importe fijo',
