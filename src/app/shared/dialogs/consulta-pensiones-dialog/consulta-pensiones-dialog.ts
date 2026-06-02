@@ -65,7 +65,6 @@ export class ConsultaPensionesDialog implements OnInit{
       numeroBeneficiario: [''],
       formaAplicacion: [''],
       factorImporte: [''],
-      banco: [''],
       bancoSeleccionado: [null],
       clabe: [''],
       qnaInicio: [{ value: '', disabled: true }],
@@ -87,7 +86,6 @@ export class ConsultaPensionesDialog implements OnInit{
           }
         const d = arr[0];
         this.detalle = d;
-        console.log(d);
           this.form.patchValue({
             nombreEmpleado: this.armarNombreEmpleado(d),
             rfcEmpleado: d.empleado_rfc,
@@ -98,7 +96,7 @@ export class ConsultaPensionesDialog implements OnInit{
             numeroOficio: d.numero_oficio ?? '',
             formaAplicacion: d.forma_aplicacion,
             factorImporte: d.factor_importe,
-            banco: d.nombre_banco ?? '',
+            bancoSeleccionado: d.cat_banco_id,
             clabe: d.numero_documento ?? '',
             qnaInicio: d.qnaini,
             qnaFin: d.qnafin,
@@ -125,7 +123,7 @@ export class ConsultaPensionesDialog implements OnInit{
   }
 
   guardar(): void {
-    const d = this.form.value;
+    const d = this.form.getRawValue();
     const alimId = this.detalle?.tab_beneficiario_alim_id;
     const nomId  = this.data.id;
 
@@ -134,7 +132,7 @@ export class ConsultaPensionesDialog implements OnInit{
       return;
     }
 
-    if (!d.rfc || !d.clabe || !d.factorImporte) {
+    if (!d.rfc || d.factorImporte === null || d.factorImporte === undefined || d.factorImporte === '') {
       console.warn('Faltan campos requeridos');
       return;
     }
@@ -147,15 +145,16 @@ export class ConsultaPensionesDialog implements OnInit{
     };
 
     let factor = Number(d.factorImporte?.toString().replace(/[$%,]/g, ''));
-    if (d.formaAplicacion === 'Factor' && factor > 1) factor = factor / 100; 
+    if (d.formaAplicacion === 'P' && factor > 1) factor = factor / 100;
 
     const nomPayload: BeneficiarioRequest = {
       tabEmpleadosId: this.detalle!.tab_empleado_id,
       tabBeneficiariosAlimId: alimId,
-      formaAplicacion: d.formaAplicacion === 'Factor' ? 'P' : 'C',
+      catBancoId: d.bancoSeleccionado,
+      formaAplicacion: d.formaAplicacion as 'P' | 'C',
       factorImporte: factor,
       qnaini: Number(d.qnaInicio),
-      qnafin: Number(d.qnaFin),
+      qnafin: d.qnaFin ? Number(d.qnaFin) : null,
       numeroDocumento: d.clabe,
       numeroOficio: d.numeroOficio,
       numeroBenef: d.numeroBeneficiario
