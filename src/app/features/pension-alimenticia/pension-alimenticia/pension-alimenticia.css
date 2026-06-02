@@ -33,13 +33,20 @@
 }
 
 .row-4 {
+  align-items: start;
   grid-template-columns: repeat(4, minmax(220px, 1fr));
+}
+
+.row-oficio {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  align-items: start;  /* ← clave: cada celda crece independiente */
 }
 
 mat-form-field {
   width: 100%;
 }
-
 
 .grid-empty {
   min-height: 1px;
@@ -250,6 +257,67 @@ mat-form-field {
   color: #666;
   font-size: 12px;
   margin-left: 8px;
+}
+
+.toggle-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 56px; /* igual altura visual de mat-form-field */
+  gap: 6px;
+}
+
+.toggle-container mat-slide-toggle {
+  width: 100%;
+}
+
+.toggle-container .mdc-form-field {
+  width: 100%;
+}
+
+.toggle-container .mdc-label {
+  font-size: 14px;
+}
+
+.monto-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  min-height: 32px;
+}
+
+.monto-field {
+  top: 100%;           /* ← aparece justo debajo del checkbox */
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  
+  margin-top: 4px;
+}
+
+
+.checkbox-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.checkbox-label {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.toggle-label {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 @media (max-width: 768px) {
