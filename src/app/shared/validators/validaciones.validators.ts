@@ -222,3 +222,19 @@ import { esCURP, esRFC } from "../helpers/helpers.helpers";
       return null;
     };
   }
+
+
+
+  export function  getCurrentQna(): { anio: number; qna: number; aaaaqq: number } {
+    const now = new Date();
+    const anio = now.getFullYear();
+    const mes = now.getMonth() + 1;           
+    const qnaDelMes = now.getDate() <= 15 ? 1 : 2;
+    const qna = (mes - 1) * 2 + qnaDelMes;   
+
+    return {
+      anio,
+      qna,
+      aaaaqq: anio * 100 + qna  
+    };
+}
