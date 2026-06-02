@@ -34,7 +34,7 @@
         </mat-select>
       </mat-form-field>
 
-    </div>
+    
   </div>
 
   <div class="section-divider"></div>
@@ -45,7 +45,7 @@
         <div class="table-content">
           <div class="table-scroll">
 
-            <form [formGroup]="form">
+          
               <table mat-table [dataSource]="dataSource" class="table-global">
 
                 <ng-container matColumnDef="nombreEmpleado">
@@ -53,7 +53,7 @@
                     <div class="header-column">
                       <mat-form-field appearance="outline" class="header-text-input-small" floatLabel="always">
                         <mat-label>Buscar</mat-label>
-                        <input matInput formControlName="rfc" (keydown.enter)="buscar()" appUppercase>
+                        <input matInput formControlName="nombreEmpleado" (keydown.enter)="buscar()" appUppercase>
                       </mat-form-field>
                     </div>
                   </th>
@@ -134,8 +134,7 @@
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
               </table>
-            </form>
-
+         </div>
             <mat-paginator
               [length]="totalElements"
               [pageSize]="50"
