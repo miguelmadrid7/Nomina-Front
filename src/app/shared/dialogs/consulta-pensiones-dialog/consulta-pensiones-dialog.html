@@ -7,66 +7,109 @@
 
     <mat-dialog-content class="dlg-content">
         <form [formGroup]="form">
-            <div class="dlg-bar-title" [formGroup]="form">Detalle de beneficiario</div>
+            <div class="dlg-bar-title" [formGroup]="form">Detalle de empelado</div> 
+                <div class="row row-4"> 
+                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                            <mat-label>NOMBRE EMPLEADO</mat-label>
+                                <mat-icon matPrefix>fingerprint</mat-icon>
+                                    <input matInput formControlName="nombreEmpleado">
+                    </mat-form-field>
 
-                <mat-card class="form-card">
-                    <mat-card-content class="info-grid">
+                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                            <mat-label>RFC EMPLEADO</mat-label>
+                                <mat-icon matPrefix>assignment_ind</mat-icon>
+                                    <input matInput formControlName="rfcEmpleado">
+                    </mat-form-field>
 
-                            <div class="info-field">
-                                <mat-icon>fingerprint</mat-icon>
-                                    <div class="info-content">
-                                        <span class="info-label">NOMBRE EMPLEADO</span>
-                                        <span>{{ form.get('nombreEmpleado')?.value || '—' }}</span>
-                                    </div>
-                            </div>
+                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                            <mat-label>CURP EMPLEADO</mat-label>
+                                <mat-icon matPrefix>assignment_ind</mat-icon>
+                                    <input matInput formControlName="curpEmpleado">
+                    </mat-form-field>
+                </div>
 
-                            <div class="info-field">
-                                <mat-icon>fingerprint</mat-icon>
-                                    <div class="info-content">
-                                        <span class="info-label">NOMBRE BENEFICIARIO</span>
-                                        <span>{{ form.get('nombreBeneficiario')?.value || '—' }}</span>
-                                    </div>
-                            </div>
+                <div class="dlg-bar-title">Detalle de beneficiario</div>
 
-                            <div class="info-field">
-                                <mat-icon>assignment_ind</mat-icon>
-                                    <div class="info-content">
-                                        <span class="info-label">RFC</span>
-                                        <span>{{ form.get('rfc')?.value || '—' }}</span>
-                                    </div>
-                            </div>
+                <div class="row row-4"> 
+                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                            <mat-label>NOMBRE BENEFICIARIO</mat-label>
+                                <mat-icon matPrefix>fingerprint</mat-icon>
+                                    <input matInput formControlName="nombreBeneficiario">
+                </mat-form-field>
 
-                            <div class="info-field">
-                                <mat-icon>assignment_ind</mat-icon>
-                                    <div class="info-content">
-                                        <span class="info-label">NUMERO BENEFICIARIO</span>
-                                        <span>{{ form.get('numeroBeneficiario')?.value || '—' }}</span>
-                                    </div>
-                            </div>
-                    </mat-card-content>
-                </mat-card>
+                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                            <mat-label>RFC REFERENCIA</mat-label>
+                                <mat-icon matPrefix>assignment_ind</mat-icon>
+                                    <input matInput formControlName="rfc">
+                </mat-form-field>
 
-                <div class="section-divider"></div>
+                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                            <mat-label>NUMERO BENEFICIARIO</mat-label>
+                                <mat-icon matPrefix>assignment_ind</mat-icon>
+                                    <input matInput formControlName="numeroBeneficiario">
+                </mat-form-field>
+                </div>
+                  
 
-                <div class="dlg-bar-title">Registro de beneficiario</div>
+            <div class="section-divider"></div>
+
+            <div class="dlg-bar-title">Registro de beneficiario</div>
 
                 <div class="form-grid">
-                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                        <mat-label>Forma aplicacíon</mat-label>
-                            <mat-icon matPrefix>description</mat-icon>
-                                <input matInput formControlName="formaAplicacion">
+                    <div class="field-break">
+                        <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                            <mat-label>No. oficio</mat-label>
+                                <mat-icon matPrefix>description</mat-icon>
+                                    <input matInput formControlName="numeroOficio" appUppercase>
+                        </mat-form-field>
+                    </div>
+
+
+                    <mat-form-field appearance="outline" class="with-separator compact-field  qna-compact" floatLabel="always">
+                        <mat-icon matPrefix>tune</mat-icon>
+                            <mat-label>Forma de aplicación*</mat-label>
+                                <mat-select
+                                    id="formaAplicacion"
+                                    name="formaAplicacion"
+                                    placeholder="Seleccionar forma"
+                                    formControlName="formaAplicacion"
+                                    (selectionChange)="onFormaChange()"
+                                    required>
+                            <mat-option value="P">Factor</mat-option>
+                            <mat-option value="C">Importe fijo</mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="f['formaAplicacion']?.invalid && f['formaAplicacion']?.touched">Selecciona la forma de aplicación. </mat-error>
                     </mat-form-field>
 
-                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                        <mat-label>Factor / Importe</mat-label>
-                            <mat-icon matPrefix>description</mat-icon>
-                                <input matInput formControlName="factorImporte">
-                    </mat-form-field>
+                    <div>
+                        <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+                            <mat-icon matPrefix> {{ form.get('formaAplicacion')?.value === 'P' ? 'percent' : 'attach_money' }}</mat-icon>
+                            <mat-label>Factor / Importe*</mat-label>
+                                <input
+                                    matInput
+                                    id="factorImporte"
+                                    name="factorImporte"
+                                    [type]="form.get('formaAplicacion')?.value === 'P' ? 'text' : 'number'"
+                                    formControlName="factorImporte"
+                                    [placeholder]="form.get('formaAplicacion')?.value === 'P' ? '0 – 100%' : 'Ingrese importe'"
+                                    [attr.maxlength]="form.get('formaAplicacion')?.value === 'P' ? 3 : null"
+                                    (input)="onFactorImporteInput()"
+                                    required />
+                                <mat-hint *ngIf="form.get('formaAplicacion')?.value === 'P'  && form.get('factorImporte')?.value">
+                                    Equivale a: {{ (form.get('factorImporte')?.value / 100) | number:'1.2-4' }}
+                                </mat-hint>
+                            <mat-error *ngIf="form.get('factorImporte')?.invalid && form.get('factorImporte')?.touched">Ingresa un valor válido. </mat-error>
+                        </mat-form-field>
+                    </div>
 
-                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                        <mat-label>Banco</mat-label>
-                            <mat-icon matPrefix>description</mat-icon>
-                                <input matInput formControlName="banco">
+
+                     <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+                        <mat-icon matPrefix>account_balance</mat-icon>
+                            <mat-label>Buscar banco</mat-label>
+                                <mat-select id="bancoSeleccionado" name="bancoSeleccionado" placeholder="Seleccionar banco" formControlName="bancoSeleccionado">
+                                    <mat-option *ngFor="let bank of bancos" [value]="bank.id"> {{ bank.banco }} </mat-option>
+                                </mat-select>
+                        <mat-error *ngIf="f['bancoSeleccionado']?.invalid && f['bancoSeleccionado']?.touched"> Selecciona un banco. </mat-error>
                     </mat-form-field>
 
                     <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
@@ -75,29 +118,15 @@
                                 <input matInput formControlName="clabe" maxlength="18">
                     </mat-form-field>
 
-                     <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                        <mat-label>Número documento</mat-label>
-                            <mat-icon matPrefix>description</mat-icon>
-                                <input matInput formControlName="numeroDocumento">
-                    </mat-form-field>
-
-                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                        <mat-label>Número de oficio</mat-label>
-                            <mat-icon matPrefix>description</mat-icon>
-                                <input matInput formControlName="numeroOficio" appUppercase>
-                    </mat-form-field>
-
                     <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                         <mat-label>Inicio</mat-label>
                             <mat-icon matPrefix>description</mat-icon>
-                                <input matInput formControlName="qnaInicio">
+                                <input matInput formControlName="qnaInicio" [disabled]="true">
                     </mat-form-field>
 
-                    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                        <mat-label>Hasta</mat-label>
-                            <mat-icon matPrefix>description</mat-icon>
-                                <input matInput formControlName="qnaFin">
-                    </mat-form-field>
+                    <mat-slide-toggle formControlName="pensionTerminada">
+                        Finalizar pensión alimenticia
+                    </mat-slide-toggle>
                 </div>
             </form>
     </mat-dialog-content>

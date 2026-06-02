@@ -14,6 +14,10 @@ import { BeneficiarioAlimRequest } from '../../../models/pension-Alimenticia-mod
 import { switchMap } from 'rxjs/operators';
 import { UppercaseDirective } from '../../directives/upperCase.directivas';
 import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
+import { MatSelectModule } from '@angular/material/select';
+import { Banco } from '../../../models/banco.model';
+import { ApiResponse } from '../../../models/api-Response.model';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-consulta-pensiones-dialog',
@@ -28,6 +32,8 @@ import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pensi
     MatInputModule,
     MatDialogModule,
     MatCardModule,
+    MatSelectModule,
+    MatSlideToggleModule,
     UppercaseDirective,
   ],
   templateUrl: './consulta-pensiones-dialog.html',
@@ -37,30 +43,43 @@ export class ConsultaPensionesDialog implements OnInit{
 
   form!: FormGroup;
   detalle: any = null;
+  bancos: Banco[] = [];
+  bancoSeleccionado: number | null = null;
+  porcentajeDisponible = 100;
 
-  constructor(private  ref: MatDialogRef<ConsultaPensionesDialog>, private fb: FormBuilder, @Inject(MAT_DIALOG_DATA) public data: FilaBeneficiario,  private pensionService: PensionAlimenticiaService,  private dialog: MatDialog){}
+  constructor(
+    private  ref: MatDialogRef<ConsultaPensionesDialog>, 
+    private fb: FormBuilder,
+     @Inject(MAT_DIALOG_DATA) public data: FilaBeneficiario,  
+     private pensionAlimenticiaService: PensionAlimenticiaService,  
+     private dialog: MatDialog){}
 
   ngOnInit() {
     this.form = this.fb.group({
       id: [null],
       nombreEmpleado: [''],
+      rfcEmpleado: [''],
+      curpEmpleado: [''],
       nombreBeneficiario: [''],
       rfc: [''],
       numeroBeneficiario: [''],
       formaAplicacion: [''],
       factorImporte: [''],
       banco: [''],
+      bancoSeleccionado: [null],
       clabe: [''],
-      qnaInicio: [''],
+      qnaInicio: [{ value: '', disabled: true }],
       qnaFin: [''],
+      pensionTerminada: [false],
       numeroDocumento: [''], 
       numeroOficio: ['']
     });
+    this.loadBanksCatalog();
     this.cargarDetalle();
   }
 
   cargarDetalle(): void {
-    this.pensionService.getBeneficiario(this.data.id).subscribe({
+    this.pensionAlimenticiaService.getBeneficiario(this.data.id).subscribe({
       next: (resp) => {
         const arr = resp?.data as any[];
           if (!arr || arr.length === 0) {
@@ -68,13 +87,16 @@ export class ConsultaPensionesDialog implements OnInit{
           }
         const d = arr[0];
         this.detalle = d;
+        console.log(d);
           this.form.patchValue({
             nombreEmpleado: this.armarNombreEmpleado(d),
+            rfcEmpleado: d.empleado_rfc,
+            curpEmpleado: d.empleado_curp,
             nombreBeneficiario: this.armarNombreBeneficiario(d),
             rfc: d.beneficiario_rfc,
             numeroBeneficiario: d.numero_benef ?? '',
             numeroOficio: d.numero_oficio ?? '',
-            formaAplicacion: d.forma_aplicacion === 'P' ? 'Factor' : 'Importe fijo',
+            formaAplicacion: d.forma_aplicacion,
             factorImporte: d.factor_importe,
             banco: d.nombre_banco ?? '',
             clabe: d.numero_documento ?? '',
@@ -112,7 +134,7 @@ export class ConsultaPensionesDialog implements OnInit{
       return;
     }
 
-    if (!d.rfc || !d.clabe || !d.qnaInicio || !d.qnaFin || !d.factorImporte) {
+    if (!d.rfc || !d.clabe || !d.factorImporte) {
       console.warn('Faltan campos requeridos');
       return;
     }
@@ -139,8 +161,8 @@ export class ConsultaPensionesDialog implements OnInit{
       numeroBenef: d.numeroBeneficiario
     };
 
-    this.pensionService.updateBeneficiarioAlim(alimId, alimPayload)
-      .pipe(switchMap(() => this.pensionService.updateBeneficiario(nomId, nomPayload)))
+    this.pensionAlimenticiaService.updateBeneficiarioAlim(alimId, alimPayload)
+      .pipe(switchMap(() => this.pensionAlimenticiaService.updateBeneficiario(nomId, nomPayload)))
         .subscribe({
           next: () => {
             const dialogRef = this.dialog.open(PensionAlimenDialog, {
@@ -157,6 +179,58 @@ export class ConsultaPensionesDialog implements OnInit{
         },
         error: (err: any) => console.error('Error al actualizar', err)
       });
+  }
+
+  get f(){
+    return this.form.controls;
+  }
+
+  onFormaChange() {
+    this.form.get('factorImporte')?.setValue(null);
+  }
+
+  onFactorImporteInput() {
+    const formaAplicacion = this.form.get('formaAplicacion')?.value;
+    const factorImporte = this.form.get('factorImporte')?.value;
+      if (factorImporte == null) return;
+      if (formaAplicacion === 'P') {
+        let valor = factorImporte.toString();
+          valor =  valor.replace(/\D/g, '');
+        if (valor.length > 3) {
+          valor = valor.substring(0, 3);
+        }
+        let numero = Number(valor);
+        const disponibleReal = this.porcentajeDisponible;
+          if (numero > disponibleReal) {
+            numero = disponibleReal;
+          }
+        this.form.get('factorImporte')?.setValue(numero, {
+          emitEvent: false
+        });
+      } else {
+        let numero = Number(factorImporte);
+        if (isNaN(numero)) {
+          return;
+        }
+        if (numero < 0) {
+          numero = 0;
+        }
+        this.form.get('factorImporte')?.setValue(numero, {
+          emitEvent: false
+        });
+      }
+  }
+
+  loadBanksCatalog (): void {
+    this.pensionAlimenticiaService.getBancos()
+    .subscribe({
+      next: (response: ApiResponse<Banco[]>) => {
+        this.bancos = response.data;
+      },
+      error: (err: any) => {
+        console.error('Error al  cargar bancos', err)
+      }
+    })
   }
 
   cerrar(): void {

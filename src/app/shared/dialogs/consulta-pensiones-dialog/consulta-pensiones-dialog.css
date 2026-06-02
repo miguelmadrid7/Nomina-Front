@@ -43,7 +43,7 @@
 
 .form-grid{
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   align-items: start;
   justify-content: start;
@@ -53,6 +53,24 @@
   grid-column: 1 / -1;
 }
 
+.field-break {
+    grid-column: 1 / -1;
+}
+
+.row-4 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.row-4-campos {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
 .info-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -60,7 +78,6 @@
 }
 
 /* GRID LAYOUT */
-.form-grid,
 .vigencia-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
