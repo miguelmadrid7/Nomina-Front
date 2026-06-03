@@ -36,9 +36,32 @@
         </mat-autocomplete>
       </mat-form-field>
 
-      <div *ngIf="empleadoId !== null" class="employee-percent-box">
-        <div class="employee-percent">
-          Disponible: <strong>{{ porcentajeDisponible }}%</strong>
+      <div class="chart-with-legend" *ngIf="empleadoId !== null">
+        <div class="employee-percent-box">
+          <apx-chart
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [plotOptions]="chartOptions.plotOptions"
+            [labels]="chartOptions.labels"
+            [colors]="chartOptions.colors">
+          </apx-chart>
+        </div>
+
+        <div class="chart-legend">
+          <div class="legend-title">Estado de pensión</div>
+
+          <div class="legend-item" [class.active]="porcentajeDisponible >= 50">
+            <span class="legend-dot dot-blue"></span>
+            <span>Disponible para pensión</span>
+          </div>
+          <div class="legend-item" [class.active]="porcentajeDisponible > 0 && porcentajeDisponible  < 50">
+            <span class="legend-dot dot-amber"></span>
+            <span>Preventivo </span>
+          </div>
+          <div class="legend-item" [class.active]="porcentajeDisponible <= 0">
+            <span class="legend-dot dot-red"></span>
+            <span>No disponible para pensión </span>
+          </div>
         </div>
       </div>
     </div>
@@ -83,9 +106,8 @@
               <mat-checkbox formControlName="aplicarDescuento" (change)="onAplicarDescuentoChange()"></mat-checkbox>
             </div>
 
-            <mat-form-field *ngIf="form.get('aplicarDescuento')?.value"
-              class="with-separator compact-field qna-compact monto-field"
-              appearance="outline" floatLabel="always">
+            <mat-form-field *ngIf="form.get('aplicarDescuento')?.value" class="with-separator compact-field qna-compact monto-field" appearance="outline" floatLabel="always">
+              <mat-icon matPrefix>badge</mat-icon>
               <mat-label>Monto total</mat-label>
               <input matInput type="number" formControlName="montoTotal">
               <mat-error *ngIf="f['montoTotal']?.invalid">Captura un monto válido</mat-error>

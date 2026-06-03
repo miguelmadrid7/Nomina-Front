@@ -41,7 +41,7 @@
   display: grid;
   gap: 12px;
   grid-template-columns: repeat(4, minmax(220px, 1fr));
-  align-items: start;  /* ← clave: cada celda crece independiente */
+  align-items: start; 
 }
 
 mat-form-field {
@@ -65,14 +65,22 @@ mat-form-field {
 /* Search */
 .global-search {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .search-field {
-  width: 100%;
-  width: 750px;
+  width: auto;             /* deja que flex administre el ancho */
+  flex: 1 1 520px;         /* crece, encoge; base 520px */
+  min-width: 360px;        /* evita que sea muy angosto */
+  max-width: 740px;   
+}
+
+/* Anula el width global del mat-form-field solo para el buscador */
+.search-field.mat-mdc-form-field,
+.global-search .search-field {
+  width: auto !important;
 }
 
 mat-form-field {
@@ -130,17 +138,96 @@ mat-form-field {
   align-items: center;
 }
 
+/* GRAFICA */
+.chart-with-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+}
+
+.chart-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 260px;
+}
+
+.legend-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 2px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  display: inline-block;
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+.legend-item.active {
+  font-weight: 600;
+  color: #111827;
+}
+
+.legend-dot.dot-red   { 
+  background: #ef4444; 
+}
+
+.legend-dot.dot-amber { 
+  background: #f59e0b; 
+}
+
+.legend-dot.dot-blue  { 
+  background: #2563eb; 
+}
 
 .employee-percent-box{
-  min-width: 220px;
-   height: 40px;
-  padding: 10px 14px;
+  flex: 0 0 260px;       
+  min-height: 120px;
+  padding: 8px 12px;
   border-radius: 10px;
   background: #f5f7fb;
   border: 1px solid #dbe3f0;
   display:flex;
-  flex-direction:column;
+  align-items:center;
   justify-content:center;
+}
+
+.employee-percent-box apx-chart {
+  width: 260px;
+  height: 120px;
+  display: block;
+}
+
+.employee-status {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  align-self: center;
+}
+.employee-status.ok {
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+}
+.employee-status.no {
+  color: #7f1d1d;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
 }
 
 .employee-name{
@@ -263,7 +350,7 @@ mat-form-field {
   display: flex;
   flex-direction: row;
   align-items: center;
-  min-height: 56px; /* igual altura visual de mat-form-field */
+  min-height: 56px; 
   gap: 6px;
 }
 
@@ -288,14 +375,12 @@ mat-form-field {
 }
 
 .monto-field {
-  top: 100%;           /* ← aparece justo debajo del checkbox */
+  top: 100%;          
   left: 0;
   width: 100%;
   z-index: 10;
-  
   margin-top: 4px;
 }
-
 
 .checkbox-container {
   display: flex;
@@ -346,6 +431,22 @@ mat-form-field {
 
   .btn,
   .btn-success {
+    width: 100%;
+  }
+
+   .global-search {
+    flex-wrap: wrap;       /* ahora sí permite salto */
+  }
+  .search-field {
+    flex: 1 1 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .employee-percent-box {
+    flex: 1 1 100%;
+    min-height: 120px;
+  }
+  .employee-percent-box apx-chart {
     width: 100%;
   }
 }
