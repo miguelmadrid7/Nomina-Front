@@ -204,6 +204,29 @@ button[disabled] {
   color: #c62828; 
 }
 
+.hidden { 
+  display: none; 
+}
+
+/* Centrado horizontal + algo de énfasis */
+.table-global .no-data-cell,
+.no-data-cell {
+  text-align: center;
+  color: #6b7280;        
+  font-style: italic;
+  padding: 16px 0;
+}
+
+.table-global .mat-mdc-cell.no-data-cell {
+  text-align: center;
+}
+
+/* Opcional: altura fija para que quede más visible */
+.no-data-cell {
+  height: 56px;           
+  vertical-align: middle;  
+}
+
 /* Estado vacío */
 .empty-state { 
   display:flex; 

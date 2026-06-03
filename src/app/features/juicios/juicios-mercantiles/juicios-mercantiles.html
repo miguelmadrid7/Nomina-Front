@@ -104,7 +104,7 @@
         
         <div class="section-divider"></div>
 
-        <div class="table-container">
+        <div class="table-container"> 
             <div class="table-card card">   
                 <div class="table-content">
                     <div class="table-scroll">
@@ -157,6 +157,8 @@
                                 <td mat-cell *matCellDef="let e">{{ e.status }}</td>
                             </ng-container>
 
+                            
+
                         
                             <!-- Acciones -->
                             <ng-container matColumnDef="acciones">
@@ -174,14 +176,13 @@
                             </ng-container>
 
                         <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.inactive-row]="row?.status === 'INACTIVO'" [attr.aria-disabled]="row?.status === 'INACTIVO'"> </tr>
-
-                    <!-- Estado vacío -->
-                    <div class="empty-state" *ngIf="(beneficiarios?.length ?? 0) === 0">
-                        <mat-icon>inbox</mat-icon>
-                        <div>No hay beneficiarios para mostrar</div>
-                    </div>
-
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.inactive-row]="row?.status === 'INACTIVO'" [attr.aria-disabled]="row?.status === 'INACTIVO'"> </tr>
+                        
+                        <tr class="mat-row" *matNoDataRow [class.hidden]="!hasCheck || !form.get('busqueda.empleadoId')?.value"> 
+                            <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length"> 
+                                SIN BENEFICIARIOS para el empleado seleccionado 
+                            </td>
+                        </tr>
                         </table>
                     </div>
 

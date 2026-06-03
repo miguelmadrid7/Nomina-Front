@@ -60,6 +60,7 @@ export class JuiciosMercantiles {
   @ViewChild(MatPaginator) paginator?: MatPaginator;
   
   form!: FormGroup;
+  hasCheck = false;
   resultado: BeneficiarioJMRequest[] = [];
   cargandoBusqueda = false;
   filterValues = { rfc: '', primerApellido:'', segundoApellido: '', nombre: ''};
@@ -464,10 +465,15 @@ export class JuiciosMercantiles {
         this.beneficiarios = mapped;
         this.totalElements = mapped.length;
         this.recalcBeneficiariosView();
+         this.hasCheck = true; 
         this.cd.markForCheck();
       });
     },
-    error: () => this.showSnack('Error al cargar beneficiarios', 'Cerrar', 4000)
+    error: () => {
+      this.hasCheck = true;
+      this.showSnack('Error al cargar beneficiarios', 'Cerrar', 4000)
+
+    }
   });
 }
 
@@ -498,6 +504,7 @@ export class JuiciosMercantiles {
     this.form.get('busqueda.anio')?.reset(null, { emitEvent: false });
     this.form.get('busqueda.quincena')?.reset(null, { emitEvent: false });
     this.paginator?.firstPage?.();
+    this.hasCheck = false; 
     this.cd.markForCheck();
   }
 }
