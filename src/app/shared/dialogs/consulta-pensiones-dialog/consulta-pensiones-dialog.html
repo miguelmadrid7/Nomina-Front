@@ -7,7 +7,7 @@
 
     <mat-dialog-content class="dlg-content">
         <form [formGroup]="form">
-            <div class="dlg-bar-title" [formGroup]="form">Detalle de empelado</div> 
+            <div class="dlg-bar-title">Detalle de empelado</div> 
                 <div class="row row-4"> 
                     <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                             <mat-label>NOMBRE EMPLEADO</mat-label>
@@ -134,6 +134,6 @@
 
     <div class="dlg-actions">
             <button class="btn btn-danger" (click)="cerrar()"> Cancelar </button>
-            <button class="btn btn-primary" (click)="guardar()"> Guardar </button>
+            <button class="btn btn-primary" (click)="guardar()" [disabled]="saving"> Guardar </button>
     </div>
 </div>

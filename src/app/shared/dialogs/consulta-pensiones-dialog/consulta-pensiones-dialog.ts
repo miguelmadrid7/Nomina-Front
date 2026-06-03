@@ -11,13 +11,14 @@ import { PensionAlimenticiaService } from '../../../core/services/pension-alimen
 import { MatCardModule } from '@angular/material/card';
 import { BeneficiarioRequest, FilaBeneficiario } from '../../../models/beneficiario.model';
 import { BeneficiarioAlimRequest } from '../../../models/pension-Alimenticia-model';
-import { switchMap } from 'rxjs/operators';
+import { finalize, switchMap } from 'rxjs/operators';
 import { UppercaseDirective } from '../../directives/upperCase.directivas';
 import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { Banco } from '../../../models/banco.model';
 import { ApiResponse } from '../../../models/api-Response.model';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { getCurrentQna } from '../../validators/validaciones.validators';
 
 @Component({
   selector: 'app-consulta-pensiones-dialog',
@@ -44,6 +45,7 @@ export class ConsultaPensionesDialog implements OnInit{
   form!: FormGroup;
   detalle: any = null;
   bancos: Banco[] = [];
+  saving = false;
   bancoSeleccionado: number | null = null;
   porcentajeDisponible = 100;
 
@@ -73,6 +75,16 @@ export class ConsultaPensionesDialog implements OnInit{
       numeroDocumento: [''], 
       numeroOficio: ['']
     });
+      const finCtrl  = this.form.get('qnaFin');
+      const termCtrl = this.form.get('pensionTerminada');
+      termCtrl?.valueChanges.subscribe((on: boolean) => {
+        const { aaaaqq } = getCurrentQna(); 
+        if (on) {
+          finCtrl?.setValue(aaaaqq.toString()); 
+        } else {
+          finCtrl?.setValue(''); 
+        }
+      });
     this.loadBanksCatalog();
     this.cargarDetalle();
   }
@@ -81,32 +93,31 @@ export class ConsultaPensionesDialog implements OnInit{
     this.pensionAlimenticiaService.getBeneficiario(this.data.id).subscribe({
       next: (resp) => {
         const arr = resp?.data as any[];
-          if (!arr || arr.length === 0) {
-            return;
-          }
+        if (!arr || arr.length === 0) return;
         const d = arr[0];
         this.detalle = d;
-          this.form.patchValue({
-            nombreEmpleado: this.armarNombreEmpleado(d),
-            rfcEmpleado: d.empleado_rfc,
-            curpEmpleado: d.empleado_curp,
-            nombreBeneficiario: this.armarNombreBeneficiario(d),
-            rfc: d.beneficiario_rfc,
-            numeroBeneficiario: d.numero_benef ?? '',
-            numeroOficio: d.numero_oficio ?? '',
-            formaAplicacion: d.forma_aplicacion,
-            factorImporte: d.factor_importe,
-            bancoSeleccionado: d.cat_banco_id,
-            clabe: d.numero_documento ?? '',
-            qnaInicio: d.qnaini,
-            qnaFin: d.qnafin,
-            numeroDocumento: d.numero_documento ?? ''
-          });
-      },
+        this.form.patchValue({
+          nombreEmpleado: this.armarNombreEmpleado(d),
+          rfcEmpleado: d.empleado_rfc,
+          curpEmpleado: d.empleado_curp,
+          nombreBeneficiario: this.armarNombreBeneficiario(d),
+          rfc: d.beneficiario_rfc,
+          numeroBeneficiario: d.numero_benef ?? '',
+          numeroOficio: d.numero_oficio ?? '',
+          formaAplicacion: d.forma_aplicacion,
+          factorImporte: d.factor_importe,
+          bancoSeleccionado: d.cat_banco_id,
+          clabe: d.numero_documento ?? '',
+          qnaInicio: d.qnaini,
+          qnaFin: d.qnafin,
+          numeroDocumento: d.numero_documento ?? ''
+        }, { emitEvent: false }); 
 
-      error: (err) => {
-        console.error('Error al cargar detalle', err);
-      }
+        if (d.qnafin) {
+          this.form.get('pensionTerminada')?.setValue(true, { emitEvent: false }); 
+        }
+      },
+      error: (err) => console.error('Error al cargar detalle', err)
     });
   }
 
@@ -123,6 +134,7 @@ export class ConsultaPensionesDialog implements OnInit{
   }
 
   guardar(): void {
+    if (this.saving) return;
     const d = this.form.getRawValue();
     const alimId = this.detalle?.tab_beneficiario_alim_id;
     const nomId  = this.data.id;
@@ -137,6 +149,22 @@ export class ConsultaPensionesDialog implements OnInit{
       return;
     }
 
+    const qIni = Number(d.qnaInicio);
+    let qFin   = d.qnaFin ? Number(d.qnaFin) : null;
+
+    if (d.pensionTerminada && !qFin) {
+      const { aaaaqq } = getCurrentQna();
+      qFin = aaaaqq;
+    }
+
+    if (qFin !== null && (Number.isNaN(qFin) || qFin < qIni)) {
+      this.dialog.open(PensionAlimenDialog, {
+        width: '350px',
+        data: { message: 'La QNA fin no puede ser menor a la QNA inicio.', type: 'error' }
+      });
+      return;
+    }
+
     const alimPayload: BeneficiarioAlimRequest = {
       nombre: d.nombreBeneficiario.split(' ').slice(2).join(' ') || d.nombreBeneficiario,
       primerApellido: d.nombreBeneficiario.split(' ')[0] ?? '',
@@ -144,39 +172,44 @@ export class ConsultaPensionesDialog implements OnInit{
       rfc: d.rfc
     };
 
-    let factor = Number(d.factorImporte?.toString().replace(/[$%,]/g, ''));
+    let factor = Number((d.factorImporte ?? '').toString().replace(/[$%,]/g, ''));
     if (d.formaAplicacion === 'P' && factor > 1) factor = factor / 100;
 
+    const clabe = (d.clabe || '').toString().replace(/\D+/g, '');
     const nomPayload: BeneficiarioRequest = {
       tabEmpleadosId: this.detalle!.tab_empleado_id,
       tabBeneficiariosAlimId: alimId,
       catBancoId: d.bancoSeleccionado,
       formaAplicacion: d.formaAplicacion as 'P' | 'C',
       factorImporte: factor,
-      qnaini: Number(d.qnaInicio),
-      qnafin: d.qnaFin ? Number(d.qnaFin) : null,
-      numeroDocumento: d.clabe,
+      qnaini: qIni,
+      qnafin: qFin,                 
+      numeroDocumento: clabe,       
       numeroOficio: d.numeroOficio,
       numeroBenef: d.numeroBeneficiario
     };
 
+    this.saving = true;
     this.pensionAlimenticiaService.updateBeneficiarioAlim(alimId, alimPayload)
-      .pipe(switchMap(() => this.pensionAlimenticiaService.updateBeneficiario(nomId, nomPayload)))
-        .subscribe({
-          next: () => {
-            const dialogRef = this.dialog.open(PensionAlimenDialog, {
-              width: '350px',
-              data: {
-                message: 'Se actualizó correctamente',
-                type: 'success'
-              }
-            });
-
-            dialogRef.afterClosed().subscribe(() => {
-              this.ref.close(true); 
-            });
+      .pipe(switchMap(() => this.pensionAlimenticiaService.updateBeneficiario(nomId, nomPayload)),
+        finalize(() => this.saving = false))
+      .subscribe({
+        next: () => {
+          const dialogRef = this.dialog.open(PensionAlimenDialog, {
+            width: '350px',
+            data: { message: 'Se actualizó correctamente', type: 'success' }
+          });
+          dialogRef.afterClosed().subscribe(() => {
+            this.ref.close(true); 
+          });
         },
-        error: (err: any) => console.error('Error al actualizar', err)
+        error: (err: any) => {
+          console.error('Error al actualizar', err);
+          this.dialog.open(PensionAlimenDialog, {
+            width: '350px',
+            data: { message: 'Error al actualizar', type: 'error' }
+          });
+        }
       });
   }
 
