@@ -124,7 +124,7 @@ mat-form-field {
 :host ::ng-deep .qna-compact .mat-mdc-text-field-wrapper,
 :host ::ng-deep .qna-compact .mat-mdc-form-field-flex,
 :host ::ng-deep .qna-compact .mdc-notched-outline {
-  height: auto !important;   /* clave: no forzar 40px */
+  height: auto !important;
 }
 
 .mat-mdc-form-field-hint-wrapper { white-space: normal; } 

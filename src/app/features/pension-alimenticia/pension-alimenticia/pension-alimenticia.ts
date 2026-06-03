@@ -104,7 +104,7 @@ export class PensionAlimenticia {
 
   get disponiblePension(): boolean {
     return this.porcentajeDisponible > 0;
-}
+  }
 
   chartOptions: any = {
     series: [100],
