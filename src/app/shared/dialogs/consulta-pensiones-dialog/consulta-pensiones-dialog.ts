@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -54,7 +54,9 @@ export class ConsultaPensionesDialog implements OnInit{
     private fb: FormBuilder,
      @Inject(MAT_DIALOG_DATA) public data: FilaBeneficiario,  
      private pensionAlimenticiaService: PensionAlimenticiaService,  
-     private dialog: MatDialog){}
+     private dialog: MatDialog, 
+     private cdr: ChangeDetectorRef
+    ){}
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -69,7 +71,7 @@ export class ConsultaPensionesDialog implements OnInit{
       factorImporte: [''],
       bancoSeleccionado: [null],
       clabe: [''],
-      qnaInicio: [{ value: '', disabled: true }],
+      qnaInicio: [''], 
       qnaFin: [''],
       pensionTerminada: [false],
       numeroDocumento: [''], 
@@ -90,36 +92,39 @@ export class ConsultaPensionesDialog implements OnInit{
   }
 
   cargarDetalle(): void {
-    this.pensionAlimenticiaService.getBeneficiario(this.data.id).subscribe({
-      next: (resp) => {
-        const arr = resp?.data as any[];
-        if (!arr || arr.length === 0) return;
-        const d = arr[0];
-        this.detalle = d;
-        this.form.patchValue({
-          nombreEmpleado: this.armarNombreEmpleado(d),
-          rfcEmpleado: d.empleado_rfc,
-          curpEmpleado: d.empleado_curp,
-          nombreBeneficiario: this.armarNombreBeneficiario(d),
-          rfc: d.beneficiario_rfc,
-          numeroBeneficiario: d.numero_benef ?? '',
-          numeroOficio: d.numero_oficio ?? '',
-          formaAplicacion: d.forma_aplicacion,
-          factorImporte: d.factor_importe,
-          bancoSeleccionado: d.cat_banco_id,
-          clabe: d.numero_documento ?? '',
-          qnaInicio: d.qnaini,
-          qnaFin: d.qnafin,
-          numeroDocumento: d.numero_documento ?? ''
-        }, { emitEvent: false }); 
+  this.pensionAlimenticiaService.getBeneficiario(this.data.id).subscribe({
+    next: (resp) => {
+      const arr = resp?.data as any[];
+      if (!arr || arr.length === 0) return;
+      const d = arr[0];
+      this.detalle = d;
 
-        if (d.qnafin) {
-          this.form.get('pensionTerminada')?.setValue(true, { emitEvent: false }); 
-        }
-      },
-      error: (err) => console.error('Error al cargar detalle', err)
-    });
-  }
+      this.form.patchValue({
+        nombreEmpleado: this.armarNombreEmpleado(d),
+        rfcEmpleado: d.empleado_rfc,
+        curpEmpleado: d.empleado_curp,
+        nombreBeneficiario: this.armarNombreBeneficiario(d),
+        rfc: d.beneficiario_rfc,
+        numeroBeneficiario: d.numero_benef ?? '',
+        numeroOficio: d.numero_oficio ?? '',
+        formaAplicacion: d.forma_aplicacion,
+        factorImporte: d.factor_importe,
+        bancoSeleccionado: d.cat_banco_id,
+        clabe: d.numero_documento ?? '',
+        qnaInicio: d.qnaini,
+        qnaFin: d.qnafin,
+        numeroDocumento: d.numero_documento ?? ''
+      }, { emitEvent: false });
+
+      // ← Reemplaza queueMicrotask por esto:
+      if (d.qnafin) {
+        this.form.get('pensionTerminada')?.setValue(true, { emitEvent: false });
+      }
+       this.cdr.detectChanges(); // ← fuerza detección de cambios sincrónicamente
+    },
+    error: (err: any) => console.error('Error al cargar detalle', err)
+  });
+}
 
   private armarNombreEmpleado(d: any): string {
     return [d.empleado_primer_apellido, d.empleado_segundo_apellido, d.empleado_nombre]
@@ -192,7 +197,13 @@ export class ConsultaPensionesDialog implements OnInit{
     this.saving = true;
     this.pensionAlimenticiaService.updateBeneficiarioAlim(alimId, alimPayload)
       .pipe(switchMap(() => this.pensionAlimenticiaService.updateBeneficiario(nomId, nomPayload)),
-        finalize(() => this.saving = false))
+       finalize(() => {
+          setTimeout(() => {
+            this.saving = false;
+            this.cdr.detectChanges();
+          });
+        })
+      )
       .subscribe({
         next: () => {
           const dialogRef = this.dialog.open(PensionAlimenDialog, {

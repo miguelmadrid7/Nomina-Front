@@ -121,7 +121,7 @@
                     <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                         <mat-label>Inicio</mat-label>
                             <mat-icon matPrefix>description</mat-icon>
-                                <input matInput formControlName="qnaInicio" [disabled]="true">
+                                <input matInput formControlName="qnaInicio" readonly>
                     </mat-form-field>
 
                     <section class="toggle-container">
@@ -134,6 +134,6 @@
 
     <div class="dlg-actions">
             <button class="btn btn-danger" (click)="cerrar()"> Cancelar </button>
-            <button class="btn btn-primary" (click)="guardar()" [disabled]="saving"> Guardar </button>
+            <button class="btn btn-primary" (click)="guardar()" [attr.disabled]="saving ? '' : null"> Guardar </button>
     </div>
 </div>
