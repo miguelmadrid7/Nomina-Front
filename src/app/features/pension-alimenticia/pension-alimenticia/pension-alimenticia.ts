@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -34,7 +34,6 @@ import { NgApexchartsModule } from 'ng-apexcharts';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -58,25 +57,12 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 export class PensionAlimenticia {
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   form!: FormGroup;
-  searchText: string = '';
-  rfc: string = '';
-  apellidoPaterno: string = '';
-  apellidoMaterno: string = '';
-  nombreCompleto: string = '';
-  formaAplicacion: string = '';
-  factorImporte: number | null = null;
-  numeroDocumento: string = '';
-  vigenciaInicio: string = '';
-  numeroBeneficiario: number | null = null;
   empleadoId: number | null = null;
   bancos: Banco[] = [];
-  bancoSeleccionado: number | null = null;
   resultados: EmpleadoItem[] = [];
   cargandoBusqueda = false;
   guardando = false;
-
-  disponiblePension = false;
-  porcentajeTotal = 100;
+  readonly  porcentajeTotal = 100;
   porcentajeDisponible = 100;
   beneficiariosCapturados: number[] = [];  
 
@@ -116,6 +102,10 @@ export class PensionAlimenticia {
     return this.form.controls;
   }
 
+  get disponiblePension(): boolean {
+    return this.porcentajeDisponible > 0;
+}
+
   chartOptions: any = {
     series: [100],
     chart: {
@@ -147,7 +137,6 @@ export class PensionAlimenticia {
   updateChart(percent: number) {
     this.porcentajeDisponible = percent;
     this.renderChartFromDisponible();
-    this.disponiblePension = percent > 0;
   }
 
   displayEmployee (emp: EmpleadoItem | string | null): string {
