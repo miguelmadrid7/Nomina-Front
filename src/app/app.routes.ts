@@ -151,7 +151,7 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/terceros/terceros/terceros')
                 .then(m => m.Terceros),
-            data: { breadcrumb: 'Registro terceros' }
+            data: { breadcrumb: 'Registro terceros no institucionales' }
           },
           {    
             path: 'consulta-terceros',

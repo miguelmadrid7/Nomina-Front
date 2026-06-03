@@ -1,6 +1,6 @@
 <div class="page-container">
     <div class="page-header">
-        <h2 class="page-title">Beneficiarios de juicios mercantiles</h2>
+        <h2 class="page-title">Registro de juicios mercantiles</h2>
     </div>
 
     <div class="section-divider"></div>
@@ -129,25 +129,25 @@
 
                             <!-- Cita bancaria -->
                             <ng-container matColumnDef="citaBancaria">
-                                <th mat-header-cell *matHeaderCellDef>Cita bancaria</th>
+                                <th mat-header-cell *matHeaderCellDef>CITA BANCARIA</th>
                                 <td mat-cell *matCellDef="let e">{{ e.numeroDocumento }}</td>
                             </ng-container>
 
                             <!-- Forma aplicacion -->
                             <ng-container matColumnDef="formaAplicacion">
-                                <th mat-header-cell *matHeaderCellDef> FORMA DE APLICACION</th>
+                                <th mat-header-cell *matHeaderCellDef> FORMA DE APLICACIÓN</th>
                                 <td mat-cell *matCellDef="let e">{{ e.formaAplicacion }}</td>
                             </ng-container>
 
                             <!-- Importe  total a pagar -->
                             <ng-container matColumnDef="importeTotal">
-                                <th mat-header-cell *matHeaderCellDef>IMPORTE PAGAR $</th>
+                                <th mat-header-cell *matHeaderCellDef>IMPORTE A PAGAR </th>
                                 <td mat-cell *matCellDef="let e">{{ e.importeTotal | currency:'MXN':'symbol':'1.0-2' }}</td>
                             </ng-container>
 
                             <!-- Importe  restante  a pagar -->
                             <ng-container matColumnDef="restoPagar">
-                                <th mat-header-cell *matHeaderCellDef>RESTO A PAGAR $</th>
+                                <th mat-header-cell *matHeaderCellDef>RESTO A PAGAR </th>
                                 <td mat-cell *matCellDef="let e">{{ e.restoPagar   | currency:'MXN':'symbol':'1.0-2' }}</td>
                             </ng-container>
 
