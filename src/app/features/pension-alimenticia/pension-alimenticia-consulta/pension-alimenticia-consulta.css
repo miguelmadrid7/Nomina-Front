@@ -154,7 +154,7 @@
 
 /* Fila finalizada en gris tenue */
 .row-finalizado {
-  opacity: .6;
+  opacity: .10;
 }
 .row-finalizado .ico-btn-primary,
 .row-finalizado .ico-btn-danger {
