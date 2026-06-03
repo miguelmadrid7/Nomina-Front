@@ -108,11 +108,21 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
     });
   }
 
-  applySearchFilter() {
+  applySearchFilter(): void {
+    if (!this.anioSeleccionado || !this.quincenaSeleccionada) {
+      this.showSnack('Debe seleccionar Año y Quincena','Cerrar',4000);
+      return;
+    }
     const value = (this.search || '').trim().toUpperCase();
+    if (!value) {
+      this.showSnack('Debe ingresar un CURP, RFC o nombre de empleado','Cerrar', 4000);
+      return;
+    }
     this.dataSource.filter = value;
+    if (this.paginator) {
+      this.paginator.firstPage();
+    }
   }
-
   onQnaChange(): void {
     if (!this.showRecords || !this.filtersReady) return;
       clearTimeout(this.qnaDebounceId);
