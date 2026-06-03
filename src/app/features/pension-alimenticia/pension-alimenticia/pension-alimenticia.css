@@ -44,6 +44,14 @@
   align-items: start; 
 }
 
+.row-4,
+.row-oficio {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  align-items: start;
+}
+
 mat-form-field {
   width: 100%;
 }
@@ -71,9 +79,9 @@ mat-form-field {
 }
 
 .search-field {
-  width: auto;             /* deja que flex administre el ancho */
-  flex: 1 1 520px;         /* crece, encoge; base 520px */
-  min-width: 360px;        /* evita que sea muy angosto */
+  width: auto;             
+  flex: 1 1 520px;         
+  min-width: 360px;        
   max-width: 740px;   
 }
 
@@ -104,12 +112,22 @@ mat-form-field {
 }
 
 :host ::ng-deep .qna-compact .mat-mdc-form-field-infix {
-  min-height: 40px !important;
+  min-height: 40px;
+  padding-top: 2px;
+  padding-bottom: 2px;
   display: flex;
   align-items: center;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
+
+:host ::ng-deep .qna-compact .mat-mdc-text-field-wrapper,
+:host ::ng-deep .qna-compact .mat-mdc-form-field-flex,
+:host ::ng-deep .qna-compact .mdc-notched-outline {
+  height: auto !important;   /* clave: no forzar 40px */
+}
+
+.mat-mdc-form-field-hint-wrapper { white-space: normal; } 
 
 :host ::ng-deep .qna-compact .mat-mdc-text-field-wrapper {
   height: 40px !important;
@@ -434,8 +452,8 @@ mat-form-field {
     width: 100%;
   }
 
-   .global-search {
-    flex-wrap: wrap;       /* ahora sí permite salto */
+  .global-search {
+    flex-wrap: wrap;      
   }
   .search-field {
     flex: 1 1 100%;
