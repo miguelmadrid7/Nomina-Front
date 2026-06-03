@@ -115,15 +115,28 @@
                   <td mat-cell *matCellDef="let e">{{ e.qna }}</td>
                 </ng-container>
 
+                <ng-container matColumnDef="estado">
+                  <th mat-header-cell *matHeaderCellDef>ESTADO</th>
+                  <td mat-cell *matCellDef="let e">
+                    <span class="chip" [class.chip-ok]="!e.qnaFin" [class.chip-off]="!!e.qnaFin">
+                      {{ e.qnaFin ? 'Finalizado' : 'Activo' }}
+                    </span>
+                  </td>
+                </ng-container>
+
                 <ng-container matColumnDef="acciones">
                   <th mat-header-cell *matHeaderCellDef>ACCIONES</th>
                   <td mat-cell *matCellDef="let e">
                     <div class="table-actions">
                       <div class="bttn-group">
-                        <button mat-icon-button class="bttn ico-btn-primary" (click)="abrirDialog(e)">
+                        <button mat-icon-button class="bttn ico-btn-primary" 
+                          (click)="abrirDialog(e)"
+                          [disabled]="!!e.qnaFin" matTooltip="{{ e.qnaFin ? 'Registro finalizado' : 'Editar' }}">
                           <mat-icon>edit</mat-icon>
                         </button>
-                        <button mat-icon-button class="bttn ico-btn-danger" (click)="eliminarBeneficiario(e)">
+                        <button mat-icon-button class="bttn ico-btn-danger" 
+                          (click)="eliminarBeneficiario(e)"
+                          [disabled]="!!e.qnaFin" matTooltip="{{ e.qnaFin ? 'Registro finalizado' : 'Eliminar' }}">
                           <mat-icon>delete_outline</mat-icon>
                         </button>
                       </div>
@@ -132,7 +145,7 @@
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.row-finalizado]="!!row.qnaFin"></tr>
               </table>
          </div>
             <mat-paginator

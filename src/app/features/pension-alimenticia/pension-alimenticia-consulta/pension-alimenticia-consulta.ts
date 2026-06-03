@@ -13,6 +13,8 @@ import { UppercaseDirective } from '../../../shared/directives/upperCase.directi
 import { MatDialog } from '@angular/material/dialog';
 import { ConsultaPensionesDialog } from '../../../shared/dialogs/consulta-pensiones-dialog/consulta-pensiones-dialog';
 import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-pension-alimenticia-consulta',
@@ -26,6 +28,9 @@ import { MatSelectModule } from '@angular/material/select';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatButtonModule,
+    MatTooltipModule,
+
     UppercaseDirective
   ],
   templateUrl: './pension-alimenticia-consulta.html',
@@ -35,7 +40,7 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  displayedColumns: string[] = ['nombreEmpleado', 'rfcEmpleado', 'nombreBeneficiario', 'rfcReferencia', 'noBeneficiario', 'numeroOficio', 'qna', 'acciones'];
+  displayedColumns: string[] = ['nombreEmpleado', 'rfcEmpleado', 'nombreBeneficiario', 'rfcReferencia', 'noBeneficiario', 'numeroOficio', 'qna', 'estado', 'acciones'];
   dataSource = new MatTableDataSource<FilaBeneficiario>([]);
   todosLosBeneficiarios: FilaBeneficiario[] = [];
 
@@ -70,7 +75,6 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
   }
-
 
   // En buscar() agrega el filtro:
   buscar(): void {
@@ -107,7 +111,6 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
     }
     this.aplicarFiltroQna(filtrados);
   }
-
 
   private aplicarFiltroQna(base: FilaBeneficiario[]): void {
     const anio     = this.form.get('busqueda.anio')?.value;
@@ -219,7 +222,7 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
       formaAplicacion: b.formaAplicacion === 'P' ? 'Factor' : 'Importe fijo',
       factorImporte: b.formaAplicacion === 'P' ? `${(b.factorImporte * 100).toFixed(0)}%` : `$${b.factorImporte.toLocaleString('es-MX', { minimumFractionDigits: 2 })}`,
       banco: b.banco?.banco ?? 'SIN BANCO',
-      qna: `${b.qnaini} → ${b.qnafin}`,
+      qna: `${b.qnaini} → ${b.qnafin ?? '—'}`,
       qnaIni: b.qnaini,   
       qnaFin: b.qnafin,   
       mostrarEmpleado: false

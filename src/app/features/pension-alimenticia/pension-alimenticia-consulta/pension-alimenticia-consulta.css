@@ -131,6 +131,36 @@
   padding-bottom:4px;
 }
 
+
+/* Estatus de tabla*/
+.chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+.chip-ok {
+  color: #166534;
+  background: #dcfce7;
+  border-color: #86efac;
+}
+.chip-off {
+  color: #7f1d1d;
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+/* Fila finalizada en gris tenue */
+.row-finalizado {
+  opacity: .6;
+}
+.row-finalizado .ico-btn-primary,
+.row-finalizado .ico-btn-danger {
+  pointer-events: none;
+}
+
 /* TABLA GLOBAL */
 .table-global {
     width: 100%;
@@ -205,6 +235,13 @@
 }
 
 .table-global .mat-column-qna {
+  width: 50px !important;
+  min-width: 50px !important;
+  max-width: 50px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-estado {
   width: 50px !important;
   min-width: 50px !important;
   max-width: 50px !important;
