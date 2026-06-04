@@ -1,5 +1,5 @@
 import { Banco } from "../banco.model";
-import { BeneficiarioAlimDTO } from "../beneficiario.model";
+import { BeneficiarioAlimDTO } from "../dto/beneficiarioalimDTO.model";
 
 export interface BeneficiarioDTO {
   id: number;       
