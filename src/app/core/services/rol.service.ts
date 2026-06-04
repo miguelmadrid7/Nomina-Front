@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
-import { ApiResponse } from "../../models/api-Response.model";
+import { ApiResponse } from "../../models/response/api-Response.model";
 import { Role } from "../../models/rol.model";
 import { CreateRoleRequest } from "../../models/request/createrole-request.model";
 import { Observable, map } from "rxjs";

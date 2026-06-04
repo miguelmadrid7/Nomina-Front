@@ -17,7 +17,7 @@ import { UppercaseDirective } from '../../directives/upperCase.directivas';
 import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { Banco } from '../../../models/banco.model';
-import { ApiResponse } from '../../../models/api-Response.model';
+import { ApiResponse } from '../../../models/response/api-Response.model';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { getCurrentQna } from '../../validators/validaciones.validators';
 

@@ -17,7 +17,7 @@ import { Banco } from '../../../models/banco.model';
 import { MatTableModule } from '@angular/material/table';
 import { BeneficiarioJmDialog } from '../../../shared/dialogs/beneficiario-jm-dialog/beneficiario-jm-dialog';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { ApiResponse } from '../../../models/api-Response.model';
+import { ApiResponse } from '../../../models/response/api-Response.model';
 import { clamp, perQnaAmount, quincenasTranscurridas, toAaaaqq } from '../../../shared/validators/validaciones.validators';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';

@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { ApiResponse } from '../../../models/api-Response.model';
+import { ApiResponse } from '../../../models/response/api-Response.model';
 import { FilaBeneficiario } from '../../../models/filabeneficiario.model';
 import { BeneficiarioDTO } from '../../../models/dto/beneficiarioDTO.model';
 import { PensionAlimenticiaService } from '../../../core/services/pension-alimenticia.service';

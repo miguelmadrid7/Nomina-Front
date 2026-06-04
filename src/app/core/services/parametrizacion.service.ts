@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../models/api-Response.model';
+import { ApiResponse } from '../../models/response/api-Response.model';
 import { ParametrizacionRequest } from '../../models/request/parametrizacion-request.model';
 
 @Injectable({ providedIn: 'root' })
