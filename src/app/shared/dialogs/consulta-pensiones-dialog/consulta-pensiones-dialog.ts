@@ -9,8 +9,9 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { PensionAlimenticiaService } from '../../../core/services/pension-alimenticia.service';
 import { MatCardModule } from '@angular/material/card';
-import { BeneficiarioRequest, FilaBeneficiario } from '../../../models/beneficiario.model';
-import { BeneficiarioAlimRequest } from '../../../models/pension-Alimenticia-model';
+import { FilaBeneficiario } from '../../../models/filabeneficiario.model';
+import { BeneficiarioRequest } from '../../../models/request/beneficiario-request.model';
+import { BeneficiarioAlimRequest } from '../../../models/request/beneficiarioalim-request.model';
 import { finalize, switchMap } from 'rxjs/operators';
 import { UppercaseDirective } from '../../directives/upperCase.directivas';
 import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
@@ -188,7 +189,7 @@ export class ConsultaPensionesDialog implements OnInit{
       formaAplicacion: d.formaAplicacion as 'P' | 'F',
       factorImporte: factor,
       qnaini: qIni,
-      qnafin: qFin,                 
+      qnafin: 999999,                 
       numeroDocumento: clabe,       
       numeroOficio: d.numeroOficio,
       numeroBenef: d.numeroBeneficiario

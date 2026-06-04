@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ApiResponse } from '../../../models/api-Response.model';
-import { BeneficiarioDTO, FilaBeneficiario } from '../../../models/beneficiario.model';
+import { FilaBeneficiario } from '../../../models/filabeneficiario.model';
+import { BeneficiarioDTO } from '../../../models/dto/beneficiarioDTO.model';
 import { PensionAlimenticiaService } from '../../../core/services/pension-alimenticia.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -47,6 +48,7 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
   form!: FormGroup;
   totalElements = 0;
   cargando = false;
+  @Input() empleadoId!: number;
 
   anios: number[] = [2026, 2025, 2024];
   quincenas: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
@@ -68,8 +70,9 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
       nombreBeneficiario: [''], 
       nombreEmpleado: ['']                     
     });
-
-    this.cargarBeneficiarios();
+    if (this.empleadoId) {
+      this.cargarBeneficiarios();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -143,7 +146,7 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
 
   cargarBeneficiarios(): void {
     this.cargando = true;
-    this.pensionAlimenticiaService.getAllBeneficiarios().subscribe({
+    this.pensionAlimenticiaService.getBeneficiaryByEmployee(this.empleadoId).subscribe({
       next: (resp: ApiResponse<BeneficiarioDTO[]>) => {
         const datos = resp?.data ?? [];
 
