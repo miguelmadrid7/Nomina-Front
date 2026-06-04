@@ -163,64 +163,90 @@
           </div>
         </div>
 
-
         <div class="row row-4">
             <!-- Forma de aplicación -->
-            <mat-form-field appearance="outline" class="with-separator compact-field  qna-compact" floatLabel="always">
+            <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
               <mat-icon matPrefix>tune</mat-icon>
               <mat-label>Forma de aplicación*</mat-label>
-              <mat-select
-                  id="formaAplicacion"
-                  name="formaAplicacion"
-                  placeholder="Seleccionar forma"
-                  formControlName="formaAplicacion"
-                  (selectionChange)="onFormaChange()"
-                  required>
+              <mat-select formControlName="formaAplicacion" (selectionChange)="onFormaChange()" required>
                 <mat-option value="P">Factor</mat-option>
-                <mat-option value="C">Importe fijo</mat-option>
+                <mat-option value="F">Importe fijo</mat-option>
               </mat-select>
-              <mat-error *ngIf="f['formaAplicacion']?.invalid && f['formaAplicacion']?.touched">Selecciona la forma de aplicación. </mat-error>
+              <mat-error *ngIf="f['formaAplicacion']?.invalid && f['formaAplicacion']?.touched">
+                Selecciona la forma de aplicación.
+              </mat-error>
             </mat-form-field>
 
             <!-- Factor / Importe -->
-            <div>
-              <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
-                <mat-icon matPrefix> {{ form.get('formaAplicacion')?.value === 'P' ? 'percent' : 'attach_money' }}</mat-icon>
-                <mat-label>Factor / Importe*</mat-label>
-                  <input
-                    matInput
-                    id="factorImporte"
-                    name="factorImporte"
-                    [type]="form.get('formaAplicacion')?.value === 'P' ? 'text' : 'number'"
-                    formControlName="factorImporte"
-                    [placeholder]="form.get('formaAplicacion')?.value === 'P' ? '0 – 100%' : 'Ingrese importe'"
-                    [attr.maxlength]="form.get('formaAplicacion')?.value === 'P' ? 3 : null"
-                    (input)="onFactorImporteInput()"
-                    required />
-                    <mat-hint *ngIf="form.get('formaAplicacion')?.value === 'P'  && form.get('factorImporte')?.value">
-                      Equivale a: {{ (form.get('factorImporte')?.value / 100) | number:'1.2-4' }}
-                    </mat-hint>
-                <mat-error *ngIf="form.get('factorImporte')?.invalid && form.get('factorImporte')?.touched">Ingresa un valor válido. </mat-error>
-              </mat-form-field>
-            </div>
-
-            <!-- Banco -->
             <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
-              <mat-icon matPrefix>account_balance</mat-icon>
-              <mat-label>Buscar banco</mat-label>
-              <mat-select id="bancoSeleccionado" name="bancoSeleccionado" placeholder="Seleccionar banco" formControlName="bancoSeleccionado">
-                <mat-option *ngFor="let bank of bancos" [value]="bank.id"> {{ bank.banco }} </mat-option>
+              <mat-icon matPrefix>{{ form.get('formaAplicacion')?.value === 'P' ? 'percent' : 'attach_money' }}</mat-icon>
+              <mat-label>Factor / Importe*</mat-label>
+              <input matInput formControlName="factorImporte"
+                [type]="form.get('formaAplicacion')?.value === 'P' ? 'text' : 'number'"
+                [placeholder]="form.get('formaAplicacion')?.value === 'P' ? '0 – 100%' : 'Ingrese importe'"
+                [attr.maxlength]="form.get('formaAplicacion')?.value === 'P' ? 3 : null"
+                (input)="onFactorImporteInput()" required />
+              <mat-hint *ngIf="form.get('formaAplicacion')?.value === 'P' && form.get('factorImporte')?.value">
+                Equivale a: {{ (form.get('factorImporte')?.value / 100) | number:'1.2-4' }}
+              </mat-hint>
+              <mat-error *ngIf="form.get('factorImporte')?.invalid && form.get('factorImporte')?.touched">
+                Ingresa un valor válido.
+              </mat-error>
+            </mat-form-field>
+
+            <!-- ✅ Tipo de porcentaje — hermano, NO hijo del campo anterior -->
+            <mat-form-field *ngIf="form.get('formaAplicacion')?.value === 'P'"
+              appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+              <mat-icon matPrefix>calculate</mat-icon>
+              <mat-label>Tipo de porcentaje*</mat-label>
+              <mat-select formControlName="tipoPorcentaje" required>
+                <mat-option [value]="1">% sobre el líquido</mat-option>
+                <mat-option [value]="2">% sobre el concepto 07</mat-option>
+                <mat-option [value]="3">30% excedente salario mínimo</mat-option>
               </mat-select>
-              <mat-error *ngIf="f['bancoSeleccionado']?.invalid && f['bancoSeleccionado']?.touched"> Selecciona un banco. </mat-error>
+              <mat-error *ngIf="f['tipoPorcentaje']?.invalid && f['tipoPorcentaje']?.touched">
+                Selecciona el tipo de porcentaje.
+              </mat-error>
             </mat-form-field>
 
-            <!-- CLABE -->
-            <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
-                <mat-icon matPrefix>credit_card</mat-icon>
-                <mat-label>Clabe interbancaria</mat-label>
-                  <input matInput id="numeroDocumento" name="numeroDocumento" type="text" formControlName="numeroDocumento" placeholder="18 dígitos" maxlength="18" pattern="^\d{18}$" />
-                <mat-error *ngIf="f['numeroDocumento']?.invalid && f['numeroDocumento']?.touched"> La CLABE debe tener exactamente 18 dígitos numéricos. </mat-error>
+            <!-- ✅ Tipo base — hermano, NO hijo de ningún campo anterior -->
+            <mat-form-field *ngIf="form.get('tipoPorcentaje')?.value === 1"
+              appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+              <mat-icon matPrefix>list_alt</mat-icon>
+              <mat-label>Tipo base*</mat-label>
+              <mat-select formControlName="tipoBase" required>
+                <mat-option value="A">Omite conceptos 01, 02, 04</mat-option>
+                <mat-option value="B">Omite conceptos 01, 02, 04, 58, 77</mat-option>
+              </mat-select>
+              <mat-error *ngIf="f['tipoBase']?.invalid && f['tipoBase']?.touched">
+                Selecciona el tipo base.
+              </mat-error>
             </mat-form-field>
+        </div>
+
+        <div class="row-inline">
+          <!-- Banco -->
+          <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+            <mat-icon matPrefix>account_balance</mat-icon>
+            <mat-label>Buscar banco</mat-label>
+              <mat-select formControlName="bancoSeleccionado">
+                <mat-option *ngFor="let bank of bancos" [value]="bank.id">{{ bank.banco }}</mat-option>
+              </mat-select>
+              <mat-error *ngIf="f['bancoSeleccionado']?.invalid && f['bancoSeleccionado']?.touched">
+                Selecciona un banco.
+              </mat-error>
+          </mat-form-field>
+
+          <!-- CLABE -->
+          <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+              <mat-icon matPrefix>credit_card</mat-icon>
+              <mat-label>Clabe interbancaria</mat-label>
+              <input matInput formControlName="numeroDocumento" type="text"
+                placeholder="18 dígitos" maxlength="18" pattern="^\d{18}$" />
+              <mat-error *ngIf="f['numeroDocumento']?.invalid && f['numeroDocumento']?.touched">
+                La CLABE debe tener exactamente 18 dígitos numéricos.
+              </mat-error>
+          </mat-form-field>
         </div>
 
         <!-- Inicio -->

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -66,7 +66,11 @@ export class PensionAlimenticia {
   porcentajeDisponible = 100;
   beneficiariosCapturados: number[] = [];  
 
-  constructor(private fb: FormBuilder, private pensionAlimenticiaService: PensionAlimenticiaService, private dialog: MatDialog) {}
+  constructor(
+    private fb: FormBuilder, 
+    private pensionAlimenticiaService: PensionAlimenticiaService, 
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef) {}
 
   ngOnInit (): void {
     this.loadBanksCatalog();
@@ -87,6 +91,8 @@ export class PensionAlimenticia {
         aplicarDescuento: [false], 
         montoTotal: [{ value: null, disabled: true }],
         aplicarDescuentoAguinaldo: [false],
+        tipoPorcentaje: [null],  // ← agregar
+        tipoBase: [null],        // ← agregar si lo necesitas
 
         numeroOficio: ['',[Validators.required,Validators.pattern(/^[A-Z0-9\/\-]+$/)]],
         factorImporte: [null, [Validators.required, factorImporteValidator()]],
@@ -247,7 +253,7 @@ export class PensionAlimenticia {
   }
 
   private cargarPorcentajeDisponible(empleadoId: number) {
-    this.pensionAlimenticiaService.obtenerBeneficiariosEmpleado(empleadoId)
+    this.pensionAlimenticiaService.getBeneficiaryByEmployee(empleadoId)
       .subscribe({
         next: (resp) => {
           const porcentajeUsado = resp.data
@@ -287,6 +293,14 @@ export class PensionAlimenticia {
 
   saveEmployee () {
     if (this.guardando) return;
+    console.log('Form válido:', this.form.valid);
+  console.log('Form status:', this.form.status);
+  Object.keys(this.form.controls).forEach(key => {
+    const control = this.form.get(key);
+    if (control?.invalid) {
+      console.log(`❌ Campo inválido: ${key}`, control.errors);
+    }
+  });
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -302,7 +316,7 @@ export class PensionAlimenticia {
       nombre: value.nombreCompleto
     };
 
-      this.guardando = true;
+   
       const fail = (msg: string) => {
         this.dialog.open(PensionAlimenDialog, {
           width: '360px',
@@ -312,7 +326,7 @@ export class PensionAlimenticia {
       };
 
       if (!this.empleadoId) return fail('Selecciona un empleado antes de guardar.');
-      if (!['P','C'].includes(value.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
+      if (!['P','F'].includes(value.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
       if (value.factorImporte == null) return fail('Captura Factor/Importe.');
       if (!value.vigenciaInicio) return fail('Captura la vigencia de inicio.');
 
@@ -356,7 +370,10 @@ export class PensionAlimenticia {
             tabEmpleadosId: this.empleadoId!,
             tabBeneficiariosAlimId: beneficiarioAlimId,
             catBancoId: value.bancoSeleccionado || null,
-            formaAplicacion: value.formaAplicacion as 'P' | 'C',
+            formaAplicacion: value.formaAplicacion as 'P' | 'F',
+           
+            tipoPorcentaje: value.formaAplicacion === 'P' ? value.tipoPorcentaje : undefined,
+            tipoBase: value.tipoPorcentaje === 1 ? value.tipoBase : undefined,
             factorImporte: factor,
             qnaini: Number(value.vigenciaInicio),
             qnafin: null,
@@ -466,7 +483,7 @@ export class PensionAlimenticia {
     if (factorImporte == null) return;
     let valor = Number(factorImporte);
     if (isNaN(valor)) return;
-    if (formaAplicacion === 'C') {
+    if (formaAplicacion === 'F') {
       if (valor < 0) valor = 0;
       this.form.get('factorImporte')?.setValue(Number(valor.toFixed(2)));
     }
@@ -474,6 +491,8 @@ export class PensionAlimenticia {
 
   onFormaChange() {
     this.form.get('factorImporte')?.setValue(null);
+    this.form.get('tipoPorcentaje')?.setValue(null); 
+    this.form.get('tipoBase')?.setValue(null);  
   }
 
   onFactorImporteInput() {
@@ -553,5 +572,6 @@ export class PensionAlimenticia {
       monto.disable();
     }
     monto.updateValueAndValidity();
+    this.cdr.detectChanges();
   }
 }

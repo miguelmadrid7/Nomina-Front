@@ -52,6 +52,17 @@
   align-items: start;
 }
 
+/* En pension-alimenticia.css */
+.row-inline {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.row-inline mat-form-field {
+  flex: 1;
+}
+
 mat-form-field {
   width: 100%;
 }
