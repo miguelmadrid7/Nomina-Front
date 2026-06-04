@@ -3,7 +3,9 @@ import { Banco } from "./banco.model";
 export interface BeneficiarioRequest {
   tabEmpleadosId: number;
   tabBeneficiariosAlimId: number;
-  formaAplicacion: 'P' | 'C';
+  formaAplicacion: 'P' | 'F';
+  tipoPorcentaje?: 1 | 2 | 3;  // ← agregar, obligatorio cuando formaAplicacion = 'P'
+  tipoBase?: 'A' | 'B';        // ← agregar, aplica cuando tipoPorcentaje = 1
   factorImporte: number;
   qnaini: number;
   qnafin: number | null;
@@ -25,7 +27,7 @@ export interface BeneficiarioDTO {
   };    
   tabEmpleadosId: number;      
   tabBeneficiariosAlimId: number;      
-  formaAplicacion: 'P' | 'C';   
+  formaAplicacion: 'P' | 'F';   
   factorImporte: number; 
   numeroOficio?: string;     
   qnaini: number;       
@@ -68,7 +70,7 @@ export interface BeneficiarioDetalleResponse {
   numero_benef: number;
   tab_empleado_id: number;
   tab_beneficiario_alim_id: number;
-  forma_aplicacion: 'P' | 'C';
+  forma_aplicacion: 'P' | 'F';
   factor_importe: number;
   qnaini: number;
   qnafin: number;
