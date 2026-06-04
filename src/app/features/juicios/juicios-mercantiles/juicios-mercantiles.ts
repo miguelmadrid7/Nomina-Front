@@ -11,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { rfcValidator, factorImporteValidator, vigenciaRangoValidator } from '../../../shared/validators/juicios.validators';
 import { JuiciosMercantilesService } from '../../../core/services/juicios-mercantiles.services';
-import { BeneficiarioJMRequest } from '../../../models/beneficiario-jm-request.model';
+import { BeneficiarioJMRequest } from '../../../models/request/beneficiariojm-request.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Banco } from '../../../models/banco.model';
 import { MatTableModule } from '@angular/material/table';
