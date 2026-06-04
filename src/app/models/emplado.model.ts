@@ -29,11 +29,6 @@ export interface Role {
   permissionId?: number | null;
 }
 
-export interface AssignRoleRequest {
-  userId: number;
-  roleIds: number[];
-}
-
 export interface CreateRoleRequest {
   name: string;
   description?: string | null;
