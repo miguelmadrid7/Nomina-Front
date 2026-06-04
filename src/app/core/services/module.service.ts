@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../models/api-Response.model';
-import { ModuleItem, ModuleRequest } from '../../models/gestion-core/module.model';
+import { ModuleItem } from '../../models/gestion-core/module.model';
+import { ModuleRequest } from '../../models/request/module-request.model';
 
 @Injectable({ providedIn: 'root' })
 export class ModuleService {

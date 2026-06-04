@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../models/api-Response.model';
-import { IconRequest } from '../../models/gestion-core/icon.model';
+import { IconRequest } from '../../models/request/icon-requets.model';
 
 @Injectable({ providedIn: 'root' })
 export class IconService {

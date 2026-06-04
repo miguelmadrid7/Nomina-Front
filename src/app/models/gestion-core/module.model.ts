@@ -19,16 +19,6 @@ export interface ModuleRole {
   name: string;
 }
 
-export interface ModuleRequest {
-  name: string;
-  path: string | null;
-  description: string;
-  visible: boolean;
-  iconId: number;
-  parentId: number | null;
-  rolesId: number[];
-}
-
 export interface ModuleDialogData {
   mode: 'create' | 'edit';
   module?: ModuleItem;
