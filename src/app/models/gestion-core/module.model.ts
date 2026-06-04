@@ -1,3 +1,5 @@
+import { ModuleRole } from "./modulerole.model";
+
 export interface Module {
   id?: number;
   name: string;
@@ -11,14 +13,4 @@ export interface Module {
   path?: string | null;
   roles?: ModuleRole[];
   rolesId?: number[];
-}
-
-export interface ModuleRole {
-  id: number;
-  name: string;
-}
-
-export interface ModuleDialogData {
-  mode: 'create' | 'edit';
-  module?: Module;
 }

@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ParametrizacionService } from '../../../core/services/parametrizacion.service';
-import { DialogData } from '../../../models/gestion-core/parametrizacion.model';
+import { DialogData } from '../../../models/dialogdata.model';
 import { ParametrizacionRequest } from '../../../models/request/parametrizacion-request.model';
 import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 
@@ -35,7 +35,7 @@ export class AltaParametrizacionDialog implements OnInit {
      private fb: FormBuilder, 
      private parametrizacionService:  ParametrizacionService, private dialog: MatDialog){}
 
-  get mode(): 'create' | 'update' {
+  get mode(): 'create' | 'update'{
     return this.data.mode;
   }
 

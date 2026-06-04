@@ -2,7 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { ModuleDialogData, Module } from '../../../models/gestion-core/module.model';
+import { Module } from '../../../models/gestion-core/module.model';
+import { DialogData,  } from '../../../models/gestion-core/modulodialogdata.model';
 import { ModuleRequest } from '../../../models/request/module-request.model';
 import { MatIconModule } from '@angular/material/icon';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -38,7 +39,7 @@ export class ModuleDialog implements OnInit{
   form!: FormGroup;
   roles$!: Observable<Role[]>;
 
-  constructor(private dialogRef: MatDialogRef<ModuleDialog>, @Inject(MAT_DIALOG_DATA) public data: ModuleDialogData, private fb: FormBuilder,private moduleService: ModuleService, private userService: UserService,) {}
+  constructor(private dialogRef: MatDialogRef<ModuleDialog>, @Inject(MAT_DIALOG_DATA) public data: DialogData, private fb: FormBuilder,private moduleService: ModuleService, private userService: UserService,) {}
 
   ngOnInit(): void {
     const module = this.module;

@@ -6,6 +6,7 @@ export interface Parametrizacion {
     qnaFin: number;
 }
 
+
 export interface DialogData {
   mode: 'create' | 'update';
   param?: any;
