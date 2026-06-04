@@ -48,7 +48,11 @@ export class PensionAlimenticiaService {
     }
 
     getBeneficiario(id: number): Observable<ApiResponse<BeneficiarioDetalleResponse[]>> {
-    return this.http.get<ApiResponse<BeneficiarioDetalleResponse[]>>(`${this.base}/beneficiarios/${id}`);
+        return this.http.get<ApiResponse<BeneficiarioDetalleResponse[]>>(`${this.base}/beneficiarios/${id}`);
+    }
+
+    getBeneficiaryByEmployee(empleadoId: number): Observable<ApiResponse<BeneficiarioDTO[]>> {
+        return this.http.get< ApiResponse<BeneficiarioDTO[]>>(`${this.base}/empleado/${empleadoId}` );
     }
 
     updateBeneficiario(id: number, payload: BeneficiarioRequest): Observable<ApiResponse<any>> {
