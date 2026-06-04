@@ -7,7 +7,3 @@ export interface Parametrizacion {
 }
 
 
-export interface DialogData {
-  mode: 'create' | 'update';
-  param?: any;
-}
