@@ -93,27 +93,6 @@
             </mat-form-field>
           </div>
 
-          <!-- Concepto 07  -->
-          <div class="checkbox-container">
-            <label class="checkbox-label">Aplicar al concepto 07</label>
-              <mat-checkbox (change)="onAplicarDescuentoChange()"></mat-checkbox>
-          </div>
-
-          <!-- Monto del 07  -->
-          <div class="monto-container">
-            <div class="checkbox-container">
-              <label class="checkbox-label">Ingresar monto</label>
-              <mat-checkbox formControlName="aplicarDescuento" (change)="onAplicarDescuentoChange()"></mat-checkbox>
-            </div>
-
-            <mat-form-field *ngIf="form.get('aplicarDescuento')?.value" class="with-separator compact-field qna-compact monto-field" appearance="outline" floatLabel="always">
-              <mat-icon matPrefix>badge</mat-icon>
-              <mat-label>Monto total</mat-label>
-              <input matInput type="number" formControlName="montoTotal">
-              <mat-error *ngIf="f['montoTotal']?.invalid">Captura un monto válido</mat-error>
-            </mat-form-field>
-          </div>
-
           <!-- Aplicar descuento de aguinaldo  -->
           <section class="toggle-container">
             <label class="toggle-label">Aplicar descuento a aguinaldo</label>
@@ -194,7 +173,7 @@
               </mat-error>
             </mat-form-field>
 
-            <!-- ✅ Tipo de porcentaje — hermano, NO hijo del campo anterior -->
+            <!-- Tipo de porcentaje — hermano, NO hijo del campo anterior -->
             <mat-form-field *ngIf="form.get('formaAplicacion')?.value === 'P'"
               appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
               <mat-icon matPrefix>calculate</mat-icon>
@@ -209,7 +188,7 @@
               </mat-error>
             </mat-form-field>
 
-            <!-- ✅ Tipo base — hermano, NO hijo de ningún campo anterior -->
+            <!-- Tipo base — hermano, NO hijo de ningún campo anterior -->
             <mat-form-field *ngIf="form.get('tipoPorcentaje')?.value === 1"
               appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
               <mat-icon matPrefix>list_alt</mat-icon>

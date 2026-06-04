@@ -4,11 +4,13 @@ export interface BeneficiarioRequest {
   tabEmpleadosId: number;
   tabBeneficiariosAlimId: number;
   formaAplicacion: 'P' | 'F';
-  tipoPorcentaje?: 1 | 2 | 3;  // ← agregar, obligatorio cuando formaAplicacion = 'P'
-  tipoBase?: 'A' | 'B';        // ← agregar, aplica cuando tipoPorcentaje = 1
+  tipoPorcentaje?: 1 | 2 | 3;  
+  tipoBase?: 'A' | 'B'; 
   factorImporte: number;
+  importeTotal?: number | null; 
+  aplicarDescuentoAguinaldo?: boolean;
   qnaini: number;
-  qnafin: number | null;
+  qnafin: number;
   numeroDocumento: string | null;
   numeroBenef?: number;
   catBancoId?: number;
