@@ -9,7 +9,7 @@ import { UppercaseDirective } from '../../directives/upperCase.directivas';
 import { Role } from '../../../models/rol.model';
 import { MatSelectModule } from '@angular/material/select';
 import { ModuleService } from '../../../core/services/module.service';
-import { ModuleItem } from '../../../models/gestion-core/module.model';
+import { Module } from '../../../models/gestion-core/module.model';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -32,7 +32,7 @@ import { catchError } from 'rxjs/operators';
 export class AltaRolDialog {
 
   form!: FormGroup;
-  modules$!: Observable<ModuleItem[]>;
+  modules$!: Observable<Module[]>;
 
   constructor(private  fb: FormBuilder, private  ref: MatDialogRef<AltaRolDialog>, @Inject(MAT_DIALOG_DATA) public data: Role | null, private moduleService: ModuleService) {}
 
@@ -42,7 +42,7 @@ export class AltaRolDialog {
       description: [this.data?.description ?? ''],
       parentId: [this.data?.parentId ?? null],
       permissionId: [this.data?.permissionId ?? null],
-      modulesId: [(this.data as any)?.modulesId ?? (this.data as any)?.modules?.map((module: ModuleItem) => module.id) ?? []],
+      modulesId: [(this.data as any)?.modulesId ?? (this.data as any)?.modules?.map((module: Module) => module.id) ?? []],
     });
     this.modules$ = this.moduleService.getAllModules().pipe(catchError(() => of([])));
   }

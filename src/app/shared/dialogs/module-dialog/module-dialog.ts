@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { ModuleDialogData, ModuleItem } from '../../../models/gestion-core/module.model';
+import { ModuleDialogData, Module } from '../../../models/gestion-core/module.model';
 import { ModuleRequest } from '../../../models/request/module-request.model';
 import { MatIconModule } from '@angular/material/icon';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -59,7 +59,7 @@ export class ModuleDialog implements OnInit{
     return this.data.mode;
   }
 
-  get module(): ModuleItem {
+  get module(): Module {
     return this.data.module ?? {
       id: undefined,
       name: '',

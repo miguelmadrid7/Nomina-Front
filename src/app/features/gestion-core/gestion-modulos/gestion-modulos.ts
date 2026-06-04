@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, NgZone, ViewChild } from '@angular/core';
 import { ModuleService } from '../../../core/services/module.service';
-import { ModuleItem } from '../../../models/gestion-core/module.model';
+import { Module } from '../../../models/gestion-core/module.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -31,13 +31,13 @@ export class GestionModulos {
   @ViewChild(MatSort) sort?: MatSort;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
   displayedColumns: string[] = ['name','description','vista','parent','icon','actions'];
-  modules = new MatTableDataSource<ModuleItem>([]);
+  modules = new MatTableDataSource<Module>([]);
   loading = false;
   totalElements = 0;
-  selectedModule: ModuleItem | null = null;
+  selectedModule: Module | null = null;
   detailLoading = false;
   loadingModuleId: number | null = null;
-  private allModules: ModuleItem[] = [];
+  private allModules: Module[] = [];
 
   constructor(private moduleService: ModuleService, private zone: NgZone, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef, private dialog: MatDialog,) {}
 
@@ -54,7 +54,7 @@ export class GestionModulos {
   }
 
   ngAfterViewInit(): void {
-    this.modules.sortingDataAccessor = (data: ModuleItem, sortHeaderId: string): string | number => {
+    this.modules.sortingDataAccessor = (data: Module, sortHeaderId: string): string | number => {
       switch (sortHeaderId) {
         case 'vista':
           return data.vista ? 1 : 0;
@@ -88,7 +88,7 @@ export class GestionModulos {
     this.modules.data = this.groupModulesByParent(sortedData);
   }
 
-  private getSortValue(module: ModuleItem, column: string): string | number {
+  private getSortValue(module: Module, column: string): string | number {
     switch (column) {
       case 'vista':
         return module.vista ? 1 : 0;
@@ -101,10 +101,10 @@ export class GestionModulos {
     return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
-  private groupModulesByParent(modules: ModuleItem[]): ModuleItem[] {
-    const result: ModuleItem[] = [];
-    const childrenByParentId = new Map<number, ModuleItem[]>();
-    const childrenByParentName = new Map<string, ModuleItem[]>();
+  private groupModulesByParent(modules: Module[]): Module[] {
+    const result: Module[] = [];
+    const childrenByParentId = new Map<number, Module[]>();
+    const childrenByParentName = new Map<string, Module[]>();
     const moduleIds = new Set(modules.map(module => module.id).filter((id): id is number => id !== undefined));
     const moduleNames = new Set(modules.map(module => this.normalizeText(module.name)));
 
@@ -143,7 +143,7 @@ export class GestionModulos {
     return (value ?? '').trim().toLowerCase();
   }
 
-  isParentModule(module: ModuleItem): boolean {
+  isParentModule(module: Module): boolean {
     if (!module) {
       return false;
     }

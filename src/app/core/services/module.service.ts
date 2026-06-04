@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../models/api-Response.model';
-import { ModuleItem } from '../../models/gestion-core/module.model';
+import { Module } from '../../models/gestion-core/module.model';
 import { ModuleRequest } from '../../models/request/module-request.model';
 
 @Injectable({ providedIn: 'root' })
@@ -11,13 +11,13 @@ export class ModuleService {
   private base = environment.apiUrl;
   constructor(private http: HttpClient) {}
 
-    getAllModules(): Observable<ModuleItem[]> {
-        return this.http.get<ApiResponse<ModuleItem[]>>(`${this.base}/modules`).pipe(map(res => res.data ?? []));
+    getAllModules(): Observable<Module[]> {
+        return this.http.get<ApiResponse<Module[]>>(`${this.base}/modules`).pipe(map(res => res.data ?? []));
     }
 
-    getModule(moduleId: number): Observable<ModuleItem> {
+    getModule(moduleId: number): Observable<Module> {
         const headers = { moduleId: String(moduleId) };
-        return this.http.get<ApiResponse<ModuleItem>>(`${this.base}/modules/module`, { headers }).pipe(map(res => res.data));
+        return this.http.get<ApiResponse<Module>>(`${this.base}/modules/module`, { headers }).pipe(map(res => res.data));
     }
 
     createModule(payload: ModuleRequest): Observable<ApiResponse<any>> {

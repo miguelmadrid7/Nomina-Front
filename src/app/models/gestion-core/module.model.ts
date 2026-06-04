@@ -1,4 +1,4 @@
-export interface ModuleItem {
+export interface Module {
   id?: number;
   name: string;
   description?: string | null;
@@ -6,7 +6,6 @@ export interface ModuleItem {
   visible?: boolean;
   parent?: string | null;
   parentId?: number | null;
-  
   icon?: string | null;
   iconId?: number | null;
   path?: string | null;
@@ -21,5 +20,5 @@ export interface ModuleRole {
 
 export interface ModuleDialogData {
   mode: 'create' | 'edit';
-  module?: ModuleItem;
+  module?: Module;
 }
