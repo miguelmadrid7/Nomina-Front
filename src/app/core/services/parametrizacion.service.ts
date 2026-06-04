@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../../models/api-Response.model';
-import { ParametrizacionRequest } from '../../models/gestion-core/parametrizacion.model';
+import { ParametrizacionRequest } from '../../models/request/parametrizacion-request.model';
 
 @Injectable({ providedIn: 'root' })
 export class ParametrizacionService {

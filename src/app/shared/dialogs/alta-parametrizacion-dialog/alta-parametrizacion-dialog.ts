@@ -6,9 +6,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ParametrizacionService } from '../../../core/services/parametrizacion.service';
-import { DialogData, ParametrizacionRequest } from '../../../models/gestion-core/parametrizacion.model';
+import { DialogData } from '../../../models/gestion-core/parametrizacion.model';
+import { ParametrizacionRequest } from '../../../models/request/parametrizacion-request.model';
 import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
-import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-alta-parametrizacion-dialog',
