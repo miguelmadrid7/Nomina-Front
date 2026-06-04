@@ -3,7 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable, map } from 'rxjs';
 import { ApiResponse } from '../../models/api-Response.model';
-import { EmpleadoItem, Role } from '../../models/emplado.model';
+import { EmpleadoItem } from '../../models/emplado.model';
+import { Role } from '../../models/rol.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {

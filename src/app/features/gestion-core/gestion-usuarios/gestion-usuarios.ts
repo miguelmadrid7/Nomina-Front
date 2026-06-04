@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, NgZone, ViewChild } from '@angular/core';
-import { EmpleadoItem, Role } from '../../../models/emplado.model';
+import { EmpleadoItem } from '../../../models/emplado.model';
+import { Role } from '../../../models/rol.model';
 import { AssignRoleRequest } from '../../../models/request/assignrole-request.model';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';

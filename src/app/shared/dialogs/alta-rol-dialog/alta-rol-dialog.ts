@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { UppercaseDirective } from '../../directives/upperCase.directivas';
-import { Role } from '../../../models/emplado.model';
+import { Role } from '../../../models/rol.model';
 import { MatSelectModule } from '@angular/material/select';
 import { ModuleService } from '../../../core/services/module.service';
 import { ModuleItem } from '../../../models/gestion-core/module.model';
