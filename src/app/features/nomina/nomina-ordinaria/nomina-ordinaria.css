@@ -79,6 +79,12 @@
   outline-offset: 2px;
 }
 
+/* mat icon */
+.btn-icon {
+  color: #2563eb;
+  font-size: 18px;
+}
+
 /* Selects */
 .global-search {
   display: flex;
