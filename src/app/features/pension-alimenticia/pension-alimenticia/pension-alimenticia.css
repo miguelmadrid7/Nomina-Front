@@ -102,6 +102,204 @@ mat-form-field {
   width: auto !important;
 }
 
+/* ── Contenedor principal de info de líquido ─────────────────── */
+.liquido-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-top: 12px;
+    background: #fafafa;
+}
+
+/* ── Nombre del empleado ─────────────────────────────────────── */
+.liquido-empleado {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #333;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* ── Bloque de una plaza ─────────────────────────────────────── */
+.liquido-plaza {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* ── Título de la plaza ──────────────────────────────────────── */
+.plaza-titulo {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #666;
+    width: 100%;           /* ocupa toda la fila */
+}
+
+/* ── Cada tarjeta de dato (líquido, concepto07, pensión) ─────── */
+.liquido-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    min-width: 160px;
+    flex: 1;
+}
+
+.liquido-card mat-icon {
+    color: #1976d2;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.liquido-card div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* ── Etiqueta (texto pequeño arriba) ─────────────────────────── */
+.liquido-label {
+    font-size: 11px;
+    color: #888;
+    line-height: 1;
+}
+
+/* ── Valor (número grande abajo) ─────────────────────────────── */
+.liquido-valor {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    line-height: 1.2;
+}
+
+.liquido-sin-datos {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    margin-top: 12px;
+    border-radius: 6px;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    color: #f57c00;
+    font-size: 13px;
+}
+
+.liquido-sin-datos mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #f57c00;
+}
+
+.liquido-loading-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 0;
+    margin-top: 8px;
+}
+
+.liquido-loading-text {
+    font-size: 13px;
+    color: #888;
+    margin-left: 4px;
+}
+
+.liquido-loading-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1976d2;
+    animation: bounce 1.2s infinite ease-in-out;
+}
+
+.liquido-loading-dot:nth-child(1) { animation-delay: 0s;    }
+.liquido-loading-dot:nth-child(2) { animation-delay: 0.2s;  }
+.liquido-loading-dot:nth-child(3) { animation-delay: 0.4s;  }
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40%           { transform: scale(1);   opacity: 1;   }
+}
+
+/* ── Animación de entrada suave ──────────────────────────────── */
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Aplica la animación a la info de plazas */
+.liquido-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-top: 12px;
+    background: #fafafa;
+    animation: fadeSlideIn 0.35s ease forwards;  /* ← agrega esto */
+}
+
+/* Aplica la animación al mensaje de error/sin datos */
+.liquido-sin-datos {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    margin-top: 12px;
+    border-radius: 6px;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    color: #f57c00;
+    font-size: 13px;
+    animation: fadeSlideIn 0.35s ease forwards;  /* ← agrega esto */
+}
+
+/* Cada plaza aparece con delay escalonado */
+.liquido-plaza:nth-child(1) { animation: fadeSlideIn 0.3s ease 0.05s both; }
+.liquido-plaza:nth-child(2) { animation: fadeSlideIn 0.3s ease 0.15s both; }
+.liquido-plaza:nth-child(3) { animation: fadeSlideIn 0.3s ease 0.25s both; }
+
+/* Cada card dentro de la plaza */
+.liquido-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    min-width: 160px;
+    flex: 1;
+    animation: fadeSlideIn 0.3s ease both;  /* ← agrega esto */
+}
+
+.liquido-card:nth-child(2) { animation-delay: 0.08s; }
+.liquido-card:nth-child(3) { animation-delay: 0.16s; }
+.liquido-card:nth-child(4) { animation-delay: 0.24s; }
+
 mat-form-field {
   width: 100%;
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -16,10 +16,9 @@ import { Empleado } from '../../servicios/empleado';
 import { EmpleadoItem } from '../../../models/emplado.model';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dialog';
-import { IdResponse } from '../../../models/id-Response.model';
+import { IdResponse } from '../../../models/response/id-response.model';
 import { Banco } from '../../../models/banco.model';
-import { BeneficiarioRequest } from '../../../models/beneficiario.model';
-import { ApiResponse } from '../../../models/api-Response.model';
+import { ApiResponse } from '../../../models/response/api-Response.model';
 import { getCurrentQna, vigenciaFormatoValidator } from '../../../shared/validators/validaciones.validators';
 import { factorImporteValidator } from '../../../shared/validators/juicios.validators';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
@@ -28,6 +27,9 @@ import { esCURP, esRFC, withChartPercent } from '../../../shared/helpers/helpers
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { LiquidoResponse } from '../../../models/response/liquido-response.model';
+import { BeneficiarioRequest } from '../../../models/request/beneficiario-request.model';
+import { PlazaLiquido  } from '../../../models/plaza-liquido.model';
 
 @Component({
   selector: 'app-pension-alimenticia',
@@ -62,6 +64,9 @@ export class PensionAlimenticia {
   resultados: EmpleadoItem[] = [];
   cargandoBusqueda = false;
   guardando = false;
+  liquidoInfo: LiquidoResponse | null = null;
+  liquidoError: string | null = null;
+  cargandoLiquido = false;
   readonly  porcentajeTotal = 100;
   porcentajeDisponible = 100;
   beneficiariosCapturados: number[] = [];  
@@ -70,7 +75,9 @@ export class PensionAlimenticia {
     private fb: FormBuilder, 
     private pensionAlimenticiaService: PensionAlimenticiaService, 
     private dialog: MatDialog,
-    private cdr: ChangeDetectorRef) {}
+    private cdr: ChangeDetectorRef,
+    private ngZone: NgZone
+  ) {}
 
   ngOnInit (): void {
     this.loadBanksCatalog();
@@ -91,8 +98,8 @@ export class PensionAlimenticia {
         aplicarDescuento: [false], 
         montoTotal: [{ value: null, disabled: true }],
         aplicarDescuentoAguinaldo: [false],
-        tipoPorcentaje: [null],  // ← agregar
-        tipoBase: [null],        // ← agregar si lo necesitas
+        tipoPorcentaje: [null],
+        tipoBase: [null],
 
         numeroOficio: ['',[Validators.required,Validators.pattern(/^[A-Z0-9\/\-]+$/)]],
         factorImporte: [null, [Validators.required, factorImporteValidator()]],
@@ -238,15 +245,66 @@ export class PensionAlimenticia {
       });
   }
 
-  selectEmployee(emp: EmpleadoItem) {
+  selectEmployee(emp: EmpleadoItem): void {
     if (!emp?.id) {
-      this.empleadoId = null;
-      return;
+        this.empleadoId = null;
+        return;
     }
-    this.empleadoId = emp.id;
-    this.cargarPorcentajeDisponible(emp.id);
-  }
 
+    this.empleadoId = emp.id;
+    const rfc = (emp.rfc ?? emp.RFC ?? '').toString().trim();
+
+    // Porcentaje acumulado por RFC — considera todas las plazas (regla del SP)
+    if (rfc) {
+        this.pensionAlimenticiaService.getPorcentajeAcumuladoByRfc(rfc).subscribe({
+            next: (porcentajeAcumulado: number) => {
+                this.porcentajeDisponible = Math.max(0, 100 - porcentajeAcumulado);
+                this.renderChartFromDisponible();
+            },
+            error: () => {
+                // Fallback: calcular localmente si el endpoint del SP aún no existe
+              if (emp.id) {
+                this.cargarPorcentajeDisponible(emp.id);
+              }
+            }
+        });
+
+        // Líquido y concepto 07 por RFC
+        this.cargarLiquidoByRfc(rfc);
+    } else {
+        this.cargarPorcentajeDisponible(emp.id);
+    }
+}
+
+  private cargarLiquidoByRfc(rfc: string): void {
+    this.cargandoLiquido = true;
+    this.liquidoInfo     = null;
+    this.liquidoError    = null;
+
+    this.pensionAlimenticiaService.getLiquidoByRfc(rfc).subscribe({
+        next: (resp) => {
+            this.ngZone.run(() => {
+                if (resp.success && resp.data?.plazas?.length) {
+                    this.liquidoInfo  = resp.data;
+                    this.liquidoError = null;
+                } else {
+                    this.liquidoInfo  = null;
+                    this.liquidoError = resp.message ?? 'No se encontró información de nómina.';
+                }
+                this.cargandoLiquido = false;
+                this.cdr.markForCheck();   // ← cambia detectChanges por markForCheck
+            });
+        },
+        error: () => {
+            this.ngZone.run(() => {
+                this.liquidoInfo     = null;
+                this.liquidoError    = 'No se pudo obtener la información de nómina.';
+                this.cargandoLiquido = false;
+                this.cdr.markForCheck();   // ← igual aquí
+            });
+        }
+    });
+}
 
   private renderChartFromDisponible(): void {
     this.chartOptions = withChartPercent(this.chartOptions, this.porcentajeDisponible);
@@ -293,14 +351,6 @@ export class PensionAlimenticia {
 
   saveEmployee () {
     if (this.guardando) return;
-    console.log('Form válido:', this.form.valid);
-  console.log('Form status:', this.form.status);
-  Object.keys(this.form.controls).forEach(key => {
-    const control = this.form.get(key);
-    if (control?.invalid) {
-      console.log(`❌ Campo inválido: ${key}`, control.errors);
-    }
-  });
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -376,7 +426,10 @@ export class PensionAlimenticia {
             tipoBase: value.tipoPorcentaje === 1 ? value.tipoBase : undefined,
             factorImporte: factor,
             qnaini: Number(value.vigenciaInicio),
-            qnafin: null,
+            qnafin: 999999,
+            // ✅ Agrega esta línea en el payload
+            importeTotal: value.montoTotal ? Number(value.montoTotal) : null,
+            aplicarDescuentoAguinaldo: value.aplicarDescuentoAguinaldo ?? false,
             numeroDocumento: clabe || null,
             numeroOficio: value.numeroOficio || null
           };
@@ -471,6 +524,8 @@ export class PensionAlimenticia {
     this.beneficiariosCapturados = [];
     this.porcentajeDisponible = 100;
     this.renderChartFromDisponible();
+    this.liquidoInfo = null;
+    this.liquidoError = null;
     this.resultados = [];
     this.cargandoBusqueda = false;
     this.empleadoId = null;
@@ -493,6 +548,21 @@ export class PensionAlimenticia {
     this.form.get('factorImporte')?.setValue(null);
     this.form.get('tipoPorcentaje')?.setValue(null); 
     this.form.get('tipoBase')?.setValue(null);  
+
+    const formaAplicacion = this.form.get('formaAplicacion')?.value;
+    const monto = this.form.get('montoTotal');
+    if (!monto) return;
+
+    if (formaAplicacion === 'F') {
+        monto.enable();
+        monto.setValidators([Validators.required, Validators.min(1)]);
+    } else {
+        monto.clearValidators();
+        monto.reset();
+        monto.disable();
+    }
+    monto.updateValueAndValidity();
+    this.cdr.detectChanges();
   }
 
   onFactorImporteInput() {

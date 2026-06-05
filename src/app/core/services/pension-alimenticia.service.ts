@@ -1,13 +1,17 @@
 import { Injectable} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../../models/api-Response.model';
+import { ApiResponse } from '../../models/response/api-Response.model';
 import { Banco } from '../../models/banco.model';
-import { BeneficiarioDetalleResponse, BeneficiarioDTO, BeneficiarioRequest } from '../../models/beneficiario.model';
-import { IdResponse } from '../../models/id-Response.model';
-import { BeneficiarioAlimRequest } from '../../models/pension-Alimenticia-model';
+import { BeneficiarioDTO } from '../../models/dto/beneficiarioDTO.model';
+import { BeneficiarioDetalleResponse } from '../../models/response/beneficiariodetalle-response.model';
+import { BeneficiarioRequest } from '../../models/request/beneficiario-request.model';
+import { IdResponse } from '../../models/response/id-response.model';
+import { BeneficiarioAlimRequest } from '../../models/request/beneficiarioalim-request.model';
+import { catchError, map, Observable, of } from 'rxjs';
 import { Empleado } from '../../features/servicios/empleado';
-import { Observable } from 'rxjs';
+import { LiquidoResponse } from '../../models/response/liquido-response.model';
+
 
 
 @Injectable({ providedIn: 'root' })
@@ -53,6 +57,17 @@ export class PensionAlimenticiaService {
 
     getBeneficiaryByEmployee(empleadoId: number): Observable<ApiResponse<BeneficiarioDTO[]>> {
         return this.http.get< ApiResponse<BeneficiarioDTO[]>>(`${this.base}/empleado/${empleadoId}` );
+    }
+
+    getLiquidoByRfc(rfc: string): Observable<ApiResponse<LiquidoResponse>> {
+        return this.http.get<ApiResponse<LiquidoResponse>>(`${this.base}/calculation/nomina-cheque/liquido/${rfc}`);
+    }
+
+     getPorcentajeAcumuladoByRfc(rfc: string): Observable<number> {
+        return this.http.get<ApiResponse<{ porcentajeAcumulado: number }>>( `${this.base}/beneficiarios/porcentaje/${rfc}`).pipe(
+            map(resp => resp.data.porcentajeAcumulado),
+            catchError(() => of(0))
+        );
     }
 
     updateBeneficiario(id: number, payload: BeneficiarioRequest): Observable<ApiResponse<any>> {
