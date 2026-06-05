@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -29,10 +29,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { LiquidoResponse } from '../../../models/response/liquido-response.model';
 import { BeneficiarioRequest } from '../../../models/request/beneficiario-request.model';
-import { PlazaLiquido  } from '../../../models/plaza-liquido.model';
 
 @Component({
   selector: 'app-pension-alimenticia',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     CommonModule,
@@ -76,7 +76,6 @@ export class PensionAlimenticia {
     private pensionAlimenticiaService: PensionAlimenticiaService, 
     private dialog: MatDialog,
     private cdr: ChangeDetectorRef,
-    private ngZone: NgZone
   ) {}
 
   ngOnInit (): void {
@@ -119,11 +118,15 @@ export class PensionAlimenticia {
     return this.porcentajeDisponible > 0;
   }
 
+  readonly displayFn = (emp: EmpleadoItem | string | null): string => {
+      return this.displayEmployee(emp);
+  };
+
   chartOptions: any = {
     series: [100],
     chart: {
       type: 'radialBar',
-      height: 250,
+      height: 200,
       sparkline: { enabled: true },
     },
     plotOptions: {
@@ -137,7 +140,7 @@ export class PensionAlimenticia {
           name: { show: false },
           value: {
             fontSize: '28px',
-            offsetY: -10,
+            offsetY: 1,
             formatter: (val: number) => `${Math.round(val)}%`
           }
         }
@@ -276,32 +279,28 @@ export class PensionAlimenticia {
     }
 }
 
-  private cargarLiquidoByRfc(rfc: string): void {
+private cargarLiquidoByRfc(rfc: string): void {
     this.cargandoLiquido = true;
     this.liquidoInfo     = null;
     this.liquidoError    = null;
 
     this.pensionAlimenticiaService.getLiquidoByRfc(rfc).subscribe({
         next: (resp) => {
-            this.ngZone.run(() => {
-                if (resp.success && resp.data?.plazas?.length) {
-                    this.liquidoInfo  = resp.data;
-                    this.liquidoError = null;
-                } else {
-                    this.liquidoInfo  = null;
-                    this.liquidoError = resp.message ?? 'No se encontró información de nómina.';
-                }
-                this.cargandoLiquido = false;
-                this.cdr.markForCheck();   // ← cambia detectChanges por markForCheck
-            });
+            if (resp.success && resp.data?.plazas?.length) {
+                this.liquidoInfo  = resp.data;
+                this.liquidoError = null;
+            } else {
+                this.liquidoInfo  = null;
+                this.liquidoError = resp.message ?? 'No se encontró información de nómina.';
+            }
+            this.cargandoLiquido = false;
+            this.cdr.detectChanges();
         },
         error: () => {
-            this.ngZone.run(() => {
-                this.liquidoInfo     = null;
-                this.liquidoError    = 'No se pudo obtener la información de nómina.';
-                this.cargandoLiquido = false;
-                this.cdr.markForCheck();   // ← igual aquí
-            });
+            this.liquidoInfo     = null;
+            this.liquidoError    = 'No se pudo obtener la información de nómina.';
+            this.cargandoLiquido = false;
+            this.cdr.detectChanges();
         }
     });
 }

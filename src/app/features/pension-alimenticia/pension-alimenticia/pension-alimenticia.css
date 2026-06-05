@@ -48,7 +48,7 @@
 .row-oficio {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   align-items: start;
 }
 
@@ -93,7 +93,7 @@ mat-form-field {
   width: auto;             
   flex: 1 1 520px;         
   min-width: 360px;        
-  max-width: 740px;   
+  max-width: 100%;  
 }
 
 /* Anula el width global del mat-form-field solo para el buscador */
@@ -102,7 +102,7 @@ mat-form-field {
   width: auto !important;
 }
 
-/* ── Contenedor principal de info de líquido ─────────────────── */
+/* ── Contenedor principal de info de líquido  */
 .liquido-info {
     display: flex;
     flex-direction: column;
@@ -114,7 +114,7 @@ mat-form-field {
     background: #fafafa;
 }
 
-/* ── Nombre del empleado ─────────────────────────────────────── */
+/*  Nombre del empleado  */
 .liquido-empleado {
     display: flex;
     align-items: center;
@@ -126,7 +126,37 @@ mat-form-field {
     border-bottom: 1px solid #e0e0e0;
 }
 
-/* ── Bloque de una plaza ─────────────────────────────────────── */
+/*  Bloque de una plaza  */
+/* Contenedor de todas las plazas — grid de 2 columnas */
+.liquido-plazas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+/* Cada plaza individual */
+.liquido-plaza {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+/* Cada card dentro de la plaza */
+.liquido-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    background: #f5f7fb;
+    border-radius: 6px;
+    min-width: 0;
+}
+
 .liquido-plaza {
     display: flex;
     flex-direction: row;
@@ -135,14 +165,14 @@ mat-form-field {
     gap: 12px;
 }
 
-/* ── Título de la plaza ──────────────────────────────────────── */
+/*  Título de la plaza  */
 .plaza-titulo {
     display: flex;
     align-items: center;
     gap: 4px;
     font-size: 12px;
-    color: #666;
-    width: 100%;           /* ocupa toda la fila */
+    color: #000000;
+    width: 100%;           
 }
 
 /* ── Cada tarjeta de dato (líquido, concepto07, pensión) ─────── */
@@ -154,7 +184,7 @@ mat-form-field {
     border: 1px solid #e0e0e0;
     border-radius: 6px;
     padding: 8px 12px;
-    min-width: 160px;
+    min-width: 0;
     flex: 1;
 }
 
@@ -171,14 +201,14 @@ mat-form-field {
     gap: 2px;
 }
 
-/* ── Etiqueta (texto pequeño arriba) ─────────────────────────── */
+/*  Etiqueta (texto pequeño arriba)  */
 .liquido-label {
     font-size: 11px;
     color: #888;
     line-height: 1;
 }
 
-/* ── Valor (número grande abajo) ─────────────────────────────── */
+/* Valor (número grande abajo) */
 .liquido-valor {
     font-size: 14px;
     font-weight: 600;
@@ -237,7 +267,7 @@ mat-form-field {
     40%           { transform: scale(1);   opacity: 1;   }
 }
 
-/* ── Animación de entrada suave ──────────────────────────────── */
+/* Animación de entrada suave  */
 @keyframes fadeSlideIn {
     from {
         opacity: 0;
@@ -259,7 +289,7 @@ mat-form-field {
     border-radius: 8px;
     margin-top: 12px;
     background: #fafafa;
-    animation: fadeSlideIn 0.35s ease forwards;  /* ← agrega esto */
+    animation: fadeSlideIn 0.35s ease forwards; 
 }
 
 /* Aplica la animación al mensaje de error/sin datos */
@@ -274,7 +304,7 @@ mat-form-field {
     border: 1px solid #ffe082;
     color: #f57c00;
     font-size: 13px;
-    animation: fadeSlideIn 0.35s ease forwards;  /* ← agrega esto */
+    animation: fadeSlideIn 0.35s ease forwards; 
 }
 
 /* Cada plaza aparece con delay escalonado */
@@ -293,12 +323,77 @@ mat-form-field {
     padding: 8px 12px;
     min-width: 160px;
     flex: 1;
-    animation: fadeSlideIn 0.3s ease both;  /* ← agrega esto */
+    animation: fadeSlideIn 0.3s ease both;  
 }
 
 .liquido-card:nth-child(2) { animation-delay: 0.08s; }
 .liquido-card:nth-child(3) { animation-delay: 0.16s; }
 .liquido-card:nth-child(4) { animation-delay: 0.24s; }
+
+/* Buscador full width encima del layout */
+.search-wrapper {
+    margin-bottom: 16px;
+    width: 100%; 
+}
+
+.search-wrapper mat-form-field {
+    width: 100% !important;
+}
+
+.search-wrapper .search-field {
+    width: 100%;
+    max-width: 100%;
+    flex: none;
+}
+
+/* Layout de dos columnas */
+.two-col-layout {
+    display: grid;
+    grid-template-columns: 1fr 460px;
+    gap: 24px;
+    align-items: start;
+}
+
+/* Columna izquierda — formulario */
+.col-form {
+    min-width: 0;
+}
+
+/* Columna derecha — gráfica + info */
+.col-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: sticky;
+    top: 16px;
+    background: var(--color-background-secondary, #f5f7fb);
+    border: 1px solid #dbe3f0;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+/* En móvil — apila las columnas */
+@media (max-width: 900px) {
+    .two-col-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .col-info {
+        position: static;
+    }
+}
+
+.plazas-badge {
+    margin-left: auto;       /* ← empuja el badge a la derecha */
+    font-size: 11px;
+    font-weight: 600;
+    color: #1976d2;
+    background: #e3f2fd;
+    border: 1px solid #90caf9;
+    border-radius: 999px;
+    padding: 2px 8px;
+    white-space: nowrap;
+}
 
 mat-form-field {
   width: 100%;
@@ -369,6 +464,7 @@ mat-form-field {
 .chart-with-legend {
   display: flex;
   align-items: center;
+  flex-direction: column;
   gap: 16px;
   flex-wrap: nowrap;
 }
@@ -420,23 +516,26 @@ mat-form-field {
   background: #2563eb; 
 }
 
-.employee-percent-box{
-  flex: 0 0 260px;       
-  min-height: 120px;
-  padding: 8px 12px;
-  border-radius: 10px;
-  background: #f5f7fb;
-  border: 1px solid #dbe3f0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.employee-percent-box {
+    width: 100%;
+    flex: none;
+    padding: 8px 8px 10px  8px;   
+    border-radius: 10px;
+    background: #f5f7fb;
+    border: 1px solid #dbe3f0;
+    display: flex;
+    align-items: flex-start;   
+    justify-content: center;
+    overflow: hidden;           
 }
 
 .employee-percent-box apx-chart {
-  width: 260px;
-  height: 120px;
-  display: block;
+    width: 100%;
+    height: 140px;              
+    display: block;
+    margin-bottom: -40px;      
 }
+
 
 .employee-status {
   font-size: 12px;
