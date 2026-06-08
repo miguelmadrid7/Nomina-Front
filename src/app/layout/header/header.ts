@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { LoginService } from '../../core/services/login.service';
 import { RolService } from '../../core/services/rol.service';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-header',
@@ -18,7 +19,12 @@ export class Header implements OnInit{
   @Output() toggleSidebarClick = new EventEmitter<void>();
   roleName: string = '';
 
-  constructor(private loginService: LoginService, private rolService: RolService, private router: Router, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private loginService: LoginService, 
+    private rolService: RolService, 
+    private router: Router, 
+    private cdr: ChangeDetectorRef, 
+    private dialog: MatDialog) {}
 
   ngOnInit(): void {
     // Suscríbete a los cambios de rol
@@ -46,6 +52,7 @@ export class Header implements OnInit{
   }
 
   logout(): void {
+    this.dialog.closeAll();
     this.loginService.logout();
     this.router.navigate(['/login'], { replaceUrl: true });
   }
