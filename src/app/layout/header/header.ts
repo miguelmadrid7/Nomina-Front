@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { LoginService } from '../../core/services/login.service';
@@ -16,9 +16,9 @@ import { RolService } from '../../core/services/rol.service';
 export class Header implements OnInit{
 
   @Output() toggleSidebarClick = new EventEmitter<void>();
-  roleName: string | null = null;
+  roleName: string = '';
 
-  constructor(private loginService: LoginService, private rolService: RolService, private router: Router,) {}
+  constructor(private loginService: LoginService, private rolService: RolService, private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     // Suscríbete a los cambios de rol
@@ -26,6 +26,7 @@ export class Header implements OnInit{
       if (roleId) {
         this.rolService.getRole(roleId).subscribe(role => {
           this.roleName = role?.name || 'Rol desconocido';
+          this.cdr.detectChanges();
         });
       }
     });
@@ -35,6 +36,7 @@ export class Header implements OnInit{
     if (roles && roles.length > 0) {
       this.rolService.getRole(roles[0]).subscribe(role => {
         this.roleName = role?.name || 'Rol desconocido';
+        this.cdr.detectChanges();
       });
     }
   }
