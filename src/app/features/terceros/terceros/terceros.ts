@@ -16,7 +16,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { TercerosDialog } from '../../../shared/dialogs/terceros-dialog/terceros-dialog';
 import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { EmpleadoItem } from '../../../models/emplado.model';
-import { Observable, tap, map } from 'rxjs';
+import { Observable, tap, map, switchMap } from 'rxjs';
 import { MatOptionModule } from '@angular/material/core';
 import { ConceptoAccesoService } from '../../../core/services/concepto-acceso.service';
 import { searchEmployeeValidator } from '../../../shared/validators/validaciones.validators';
@@ -61,34 +61,38 @@ export class Terceros {
   constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private zone: NgZone, private dialog: MatDialog,private terceroService: TerceroService,private conceptoAccesoService: ConceptoAccesoService) {}
 
     ngOnInit() {
-      this.form = this.fb.group({ 
-        anio: [new Date().getFullYear()],
+  this.form = this.fb.group({ 
+    anio: [new Date().getFullYear()],
+    busqueda: this.fb.group({
+      searchText: ['', [Validators.required, Validators.maxLength(60), searchEmployeeValidator()]],
+      concepto: [null, [Validators.required]],
+    }),
+  });
 
-        busqueda: this.fb.group({
-          searchText: ['', [Validators.required, Validators.maxLength(60), searchEmployeeValidator()]],
-          concepto: [null, [Validators.required]],
-        }),
-      });
-
-      const permitidos = this.conceptoAccesoService.getConceptosPermitidosRegistroTerceros();
-      this.conceptosOptions$ = this.terceroService.obtenerConceptos().pipe(
+  // ✅ Combinar ambos observables correctamente
+  this.conceptosOptions$ = this.conceptoAccesoService.getConceptosPermitidos().pipe(
+    switchMap((permitidos: string[]) =>
+      this.terceroService.obtenerConceptos().pipe(
         map((rows: any[]) => {
           const input = rows ?? [];
-          const filtered = (!permitidos || permitidos.length === 0) ? input : (() => {
-            const allowed = new Set(permitidos.map(c => String(c).trim().toUpperCase()));
-            return input.filter(r => allowed.has(String(r?.cve ?? '').trim().toUpperCase()));
-          })();
+
+          const filtered = (!permitidos || permitidos.length === 0)
+            ? input
+            : (() => {
+                const allowed = new Set(permitidos.map((c: string) => c.trim().toUpperCase()));
+                return input.filter((r: any) => allowed.has((r?.cve ?? '').trim().toUpperCase()));
+              })();
 
           const uniq = new Map<string, any>();
           for (const r of filtered) {
-            const key = `${String(r?.cve ?? '').trim().toUpperCase()}|${String(r?.percDed ?? '').trim().toUpperCase()}`;
+            const key = `${(r?.cve ?? '').trim().toUpperCase()}|${(r?.percDed ?? '').trim().toUpperCase()}`;
             if (!uniq.has(key)) uniq.set(key, r);
           }
           return Array.from(uniq.values());
         }),
-
         tap((rows: any[]) => {
-          if ((permitidos?.length ?? 0) === 1 && (rows?.length ?? 0) === 1) {
+          const permitidosLen = permitidos?.length ?? 0;
+          if (permitidosLen === 1 && (rows?.length ?? 0) === 1) {
             this.conceptoUnicoPermitido = rows[0] ?? null;
             this.form.get('busqueda.concepto')?.setValue(rows[0]?.cve ?? null, { emitEvent: false });
             this.form.get('busqueda.concepto')?.disable({ emitEvent: false });
@@ -96,7 +100,10 @@ export class Terceros {
             this.conceptoUnicoPermitido = null;
           }
         })
-      );
+      )
+    )
+  );
+
 
     // Cargar calendario inicial con el año actual
     const anioInicial = this.form.get('anio')?.value ?? new Date().getFullYear();
