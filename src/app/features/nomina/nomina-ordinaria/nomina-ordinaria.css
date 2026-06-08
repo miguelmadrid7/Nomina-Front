@@ -132,3 +132,8 @@
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
+
+.table-global td.mat-mdc-cell:last-child,
+.table-global th.mat-mdc-header-cell:last-child {
+    text-align: center;
+}
