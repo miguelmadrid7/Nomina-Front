@@ -17,6 +17,7 @@ import { DialogTerceroInstitucional } from '../../../shared/dialogs/dialog-terce
 import { MatDialog } from '@angular/material/dialog';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { ConceptoAccesoService } from '../../../core/services/concepto-acceso.service';
 
 @Component({
   selector: 'app-registro-tercero-institucional',
@@ -45,7 +46,6 @@ export class RegistroTerceroInstitucional {
   totalElements = 0;
   conceptosFiltrados: any[] = [];
   displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'tipoMovimiento', 'concepto', 'qnaProceso', 'acciones'];
-  readonly conceptosPermitidos = ['5l', '6l', '21'];
   empleadoActual: EmpleadoItem | null = null;
   dataSource = new MatTableDataSource<NominaRow>([]);
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
@@ -57,7 +57,8 @@ export class RegistroTerceroInstitucional {
     private zone: NgZone,
     private cd: ChangeDetectorRef,
     private dialog: MatDialog,
-    private terceroService: TerceroService
+    private terceroService: TerceroService,
+    private conceptoAccesoService: ConceptoAccesoService 
   ) {}
 
   private showSnack(message: string, action: string, duration: number): void {
@@ -261,23 +262,25 @@ export class RegistroTerceroInstitucional {
   }
 
   cargarConceptos(): void {
-    this.terceroService.obtenerConceptos().subscribe({
-      next: (data) => {
-        this.conceptosFiltrados = (data ?? []).filter((c: any) =>
-          this.conceptosPermitidos.includes((c?.cve ?? '').toString().toLowerCase())
-        );
+  this.conceptoAccesoService.getConceptosPermitidos().subscribe({
+    next: (permitidos) => {
+      this.terceroService.obtenerConceptos().subscribe({
+        next: (todos) => {
+          this.conceptosFiltrados = permitidos.length === 0
+            ? todos  // lista vacía = admin, ve todo
+            : todos.filter(c =>
+                permitidos
+                  .map(p => p.toUpperCase())
+                  .includes((c?.cve ?? '').toUpperCase())
+              );
 
-        this.conceptosFiltrados = this.dedupeByCve(this.conceptosFiltrados);
-        this.conceptosFiltrados = this.ordenarPorPrioridad(
-          this.conceptosFiltrados,
-          this.conceptosPermitidos
-        );
-
-        this.cd.markForCheck();
-      },
-      error: (err) => console.error('Error al cargar conceptos:', err),
-    });
-  }
+          this.conceptosFiltrados = this.dedupeByCve(this.conceptosFiltrados);
+          this.cd.markForCheck();
+        }
+      });
+    }
+  });
+}
 
   private ordenarPorPrioridad(conceptos: any[], codigosPrioridad: string[]): any[] {
   const rank = new Map<string, number>();
