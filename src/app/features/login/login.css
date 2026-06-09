@@ -125,11 +125,20 @@
   margin-top: auto;
 }
 
-.footer-text, .footer-subtext {
+.footer-text {
   font-weight: 700;
   text-transform: uppercase;
-  color: #fafafa;
+  color: #ffffff;                          /* Dorado institucional completo */
+  font-size: clamp(11px, 1.4vw, 13px);     /* Más grande — es el título principal */
+  letter-spacing: clamp(1px, 0.3vw, 2px);
+}
 
+.footer-subtext {
+  font-weight: 600;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);         /* Mismo dorado, opacidad reducida */
+  font-size: clamp(9px, 1.1vw, 11px);      /* Más pequeño — es el subtítulo */
+  letter-spacing: clamp(1.5px, 0.4vw, 3px); /* Más espaciado para compensar el tamaño menor */
 }
 
 /* --- AJUSTES MATERIAL: LÍNEAS SEPARADORAS --- */
