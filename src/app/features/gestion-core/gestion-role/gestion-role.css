@@ -122,17 +122,26 @@
 }
 
 .table-global .mat-column-rol {
-  width: 40px !important;
-  min-width: 40px !important;
-  max-width: 40px !important;
-  text-align: left;
+  width: 80px !important;
+  min-width: 80px !important;
+  max-width: 80px !important;
+  text-align: center;
+}
+
+.rol-cell {
+  white-space: normal;
+  word-break: break-word;   /* o break-all si hay palabras muy largas */
+  overflow: visible;
+  text-overflow: unset;
+  line-height: 1.3;
+  max-width: 520px;         /* opcional: controla ancho para envolver */
 }
 
 .table-global .mat-column-padre {
   width: 80px !important;
   min-width: 80px !important;
   max-width: 80px !important;
-  text-align: left;
+  text-align: center;
 }
 
 .table-global .mat-column-acciones {
