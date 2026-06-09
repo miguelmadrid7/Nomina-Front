@@ -14,5 +14,6 @@ export interface SidebarGroup {
   parentId: number | null;
   parentName: string;
   icon: string;
+  expanded:   boolean;
   children: SidebarModule[];
 }

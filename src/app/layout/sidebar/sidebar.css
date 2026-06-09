@@ -216,3 +216,50 @@ main {
 .sidebar-shell .btn-toggle .caret {
   flex: 0 0 auto; /* no crece */
 }
+
+
+
+/* --- CARET animado por Angular --- */
+.sidebar-shell .caret {
+  transition: transform 0.22s ease;
+  transform: rotate(0deg);
+}
+.sidebar-shell .caret.caret-open {
+  transform: rotate(180deg);
+}
+
+/* --- Indicador de grupo activo --- */
+.sidebar-shell .btn-toggle.group-active {
+  color: #ffffff !important;
+  background-color: #2a3240;
+}
+.sidebar-shell .btn-toggle.group-active i {
+  color: #ffffff !important;
+}
+
+/* --- Tooltip modo mini --- */
+.sidebar-shell.collapsed .sidebar-tooltip {
+  position: relative;
+}
+.sidebar-shell.collapsed .sidebar-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: #1a1f2b;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+  z-index: 999;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.sidebar-shell.collapsed .sidebar-tooltip:hover::after {
+  opacity: 1;
+}
