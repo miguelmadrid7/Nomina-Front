@@ -22,7 +22,10 @@
             formControlName="user" 
             placeholder="Usuario" 
             required />
-          <mat-error *ngIf="userControl.invalid && userControl.touched"> Por favor ingrese su usuario. </mat-error>
+          <mat-error *ngIf="userControl.invalid && userControl.touched"> 
+            <mat-icon class="error-icon">warning_amber</mat-icon>
+              Por favor ingrese su usuario. 
+            </mat-error>
         </mat-form-field>
 
       <label class="field-title" for="password">Contraseña:</label>
@@ -43,7 +46,10 @@
             [attr.title]="hide ? 'Mostrar contraseña' : 'Ocultar contraseña'">
               <mat-icon>{{ hide ? 'visibility' : 'visibility_off' }}</mat-icon>
           </button>
-          <mat-error *ngIf="passwordControl.invalid && passwordControl.touched"> Por favor ingrese su contraseña. </mat-error>
+          <mat-error *ngIf="passwordControl.invalid && passwordControl.touched"> 
+            <mat-icon class="error-icon">warning_amber</mat-icon>
+              Por favor ingrese su contraseña. 
+          </mat-error>
         </mat-form-field>
 
 

@@ -128,18 +128,29 @@
 .footer-text {
   font-weight: 700;
   text-transform: uppercase;
-  color: #ffffff;                          /* Dorado institucional completo */
-  font-size: clamp(11px, 1.4vw, 13px);     /* Más grande — es el título principal */
+  color: #ffffff;                          
+  font-size: clamp(11px, 1.4vw, 13px);     
   letter-spacing: clamp(1px, 0.3vw, 2px);
 }
 
 .footer-subtext {
   font-weight: 600;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);         /* Mismo dorado, opacidad reducida */
-  font-size: clamp(9px, 1.1vw, 11px);      /* Más pequeño — es el subtítulo */
-  letter-spacing: clamp(1.5px, 0.4vw, 3px); /* Más espaciado para compensar el tamaño menor */
+  color: rgba(255, 255, 255, 0.55);         
+  font-size: clamp(9px, 1.1vw, 11px);     
+  letter-spacing: clamp(1.5px, 0.4vw, 3px); 
 }
+
+@keyframes errorSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 
 /* --- AJUSTES MATERIAL: LÍNEAS SEPARADORAS --- */
 :host ::ng-deep {
@@ -154,5 +165,41 @@
 
   .mat-mdc-icon-button.mat-mdc-form-field-icon-suffix {
     background: transparent !important;
+  }
+
+  .mat-mdc-form-field-error {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px 3px 6px;
+    background: rgba(176, 0, 32, 0.07);
+    border-radius: 20px;                  
+    border-left: 2.5px solid #b00020;
+    font-size: 11.5px !important;
+    font-weight: 600;
+    color: #b00020 !important;
+    margin-top: 4px;
+    animation: errorSlideIn 0.22s ease-out;
+    width: fit-content;
+  }
+
+  .error-icon {
+    font-size: 14px !important;
+    width: 14px !important;
+    height: 14px !important;
+    line-height: 14px !important;
+    color: #b00020 !important;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  /* Borde del input se vuelve rojo cuando tiene error */
+  .mat-mdc-form-field.ng-invalid.ng-touched
+    .mdc-notched-outline__leading,
+  .mat-mdc-form-field.ng-invalid.ng-touched
+    .mdc-notched-outline__notch,
+  .mat-mdc-form-field.ng-invalid.ng-touched
+    .mdc-notched-outline__trailing {
+    border-color: #b00020 !important;
   }
 }
