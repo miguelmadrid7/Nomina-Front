@@ -1,24 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { LoginService } from '../../core/services/login.service';
-import { LoginPayload } from '../../models/login.model';
-import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
 import { SidebarService } from '../../core/services/sidebar.service';
-
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    MatFormFieldModule,
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatCardModule,
@@ -29,57 +27,67 @@ import { SidebarService } from '../../core/services/sidebar.service';
 })
 export class Login {
 
-  credentials: LoginPayload = { user: '', password: '' };
-  loading: boolean = false;
-  error: string = '';
+  private readonly router = inject(Router);
+  private readonly loginService = inject(LoginService);
+  private readonly sidebarService = inject(SidebarService);
+  private readonly fb = inject(FormBuilder);
+
+  readonly loginForm = this.fb.nonNullable.group({
+    user: ['', Validators.required],
+    password: ['', Validators.required],
+  });
+
+  // Acceso directo tipado — no necesita '!' ni casting
+  get userControl() { 
+    return this.loginForm.controls.user; 
+  }
+
+  get passwordControl() { 
+    return this.loginForm.controls.password; 
+  }
+
+  loading = false;
+  error = '';
   hide = true;
 
-  constructor(private router: Router, private loginService: LoginService, private sidebarService: SidebarService ) {}
-
-  login(form?: NgForm) {
-  this.error = '';
-    if (form && form.invalid) {
-      Object.values(form.controls).forEach(c => c.markAsTouched());
-      return;
-    }
-
-  this.loading = true;
-  this.loginService.login(this.credentials).subscribe({
-    next: (resp) => {
-      const authHeader = resp.headers.get('Authorization');
-      if (authHeader) {
-        const token = authHeader.replace('Bearer ', ''); 
-        
+  login(): void {
+    this.error = '';
+      if (this.loginForm.invalid) {
+        this.loginForm.markAllAsTouched();
+        return;
+      }
+    this.loading = true;
+    const credentials = this.loginForm.getRawValue();
+    this.loginService.login(credentials).subscribe({
+      next: (resp) => {
+        const authHeader = resp.headers.get('Authorization');
+          if (!authHeader) {
+            this.error   = 'No se recibió token de autenticación';
+            this.loading = false;
+            return;
+          }
+        const token = authHeader.replace('Bearer ', '');
         this.loginService.setToken(token);
-
           if (resp.body?.data) {
             this.loginService.setSession(resp.body.data);
           }
-
-          this.sidebarService.getModulesByUser().subscribe({
-            next: (modules) => {
-              this.loginService.setMenuModules(modules);
-
-              const returnUrl = this.router.routerState.snapshot.root.queryParams['returnUrl'];
-              this.router.navigate([returnUrl || this.loginService.getPrincipalRoute()]);
-              this.loading = false;
-            },
-            
-            error: () => {
-              this.error = 'No se pudieron cargar los módulos del usuario';
-              this.router.navigate([this.loginService.getPrincipalRoute()]);
-              this.loading = false;
-            }
-          });
-            
-          } else {
-            this.error = 'No se recibió token de autenticación';
+        this.sidebarService.getModulesByUser().subscribe({
+          next: (modules) => {
+            this.loginService.setMenuModules(modules);
+            const returnUrl = this.router.routerState.snapshot.root.queryParams['returnUrl'];
+            this.router.navigate([returnUrl || this.loginService.getPrincipalRoute()]);
             this.loading = false;
+          },
+          error: () => {
+            this.error   = 'No se pudieron cargar los módulos del usuario';
+            this.loading = false;
+            this.router.navigate([this.loginService.getPrincipalRoute()]);
           }
-    },
-    error: () => {
-      this.error = 'Acceso denegado, verifique su usuario y contraseña';
-      this.loading = false;
+        });
+      },
+      error: () => {
+        this.error   = 'Acceso denegado, verifique su usuario y contraseña';
+        this.loading = false;
       }
     });
   }

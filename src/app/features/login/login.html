@@ -10,33 +10,30 @@
 </header>
 
 <main class="main-body-white">
-  <form #f="ngForm" (ngSubmit)="login(f)" novalidate>
+  <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
     <mat-card class="card" appearance="outlined">
       
       <label class="field-title" for="usuario">Usuario:</label>
-      <mat-form-field appearance="outline" class="with-separator">
-        <mat-icon matPrefix>person</mat-icon>
-        <input 
-          matInput 
-          id="usuario" 
-          name="user" 
-          placeholder="Usuario" 
-          [(ngModel)]="credentials.user" 
-          required />
-        <mat-error *ngIf="f.submitted || (f.controls['user']?.invalid && f.controls['user']?.touched)">
-          Por favor ingrese su usuario.
-        </mat-error>
-      </mat-form-field>
+        <mat-form-field appearance="outline" class="with-separator">
+          <mat-icon matPrefix>person</mat-icon>
+          <input 
+            matInput 
+            id="usuario" 
+            formControlName="user" 
+            placeholder="Usuario" 
+            required />
+          <mat-error *ngIf="userControl.invalid && userControl.touched"> Por favor ingrese su usuario. </mat-error>
+        </mat-form-field>
 
       <label class="field-title" for="password">Contraseña:</label>
         <mat-form-field appearance="outline" class="with-separator" floatLabel="always">
           <mat-icon matPrefix>lock</mat-icon>
           <input 
               matInput id="password" 
-              name="password" 
+              formControlName="password" 
               placeholder="Contraseña" 
               [type]="hide ? 'password' : 'text'"
-              [(ngModel)]="credentials.password" required />
+              required />
           <button 
             mat-icon-button 
             matSuffix type="button" 
@@ -46,9 +43,7 @@
             [attr.title]="hide ? 'Mostrar contraseña' : 'Ocultar contraseña'">
               <mat-icon>{{ hide ? 'visibility' : 'visibility_off' }}</mat-icon>
           </button>
-          <mat-error *ngIf="f.submitted || (f.controls['password']?.invalid && f.controls['password']?.touched)">
-            Por favor ingrese su contraseña.
-          </mat-error>
+          <mat-error *ngIf="passwordControl.invalid && passwordControl.touched"> Por favor ingrese su contraseña. </mat-error>
         </mat-form-field>
 
 
