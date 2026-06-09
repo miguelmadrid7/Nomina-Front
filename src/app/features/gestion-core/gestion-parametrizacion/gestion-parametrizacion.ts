@@ -93,50 +93,50 @@ export class GestionParametrizacion implements OnInit, AfterViewInit {
   }
 
   softDeleteParam(paramId: number): void {
-  const dialogRef = this.dialog.open(ConfirmDialog, {
-    width: '450px',
-    disableClose: true,
-    data: {
-      title: 'Eliminar parámetro',
-      message: '¿Seguro que deseas eliminar este parámetro?',
-      confirmText: 'Eliminar',
-      cancelText: 'Cancelar',
-      type: 'danger'
-    }
-  });
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '450px',
+      disableClose: true,
+      data: {
+        title: 'Eliminar parámetro',
+        message: '¿Seguro que deseas eliminar este parámetro?',
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar',
+        type: 'danger'
+      }
+    });
 
-  dialogRef.afterClosed().subscribe((confirmed: boolean) => {
-    if (!confirmed) return;
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
 
-    this.loading = true;
-    this.parametrizacionService.softDeleteParam(paramId)
-      .subscribe({
-        next: () => {
-          this.getAllParam();
-          this.dialog.open(ConfirmDialog, {
-            width: '360px',
-            data: {
-              title: 'Operación exitosa',
-              message: 'Parámetro eliminado correctamente.',
-              confirmText: 'Aceptar'
-            }
-          });
-        },
-        error: () => {
-          this.dialog.open(ConfirmDialog, {
-            width: '360px',
-            data: {
-              title: 'Error',
-              message: 'No se pudo eliminar el parámetro. Intenta de nuevo.',
-              confirmText: 'Aceptar',
-              type: 'error'
-            }
-          });
-        }
-      }).add(() => {
-        this.loading = false;
-        this.cdr.detectChanges();
-      });
-  });
-}
+      this.loading = true;
+      this.parametrizacionService.softDeleteParam(paramId)
+        .subscribe({
+          next: () => {
+            this.getAllParam();
+            this.dialog.open(ConfirmDialog, {
+              width: '360px',
+              data: {
+                title: 'Operación exitosa',
+                message: 'Parámetro eliminado correctamente.',
+                confirmText: 'Aceptar'
+              }
+            });
+          },
+          error: () => {
+            this.dialog.open(ConfirmDialog, {
+              width: '360px',
+              data: {
+                title: 'Error',
+                message: 'No se pudo eliminar el parámetro. Intenta de nuevo.',
+                confirmText: 'Aceptar',
+                type: 'error'
+              }
+            });
+          }
+        }).add(() => {
+          this.loading = false;
+          this.cdr.detectChanges();
+        });
+    });
+  }
 }
