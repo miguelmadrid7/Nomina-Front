@@ -18,31 +18,31 @@
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator full-width" floatLabel="always">
                 <mat-label>Año</mat-label>
                     <mat-icon matPrefix>calendar_today</mat-icon>
-                        <input matInput formControlName="anio" appUppercase/>
+                        <input matInput formControlName="anio" type="number" placeholder="Ej. 2025"/>
             </mat-form-field>
             
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                 <mat-label>Importe diario</mat-label>
                     <mat-icon matPrefix>payments</mat-icon>
-                        <input matInput formControlName="importeDiario" appUppercase/>
+                        <input matInput formControlName="importeDiario" type="number" placeholder="0.00"/>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                 <mat-label>Importe mensual</mat-label>
                     <mat-icon matPrefix>paid</mat-icon>
-                        <input matInput formControlName="importeMensual" appUppercase/>
+                        <input matInput formControlName="importeMensual" type="number" placeholder="0.00"/>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                 <mat-label>QNA inicio</mat-label>
                     <mat-icon matPrefix>event_available</mat-icon>
-                        <input matInput formControlName="qnaInicio" appUppercase/>
+                        <input matInput formControlName="qnaInicio" type="number" placeholder="Ej. 202501"/>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                 <mat-label>QNA  fin</mat-label>
                     <mat-icon matPrefix>event_busy</mat-icon>
-                        <input matInput formControlName="qnaFin" appUppercase/>
+                        <input matInput formControlName="qnaFin" type="number" placeholder="Ej. 202524"/>
             </mat-form-field>
              </div>
         </mat-dialog-content>

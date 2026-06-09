@@ -1,15 +1,16 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatTableModule } from '@angular/material/table';
+import { AfterViewInit, ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { ParametrizacionResponse } from '../../../models/response/parametrizacion-response.model';
 import { ParametrizacionService } from '../../../core/services/parametrizacion.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
+import { ApiResponse } from '../../../models/response/api-Response.model';
 import { AltaParametrizacionDialog } from '../../../shared/dialogs/alta-parametrizacion-dialog/alta-parametrizacion-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
-
+import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-gestion-parametrizacion',
   standalone: true,
@@ -19,127 +20,100 @@ import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-di
     MatIconModule,
     MatTableModule,
     MatPaginatorModule,
-
   ],
   templateUrl: './gestion-parametrizacion.html',
   styleUrl: './gestion-parametrizacion.css'
 })
-export class GestionParametrizacion {
+export class GestionParametrizacion implements OnInit, AfterViewInit {
 
-  displayedColumns: string[] = ['anio','importeDiario','importeMensual','qnaInicio','qnaFin','actions'];
-  parametrizacion: any[] = [];
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  private readonly parametrizacionService = inject(ParametrizacionService);
+  private readonly snackBar               = inject(MatSnackBar);
+  private readonly dialog                 = inject(MatDialog);
+  private readonly cdr                    = inject(ChangeDetectorRef);
+
+  readonly dataSource = new MatTableDataSource<ParametrizacionResponse>([]);
+
+  displayedColumns: string[] = [
+    'anio', 'importeDiario', 'importeMensual',
+    'qnaInicio', 'qnaFin', 'actions'
+  ];
+
   totalElements = 0;
-  loading = false;
-
-
-  constructor(private parametrizacionService: ParametrizacionService, private zone: NgZone, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef, private dialog: MatDialog,) {}
+  loading       = false;
 
   ngOnInit(): void {
-    this.getAllParam();
+    Promise.resolve().then(() => this.getAllParam());
   }
 
-  private showSnack(message: string, action: string, duration: number): void {
-    this.zone.runOutsideAngular(() => {
-      setTimeout(() => {
-        this.zone.run(() => this.snackBar.open(message, action, { duration }));
-      }, 50);
-    });
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
   }
 
   getAllParam(): void {
     this.loading = true;
+
     this.parametrizacionService.getAllParam().subscribe({
-      next: (resp: any ) => {
-        this.parametrizacion = resp.data ?? [];
-        this.totalElements = this.parametrizacion.length;
-        this.loading = false;
-        this.cdr.markForCheck();
+      next: (resp: ApiResponse<ParametrizacionResponse[]>) => {
+        this.dataSource.data = resp.data ?? [];
+        this.totalElements   = this.dataSource.data.length;
+        this.loading         = false;
+        this.cdr.detectChanges();
       },
       error: () => {
-
         this.totalElements = 0;
-        this.loading = false; 
-        this.showSnack('No se cargaron correctamente los datos', 'Cerrar', 4000);
+        this.loading       = false;
+        this.snackBar.open('No se cargaron correctamente los datos', 'Cerrar', { duration: 4000 });
       }
-    })
+    });
   }
 
   openCreateDialog(): void {
     const dialogRef = this.dialog.open(AltaParametrizacionDialog, {
-      width: '700px',
-      maxWidth: '95vw',
-        data: {
-          mode: 'create'
-        }
+      width: '700px', maxWidth: '95vw',
+      data: { mode: 'create' }
     });
-
     dialogRef.afterClosed().subscribe((refresh: boolean) => {
-      if (refresh) {
-        this.getAllParam();
-      }
+      if (refresh) this.getAllParam();
     });
   }
 
-  openUpdateDialog(param: any): void {
+  openUpdateDialog(param: ParametrizacionResponse): void {
     const dialogRef = this.dialog.open(AltaParametrizacionDialog, {
-      width: '700px',
-      maxWidth: '95vw',
-        data: {
-          mode: 'update', param
-        }
+      width: '700px', maxWidth: '95vw',
+      data: { mode: 'update', param }
     });
-
     dialogRef.afterClosed().subscribe((refresh: boolean) => {
-      if (refresh) {
-        this.getAllParam();
-      }
+      if (refresh) this.getAllParam();
     });
   }
 
   softDeleteParam(paramId: number): void {
     const dialogRef = this.dialog.open(ConfirmDialog, {
-      width: '450px',
-      disableClose: true,
+      width: '450px', disableClose: true,
       data: {
-        title: 'Eliminar parámetro',
-        message: '¿Seguro que deseas eliminar este parámetro?',
+        title:       'Eliminar parámetro',
+        message:     '¿Seguro que deseas eliminar este parámetro?',
         confirmText: 'Eliminar',
-        cancelText: 'Cancelar',
-        type: 'danger'
+        cancelText:  'Cancelar',
+        type:        'danger'
       }
     });
 
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
-      if (!confirmed) {
-        return;
-      }
+      if (!confirmed) return;
       this.loading = true;
       this.parametrizacionService.softDeleteParam(paramId).subscribe({
         next: () => {
           this.getAllParam();
-          this.openSuccessDialog(
-            'Parámetro eliminado correctamente'
-          );
+          this.snackBar.open('Parámetro eliminado correctamente', 'Cerrar', { duration: 3000 });
         },
         error: () => {
           this.loading = false;
-          this.openSuccessDialog(
-            'No se pudo eliminar el parámetro'
-          );
+          this.snackBar.open('No se pudo eliminar el parámetro', 'Cerrar', { duration: 4000 });
         }
       });
-    });
-  }
-
-  private openSuccessDialog(message: string): void {
-    this.dialog.open(ConfirmDialog, {
-      width: '400px',
-      disableClose: true,
-        data: {
-          title: 'Operación exitosa',
-          message,
-          confirmText: 'Aceptar'
-        }
     });
   }
 }
