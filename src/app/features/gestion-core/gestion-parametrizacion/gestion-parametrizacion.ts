@@ -29,19 +29,23 @@ export class GestionParametrizacion implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   private readonly parametrizacionService = inject(ParametrizacionService);
-  private readonly snackBar               = inject(MatSnackBar);
-  private readonly dialog                 = inject(MatDialog);
-  private readonly cdr                    = inject(ChangeDetectorRef);
+  private readonly snackBar  = inject(MatSnackBar);
+  private readonly dialog  = inject(MatDialog);
+  private readonly cdr   = inject(ChangeDetectorRef);
 
   readonly dataSource = new MatTableDataSource<ParametrizacionResponse>([]);
 
   displayedColumns: string[] = [
-    'anio', 'importeDiario', 'importeMensual',
-    'qnaInicio', 'qnaFin', 'actions'
+    'anio', 
+    'importeDiario', 
+    'importeMensual',
+    'qnaInicio', 
+    'qnaFin', 
+    'actions'
   ];
 
   totalElements = 0;
-  loading       = false;
+  loading = false;
 
   ngOnInit(): void {
     Promise.resolve().then(() => this.getAllParam());
@@ -53,17 +57,16 @@ export class GestionParametrizacion implements OnInit, AfterViewInit {
 
   getAllParam(): void {
     this.loading = true;
-
     this.parametrizacionService.getAllParam().subscribe({
       next: (resp: ApiResponse<ParametrizacionResponse[]>) => {
         this.dataSource.data = resp.data ?? [];
-        this.totalElements   = this.dataSource.data.length;
-        this.loading         = false;
+        this.totalElements = this.dataSource.data.length;
+        this.loading  = false;
         this.cdr.detectChanges();
       },
       error: () => {
         this.totalElements = 0;
-        this.loading       = false;
+        this.loading = false;
         this.snackBar.open('No se cargaron correctamente los datos', 'Cerrar', { duration: 4000 });
       }
     });
@@ -90,30 +93,50 @@ export class GestionParametrizacion implements OnInit, AfterViewInit {
   }
 
   softDeleteParam(paramId: number): void {
-    const dialogRef = this.dialog.open(ConfirmDialog, {
-      width: '450px', disableClose: true,
-      data: {
-        title:       'Eliminar parámetro',
-        message:     '¿Seguro que deseas eliminar este parámetro?',
-        confirmText: 'Eliminar',
-        cancelText:  'Cancelar',
-        type:        'danger'
-      }
-    });
+  const dialogRef = this.dialog.open(ConfirmDialog, {
+    width: '450px',
+    disableClose: true,
+    data: {
+      title: 'Eliminar parámetro',
+      message: '¿Seguro que deseas eliminar este parámetro?',
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    }
+  });
 
-    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
-      if (!confirmed) return;
-      this.loading = true;
-      this.parametrizacionService.softDeleteParam(paramId).subscribe({
+  dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+    if (!confirmed) return;
+
+    this.loading = true;
+    this.parametrizacionService.softDeleteParam(paramId)
+      .subscribe({
         next: () => {
           this.getAllParam();
-          this.snackBar.open('Parámetro eliminado correctamente', 'Cerrar', { duration: 3000 });
+          this.dialog.open(ConfirmDialog, {
+            width: '360px',
+            data: {
+              title: 'Operación exitosa',
+              message: 'Parámetro eliminado correctamente.',
+              confirmText: 'Aceptar'
+            }
+          });
         },
         error: () => {
-          this.loading = false;
-          this.snackBar.open('No se pudo eliminar el parámetro', 'Cerrar', { duration: 4000 });
+          this.dialog.open(ConfirmDialog, {
+            width: '360px',
+            data: {
+              title: 'Error',
+              message: 'No se pudo eliminar el parámetro. Intenta de nuevo.',
+              confirmText: 'Aceptar',
+              type: 'error'
+            }
+          });
         }
+      }).add(() => {
+        this.loading = false;
+        this.cdr.detectChanges();
       });
-    });
-  }
+  });
+}
 }

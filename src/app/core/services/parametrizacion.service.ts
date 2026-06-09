@@ -16,7 +16,7 @@ export class ParametrizacionService {
     }
 
     createParam(payload: ParametrizacionRequest): Observable<ApiResponse<ParametrizacionResponse>> {
-        return this.http.post<ApiResponse<ParametrizacionResponse>>(this.base, payload);
+        return this.http.post<ApiResponse<ParametrizacionResponse>>(`${this.base}/salario-minimo`, payload);
     }
 
     updateParam(paramId: number, payload: ParametrizacionRequest): Observable<ApiResponse<ParametrizacionResponse>> {
