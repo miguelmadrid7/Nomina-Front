@@ -2,7 +2,6 @@ import { Component, OnInit, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-
 import { LoginService } from '../../core/services/login.service';
 import { SidebarService } from '../../core/services/sidebar.service';
 import { SidebarGroup, SidebarModule } from '../../models/sidebar.model';
@@ -19,7 +18,7 @@ import { SidebarGroup, SidebarModule } from '../../models/sidebar.model';
   styleUrl: './sidebar.css',
   animations: [
     trigger('expandCollapse', [
-      state('open',   style({ height: '*',   opacity: 1, overflow: 'hidden' })),
+      state('open', style({ height: '*', opacity: 1, overflow: 'hidden' })),
       state('closed', style({ height: '0px', opacity: 0, overflow: 'hidden' })),
       transition('open <=> closed', animate('220ms ease')),
     ])
@@ -65,36 +64,32 @@ export class Sidebar implements OnInit {
 
     for (const module of visibleModules) {
       const isParent = module.parentId === null || module.moduleId === module.parentId;
-
-      if (isParent) {
-        if (!groupsMap.has(module.moduleId)) {
-          groupsMap.set(module.moduleId, {
-            parentId:   module.moduleId,
-            parentName: module.moduleName,
-            icon:       module.icon || 'fa-solid fa-folder',
-            expanded:   true,   // los grupos inician abiertos
-            children:   []
-          });
+        if (isParent) {
+          if (!groupsMap.has(module.moduleId)) {
+            groupsMap.set(module.moduleId, {
+              parentId: module.moduleId,
+              parentName: module.moduleName,
+              icon: module.icon || 'fa-solid fa-folder',
+              expanded: true,  
+              children: []
+            });
+          }
+          continue;
         }
-        continue;
-      }
 
       const groupId = module.parentId;
       if (groupId === null) continue;
-
       if (!groupsMap.has(groupId)) {
         groupsMap.set(groupId, {
-          parentId:   groupId,
+          parentId: groupId,
           parentName: module.parentName || 'Sin categoría',
-          icon:       'fa-solid fa-folder',
+          icon: 'fa-solid fa-folder',
           expanded:   true,
           children:   []
         });
       }
-
       groupsMap.get(groupId)?.children.push(module);
     }
-
     return Array.from(groupsMap.values()).filter(g => g.children.length > 0);
   }
 
@@ -111,9 +106,17 @@ export class Sidebar implements OnInit {
     localStorage.setItem('sidebar-collapsed', String(this.collapsed));
   }
 
-  hasAnyRole(roles: number[]): boolean  { return this.loginService.hasAnyRole(roles); }
-  hasPermiso(nombre: string): boolean   { return this.loginService.hasPermiso(nombre); }
-  hasModule(moduleId: number): boolean  { return this.loginService.hasModule(moduleId); }
+  hasAnyRole(roles: number[]): boolean { 
+    return this.loginService.hasAnyRole(roles); 
+  }
+
+  hasPermiso(nombre: string): boolean { 
+    return this.loginService.hasPermiso(nombre); 
+  }
+
+  hasModule(moduleId: number): boolean { 
+    return this.loginService.hasModule(moduleId); 
+  }
 
   logout(): void {
     this.loginService.logout();
