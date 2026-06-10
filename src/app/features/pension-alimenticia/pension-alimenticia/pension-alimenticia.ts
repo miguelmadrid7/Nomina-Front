@@ -118,6 +118,13 @@ export class PensionAlimenticia {
     return this.porcentajeDisponible > 0;
   }
 
+  private getHorasFromPlaza(clavePlaza: string): number {
+    if (!clavePlaza) return 0;
+    const parteAntesPunto = clavePlaza.split('.')[0] || '';
+    const ultimos2 = parteAntesPunto.slice(-2);
+    return parseInt(ultimos2, 10) || 0;
+  }
+
   readonly displayFn = (emp: EmpleadoItem | string | null): string => {
       return this.displayEmployee(emp);
   };
@@ -287,6 +294,7 @@ private cargarLiquidoByRfc(rfc: string): void {
     this.pensionAlimenticiaService.getLiquidoByRfc(rfc).subscribe({
         next: (resp) => {
             if (resp.success && resp.data?.plazas?.length) {
+                resp.data.plazas.sort((a, b) => this.getHorasFromPlaza(b.clavePlaza) - this.getHorasFromPlaza(a.clavePlaza));
                 this.liquidoInfo  = resp.data;
                 this.liquidoError = null;
             } else {
