@@ -9,6 +9,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ModuleDialog } from '../../../shared/dialogs/module-dialog/module-dialog';
+import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 
 @Component({
@@ -223,19 +224,45 @@ export class GestionModulos {
   }
 
   softDeleteModule(moduleId: number): void {
-    const confirmed = confirm('¿Seguro que deseas eliminar este módulo?');
-    if (!confirmed) {
-      return;
-    }
-
-    this.moduleService.softDeleteModule(moduleId).subscribe({
-      next: () => {
-        this.showSnack('Módulo eliminado correctamente.', 'Cerrar', 4000);
-        this.getAllModules();
-      },
-      error: () => {
-        this.showSnack('No se pudo eliminar el módulo.', 'Cerrar', 4000);
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '450px',
+      disableClose: true,
+      data: {
+        title: 'Eliminar módulo',
+        message: '¿Seguro que deseas eliminar este módulo?',
+        confirmText: 'Eliminar',
+        cancelText: 'Cancelar',
+        type: 'danger'
       }
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) return;
+
+      this.moduleService.softDeleteModule(moduleId).subscribe({
+        next: () => {
+          this.getAllModules();
+          this.dialog.open(ConfirmDialog, {
+            width: '360px',
+            data: {
+              title: 'Operación exitosa',
+              message: 'Módulo eliminado correctamente.',
+              confirmText: 'Aceptar'
+            }
+          });
+        },
+        error: () => {
+          this.dialog.open(ConfirmDialog, {
+            width: '360px',
+            data: {
+              title: 'Error',
+              message: 'No se pudo eliminar el módulo.',
+              confirmText: 'Aceptar',
+              type: 'error'
+            }
+          });
+        }
+      });
     });
   }
 
