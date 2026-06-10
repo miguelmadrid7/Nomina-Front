@@ -77,7 +77,7 @@ export class GestionUsuarios {
   totalUsers = 0;
   pageSize = 10;
   pageIndex = 0;
-  activeSort: Sort = { active: 'id', direction: 'desc' };
+  activeSort: Sort = { active: 'id', direction: 'asc' };
 
   constructor(
     private userService: UserService,
