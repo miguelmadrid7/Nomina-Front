@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Module } from '../../../models/gestion-core/module.model';
 import { DialogData,  } from '../../../models/gestion-core/modulodialogdata.model';
 import { ModuleRequest } from '../../../models/request/module-request.model';
@@ -16,6 +16,8 @@ import { Role } from '../../../models/rol.model';
 import { UserService } from '../../../core/services/user.service';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { UppercaseDirective } from '../../directives/upperCase.directivas';
+import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-module-dialog',
@@ -29,7 +31,8 @@ import { catchError, map } from 'rxjs/operators';
     MatFormFieldModule,
     MatInputModule,
     MatCheckboxModule,
-    MatSelectModule
+    MatSelectModule,
+    UppercaseDirective
   ],
   templateUrl: './module-dialog.html',
   styleUrl: './module-dialog.css'
@@ -39,7 +42,14 @@ export class ModuleDialog implements OnInit{
   form!: FormGroup;
   roles$!: Observable<Role[]>;
 
-  constructor(private dialogRef: MatDialogRef<ModuleDialog>, @Inject(MAT_DIALOG_DATA) public data: DialogData, private fb: FormBuilder,private moduleService: ModuleService, private userService: UserService,) {}
+  constructor(
+    private dialogRef: MatDialogRef<ModuleDialog>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    private fb: FormBuilder,
+    private moduleService: ModuleService,
+    private userService: UserService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit(): void {
     const module = this.module;
@@ -109,8 +119,26 @@ export class ModuleDialog implements OnInit{
     request$.subscribe({
       next: () => {
         this.dialogRef.close(true);
+        this.dialog.open(ConfirmDialog, {
+          width: '360px',
+          data: {
+            title: 'Operación exitosa',
+            message: this.mode === 'edit' ? 'Módulo actualizado correctamente.' : 'Módulo creado correctamente.',
+            confirmText: 'Aceptar'
+          }
+        });
       },
-      error: () => {}
+      error: () => {
+        this.dialog.open(ConfirmDialog, {
+          width: '360px',
+          data: {
+            title: 'Error',
+            message: 'No se pudo guardar el módulo. Intenta de nuevo.',
+            confirmText: 'Aceptar',
+            type: 'error'
+          }
+        });
+      }
     });
   }
 
