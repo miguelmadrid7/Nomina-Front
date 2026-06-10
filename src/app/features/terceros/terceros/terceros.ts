@@ -68,8 +68,6 @@ export class Terceros {
       concepto: [null, [Validators.required]],
     }),
   });
-
-  // ✅ Combinar ambos observables correctamente
   this.conceptosOptions$ = this.conceptoAccesoService.getConceptosPermitidos().pipe(
     switchMap((permitidos: string[]) =>
       this.terceroService.obtenerConceptos().pipe(
