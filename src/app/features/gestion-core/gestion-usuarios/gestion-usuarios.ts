@@ -13,7 +13,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { UppercaseDirective } from '../../../shared/directives/upperCase.directivas';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
@@ -23,7 +23,8 @@ import { UsuarioDialog } from '../../../shared/dialogs/usuario-dialog/usuario-di
 import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { AltaUsuarioDialog } from '../../../shared/dialogs/alta-usuario-dialog/alta-usuario-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
-import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { Empleado } from '../../servicios/empleado';
 
 @Component({
   selector: 'app-gestion-usuarios',
@@ -72,6 +73,12 @@ export class GestionUsuarios {
   empleadoRolesIds: number[] = [];
   loading = false;
 
+  allUsers: EmpleadoItem[] = [];
+  totalUsers = 0;
+  pageSize = 10;
+  pageIndex = 0;
+  activeSort: Sort = { active: 'id', direction: 'desc' };
+
   constructor(
     private userService: UserService,
     private fb: FormBuilder,
@@ -90,6 +97,44 @@ export class GestionUsuarios {
     this.loadRoles();
     this.loadEmpleados();
   }
+
+ onSortChange(sort: Sort): void {
+  this.activeSort = sort.direction ? sort : { active: 'id', direction: 'desc' };
+  this.pageIndex = 0;
+  this.applyTableState();
+}
+
+onPageChange(event: PageEvent): void {
+  this.pageIndex = event.pageIndex;
+  this.pageSize = event.pageSize;
+  this.applyTableState();
+}
+
+private applyTableState(): void {
+  const sorted = [...this.allUsers].sort((a, b) => {
+    const dir = this.activeSort.direction === 'asc' ? 1 : -1;
+    const va = this.getSortValue(a, this.activeSort.active);
+    const vb = this.getSortValue(b, this.activeSort.active);
+    if (va < vb) return -1 * dir;
+    if (va > vb) return 1 * dir;
+    return 0;
+  });
+  const start = this.pageIndex * this.pageSize;
+  const end = start + this.pageSize;
+  this.usersDataSource.data = sorted.slice(start, end);
+}
+
+private getSortValue(row: EmpleadoItem, column: string): string | number {
+  switch (column) {
+    case 'id': return row.id ?? 0;
+    case 'nombreCompleto': return (row.nombreCompleto ?? '').toLowerCase();
+    case 'empleado': return (row.empleado ?? '').toLowerCase();
+    case 'rolesName': return (row.rolesName ?? row.rolesname ?? '').toLowerCase();
+    case 'parentModulesName': return (row.parentModulesName ?? row.parentmodulesname ?? '').toLowerCase();
+    case 'childModulesName': return (row.childModulesName ?? row.childmodulesname ?? '').toLowerCase();
+    default: return '';
+  }
+}
 
   openAltaUsuarioDialog(): void {
     const ref = this.dialog.open(AltaUsuarioDialog, {
@@ -133,9 +178,7 @@ export class GestionUsuarios {
   }
 
   ngAfterViewInit() {
-    if (this.paginator) {
-      this.usersDataSource.paginator = this.paginator;
-    }
+    // NO conectar paginator/sort integrado - usamos paginación manual
   }
 
   private showSnack(message: string, action: string, duration: number): void {
@@ -145,8 +188,6 @@ export class GestionUsuarios {
       }, 50);
     });
   }
-
-
 
   // consumir endpoint de roles
   loadRoles(): void {
@@ -186,13 +227,11 @@ export class GestionUsuarios {
           } as EmpleadoItem;
         });
 
-        this.usersDataSource = new MatTableDataSource<EmpleadoItem>(this.empleados);
-          setTimeout(() => {
-            this.usersDataSource.sort = this.sort!;
-            this.usersDataSource.paginator = this.paginator!;
-            this.sort!.sort({ id: 'id', start: 'desc', disableClear: false });
-          });
-        this.totalElements = this.empleados.length;
+        // Llenar allUsers para paginación manual
+        this.allUsers = this.empleados;
+        this.totalUsers = this.allUsers.length;
+        this.pageIndex = 0;
+        this.applyTableState();
         this.cd.markForCheck();
       },
       error: (err) => {
@@ -218,10 +257,7 @@ export class GestionUsuarios {
   }
 
   private splitList(value: string): string[] {
-    return value
-      .split(',')
-      .map(item => item.trim())
-      .filter(item => !!item);
+    return value.split(',').map(item => item.trim()).filter(item => !!item);
   }
 
   buscarUsuario(): void {
@@ -269,12 +305,11 @@ export class GestionUsuarios {
       this.resultado = filtrados;
       this.cargandoBusqueda = false;
 
-       this.usersDataSource = new MatTableDataSource<EmpleadoItem>(filtrados);
-        setTimeout(() => {
-          this.usersDataSource.sort = this.sort!;
-          this.usersDataSource.paginator = this.paginator!;
-        });
-      this.totalElements = filtrados.length;
+      // Llenar allUsers con filtrados para paginación manual
+      this.allUsers = filtrados;
+      this.totalUsers = this.allUsers.length;
+      this.pageIndex = 0;
+      this.applyTableState();
 
       if (this.resultado.length > 0) {
         this.autocompleteTrigger?.openPanel();
@@ -461,17 +496,14 @@ export class GestionUsuarios {
     this.resultado = [];
     this.empleadoActual = null;
     this.selectedRoles = [];
-    this.usersDataSource = new MatTableDataSource<EmpleadoItem>(this.empleados);
-      setTimeout(() => {
-        this.usersDataSource.sort = this.sort!;
-        this.usersDataSource.paginator = this.paginator!;
-      });
-    this.totalElements = this.empleados.length;
+    
+    // Restaurar allUsers desde empleados originales
+    this.allUsers = [...this.empleados];
+    this.totalUsers = this.allUsers.length;
+    this.pageIndex = 0;
+    this.applyTableState();
+    
     this.autocompleteTrigger?.closePanel();
-    this.dataSource.data = [];
-    this.paginator?.firstPage?.();
     this.cd.markForCheck();
   }
-
-
 }

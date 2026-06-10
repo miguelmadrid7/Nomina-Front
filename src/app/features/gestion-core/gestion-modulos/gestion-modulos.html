@@ -19,7 +19,7 @@
         <div class="table-card card">  
             <div class="table-content">
                 <div class="table-scroll">
-                    <table mat-table [dataSource]="modules" matSort (matSortChange)="sortModules($event)" class="table-global">
+                    <table mat-table [dataSource]="modules" matSort (matSortChange)="onSortChange($event)" class="table-global">
                             <!-- Nombre -->
                             <ng-container matColumnDef="name">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header> NOMBRE </th>
@@ -68,14 +68,17 @@
                         <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.inactive-row]="row?.status === 'INACTIVO'" [style.font-weight]="isParentModule(row) ? '700' : null" [attr.aria-disabled]="row?.status === 'INACTIVO'"> </tr>
                     </table>
+
+                </div>
+                <div class="table-footer">
                     <mat-paginator
-                        [length]="totalElements"
-                        [pageSize]="50"
+                        [length]="totalModules"
+                        [pageSize]="pageSize"
+                        [pageIndex]="pageIndex"
                         [pageSizeOptions]="[50, 100, 150, 200]"
                         showFirstLastButtons
-                        aria-label="Select page">
+                        (page)="onPageChange($event)">
                     </mat-paginator>
-
                 </div>
             </div>
         </div>

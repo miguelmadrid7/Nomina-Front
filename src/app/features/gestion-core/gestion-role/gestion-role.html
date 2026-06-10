@@ -54,15 +54,18 @@
                                     </button> </td>
                             </ng-container>
 
-                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
                             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
                         </table>
 
+                    </div>
+                    <div class="table-footer">
                         <mat-paginator
                             [length]="totalRoles"
                             [pageSize]="pageSize"
                             [pageIndex]="pageIndex"
                             [pageSizeOptions]="[5,10,25,50]"
+                            showFirstLastButtons
                             (page)="onPageChange($event)">
                         </mat-paginator>
                     </div>

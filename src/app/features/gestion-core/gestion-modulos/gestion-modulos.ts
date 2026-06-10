@@ -33,11 +33,16 @@ export class GestionModulos {
   displayedColumns: string[] = ['name','description','vista','parent','icon','actions'];
   modules = new MatTableDataSource<Module>([]);
   loading = false;
-  totalElements = 0;
   selectedModule: Module | null = null;
   detailLoading = false;
   loadingModuleId: number | null = null;
   private allModules: Module[] = [];
+
+  // Paginación manual
+  totalModules = 0;
+  pageSize = 10;
+  pageIndex = 0;
+  activeSort: Sort = { active: '', direction: '' };
 
   constructor(private moduleService: ModuleService, private zone: NgZone, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef, private dialog: MatDialog,) {}
 
@@ -54,39 +59,40 @@ export class GestionModulos {
   }
 
   ngAfterViewInit(): void {
-    this.modules.sortingDataAccessor = (data: Module, sortHeaderId: string): string | number => {
-      switch (sortHeaderId) {
-        case 'vista':
-          return data.vista ? 1 : 0;
-        default:
-          return ((data as any)[sortHeaderId] ?? '').toString().toLowerCase();
-      }
-    };
-
-    this.attachTableControllers();
+    // NO conectar paginator integrado - usamos paginación manual
   }
 
-  private attachTableControllers(): void {
-    if (this.paginator) {
-      this.modules.paginator = this.paginator;
+  onSortChange(sort: Sort): void {
+    this.activeSort = sort.direction ? sort : { active: '', direction: '' };
+    this.pageIndex = 0;
+    this.applyTableState();
+  }
+
+  onPageChange(event: { pageIndex: number; pageSize: number }): void {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.applyTableState();
+  }
+
+  private applyTableState(): void {
+    // 1) Ordenar si hay sort activo
+    let sorted = [...this.allModules];
+    if (this.activeSort.active && this.activeSort.direction) {
+      const isAsc = this.activeSort.direction === 'asc';
+      sorted = sorted.sort((a, b) => 
+        this.compare(this.getSortValue(a, this.activeSort.active), this.getSortValue(b, this.activeSort.active), isAsc)
+      );
     }
+
+    // 2) Agrupar por padre
+    const grouped = this.groupModulesByParent(sorted);
+
+    // 3) Slice para paginación
+    const start = this.pageIndex * this.pageSize;
+    const end = start + this.pageSize;
+    this.modules.data = grouped.slice(start, end);
   }
 
-  sortModules(sort: Sort): void {
-    const data = [...this.allModules];
-
-    if (!sort.active || sort.direction === '') {
-      this.modules.data = this.groupModulesByParent(data);
-      return;
-    }
-
-    const sortedData = data.sort((a, b) => {
-      const isAsc = sort.direction === 'asc';
-      return this.compare(this.getSortValue(a, sort.active), this.getSortValue(b, sort.active), isAsc);
-    });
-
-    this.modules.data = this.groupModulesByParent(sortedData);
-  }
 
   private getSortValue(module: Module, column: string): string | number {
     switch (column) {
@@ -160,15 +166,16 @@ export class GestionModulos {
     this.moduleService.getAllModules().subscribe({
       next: (modules) => {
         this.allModules = [...modules];
-        this.modules.data = this.groupModulesByParent(this.allModules);
-        this.totalElements = modules.length;
+        this.totalModules = this.allModules.length;
+        this.pageIndex = 0;
+        this.applyTableState();
         this.loading = false;
-        this.attachTableControllers();
         this.cdr.markForCheck();
       },
       error: () => {
+        this.allModules = [];
         this.modules.data = [];
-        this.totalElements = 0;
+        this.totalModules = 0;
         this.loading = false;
         this.showSnack('No se pudieron cargar los módulos.', 'Cerrar', 4000);
         this.cdr.markForCheck();
