@@ -11,7 +11,7 @@
   </div>
 
   <div class="dialog-actions">
-    <button class="btn btn-danger" (click)="cancel()">{{ data.cancelText || 'Cancelar' }}</button>
+    <button *ngIf="data.cancelText" class="btn btn-danger" (click)="cancel()">{{ data.cancelText }}</button>
     <button class="btn btn-primary" (click)="confirm()">{{ data.confirmText || 'Aceptar' }}</button>
   </div>
 </div>
