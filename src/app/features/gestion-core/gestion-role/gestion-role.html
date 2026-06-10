@@ -5,32 +5,31 @@
 
     <div class="section-divider"></div>
 
-    <div class="actions-right">
+    <div class="actions-bar">
         <div class="btn-group">
-            <button class="btn btn-success" type="button" (click)="openAltaRoleDialog()">
+            <button class="btn btn-primary" type="button" (click)="openAltaRoleDialog()">
                 <mat-icon>add</mat-icon>
                 <span>Agregar</span>
             </button>
         </div>
     </div>
 
-    <div class="table-layout">
-        <div class="table-section">
-            <div class="table-card card">
-                <div class="table-content">
-                    <div class="table-scroll">
-                        <table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="asc" (matSortChange)="onSortChange($event)" class="table-global">
+    <div class="table-container">
+        <div class="table-card card">
+            <div class="table-content">
+                <div class="table-scroll">
+                    <table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="asc" (matSortChange)="onSortChange($event)" class="table-global">
 
-                            <ng-container matColumnDef="id">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header = "id"> ID </th>
-                                <td mat-cell *matCellDef="let row"> {{ row.id }} </td>
-                            </ng-container>
+                        <ng-container matColumnDef="id">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header = "id"> ID </th>
+                            <td mat-cell *matCellDef="let row"> 
+                                <span class="badge-year">{{ row.id }}</span>
+                            </td>
+                        </ng-container>
 
                             <ng-container matColumnDef="rol">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header = "name"> ROL </th>
-                                <td mat-cell *matCellDef="let row" class="rol-cell"> 
-                                    {{ row.name }} 
-                                </td>
+                                <td mat-cell *matCellDef="let row" class="rol-cell"> {{ row.name }} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="padre">
@@ -71,6 +70,6 @@
                     </div>
                 </div>
             </div>
-        </div>
+        
     </div>
 </div>

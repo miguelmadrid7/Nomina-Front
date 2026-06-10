@@ -5,22 +5,24 @@
 
     <div class="section-divider"></div>
 
-    <div class="actions-right">
-        <div class="btn-group">
-            <button class="btn btn-danger" (click)="clearFilters()">
-                <mat-icon>delete_outline</mat-icon>
-                <span>Limpiar</span>
+    <div class="actions-bar">
+        <div class="actions-right">
+            <div class="btn-group">
+                <button class="btn btn-danger" (click)="clearFilters()">
+                    <mat-icon>delete_outline</mat-icon>
+                    <span>Limpiar</span>
+                </button>
+            </div>
+            <button class="btn btn-primary" (click)="buscarUsuario()">
+                <mat-icon>search</mat-icon>
+                <span>Buscar</span>
+            </button>
+
+            <button class="btn btn-success" type="button" (click)="openAltaUsuarioDialog()">
+                <mat-icon>person_add</mat-icon>
+                <span>Agregar</span>
             </button>
         </div>
-        <button class="btn btn-primary" (click)="buscarUsuario()">
-            <mat-icon>search</mat-icon>
-            <span>Buscar</span>
-        </button>
-
-        <button class="btn btn-success" type="button" (click)="openAltaUsuarioDialog()">
-            <mat-icon>person_add</mat-icon>
-            <span>Agregar</span>
-        </button>
     </div>
 
     <form [formGroup]="form">
@@ -46,15 +48,16 @@
         </div>
     </form>
 
-    <div class="table-layout">
-        <div class="table-section">
-            <div class="table-card card">
-                <div class="table-content">
-                    <div class="table-scroll">
-                         <table mat-table [dataSource]="usersDataSource" matSort matSortActive="id" matSortDirection="asc" (matSortChange)="onSortChange($event)" class="table-global">
+    <div class="table-container">
+        <div class="table-card card">
+            <div class="table-content">
+                <div class="table-scroll">
+                    <table mat-table [dataSource]="usersDataSource" matSort matSortActive="id" matSortDirection="asc" (matSortChange)="onSortChange($event)" class="table-global">
                             <ng-container matColumnDef="id">
                                 <th mat-header-cell *matHeaderCellDef mat-sort-header="id"> ID </th>
-                                <td mat-cell *matCellDef="let row"> {{ row.id }} </td>
+                                <td mat-cell *matCellDef="let row"> 
+                                    <span class="badge-year">{{ row.id }}</span>
+                                 </td>
                             </ng-container>
 
                             <ng-container matColumnDef="nombreCompleto">
@@ -112,19 +115,19 @@
                             <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
                             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
                          </table>
-                    </div>
-                    <div class="table-footer">
-                        <mat-paginator
-                            [length]="totalUsers"
-                            [pageSize]="pageSize"
-                            [pageIndex]="pageIndex"
-                            [pageSizeOptions]="[5,10,25,50]"
-                            showFirstLastButtons
-                            (page)="onPageChange($event)">
-                        </mat-paginator>
-                    </div>
+                </div>
+                <div class="table-footer">
+                    <mat-paginator
+                        [length]="totalUsers"
+                        [pageSize]="pageSize"
+                        [pageIndex]="pageIndex"
+                        [pageSizeOptions]="[5,10,25,50]"
+                        showFirstLastButtons
+                        (page)="onPageChange($event)">
+                    </mat-paginator>
                 </div>
             </div>
         </div>
+       
     </div>
 </div>
