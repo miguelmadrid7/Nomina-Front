@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, NgZone } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, NgZone, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -18,6 +18,7 @@ import { LoaderService } from '../../../core/services/loader.service';
 import { finalize } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
+import { buildQnaCode, groupNominaRows, mapRawRowToNominaRow } from '../../../shared/helpers/nomina.helper';
 
 @Component({
   selector: 'app-nomina-ordinaria',
@@ -43,6 +44,7 @@ import { UppercaseDirective } from "../../../shared/directives/upperCase.directi
 })
 export class NominaOrdinaria implements OnInit, AfterViewInit {
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<NominaRow>([]);
   displayedColumns: string[] = ['curp', 'rfc', 'nombreEmpleado', 'qnaProceso', 'clavePlaza', 'baseCalculoIsr', 'conceptoDetalle',];
 
@@ -51,33 +53,20 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
   anioSeleccionado: number | null = null;
   quincenaSeleccionada: number | null = null;
   search: string = '';
-
   qnaProceso!: number;
-  empleadoId?: number;
-  nivelSueldo?: number;
-  concepto?: string[];
-  tipoConcepto?: string;
   totalElements = 0;
-
   showRecords = true;
 
-
-  // Control de refrescos y QNA
   private isRefreshing = false;
   private filtersReady = true;
   private lastQnaKey: string | null = null;
   private qnaDebounceId: any;
 
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-
-  constructor(
-    private nominaService: NominaService,
-    private loaderService: LoaderService,
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar,
-    private zone: NgZone
-  ) {}
+  private readonly nominaService = inject(NominaService);
+  private readonly loaderService = inject(LoaderService);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly zone = inject(NgZone);
 
   ngOnInit(): void {
     this.dataSource.filterPredicate = (data: any, filter: string) => {
@@ -145,17 +134,13 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
   }
 
   loadNomina(): void {
-    const qna = this.anioSeleccionado && this.quincenaSeleccionada
-      ? parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada.toString().padStart(2,'0')}`, 10)
-      : null;
-
-    if (!qna) {
+    if (!this.anioSeleccionado || !this.quincenaSeleccionada) {
       this.dataSource.data = [];
-      this.totalElements = 0;
+      this.totalElements   = 0;
       return;
     }
-    this.qnaProceso = qna;
-    this.lastQnaKey = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
+    this.qnaProceso  = buildQnaCode(this.anioSeleccionado, this.quincenaSeleccionada);
+    this.lastQnaKey  = `${this.anioSeleccionado}-${this.quincenaSeleccionada}`;
     this.getNomina();
   }
 
@@ -163,7 +148,6 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
     if (this.isRefreshing) return;
       this.isRefreshing = true;
       this.loaderService.show();
-
       this.nominaService.getNominaCheque().pipe(
         finalize(() => {
           this.loaderService.hide();
@@ -175,65 +159,21 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
             this.showSnack(response.message || 'Error', 'Cerrar', 4000);
             return;
           }
-
-      const raw = response?.data ?? [];
-      const mapped: NominaRow[] = raw.map((row: any[]) => ({
-        noComprobante: row[0],
-        ur: row[1],
-        periodo: row[2],
-        qnaProceso: (() => {
-          const per = String(row[2] ?? '');
-          const m = per.match(/^(\d{1,2})\/(\d{4})$/);
-          if (m) {
-            const q = m[1].padStart(2,'0');
-            const y = m[2];
-            return parseInt(`${y}${q}`, 10);
-          }
-          return null;
-        })(),
-          tipoNomina: row[3],
-          clavePlaza: row[4],
-          curp: row[5],
-          rfc: row[6],
-          nombreEmpleado: `${row[7]} ${row[8]} ${row[9]}`,
-          tipoConcepto: row[10],
-          concepto: row[11],
-          descConcepto: row[12],
-          importe: Number(row[13]) || 0,
-          baseCalculoIsr: Number(row[14]) || 0
-        })
+      const targetQna = buildQnaCode(this.anioSeleccionado!, this.quincenaSeleccionada!);
+      const grouped = groupNominaRows(
+        (response?.data ?? [])
+          .map(mapRawRowToNominaRow)
+          .filter((r: NominaRow) => r.qnaProceso === targetQna)
       );
-
-      const targetQna = parseInt(`${this.anioSeleccionado}${this.quincenaSeleccionada?.toString().padStart(2,'0')}`, 10);
-      const filtered = mapped.filter(r => r.qnaProceso === targetQna);
-
-      // Agrupar por empleado/comprobante para evitar duplicados en la tabla
-      const groupedMap = filtered.reduce((map, r) => {
-        const key = `${r.rfc}|${r.curp}|${r.qnaProceso}|${r.noComprobante}`;
-        if (!map.has(key)) {
-          map.set(key, { ...r, detalles: [] as NominaRow['detalles'] });
-        }
-        const holder = map.get(key)!;
-        holder.detalles!.push({
-          noComprobante: r.noComprobante,
-          tipoConcepto: r.tipoConcepto,
-          concepto: r.concepto,
-          importe: r.importe,
-        });
-        return map;
-      }, new Map<string, NominaRow>());
-
-      const grouped = Array.from(groupedMap.values());
-
       this.dataSource.data = grouped;
-      this.totalElements = grouped.length;
+      this.totalElements   = grouped.length;
     },
-    error: () => {
-      this.dataSource.data = [];
-      this.totalElements = 0;
-      this.showSnack('Error al obtener la nómina', 'Cerrar', 4000);
-    }
-  });
+      error: () => {
+        this.dataSource.data = [];
+        this.totalElements   = 0;
+        this.showSnack('Error al obtener la nómina', 'Cerrar', 4000);
+      },
+    });
   }
 
   openConceptosDialog(row: any) {
