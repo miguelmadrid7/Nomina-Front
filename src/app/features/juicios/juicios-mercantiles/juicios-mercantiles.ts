@@ -23,6 +23,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSortModule } from '@angular/material/sort';
+import { formatBeneficiarioJMDisplay, mapBeneficiarioJM, repartirNombre } from '../../../shared/helpers/beneficiario-jm.helper';
 
 @Component({
   selector: 'app-juicios-mercantiles',
@@ -204,12 +205,13 @@ export class JuiciosMercantiles {
         const lista = resp?.data ?? [];
 
         // Filtra entradas sin datos útiles para evitar “— · — · — · —”
-        this.resultado = lista.filter(e =>
-          (e?.rfc && e.rfc.trim()) ||
-          (e?.primerApellido && e.primerApellido.trim()) ||
-          (e?.segundoApellido && e.segundoApellido.trim()) ||
-          (e?.nombre && e.nombre.trim())
-        );
+        this.resultado = lista.map(mapBeneficiarioJM)
+          .filter(e =>
+            e.rfc.trim() ||
+            e.primerApellido.trim() ||
+            e.segundoApellido.trim() ||
+            e.nombre.trim()
+          );
 
         this.cargandoBusqueda = false;
         if (this.resultado.length > 0) {
@@ -226,73 +228,29 @@ export class JuiciosMercantiles {
   }
 
   empleadoSeleccionado(emp: BeneficiarioJMRequest) {
-  const partes = this.repartirNombre(emp);
+    const partes = repartirNombre(emp);
+    this.form.patchValue({
+      busqueda:{
+        empleadoId: Number(emp.id),
+        searchText: emp
+      },
+      empleado: {
+        rfc: emp.rfc ?? '',
+        primerApellido: partes.primerApellido,
+        segundoApellido: partes.segundoApellido,
+        nombre: partes.nombre
+      }
+    });
 
-  this.form.patchValue({
-    busqueda:{
-      empleadoId: Number(emp.id),
-      searchText: emp
-    },
-    empleado: {
-      rfc: emp.rfc ?? '',
-      primerApellido: partes.primerApellido,
-      segundoApellido: partes.segundoApellido,
-      nombre: partes.nombre
+    this.resultado = [];
+    this.autocompleteTrigger?.closePanel();
+
+    if (emp.id) {
+      this.cargarBeneficiarios(emp.id);
     }
-  });
-
-  this.resultado = [];
-  this.autocompleteTrigger?.closePanel();
-
-  if (emp.id) {
-    this.cargarBeneficiarios(emp.id);
-  }
   }
 
-  displayEmpleado(emp: BeneficiarioJMRequest | string | null): string {
-  if (!emp) return '';
-  if (typeof emp === 'string') return emp;
-
-  const isCode = (s?: string) => !!s && /^[A-Z0-9]{13,18}$/.test(s.trim());
-
-  const fullName = [emp.primerApellido, emp.segundoApellido, emp.nombre]
-    .filter(x => x && !isCode(x))
-    .join(' ')
-    .replace(/\s{2,}/g, ' ')
-    .trim();
-
-  // Si no hay nombre limpio, muestra solo RFC; si lo hay, RFC - Nombre
-  return [emp.rfc || '', fullName || ''].filter(Boolean).join(' - ');
-  }
-
-  private limpiarNombreCompleto(s?: string): string {
-    const raw = (s ?? '').toString().replace(/\s{2,}/g, ' ').trim();
-    if (!raw) return '';
-    const lastSeg = raw.split('-').map(x => x.trim()).filter(Boolean).pop() ?? raw;
-    const sinCodigosInicio = lastSeg.replace(/^(?:[A-Z0-9]{13,18}\s*)+/, '').trim();
-    return sinCodigosInicio.replace(/\s{2,}/g, ' ').trim();
-  }
-
-  private repartirNombre(emp: BeneficiarioJMRequest): { primerApellido: string; segundoApellido: string; nombre: string } {
-    const limpia = (x?: string) => (x ?? '').toString().trim().replace(/\s{2,}/g, ' ');
-    let pa = limpia(emp.primerApellido);
-    let sa = limpia(emp.segundoApellido);
-    let no = limpia(emp.nombre);
-
-    no = this.limpiarNombreCompleto(no);
-    if (pa && sa && no) return { primerApellido: pa, segundoApellido: sa, nombre: no };
-    const tokens = no.split(/\s+/).filter(Boolean);
-
-    if ((!pa || !sa) && tokens.length >= 3) {
-      if (!pa) pa = tokens[0];
-      if (!sa) sa = tokens[1];
-      no = tokens.slice(2).join(' ');
-    } else if ((!pa || !no) && tokens.length === 2) {
-      if (!pa) pa = tokens[0];
-      no = tokens[1];
-    }
-    return { primerApellido: limpia(pa), segundoApellido: limpia(sa), nombre: limpia(no) };
-  }
+  readonly displayFn = (emp: BeneficiarioJMRequest | string | null): string =>  formatBeneficiarioJMDisplay(emp);
 
   guardar(): void {
     if (this.form.invalid) {
@@ -475,7 +433,7 @@ export class JuiciosMercantiles {
 
     }
   });
-}
+  }
 
   
   clearFilters(): void {
@@ -508,4 +466,3 @@ export class JuiciosMercantiles {
     this.cd.markForCheck();
   }
 }
-
