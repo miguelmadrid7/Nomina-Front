@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -29,6 +29,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { LiquidoResponse } from '../../../models/response/liquido-response.model';
 import { BeneficiarioRequest } from '../../../models/request/beneficiario-request.model';
+import { formatEmployeeDisplay, mapEmpleado } from '../../../shared/helpers/empelado.helper';
 
 @Component({
   selector: 'app-pension-alimenticia',
@@ -71,12 +72,10 @@ export class PensionAlimenticia {
   porcentajeDisponible = 100;
   beneficiariosCapturados: number[] = [];  
 
-  constructor(
-    private fb: FormBuilder, 
-    private pensionAlimenticiaService: PensionAlimenticiaService, 
-    private dialog: MatDialog,
-    private cdr: ChangeDetectorRef,
-  ) {}
+  private readonly  fb = inject(FormBuilder); 
+  private readonly  pensionAlimenticiaService = inject(PensionAlimenticiaService); 
+  private readonly  dialog = inject(MatDialog); 
+  private readonly  cdr = inject(ChangeDetectorRef); 
 
   ngOnInit (): void {
     this.loadBanksCatalog();
@@ -125,31 +124,16 @@ export class PensionAlimenticia {
     return parseInt(ultimos2, 10) || 0;
   }
 
-  readonly displayFn = (emp: EmpleadoItem | string | null): string => {
-      return this.displayEmployee(emp);
-  };
+  readonly displayFn = (emp: EmpleadoItem | string | null): string => formatEmployeeDisplay(emp);
 
   chartOptions: any = {
     series: [100],
-    chart: {
-      type: 'radialBar',
-      height: 200,
-      sparkline: { enabled: true },
-    },
+    chart: { type: 'radialBar', height: 200,sparkline: { enabled: true }, },
     plotOptions: {
-      radialBar: {
-        startAngle: -90,
-        endAngle: 90,
-        hollow: { size: '60%' },
-        track: { margin: 0 },
-
+      radialBar: { startAngle: -90, endAngle: 90, hollow: { size: '60%' }, track: { margin: 0 },
         dataLabels: {
           name: { show: false },
-          value: {
-            fontSize: '28px',
-            offsetY: 1,
-            formatter: (val: number) => `${Math.round(val)}%`
-          }
+          value: { fontSize: '28px',  offsetY: 1, formatter: (val: number) => `${Math.round(val)}%` }
         }
       }
     },
@@ -162,18 +146,10 @@ export class PensionAlimenticia {
     this.renderChartFromDisponible();
   }
 
-  displayEmployee (emp: EmpleadoItem | string | null): string {
-    if (!emp) return '';
-    if (typeof emp === 'string') return emp;
-    const rfc  = (emp.rfc ?? emp.RFC ?? '').toString().trim() || '—';
-    const curp = (emp.curp ?? emp.CURP ?? '').toString().trim() || '—';
-    const nombre = (emp.nombreCompleto ?? '').toString().trim() || '—';
-    return `${rfc} · ${curp} · ${nombre}`;
-  }
-
   onOptionSelected (emp: EmpleadoItem) {
+    this.empleadoId = emp.id ?? null;
     this.selectEmployee(emp);
-    this.form.get('searchText')?.setValue(this.displayEmployee(emp));
+    this.form.get('searchText')?.setValue(formatEmployeeDisplay(emp));
   }
 
   searchEmployee () {
@@ -183,60 +159,23 @@ export class PensionAlimenticia {
       return;
     }
     this.cargandoBusqueda = true;
-
     // deja pasar si es RFC/CURP parcial con >=3
     const targetRFC  = esRFC(q)  ? 'RFC'  : null;
     const targetCURP = esCURP(q) ? 'CURP' : null;
-
     if (q.length < 3 && !esRFC(q) && !esCURP(q)) {
       this.resultados = [];
       this.cargandoBusqueda = false;
       return;
     }
-
     const obs =
       (esRFC(q) || (targetRFC && q.length >= 3))  ? this.pensionAlimenticiaService.searchPorTarget('RFC', q)  :
       (esCURP(q) || (targetCURP && q.length >= 3))? this.pensionAlimenticiaService.searchPorTarget('CURP', q) :
                                                     this.pensionAlimenticiaService.searchEmpleadoLibre(q);
-
-
     obs.subscribe({
       next: (resp: ApiResponse<Empleado | Empleado[]>) => {
         const d = resp?.data;
         const arr = Array.isArray(d) ? d : (d ? [d] : []);
-
-        this.resultados = arr.map((emp: EmpleadoItem) => {
-            let rfc = (emp?.rfc ?? emp?.RFC ?? '').toString().trim();
-            let curp = (emp?.curp ?? emp?.CURP ?? '').toString().trim();
-            const concatenado = (emp?.empleado ?? '').toString().trim();
-
-            // Si el backend mandó todo en "empleado"
-            if ((!rfc || !curp) && concatenado.includes('-')) {
-              const partes = concatenado.split('-').map(p => p.trim());
-              if (partes.length >= 3) {
-                rfc = rfc || partes[0];
-                curp = curp || partes[1];
-              }
-            }
-
-            const pa = (emp?.primer_apellido ?? emp?.primerApellido ?? '').toString().trim();
-            const sa = (emp?.segundo_apellido ?? emp?.segundoApellido ?? '').toString().trim();
-            const no = (emp?.nombre ?? '').toString().trim();
-            const nombre = (
-                [pa, sa, no].filter(Boolean).join(' ') ||
-                (concatenado.includes('-') ? concatenado.split('-').slice(2).join('-').trim() : concatenado)
-              )
-              .replace(/\s+/g, ' ')
-              .trim();
-
-            return {
-              ...emp,
-              rfc,
-              curp,
-              nombreCompleto: nombre
-            } as EmpleadoItem;
-          });
-
+        this.resultados = arr.map(mapEmpleado);
         this.cargandoBusqueda = false;
         setTimeout(() => {
           if (!this.autocompleteTrigger) return;
@@ -260,11 +199,8 @@ export class PensionAlimenticia {
         this.empleadoId = null;
         return;
     }
-
     this.empleadoId = emp.id;
     const rfc = (emp.rfc ?? emp.RFC ?? '').toString().trim();
-
-    // Porcentaje acumulado por RFC — considera todas las plazas (regla del SP)
     if (rfc) {
         this.pensionAlimenticiaService.getPorcentajeAcumuladoByRfc(rfc).subscribe({
             next: (porcentajeAcumulado: number) => {
@@ -272,46 +208,43 @@ export class PensionAlimenticia {
                 this.renderChartFromDisponible();
             },
             error: () => {
-                // Fallback: calcular localmente si el endpoint del SP aún no existe
               if (emp.id) {
                 this.cargarPorcentajeDisponible(emp.id);
               }
             }
         });
-
-        // Líquido y concepto 07 por RFC
         this.cargarLiquidoByRfc(rfc);
     } else {
         this.cargarPorcentajeDisponible(emp.id);
     }
-}
+  }
 
-private cargarLiquidoByRfc(rfc: string): void {
+  private cargarLiquidoByRfc(rfc: string): void {
     this.cargandoLiquido = true;
-    this.liquidoInfo     = null;
-    this.liquidoError    = null;
+    this.liquidoInfo = null;
+    this.liquidoError = null;
 
     this.pensionAlimenticiaService.getLiquidoByRfc(rfc).subscribe({
-        next: (resp) => {
-            if (resp.success && resp.data?.plazas?.length) {
-                resp.data.plazas.sort((a, b) => this.getHorasFromPlaza(b.clavePlaza) - this.getHorasFromPlaza(a.clavePlaza));
-                this.liquidoInfo  = resp.data;
-                this.liquidoError = null;
-            } else {
-                this.liquidoInfo  = null;
-                this.liquidoError = resp.message ?? 'No se encontró información de nómina.';
-            }
-            this.cargandoLiquido = false;
-            this.cdr.detectChanges();
-        },
-        error: () => {
-            this.liquidoInfo     = null;
-            this.liquidoError    = 'No se pudo obtener la información de nómina.';
-            this.cargandoLiquido = false;
-            this.cdr.detectChanges();
+      next: (resp) => {
+        if (resp.success && resp.data?.plazas?.length) {
+          resp.data.plazas.sort((a, b) => this.getHorasFromPlaza(b.clavePlaza) - this.getHorasFromPlaza(a.clavePlaza));
+            this.liquidoInfo  = resp.data;
+            this.liquidoError = null;
+        } else {
+          this.liquidoInfo  = null;
+          this.liquidoError = resp.message ?? 'No se encontró información de nómina.';
         }
+          this.cargandoLiquido = false;
+            this.cdr.detectChanges();
+      },
+        error: () => {
+          this.liquidoInfo = null;
+          this.liquidoError = 'No se pudo obtener la información de nómina.';
+          this.cargandoLiquido = false;
+          this.cdr.detectChanges();
+          }
     });
-}
+  }
 
   private renderChartFromDisponible(): void {
     this.chartOptions = withChartPercent(this.chartOptions, this.porcentajeDisponible);
