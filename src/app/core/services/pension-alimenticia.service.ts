@@ -8,7 +8,7 @@ import { BeneficiarioDetalleResponse } from '../../models/response/beneficiariod
 import { BeneficiarioRequest } from '../../models/request/beneficiario-request.model';
 import { IdResponse } from '../../models/response/id-response.model';
 import { BeneficiarioAlimRequest } from '../../models/request/beneficiarioalim-request.model';
-import { catchError, map, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Empleado } from '../../features/servicios/empleado';
 import { LiquidoResponse } from '../../models/response/liquido-response.model';
 
@@ -55,19 +55,13 @@ export class PensionAlimenticiaService {
         return this.http.get<ApiResponse<BeneficiarioDetalleResponse[]>>(`${this.base}/beneficiarios/${id}`);
     }
 
-    getBeneficiaryByEmployee(empleadoId: number): Observable<ApiResponse<BeneficiarioDTO[]>> {
-        return this.http.get< ApiResponse<BeneficiarioDTO[]>>(`${this.base}/empleado/${empleadoId}` );
+    getBeneficiaryByEmployee(empleadoId: number): Observable<ApiResponse<{
+        empleadoId: number; beneficiarios: BeneficiarioDTO[];  porcentajeAcumulado: number;  porcentajeDisponible: number; }>> {
+            return this.http.get<any>(`${this.base}/empleado/${empleadoId}`);
     }
 
     getLiquidoByRfc(rfc: string): Observable<ApiResponse<LiquidoResponse>> {
         return this.http.get<ApiResponse<LiquidoResponse>>(`${this.base}/calculation/nomina-cheque/liquido/${rfc}`);
-    }
-
-     getPorcentajeAcumuladoByRfc(rfc: string): Observable<number> {
-        return this.http.get<ApiResponse<{ porcentajeAcumulado: number }>>( `${this.base}/beneficiarios/porcentaje/${rfc}`).pipe(
-            map(resp => resp.data.porcentajeAcumulado),
-            catchError(() => of(0))
-        );
     }
 
     updateBeneficiario(id: number, payload: BeneficiarioRequest): Observable<ApiResponse<any>> {
