@@ -11,6 +11,7 @@ import { BeneficiarioAlimRequest } from '../../models/request/beneficiarioalim-r
 import { Observable } from 'rxjs';
 import { Empleado } from '../../features/servicios/empleado';
 import { LiquidoResponse } from '../../models/response/liquido-response.model';
+import { BeneficiarioEmpleadoResponse } from '../../models/response/beneficiarioempleado-response.model';
 
 
 
@@ -55,9 +56,8 @@ export class PensionAlimenticiaService {
         return this.http.get<ApiResponse<BeneficiarioDetalleResponse[]>>(`${this.base}/beneficiarios/${id}`);
     }
 
-    getBeneficiaryByEmployee(empleadoId: number): Observable<ApiResponse<{
-        empleadoId: number; beneficiarios: BeneficiarioDTO[];  porcentajeAcumulado: number;  porcentajeDisponible: number; }>> {
-            return this.http.get<any>(`${this.base}/empleado/${empleadoId}`);
+    getBeneficiaryByEmployee(empleadoId: number): Observable<ApiResponse<BeneficiarioEmpleadoResponse>> {
+        return this.http.get<ApiResponse<BeneficiarioEmpleadoResponse>>(`${this.base}/empleado/${empleadoId}`);
     }
 
     getLiquidoByRfc(rfc: string): Observable<ApiResponse<LiquidoResponse>> {

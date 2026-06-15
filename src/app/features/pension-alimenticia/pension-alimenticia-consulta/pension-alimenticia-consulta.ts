@@ -148,7 +148,7 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
     this.cargando = true;
     this.pensionAlimenticiaService.getBeneficiaryByEmployee(this.empleadoId).subscribe({
       next: (resp) => {
-        const datos: BeneficiarioDTO[] = (resp?.data as any)?.beneficiarios ?? [];
+        const datos: BeneficiarioDTO[] = resp?.data?.beneficiarios ?? [];
         
         datos.sort((a, b) => {
           const na = `${a.empleado?.primerApellido ?? ''} ${a.empleado?.segundoApellido ?? ''} ${a.empleado?.nombre ?? ''}`;
