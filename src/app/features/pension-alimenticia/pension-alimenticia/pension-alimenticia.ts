@@ -92,21 +92,17 @@ export class PensionAlimenticia {
         nombreCompleto: ['', [Validators.required, Validators.minLength(2)]],
         rfc: ['', [Validators.required,Validators.pattern(/^.{13}$/)]],
         formaAplicacion: ['', Validators.required],
-
         aplicarDescuento: [false], 
         montoTotal: [{ value: null, disabled: true }],
         aplicarDescuentoAguinaldo: [false],
         tipoPorcentaje: [null],
         tipoBase: [null],
-
         numeroOficio: ['',[Validators.required,Validators.pattern(/^[A-Z0-9\/\-]+$/)]],
         factorImporte: [null, [Validators.required, factorImporteValidator()]],
         bancoSeleccionado: [null],
         numeroDocumento: [null, [Validators.pattern(/^\d{18}$/)]],
         vigenciaInicio: [aaaaqq.toString(), [Validators.required, vigenciaFormatoValidator()]],
-      },
-      { validators: [ factorImporteValidator() ] }
-      );
+      });
   }
 
   get f(){
@@ -281,6 +277,14 @@ export class PensionAlimenticia {
 
   saveEmployee () {
     if (this.guardando) return;
+
+    console.log('Form válido:', this.form.valid);
+    console.log('Form errors:', this.form.errors);
+    console.log('Controles inválidos:',
+      Object.entries(this.form.controls)
+        .filter(([, ctrl]) => ctrl.invalid)
+        .map(([key, ctrl]) => ({ key, errors: ctrl.errors }))
+    );
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -475,20 +479,20 @@ export class PensionAlimenticia {
 
   onFormaChange() {
     this.form.get('factorImporte')?.setValue(null);
-    this.form.get('tipoPorcentaje')?.setValue(null); 
-    this.form.get('tipoBase')?.setValue(null);  
+    this.form.get('tipoPorcentaje')?.setValue(null);
+    this.form.get('tipoBase')?.setValue(null);
 
     const formaAplicacion = this.form.get('formaAplicacion')?.value;
     const monto = this.form.get('montoTotal');
     if (!monto) return;
 
     if (formaAplicacion === 'F') {
-        monto.enable();
-        monto.setValidators([Validators.required, Validators.min(1)]);
+      monto.enable();
+      monto.setValidators([Validators.min(1)]);
     } else {
-        monto.clearValidators();
-        monto.reset();
-        monto.disable();
+      monto.clearValidators();
+      monto.reset();
+      monto.disable();
     }
     monto.updateValueAndValidity();
     this.cdr.detectChanges();
@@ -560,10 +564,7 @@ export class PensionAlimenticia {
     if (!monto) return;
     if (checked) {
       monto.enable();
-      monto.setValidators([
-        Validators.required,
-        Validators.min(1)
-      ]);
+      monto.setValidators([Validators.min(1)]);
 
     } else {
       monto.clearValidators();
