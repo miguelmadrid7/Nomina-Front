@@ -114,7 +114,12 @@ export class PensionAlimenticia {
   }
 
   get disponiblePension(): boolean {
-    return this.porcentajeDisponible > 0;
+    if (this.guardando) return false;
+      const forma = this.form.get('formaAplicacion')?.value;
+      if (forma === 'P') {
+        return this.porcentajeDisponible > 0;
+      }
+      return true;
   }
 
   private getHorasFromPlaza(clavePlaza: string): number {
@@ -159,7 +164,6 @@ export class PensionAlimenticia {
       return;
     }
     this.cargandoBusqueda = true;
-    // deja pasar si es RFC/CURP parcial con >=3
     const targetRFC  = esRFC(q)  ? 'RFC'  : null;
     const targetCURP = esCURP(q) ? 'CURP' : null;
     if (q.length < 3 && !esRFC(q) && !esCURP(q)) {
@@ -196,26 +200,14 @@ export class PensionAlimenticia {
 
   selectEmployee(emp: EmpleadoItem): void {
     if (!emp?.id) {
-        this.empleadoId = null;
-        return;
+      this.empleadoId = null;
+      return;
     }
     this.empleadoId = emp.id;
+    this.cargarPorcentajeDisponible(emp.id);
     const rfc = (emp.rfc ?? emp.RFC ?? '').toString().trim();
     if (rfc) {
-        this.pensionAlimenticiaService.getPorcentajeAcumuladoByRfc(rfc).subscribe({
-            next: (porcentajeAcumulado: number) => {
-                this.porcentajeDisponible = Math.max(0, 100 - porcentajeAcumulado);
-                this.renderChartFromDisponible();
-            },
-            error: () => {
-              if (emp.id) {
-                this.cargarPorcentajeDisponible(emp.id);
-              }
-            }
-        });
-        this.cargarLiquidoByRfc(rfc);
-    } else {
-        this.cargarPorcentajeDisponible(emp.id);
+      this.cargarLiquidoByRfc(rfc);
     }
   }
 
@@ -248,22 +240,20 @@ export class PensionAlimenticia {
 
   private renderChartFromDisponible(): void {
     this.chartOptions = withChartPercent(this.chartOptions, this.porcentajeDisponible);
+    this.cdr.markForCheck();
   }
 
-  private cargarPorcentajeDisponible(empleadoId: number) {
+  private cargarPorcentajeDisponible(empleadoId: number): void {
     this.pensionAlimenticiaService.getBeneficiaryByEmployee(empleadoId)
       .subscribe({
         next: (resp) => {
-          const porcentajeUsado = resp.data
-            .filter(x => x.formaAplicacion === 'P')
-            .reduce((sum, item) => sum + (Number(item.factorImporte) * 100), 0);
-
-          this.porcentajeDisponible = Math.max(0, this.porcentajeTotal - porcentajeUsado);
-          this.renderChartFromDisponible(); // clave
+          const disponible = Number(resp.data?.porcentajeDisponible ?? 100);
+          this.porcentajeDisponible = Math.max(0, disponible);
+          this.renderChartFromDisponible();
         },
         error: () => {
           this.porcentajeDisponible = 100;
-          this.renderChartFromDisponible(); // clave
+          this.renderChartFromDisponible();
         }
       });
   }
@@ -367,7 +357,6 @@ export class PensionAlimenticia {
             factorImporte: factor,
             qnaini: Number(value.vigenciaInicio),
             qnafin: 999999,
-            // ✅ Agrega esta línea en el payload
             importeTotal: value.montoTotal ? Number(value.montoTotal) : null,
             aplicarDescuentoAguinaldo: value.aplicarDescuentoAguinaldo ?? false,
             numeroDocumento: clabe || null,
