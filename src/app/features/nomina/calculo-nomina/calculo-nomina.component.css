@@ -1,4 +1,4 @@
-/* ── Encabezado ─────────────────────────────────────────────────────────── */
+/* Encabezado */
 .breadcrumb {
   font-size: 12px;
   color: #9ca3af;
@@ -16,7 +16,7 @@
   margin-bottom: 0.5rem;
 }
 
-/* ── Cards ───────────────────────────────────────────────────────────────── */
+/* Cards */
 .actions-card,
 .progress-card {
   border-radius: 12px !important;
@@ -28,7 +28,7 @@
   margin: 0 0 12px 0;
 }
 
-/* ── Fila de acciones ────────────────────────────────────────────────────── */
+/* Fila de acciones */
 .actions-row {
   display: flex;
   flex-wrap: wrap;
@@ -75,7 +75,7 @@
   color: #9ca3af;
 }
 
-/* ── Botón ejecutar ──────────────────────────────────────────────────────── */
+/* Botón ejecutar */
 .btn-exec {
   display: inline-flex;
   align-items: center;
@@ -104,7 +104,7 @@
   height: 18px;
 }
 
-/* ── Hint ────────────────────────────────────────────────────────────────── */
+/* Hint */
 .hints {
   display: flex;
   align-items: center;
@@ -123,7 +123,7 @@
   color: #491D2A;
 }
 
-/* ── Scroll ──────────────────────────────────────────────────────────────── */
+/* Scroll */
 .calculo-scroll {
   flex: 1;
   min-height: 0;
@@ -131,7 +131,7 @@
   -webkit-overflow-scrolling: touch;
 }
 
-/* ── Cabecera de progreso ────────────────────────────────────────────────── */
+/* Cabecera de progreso */
 .progress-header {
   display: flex;
   align-items: flex-start;
@@ -203,7 +203,7 @@
   margin: 16px 0 10px 0;
 }
 
-/* ── Chips ───────────────────────────────────────────────────────────────── */
+/* Chips */
 .chip {
   display: inline-flex;
   align-items: center;
@@ -222,7 +222,7 @@
   color: #9ca3af;
 }
 
-/* ── Stepper ─────────────────────────────────────────────────────────────── */
+/* Stepper */
 .process-steps {
   margin-top: 20px;
   max-width: 900px;
@@ -293,7 +293,7 @@
   overflow: visible !important;
 }
 
-/* ── Responsive ──────────────────────────────────────────────────────────── */
+/* Responsive */
 @media (max-width: 640px) {
   .actions-row {
     flex-direction: column;
@@ -304,5 +304,61 @@
   .btn-exec {
     width: 100%;
     justify-content: center;
+  }
+
+  .actions-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .btn-exec {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Selectores al 100% */
+  .field-select {
+    min-width: unset;
+    width: 100%;
+  }
+
+  /* Card con menos padding */
+  .actions-card,
+  .progress-card {
+    padding: 12px !important;
+  }
+
+  /* Progreso header en columna */
+  .progress-header {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .progress-number {
+    align-self: flex-end;
+  }
+
+  /* Stepper más compacto */
+  .process-steps {
+    margin-top: 12px;
+  }
+
+  :host ::ng-deep .mat-vertical-stepper-header {
+    padding: 4px 6px;
+    min-height: 36px;
+  }
+
+  :host ::ng-deep .mat-vertical-content-container {
+    margin-left: 10px;
+  }
+
+  .step-label {
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  .step-icon {
+    font-size: 16px;
   }
 }
