@@ -775,5 +775,75 @@ mat-form-field {
   .employee-percent-box apx-chart {
     width: 100%;
   }
+
+   /* Layout principal en columna */
+  .two-col-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .col-info {
+    position: static;
+  }
+
+  /* Fila de oficio en columna */
+  .row-oficio {
+    grid-template-columns: 1fr;
+  }
+
+  /* Toggle en fila completa */
+  .toggle-container {
+    min-height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  /* Fila inline en columna */
+  .row-inline {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* Plazas en una columna */
+  .liquido-plazas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Cards de datos de plaza en columna */
+  .liquido-plaza {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .liquido-card {
+    min-width: unset;
+    width: 100%;
+  }
+
+  /* Gráfica y leyenda en columna */
+  .chart-with-legend {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .chart-legend {
+    min-width: unset;
+    width: 100%;
+  }
+
+  /* Botones en columna */
+  .actions-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-group {
+    width: 100%;
+  }
+
+  .btn,
+  .btn-success {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
