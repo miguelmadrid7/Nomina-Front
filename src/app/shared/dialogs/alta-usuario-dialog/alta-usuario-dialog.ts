@@ -48,7 +48,7 @@ export class AltaUsuarioDialog {
       active: [true],
       principal: ['pages/Inicio/General'],
       extras: [[]],
-      roles: [defaultRoleId ? [defaultRoleId] : [], [Validators.required]],
+      roles: [defaultRoleId ? [defaultRoleId] : null, [Validators.required]],
     });
   }
 

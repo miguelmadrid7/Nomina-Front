@@ -16,18 +16,24 @@
         <mat-label>Usuario (email)</mat-label>
         <mat-icon matPrefix>email</mat-icon>
         <input matInput formControlName="user" appUppercase/>
+          <mat-error *ngIf="form.get('user')?.hasError('required')">El email es requerido</mat-error>
+          <mat-error *ngIf="form.get('user')?.hasError('email')">Ingresa un email válido</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>Contraseña</mat-label>
         <mat-icon matPrefix>lock</mat-icon>
-        <input matInput type="password" formControlName="password" />
+        <input matInput type="password" formControlName="password"/>
+          <mat-error *ngIf="form.get('password')?.hasError('required')">La contraseña es requerida</mat-error>
+          <mat-error *ngIf="form.get('password')?.hasError('minlength')">Mínimo 6 caracteres</mat-error>
+
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>catEmpleadoId</mat-label>
         <mat-icon matPrefix>badge</mat-icon>
-        <input matInput type="number" formControlName="srl_emp" />
+        <input matInput type="number" formControlName="srl_emp"/>
+           <mat-error *ngIf="form.get('srl_emp')?.hasError('required')">Este campo es requerido</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
@@ -50,6 +56,7 @@
             {{ role.name }}
           </mat-option>
         </mat-select>
+         <mat-error *ngIf="form.get('roles')?.hasError('required')">Selecciona al menos un rol</mat-error>
       </mat-form-field>
     </div>
   </mat-dialog-content>
