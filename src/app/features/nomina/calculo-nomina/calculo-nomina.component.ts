@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, ChangeDetectionStrategy, Component, NgZone } from '@angular/core';
+import { ChangeDetectorRef, ChangeDetectionStrategy, Component, NgZone, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatStepperModule } from '@angular/material/stepper';
@@ -11,11 +11,16 @@ import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { buildQnaCode } from '../../../shared/helpers/nomina.helper';
+import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatSelect, MatOption } from "@angular/material/select";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-calculo-nomina',
   standalone: true,
   imports: [
+    ReactiveFormsModule,
     CommonModule,
     MatButtonModule,
     MatSnackBarModule,
@@ -24,6 +29,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatCardModule,
     MatIconModule,
     MatProgressBarModule,
+    MatSelect,
+    MatOption
 ],
   templateUrl: './calculo-nomina.component.html',
   styleUrls:[ './calculo-nomina.component.css'],
@@ -32,14 +39,30 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 })
 export class CalculoNominaComponent {
 
+  private readonly nominaService = inject(NominaService);
+  private readonly zone = inject(NgZone);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly fb = inject(FormBuilder);
+
+
+  readonly currentYear = new Date().getFullYear();
+  readonly form: FormGroup = this.fb.group({
+    anio: [null, Validators.required],
+    quincena: [null, Validators.required]
+  });
+
+  readonly stepsWithProgress: { label: string; progress: number }[];
+  
   progress = 0;
   progressTarget = 0;
   processing = false;
   deliverableReady = false;
-  private stompClient: any;
   currentStepIdx = 0;
+  anios: number[] = Array.from({ length: 10 }, (_, i) => this.currentYear -i);
+  quincena: number[] = Array.from({ length: 24}, (_, i) => i + 1);
 
-  readonly stepsWithProgress: { label: string; progress: number }[];
+  private stompClient: any;
   private readonly steps = [
     { label: 'Inicializando proceso' },              // truncate
     { label: 'Insertando nómina cheque plaza' },    // insertNomChequePza
@@ -66,12 +89,8 @@ export class CalculoNominaComponent {
     { label: 'Actualizando importes' },             // updateImportes
   ];
 
-  constructor(
-    private nominaService: NominaService,
-    private zone: NgZone,
-    private cdr: ChangeDetectorRef, 
-    private snackBar: MatSnackBar 
-  ) {
+
+  constructor() {
     const total = this.steps.length;
     this.stepsWithProgress = this.steps.map((step, i) => ({
       ...step,
@@ -147,13 +166,22 @@ export class CalculoNominaComponent {
   }
 
   executePayrollProcess(): void {
+    if(this.form.invalid) {
+      this.showSnack('Debe de seleccionar un año y una quincena de favor.', 'Cerrar', 4000);
+      return;
+    }
+
+    const {anio, quincena } = this.form.value;
+    const qnaProceso = buildQnaCode(anio, quincena);
+    
     this.processing = true;
     this.progress = 0;
     this.deliverableReady = false;
+
     const ws = new SockJS(`${environment.apiUrl}/ws`);
     this.stompClient = Stomp.over(ws);
     this.stompClient.connect({}, () => {
-      this.nominaService.executePayrollProcess(202522).subscribe({
+      this.nominaService.executePayrollProcess(qnaProceso).subscribe({
         next: (resp: any) => {
           const jobId = resp?.data;
           if (!jobId) return;

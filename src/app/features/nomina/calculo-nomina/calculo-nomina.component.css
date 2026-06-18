@@ -1,190 +1,277 @@
-/* Boton */
-.btn-content {
+/* ── Encabezado ─────────────────────────────────────────────────────────── */
+.breadcrumb {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 4px;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+.actions-card,
+.progress-card {
+  border-radius: 12px !important;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+}
+
+.progress-card {
+  margin: 0 0 12px 0;
+}
+
+/* ── Fila de acciones ────────────────────────────────────────────────────── */
+.actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  margin-bottom: 12px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.field-select {
+  height: 36px;
+  min-width: 130px;
+  border: 0.5px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 14px;
+}
+
+:host ::ng-deep .field-select .mat-mdc-select-trigger {
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .field-select .mat-mdc-select-value {
+  font-size: 14px;
+  color: #111827;
+}
+
+:host ::ng-deep .field-select .mat-mdc-select-arrow {
+  color: #9ca3af;
+}
+
+/* ── Botón ejecutar ──────────────────────────────────────────────────────── */
+.btn-exec {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 18px;
+  background: #491D2A;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s;
+}
+
+.btn-exec:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-exec mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+/* ── Hint ────────────────────────────────────────────────────────────────── */
+.hints {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 4px;
+  padding-top: 0.75rem;
+  border-top: 0.5px solid #f0f0f0;
+}
+
+.hint-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #491D2A;
+}
+
+/* ── Scroll ──────────────────────────────────────────────────────────────── */
+.calculo-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ── Cabecera de progreso ────────────────────────────────────────────────── */
+.progress-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.qna-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.qna-label {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.qna-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.status {
   display: inline-flex;
   align-items: center;
   gap: 8px;
 }
 
-/* Cards con más aire y separación */
-.actions-card,
-.progress-card {
-  border-radius: 12px;
-  padding: 16px 20px;
-  margin-bottom: 12px;
-}
-
-/* Opcional: limitar ancho del bloque de progreso/stepper */
-.progress-card {
-  margin: 0 0 12px 0;    
-}
-
-/* Fila de acciones (botones) */
-.actions-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-
-/* Tips debajo de acciones */
-.hints {
-  margin-top: 8px;
-  display: flex; 
-  gap: 8px; 
-  align-items: center;
-  color: #64748b;
-}
-
-/* Contenedor scroll de la sección de cálculo */
-.calculo-scroll {
-  flex: 1;
-  min-height: 0;       
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Progreso global */
-.progress-header {
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-
-.status { 
-  display: inline-flex; 
-  align-items: center; 
-  gap: 8px; 
-}
-
-.status-dot { 
-  width: 10px; 
-  height: 10px; 
-  border-radius: 50%; 
-  background: #9ca3af; 
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d1d5db;
 }
 
 .status-dot.running {
-   background: #fa0202; 
+  background: #E24B4A;
+  animation: pulse 1.2s ease-in-out infinite;
 }
 
-.status-dot.done { 
-  background: #2563eb; 
+.status-dot.done {
+  background: #1D9E75;
 }
 
-.status-text { 
-  color: #374151; 
-  font-weight: 600; 
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.35; }
 }
 
-.progress-number { 
-  color: #6b7280; 
+.status-text {
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
 }
 
-.progress-bar { 
-  margin: 20px 0 10px 0; 
+.progress-number {
+  font-size: 15px;
+  font-weight: 500;
+  color: #6b7280;
 }
 
-/* Paso a paso (Stepper) */
-.process-steps { 
-  margin-top: 20px; 
-  max-width: 900px; 
-  width: 100%; 
+.progress-bar {
+  margin: 16px 0 10px 0;
 }
 
-
-.step-label { 
-  display: flex; 
-  align-items: center; 
-  gap: 10px; 
+/* ── Chips ───────────────────────────────────────────────────────────────── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 99px;
 }
 
-.step-icon { 
-  font-size: 20px; 
-  color: #9ca3af; 
+.chip-done {
+  background: #E1F5EE;
+  color: #0F6E56;
 }
 
-.step-icon.done { 
-  color: #491D2A; 
+.chip-pending {
+  background: #f3f4f6;
+  color: #9ca3af;
 }
 
-.step-content { 
-  display: flex; 
-  align-items: center; 
-  gap: 10px; 
-  padding: 8px 0; 
+/* ── Stepper ─────────────────────────────────────────────────────────────── */
+.process-steps {
+  margin-top: 20px;
+  max-width: 900px;
+  width: 100%;
 }
 
-/* Afinar el vertical stepper (MDC) */
+.step-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.step-icon {
+  font-size: 20px;
+  color: #9ca3af;
+}
+
+.step-icon.done {
+  color: #0F6E56;
+}
+
+.step-icon.running {
+  color: #D85A30;
+}
+
+.step-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+}
+
 :host ::ng-deep .mat-vertical-stepper-header {
   min-height: 44px;
   padding: 6px 8px;
-  width: 100%;      
+  width: 100%;
   max-width: 100%;
   box-sizing: border-box;
 }
 
-:host ::ng-deep .mat-stepper-vertical {
-  width: 100%;
-}
-
-/* El header del paso activo que ocupe todo el ancho */
-:host ::ng-deep .mat-step-header:hover,
-:host ::ng-deep .mat-step-header.cdk-focused,
-:host ::ng-deep .mat-step-header[aria-selected="true"] {
-  width: 100%;
-  border-radius: 8px;
-}
-
-/* El ripple/fondo gris que genera Material al seleccionar */
-:host ::ng-deep .mat-step-header .mat-step-header-ripple,
-:host ::ng-deep .mat-step-header::after {
-  width: 100% !important;
-  left: 0 !important;
-  right: 0 !important;
-  border-radius: 8px;
-}
-
-/* Asegura que el stepper y sus hijos no corten el ancho */
 :host ::ng-deep .mat-stepper-vertical,
-:host ::ng-deep .mat-step-header {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-/* Fuerza el header a ocupar todo el ancho disponible */
-:host ::ng-deep .mat-step-header {
-  width: 100% !important;
-  box-sizing: border-box !important;
-  padding-right: 16px !important;
-}
-
-/* El fondo gris (MDC usa ::before, no ripple) */
-:host ::ng-deep .mat-step-header::before {
-  content: '';
-  position: absolute;
-  inset: 0;          
-  width: 100% !important;
-  border-radius: 8px;
-}
-
-/* El mat-card no debe recortar con overflow */
-:host ::ng-deep .mat-mdc-card {
-  padding: 16px 20px;
-  overflow: visible !important;
-}
-
-/* El stepper ocupa todo */
-:host ::ng-deep .mat-stepper-vertical {
-  width: 100% !important;
-}
-
-/* Contenedor de cada step también al 100% */
+:host ::ng-deep .mat-step-header,
 :host ::ng-deep .mat-step {
   width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+:host ::ng-deep .mat-step-header {
+  padding-right: 16px !important;
 }
 
 :host ::ng-deep .mat-vertical-content-container {
@@ -201,38 +288,21 @@
   border-left-color: #e5e7eb !important;
 }
 
-/* Afinar mat-card padding si tu tema lo deja muy estrecho */
-:host ::ng-deep .mat-mdc-card { 
-  padding: 16px 20px; 
+:host ::ng-deep .mat-mdc-card {
+  padding: 16px 20px;
+  overflow: visible !important;
 }
 
-
-/* Encabezados fijos de mat-table (por si aparecen en la vista) */
-:host ::ng-deep table .mdc-data-table__header-row {
-  position: sticky; 
-  top: 0; 
-  z-index: 2; 
-  background: #fff;
-}
-
-/* Centra verticalmente el contenido interno del botón MDC */
-:host ::ng-deep .btn-component .mdc-button__label {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 4px; /* ← ajusta este valor a tu gusto (2px–4px) */
-}
-
-/* Responsive: apilar acciones en móvil */
+/* ── Responsive ──────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
-  .actions-row { 
-    flex-direction: column; 
-    align-items: stretch; 
-    gap: 10px; 
+  .actions-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
   }
-  .btn, .btn-primary, .btn-secondary { 
-    width: 100%; 
-    justify-content: center; 
+
+  .btn-exec {
+    width: 100%;
+    justify-content: center;
   }
 }
-
