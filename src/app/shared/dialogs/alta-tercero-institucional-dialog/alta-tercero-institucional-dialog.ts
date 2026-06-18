@@ -27,15 +27,15 @@ import { MatSelectModule } from '@angular/material/select';
     MatCardModule,
 
   ],
-  templateUrl: './dialog-tercero-institucional.html',
-  styleUrl: './dialog-tercero-institucional.css'
+  templateUrl: './alta-tercero-institucional-dialog.html',
+  styleUrl: './alta-tercero-institucional-dialog.css'
 })
-export class DialogTerceroInstitucional {
+export class AltaTerceroInstitucionalDialog {
 
   form!: FormGroup;
   tipoOrdenOptions = [{ label: 'Alta', value: 1 }, { label: 'Baja', value: 2 },];
 
-  constructor(private fb: FormBuilder, private ref: MatDialogRef<DialogTerceroInstitucional>, @Inject(MAT_DIALOG_DATA) public data: any) {}
+  constructor(private fb: FormBuilder, private ref: MatDialogRef<AltaTerceroInstitucionalDialog>, @Inject(MAT_DIALOG_DATA) public data: any) {}
 
   ngOnInit() {
     const currentQna = this.getCurrentQna();

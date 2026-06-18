@@ -218,3 +218,73 @@
     padding-top: 0 !important;
     padding-bottom: 0 !important;
 }
+
+@media (max-width: 768px) {
+  /* Búsqueda y filtros en columna */
+  .global-search {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-field {
+    width: 100% !important;
+  }
+
+  :host ::ng-deep .qna-compact {
+    width: 100% !important;
+  }
+
+  .concepto-wi {
+    width: 100% !important;
+  }
+
+  .anio-select-compact {
+    width: 100% !important;
+    min-width: unset !important;
+    max-width: unset !important;
+  }
+
+  /* Botones en fila completa */
+  .actions-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-group,
+  .actions-right > button {
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Tabla con scroll horizontal */
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-global {
+    min-width: 500px;
+  }
+
+  /* Columnas más compactas */
+  .table-global .mat-column-curp {
+    display: none !important;
+  }
+
+  .table-global .mat-column-rfc {
+    width: 100px !important;
+    min-width: 100px !important;
+  }
+
+  .table-global .mat-column-nombreCompleto {
+    width: auto !important;
+  }
+
+  .table-global .mat-column-acciones {
+    width: 60px !important;
+  }
+}

@@ -13,7 +13,7 @@ import { NominaRow } from '../../../models/nomina-Row.model';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
-import { DialogTerceroInstitucional } from '../../../shared/dialogs/dialog-tercero-institucional/dialog-tercero-institucional';
+import { AltaTerceroInstitucionalDialog } from '../../../shared/dialogs/alta-tercero-institucional-dialog/alta-tercero-institucional-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -216,7 +216,7 @@ export class RegistroTerceroInstitucional {
               importe: Number(d.importe) || 0,
             }));
   
-      const dialogRef = this.dialog.open(DialogTerceroInstitucional, {
+      const dialogRef = this.dialog.open(AltaTerceroInstitucionalDialog, {
         width: '1200px',
         maxWidth: '92vw',
         maxHeight: '90vh',
@@ -389,7 +389,7 @@ export class RegistroTerceroInstitucional {
     const nombreCompleto = nombrePartsRaw.join(' - ').trim();
     const p = nombreCompleto.split(' ').filter(Boolean);
    
-      const dialogRef = this.dialog.open(DialogTerceroInstitucional, {
+      const dialogRef = this.dialog.open(AltaTerceroInstitucionalDialog, {
         width: '1200px',
         maxWidth: '92vw',
         maxHeight: '90vh',
