@@ -16,35 +16,35 @@
 
 
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator full-width" floatLabel="always">
-                <mat-label>Año</mat-label>
+                <mat-label>AÑO</mat-label>
                     <mat-icon matPrefix>calendar_today</mat-icon>
                         <input matInput formControlName="anio" type="number" placeholder="Ej. 2025"/>
                         <mat-error *ngIf="form.get('anio')?.hasError('required')">El año es requerido</mat-error>
             </mat-form-field>
             
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                <mat-label>Importe diario</mat-label>
+                <mat-label>IMPORTE DIARIO</mat-label>
                     <mat-icon matPrefix>payments</mat-icon>
                         <input matInput formControlName="importeDiario" type="number" placeholder="0.00"/>
                         <mat-error *ngIf="form.get('importeDiario')?.hasError('required')">El importe diario es requerido</mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                <mat-label>Importe mensual</mat-label>
+                <mat-label>IMPORTE MENSUAL</mat-label>
                     <mat-icon matPrefix>paid</mat-icon>
                         <input matInput formControlName="importeMensual" type="number" placeholder="0.00"/>
                         <mat-error *ngIf="form.get('importeMensual')?.hasError('required')">El importe mensual es requerido</mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                <mat-label>QNA inicio</mat-label>
+                <mat-label>QNA INICIO</mat-label>
                     <mat-icon matPrefix>event_available</mat-icon>
                         <input matInput formControlName="qnaInicio" type="number" placeholder="Ej. 202501"/>
                         <mat-error *ngIf="form.get('qnaInicio')?.hasError('required')">La QNA inicio es requerida</mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                <mat-label>QNA  fin</mat-label>
+                <mat-label>QNA FIN</mat-label>
                     <mat-icon matPrefix>event_busy</mat-icon>
                         <input matInput formControlName="qnaFin" type="number" placeholder="Ej. 202524"/>
                         <mat-error *ngIf="form.get('qnaFin')?.hasError('required')">La QNA fin es requerida</mat-error>
