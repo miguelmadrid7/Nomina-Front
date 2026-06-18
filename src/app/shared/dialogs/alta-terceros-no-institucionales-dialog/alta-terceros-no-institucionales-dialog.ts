@@ -33,10 +33,10 @@ import { ApiResponse } from '../../../models/response/api-Response.model';
     MatNativeDateModule,
     MatCardModule,
   ],
-  templateUrl: './terceros-dialog.html',
-  styleUrl: './terceros-dialog.css'
+  templateUrl: './alta-terceros-no-institucionales-dialog.html',
+  styleUrl: './alta-terceros-no-institucionales-dialog.css'
 })
-export class TercerosDialog  implements OnDestroy {
+export class AltaTercerosNoInstitucionalesDialog implements OnDestroy {
 
   form!: FormGroup;
   estatusOptions = ['Registrado', 'Pendiente', 'Aprobado'];
@@ -48,7 +48,7 @@ export class TercerosDialog  implements OnDestroy {
   pdfPreviewUrl: SafeResourceUrl | null = null;
   private pdfObjectUrl: string | null = null;
 
-  constructor(private fb: FormBuilder, private ref: MatDialogRef<TercerosDialog>, private terceroService: TerceroService, private sanitizer: DomSanitizer, @Inject(MAT_DIALOG_DATA) public data: any) {}
+  constructor(private fb: FormBuilder, private ref: MatDialogRef<AltaTercerosNoInstitucionalesDialog>, private terceroService: TerceroService, private sanitizer: DomSanitizer, @Inject(MAT_DIALOG_DATA) public data: any) {}
 
   ngOnInit(): void {
     if (!this.data) {

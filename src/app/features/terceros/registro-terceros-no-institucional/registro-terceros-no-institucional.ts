@@ -13,8 +13,8 @@ import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
-import { TercerosDialog } from '../../../shared/dialogs/terceros-dialog/terceros-dialog';
-import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
+import { AltaTercerosNoInstitucionalesDialog } from '../../../shared/dialogs/alta-terceros-no-institucionales-dialog/alta-terceros-no-institucionales-dialog';
+import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { EmpleadoItem } from '../../../models/emplado.model';
 import { Observable, tap, map, switchMap } from 'rxjs';
 import { MatOptionModule } from '@angular/material/core';
@@ -40,10 +40,10 @@ import { UppercaseDirective } from "../../../shared/directives/upperCase.directi
     MatOptionModule,
     UppercaseDirective
 ],
-  templateUrl: './terceros.html',
-  styleUrl: './terceros.css'
+  templateUrl: './registro-terceros-no-institucional.html',
+  styleUrl: './registro-terceros-no-institucional.css'
 })
-export class Terceros {
+export class RegistroTercerosNoInstitucional {
 
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
@@ -321,8 +321,8 @@ export class Terceros {
 
     const qnaDesde = qnaRecepcionSugerida;
 
-    const dialogRef = this.dialog.open(TercerosDialog, {
-      width: '1200px',
+    const dialogRef = this.dialog.open(AltaTercerosNoInstitucionalesDialog, {
+      width: '750px',
       maxWidth: '92vw',
       maxHeight: '90vh',
       panelClass: 'terceros-dialog-panel',
