@@ -115,7 +115,7 @@ export class GestionRole {
 
   openAltaRoleDialog(): void {
   const ref = this.dialog.open(AltaRolDialog, {
-    width: '600px',
+    width: '750px',
     maxWidth: '95vw',
     autoFocus: false,
   });

@@ -39,10 +39,10 @@ export class AltaRolDialog {
   ngOnInit() {
     this.form = this.fb.group({
       name: [this.data?.name ?? '', [Validators.required]],
-      description: [this.data?.description ?? ''],
+      description: [this.data?.description ?? '', [Validators.required]],
       parentId: [this.data?.parentId ?? null],
       permissionId: [this.data?.permissionId ?? null],
-      modulesId: [(this.data as any)?.modulesId ?? (this.data as any)?.modules?.map((module: Module) => module.id) ?? []],
+      modulesId: [(this.data as any)?.modulesId ?? (this.data as any)?.modules?.map((module: Module) => module.id) ?? [], [Validators.required]],
     });
     this.modules$ = this.moduleService.getAllModules().pipe(catchError(() => of([])));
   }
