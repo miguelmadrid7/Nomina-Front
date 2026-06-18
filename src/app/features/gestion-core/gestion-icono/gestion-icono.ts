@@ -24,7 +24,7 @@ export class GestionIcono {
 
   openCreateDialog(): void {
     const dialogRef = this.dialog.open(IconoDialog, {
-      width: '1200px',
+      width: '750px',
       maxWidth: '95vw',
       disableClose: true
     });

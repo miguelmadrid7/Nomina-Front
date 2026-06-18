@@ -17,18 +17,21 @@
                         <mat-label>NOMBRE</mat-label>
                             <mat-icon matPrefix>abc</mat-icon>
                                 <input matInput formControlName="name" appUppercase/>
+                                    <mat-error *ngIf="form.get('name')?.hasError('required')">El nombre es requerido</mat-error>
                     </mat-form-field>
 
                      <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                         <mat-label>CLASE DEL ICONO</mat-label>
                             <mat-icon matPrefix>settings_input_component</mat-icon>
                                 <input matInput formControlName="icon" appUppercase/>
+                                    <mat-error *ngIf="form.get('icon')?.hasError('required')">La clase del ícono es requerida</mat-error>
                     </mat-form-field>
 
                      <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                         <mat-label>DESCRIPCIÓN</mat-label>
                             <mat-icon matPrefix>description</mat-icon>
                                 <input matInput formControlName="description" appUppercase/>
+                                    <mat-error *ngIf="form.get('description')?.hasError('required')">La descripción es requerida</mat-error>
                     </mat-form-field>
 
                     <p *ngIf="error">{{ error }}</p>
