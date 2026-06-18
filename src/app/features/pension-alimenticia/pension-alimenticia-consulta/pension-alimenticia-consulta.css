@@ -307,3 +307,54 @@
 :host ::ng-deep .header-text-input .mat-mdc-text-field-wrapper {
     height: 40px !important;
 }
+
+@media (max-width: 768px) {
+  /* Botones en columna */
+  .actions-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-group,
+  .actions-right > button {
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Filtros de año/quincena en fila — se mantienen juntos */
+  .qna-filters {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .qna-filters mat-form-field {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+  }
+
+  :host ::ng-deep .qna-compact {
+    width: 100% !important;
+  }
+
+  /* Tabla con scroll horizontal */
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-global {
+    min-width: 700px;
+  }
+
+  /* Ocultar columnas menos prioritarias */
+  .table-global .mat-column-rfcReferencia,
+  .table-global .mat-column-noBeneficiario,
+  .table-global .mat-column-numeroOficio {
+    display: none !important;
+  }
+}
