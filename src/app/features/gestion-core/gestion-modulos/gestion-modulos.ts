@@ -198,7 +198,7 @@ export class GestionModulos {
         this.loadingModuleId = null;
 
         const dialogRef = this.dialog.open(ModuleDialog, {
-          width: '700px',
+          width: '850px',
           maxWidth: '95vw',
           data: {
             mode: 'edit',

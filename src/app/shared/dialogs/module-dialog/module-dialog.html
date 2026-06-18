@@ -23,11 +23,13 @@
                     <mat-label>NOMBRE</mat-label>
                         <mat-icon matPrefix>email</mat-icon>
                             <input matInput formControlName="name" appUppercase/>
+                                <mat-error *ngIf="form.get('name')?.hasError('required')">El nombre es requerido</mat-error>
                 </mat-form-field>
 
                 <mat-form-field  appearance="outline" class="qna-compact search-field with-separator description-field" floatLabel="always">
-                    <mat-label>Descripción</mat-label>
+                    <mat-label>DESCRIPCION</mat-label>
                         <textarea matInput formControlName="description" rows="4" appUppercase></textarea>
+                            <mat-error *ngIf="form.get('description')?.hasError('required')">La descripción es requerida</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
@@ -37,6 +39,7 @@
                     <mat-select formControlName="rolesId" multiple>
                         <mat-option *ngFor="let role of roles$ | async" [value]="role.id">  {{ role.name }} </mat-option>
                     </mat-select>
+                        <mat-error *ngIf="form.get('rolesId')?.hasError('required')">Selecciona al menos un rol</mat-error>
                 </mat-form-field>
 
                 <div class="checkbox-field qna-compact with-separator">
@@ -53,13 +56,15 @@
                 <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                     <mat-label>PATH</mat-label>
                         <mat-icon matPrefix>route</mat-icon>
-                            <input matInput formControlName="path" />
+                            <input matInput formControlName="path"/>
+                                <mat-error *ngIf="form.get('path')?.hasError('required')">El path es requerido</mat-error>
                 </mat-form-field>
 
                 <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                     <mat-label>ÍCONO</mat-label>
                         <mat-icon matPrefix>email</mat-icon>
                             <input matInput formControlName="iconId"/>
+                                <mat-error *ngIf="form.get('iconId')?.hasError('required')">El ícono es requerido</mat-error>
                 </mat-form-field>
             </div>
         </mat-dialog-content>
