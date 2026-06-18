@@ -34,16 +34,16 @@ import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
     MatSelectModule,
     UppercaseDirective
   ],
-  templateUrl: './module-dialog.html',
-  styleUrl: './module-dialog.css'
+  templateUrl: './alta-module-dialog.html',
+  styleUrl: './alta-module-dialog.css'
 })
-export class ModuleDialog implements OnInit{
+export class ALtaModuleDialog implements OnInit{
 
   form!: FormGroup;
   roles$!: Observable<Role[]>;
 
   constructor(
-    private dialogRef: MatDialogRef<ModuleDialog>,
+    private dialogRef: MatDialogRef<ALtaModuleDialog>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
     private fb: FormBuilder,
     private moduleService: ModuleService,
