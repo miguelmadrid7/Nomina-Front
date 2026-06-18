@@ -221,22 +221,57 @@ mat-form-field {
 
 
 
+@media (max-width: 600px) {
+  /* Grids principales en 1 columna */
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
 
-
-/* RESPONSIVE */
-@media (max-width: 720px) {
-
-  .form-grid,
   .vigencia-grid {
     grid-template-columns: 1fr;
   }
 
+  /* Fila de nombres en 1 columna */
   .name-row {
     grid-template-columns: 1fr;
   }
 
-  .dlg-content {
-    padding: 12px;
+  /* Fila de banco (importe, cuenta, clabe) en 1 columna */
+  .bank-row {
+    grid-template-columns: 1fr;
   }
 
+  /* Fila de aplicación (banco, forma, factor, estatus, descripción) en 1 columna */
+  .aplicacion-row {
+    grid-template-columns: 1fr;
+  }
+
+  /* span-3 en 1 columna no necesita span */
+  .span-3 {
+    grid-column: 1;
+  }
+
+  /* Header */
+  .dialog-header {
+    padding: 12px 16px;
+  }
+
+  /* Contenido */
+  .dlg-content {
+    padding: 12px;
+    max-height: calc(90vh - 100px);
+  }
+
+  /* Acciones */
+  .dlg-actions {
+    flex-direction: column;
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .btn-small-success,
+  .btn-small-danger {
+    width: 100% !important;
+    justify-content: center;
+  }
 }
