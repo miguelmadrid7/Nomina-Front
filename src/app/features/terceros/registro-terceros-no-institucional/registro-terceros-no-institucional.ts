@@ -322,7 +322,7 @@ export class RegistroTercerosNoInstitucional {
     const qnaDesde = qnaRecepcionSugerida;
 
     const dialogRef = this.dialog.open(AltaTercerosNoInstitucionalesDialog, {
-      width: '750px',
+      width: '1200px',
       maxWidth: '92vw',
       maxHeight: '90vh',
       panelClass: 'terceros-dialog-panel',

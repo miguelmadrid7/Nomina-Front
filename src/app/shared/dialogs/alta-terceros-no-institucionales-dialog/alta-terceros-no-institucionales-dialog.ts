@@ -74,7 +74,19 @@ export class AltaTercerosNoInstitucionalesDialog implements OnDestroy {
       qnaHasta: [null, Validators.required],
       qnaRecepcion: [this.data?.qnaRecepcionSugerida ?? this.getCurrentQna().aaaaqq],
       estatus: [this.data?.estatus ?? null],
-      fechaRegistro: [{ value: this.data?.fechaRegistro || new Date(), disabled: true }],
+      fechaRegistro: [{ 
+        value: this.data?.fechaRegistro 
+          ? this.data.fechaRegistro 
+          : new Date().toLocaleString('es-MX', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: false
+            }),
+        disabled: true 
+      }],
     }, { validators: [ qnaMinimaValidator(minQna), qnaRangoValidator() ] }
     );
 
@@ -116,7 +128,7 @@ export class AltaTercerosNoInstitucionalesDialog implements OnDestroy {
   ngAfterViewInit() {
     flatpickr('#fechaHoraInput', {
       enableTime: true,
-      dateFormat: 'd-m-Y h:i K',
+      dateFormat: 'd/m/Y H:i',
       defaultDate: new Date(),
       time_24hr: true,
       locale: Spanish,
