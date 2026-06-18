@@ -387,4 +387,76 @@ button[disabled] {
   font-size:12px;
 }
 
+@media (max-width: 768px) {
+  /* Botones en columna */
+  .actions-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
+  .btn-group,
+  .actions-right > button {
+    width: 100%;
+  }
+
+  .btn,
+  .btn-success {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Búsqueda en columna */
+  .global-search {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-field {
+    width: 100%;
+    max-width: 100%;
+    flex: none;
+  }
+
+  /* Año y quincena en fila */
+  .qna-filters {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .qna-filters mat-form-field {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+  }
+
+  :host ::ng-deep .qna-compact {
+    width: 100% !important;
+  }
+
+  /* Grid de empleado en 1 columna */
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .empleado-grid {
+    grid-column: span 1;
+    grid-template-columns: 1fr;
+  }
+
+  /* Tabla con scroll horizontal */
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-global {
+    min-width: 700px;
+  }
+
+  /* Ocultar columnas menos prioritarias */
+  .table-global .mat-column-citaBancaria,
+  .table-global .mat-column-formaAplicacion,
+  .table-global .mat-column-restoPagar {
+    display: none !important;
+  }
+}
