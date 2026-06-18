@@ -24,7 +24,6 @@ import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-di
 import { AltaUsuarioDialog } from '../../../shared/dialogs/alta-usuario-dialog/alta-usuario-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
-import { Empleado } from '../../servicios/empleado';
 
 @Component({
   selector: 'app-gestion-usuarios',
@@ -138,7 +137,7 @@ private getSortValue(row: EmpleadoItem, column: string): string | number {
 
   openAltaUsuarioDialog(): void {
     const ref = this.dialog.open(AltaUsuarioDialog, {
-      width: '900px',
+      width: '850px',
       maxWidth: '95vw',
       autoFocus: false,
       data: {
