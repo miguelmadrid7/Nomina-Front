@@ -8,7 +8,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ModuleDialog } from '../../../shared/dialogs/module-dialog/module-dialog';
+import { ALtaModuleDialog } from '../../../shared/dialogs/alta-module-dialog/alta-module-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 
@@ -197,7 +197,7 @@ export class GestionModulos {
         this.selectedModule = moduleWithParent;
         this.loadingModuleId = null;
 
-        const dialogRef = this.dialog.open(ModuleDialog, {
+        const dialogRef = this.dialog.open(ALtaModuleDialog, {
           width: '850px',
           maxWidth: '95vw',
           data: {
@@ -267,7 +267,7 @@ export class GestionModulos {
   }
 
   openCreateDialog(): void {
-    const dialogRef = this.dialog.open(ModuleDialog, {
+    const dialogRef = this.dialog.open(ALtaModuleDialog, {
       width: '700px',
       maxWidth: '95vw',
       data: {

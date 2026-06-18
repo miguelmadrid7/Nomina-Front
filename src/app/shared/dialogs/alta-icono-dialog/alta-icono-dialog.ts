@@ -20,8 +20,8 @@ import { UppercaseDirective } from '../../directives/upperCase.directivas';
     MatInputModule,
     UppercaseDirective
   ],
-  templateUrl: './icono-dialog.html',
-  styleUrl: './icono-dialog.css'
+  templateUrl: './alta-icono-dialog.html',
+  styleUrl: './alta-icono-dialog.css'
 })
 export class IconoDialog implements OnInit {
 
