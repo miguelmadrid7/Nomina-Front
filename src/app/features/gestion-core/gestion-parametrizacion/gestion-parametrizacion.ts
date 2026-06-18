@@ -74,7 +74,8 @@ export class GestionParametrizacion implements OnInit, AfterViewInit {
 
   openCreateDialog(): void {
     const dialogRef = this.dialog.open(AltaParametrizacionDialog, {
-      width: '700px', maxWidth: '95vw',
+      width: '750px', 
+      maxWidth: '95vw',
       data: { mode: 'create' }
     });
     dialogRef.afterClosed().subscribe((refresh: boolean) => {
@@ -84,7 +85,8 @@ export class GestionParametrizacion implements OnInit, AfterViewInit {
 
   openUpdateDialog(param: ParametrizacionResponse): void {
     const dialogRef = this.dialog.open(AltaParametrizacionDialog, {
-      width: '700px', maxWidth: '95vw',
+      width: '750px', 
+      maxWidth: '95vw',
       data: { mode: 'update', param }
     });
     dialogRef.afterClosed().subscribe((refresh: boolean) => {
