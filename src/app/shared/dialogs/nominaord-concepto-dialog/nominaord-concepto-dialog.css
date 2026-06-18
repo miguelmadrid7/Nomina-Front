@@ -250,3 +250,53 @@
 :host ::ng-deep .dlg-bar .mat-mdc-icon-button .mat-ripple-element {
   background-color: rgba(255,255,255,0.2);
 }
+
+@media (max-width: 768px) {
+  /* Info del empleado en una columna */
+  .employee-info {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .full {
+    grid-column: span 1;
+  }
+
+  /* Totales en una columna */
+  .employee-totals {
+    grid-column: span 1;
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  /* Tablas en una columna aunque sea "ambas" */
+  .pd-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Header del diálogo menos padding */
+  .dialog-header {
+    padding: 16px 40px;
+  }
+
+  /* Contenido con más espacio */
+  .dlg-content {
+    padding: 12px;
+  }
+
+  /* Botón al 100% */
+  .dlg-actions {
+    padding: 10px;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Radio buttons apilados */
+  .view-toggle mat-radio-button {
+    display: block;
+    margin-bottom: 6px;
+  }
+}

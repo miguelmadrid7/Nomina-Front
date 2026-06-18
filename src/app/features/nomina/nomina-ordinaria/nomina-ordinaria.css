@@ -137,3 +137,59 @@
 .table-global th.mat-mdc-header-cell:last-child {
     text-align: center;
 }
+
+@media (max-width: 768px) {
+  /* Botones en columna */
+  .actions-right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-group,
+  .actions-right > button {
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Filtros en columna */
+  .global-search {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .search-field {
+    width: 100%;
+  }
+
+  .qna-filters {
+    flex-direction: row; /* ← año y quincena siguen en fila */
+    width: 100%;
+  }
+
+  .qna-filters mat-form-field {
+    flex: 1;
+    min-width: 0;
+    width: auto;
+  }
+
+  /* Tabla con scroll horizontal */
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-global {
+    min-width: 600px;
+  }
+
+  /* Ocultar columnas menos prioritarias */
+  .table-global .mat-column-curp,
+  .table-global .mat-column-baseCalculoIsr {
+    display: none !important;
+  }
+}

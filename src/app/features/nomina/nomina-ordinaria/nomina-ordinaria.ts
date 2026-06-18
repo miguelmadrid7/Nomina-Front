@@ -48,7 +48,10 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<NominaRow>([]);
   displayedColumns: string[] = ['curp', 'rfc', 'nombreEmpleado', 'qnaProceso', 'clavePlaza', 'baseCalculoIsr', 'conceptoDetalle',];
 
-  anios: number[] = [2026, 2025, 2024];
+
+  readonly currentYear = new Date().getFullYear();
+  anios: number[] = Array.from({ length: 10 }, (_, i) => this.currentYear - i);
+
   quincenas: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
   anioSeleccionado: number | null = null;
   quincenaSeleccionada: number | null = null;
