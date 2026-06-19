@@ -10,8 +10,6 @@ import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-di
   selector: 'app-gestion-icono',
   standalone: true,
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
     MatIconModule,
   ],
   templateUrl: './gestion-icono.html',
