@@ -66,3 +66,21 @@
   text-decoration:none;
   color:#6c757d;
 }
+
+
+.offcanvas {
+  background-color: #491D2A;
+  color: #fff;
+  width: 280px !important; 
+}
+
+.offcanvas .offcanvas-body {
+  padding: 0 !important;
+}
+
+/* Fuerza al sidebar interno a ocupar todo el ancho */
+.offcanvas sidebar,
+.offcanvas app-sidebar {
+  width: 100% !important;
+  min-width: 100% !important;
+}
