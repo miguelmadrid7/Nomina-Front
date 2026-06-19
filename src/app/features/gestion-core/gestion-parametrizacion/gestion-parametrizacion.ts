@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component, inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ParametrizacionResponse } from '../../../models/response/parametrizacion-response.model';
@@ -24,7 +24,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   templateUrl: './gestion-parametrizacion.html',
   styleUrl: './gestion-parametrizacion.css'
 })
-export class GestionParametrizacion implements OnInit, AfterViewInit {
+export class GestionParametrizacion implements OnInit, AfterViewInit, OnDestroy{
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -51,6 +51,10 @@ export class GestionParametrizacion implements OnInit, AfterViewInit {
     Promise.resolve().then(() => this.getAllParam());
   }
 
+  ngOnDestroy(): void {
+    this.dialog.closeAll();
+  }
+  
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
   }

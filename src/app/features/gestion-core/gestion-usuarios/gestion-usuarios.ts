@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, NgZone, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { EmpleadoItem } from '../../../models/emplado.model';
 import { Role } from '../../../models/rol.model';
 import { AssignRoleRequest } from '../../../models/request/assignrole-request.model';
@@ -47,7 +47,7 @@ import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
   templateUrl: './gestion-usuarios.html',
   styleUrl: './gestion-usuarios.css'
 })
-export class GestionUsuarios {
+export class GestionUsuarios implements OnDestroy {
 
 
   @ViewChild(MatSort) sort?: MatSort;
@@ -93,6 +93,10 @@ export class GestionUsuarios {
     });
     this.loadRoles();
     this.loadEmpleados();
+  }
+
+  ngOnDestroy () {
+    this.dialog.closeAll();
   }
 
  onSortChange(sort: Sort): void {

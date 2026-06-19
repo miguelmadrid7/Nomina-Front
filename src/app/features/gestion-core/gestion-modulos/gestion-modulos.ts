@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, NgZone, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { ModuleService } from '../../../core/services/module.service';
 import { Module } from '../../../models/gestion-core/module.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -27,7 +27,7 @@ import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
   templateUrl: './gestion-modulos.html',
   styleUrl: './gestion-modulos.css'
 })
-export class GestionModulos {
+export class GestionModulos implements OnDestroy {
 
   @ViewChild(MatSort) sort?: MatSort;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
@@ -61,6 +61,10 @@ export class GestionModulos {
 
   ngOnInit(): void {
     this.getAllModules();
+  }
+
+  ngOnDestroy(): void {
+    this.dialog.closeAll();
   }
 
   ngAfterViewInit(): void {

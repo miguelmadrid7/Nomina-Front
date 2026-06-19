@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, NgZone, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -48,7 +48,7 @@ import { formatBeneficiarioJMDisplay, mapBeneficiarioJM, repartirNombre } from '
   templateUrl: './juicios-mercantiles.html',
   styleUrls: ['./juicios-mercantiles.css']
 })
-export class JuiciosMercantiles {
+export class JuiciosMercantiles implements OnDestroy {
   
   private readonly fb = inject(FormBuilder);
   private readonly juiciosMercantilesService = inject(JuiciosMercantilesService);
@@ -134,6 +134,10 @@ export class JuiciosMercantiles {
         this.showSnack('Error al cargar catálogo de bancos', 'Cerrar', 4000);
       }
     });
+  }
+
+   ngOnDestroy () {
+    this.dialog.closeAll();
   }
 
   // Agregar este método helper a la clase

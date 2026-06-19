@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, NgZone, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, NgZone, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -42,7 +42,7 @@ import { buildQnaCode, groupNominaRows, mapRawRowToNominaRow } from '../../../sh
   templateUrl: './nomina-ordinaria.html',
   styleUrls: ['./nomina-ordinaria.css'],
 })
-export class NominaOrdinaria implements OnInit, AfterViewInit {
+export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<NominaRow>([]);
@@ -81,6 +81,10 @@ export class NominaOrdinaria implements OnInit, AfterViewInit {
       );
     };
     this.loadNomina()
+  }
+
+  ngOnDestroy () {
+    this.dialog.closeAll();
   }
 
   ngAfterViewInit(): void {

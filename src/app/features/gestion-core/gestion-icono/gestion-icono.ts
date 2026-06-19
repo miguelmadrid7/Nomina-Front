@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { IconoDialog } from '../../../shared/dialogs/alta-icono-dialog/alta-icono-dialog';
@@ -13,10 +13,13 @@ import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-di
   templateUrl: './gestion-icono.html',
   styleUrl: './gestion-icono.css'
 })
-export class GestionIcono {
+export class GestionIcono implements OnDestroy {
 
   private readonly dialog = inject(MatDialog);
 
+  ngOnDestroy(): void {
+    this.dialog.closeAll();
+  }
   openCreateDialog(): void {
     const dialogRef = this.dialog.open(IconoDialog, {
       width: '750px',

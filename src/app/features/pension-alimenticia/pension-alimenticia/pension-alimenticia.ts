@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -57,7 +57,7 @@ import { formatEmployeeDisplay, mapEmpleado } from '../../../shared/helpers/empe
   templateUrl: './pension-alimenticia.html',
   styleUrl: './pension-alimenticia.css'
 })
-export class PensionAlimenticia {
+export class PensionAlimenticia implements OnDestroy {
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   form!: FormGroup;
   empleadoId: number | null = null;
@@ -80,6 +80,10 @@ export class PensionAlimenticia {
   ngOnInit (): void {
     this.loadBanksCatalog();
     this.initForm();
+  }
+
+  ngOnDestroy () {
+    this.dialog.closeAll();
   }
 
   initForm (){

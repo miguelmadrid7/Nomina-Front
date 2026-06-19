@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, inject, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -37,7 +37,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   templateUrl: './pension-alimenticia-consulta.html',
   styleUrl: './pension-alimenticia-consulta.css'
 })
-export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
+export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -73,6 +73,10 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
     if (this.empleadoId) {
       this.cargarBeneficiarios();
     }
+  }
+
+  ngOnDestroy () {
+    this.dialog.closeAll();
   }
 
   ngAfterViewInit(): void {

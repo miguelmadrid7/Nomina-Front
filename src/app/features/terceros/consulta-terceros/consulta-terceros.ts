@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, NgZone, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NominaRow } from '../../../models/nomina-Row.model';
 import { CommonModule } from '@angular/common';
@@ -35,7 +35,7 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './consulta-terceros.html',
   styleUrl: './consulta-terceros.css'
 })
-export class ConsultaTerceros {
+export class ConsultaTerceros implements OnDestroy {
 
   @ViewChild(MatPaginator) paginator?: MatPaginator;
 
@@ -105,6 +105,10 @@ export class ConsultaTerceros {
       this.paginator?.firstPage();
       this.loadRegistros(0, this.pageSize);
     });
+  }
+
+  ngOnDestroy () {
+    this.dialog.closeAll();
   }
 
   private showSnack(message: string, action: string, duration: number): void {

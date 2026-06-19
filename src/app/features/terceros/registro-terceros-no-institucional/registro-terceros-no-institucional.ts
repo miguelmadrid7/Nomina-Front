@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild, NgZone, inject } from '@angular/core';
+import { Component, ViewChild, NgZone, inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -43,7 +43,7 @@ import { UppercaseDirective } from "../../../shared/directives/upperCase.directi
   templateUrl: './registro-terceros-no-institucional.html',
   styleUrl: './registro-terceros-no-institucional.css'
 })
-export class RegistroTercerosNoInstitucional {
+export class RegistroTercerosNoInstitucional implements OnDestroy {
 
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
@@ -139,6 +139,10 @@ export class RegistroTercerosNoInstitucional {
           this.dataSource.paginator = this.paginator;
         }
       }, 0);
+    }
+
+    ngOnDestroy () {
+      this.dialog.closeAll();
     }
 
   private showSnack(message: string, action: string, duration: number): void {

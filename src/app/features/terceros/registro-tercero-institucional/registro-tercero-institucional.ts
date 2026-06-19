@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, NgZone, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -38,7 +38,7 @@ import { ConceptoAccesoService } from '../../../core/services/concepto-acceso.se
   templateUrl: './registro-tercero-institucional.html',
   styleUrl: './registro-tercero-institucional.css'
 })
-export class RegistroTerceroInstitucional {
+export class RegistroTerceroInstitucional implements OnDestroy {
 
   form!: FormGroup;
   resultado: EmpleadoItem[] = [];
@@ -96,6 +96,10 @@ export class RegistroTerceroInstitucional {
         this.paginator?.firstPage?.();
         this.buscarRegistrosNp(0, this.paginator?.pageSize ?? 50);
       });
+  }
+
+  ngOnDestroy () {
+    this.dialog.closeAll();
   }
 
   buscarEmpleado() {

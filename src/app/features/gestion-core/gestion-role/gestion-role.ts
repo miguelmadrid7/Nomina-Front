@@ -1,4 +1,4 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, OnDestroy, ViewChild } from '@angular/core';
 import { Role } from '../../../models/rol.model';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
@@ -27,7 +27,7 @@ import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
   templateUrl: './gestion-role.html',
   styleUrl: './gestion-role.css'
 })
-export class GestionRole {
+export class GestionRole implements OnDestroy {
 
   @ViewChild(MatSort) sort?: MatSort;
   @ViewChild(MatPaginator) paginator?: MatPaginator
@@ -46,6 +46,10 @@ export class GestionRole {
 
   ngOnInit(): void {
      this.loadRoles();
+  }
+
+  ngOnDestroy(): void {
+    this.dialog.closeAll();
   }
 
   loadRoles(): void {
