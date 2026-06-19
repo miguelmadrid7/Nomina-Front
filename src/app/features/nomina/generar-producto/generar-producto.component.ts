@@ -1,4 +1,4 @@
-import { Component, NgZone } from '@angular/core';
+import { Component, inject, NgZone } from '@angular/core';
 import { NominaService } from '../../../core/services/nomina-ordinaria.service';
 import { LoaderService } from '../../../core/services/loader.service';
 import { finalize } from 'rxjs';
@@ -16,11 +16,10 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 })
 export class GenerarProductoComponent {
 
-  constructor(
-    private nominaService: NominaService, 
-    private loaderService: LoaderService, 
-    private snackBar: MatSnackBar,
-    private zone: NgZone) {}
+    private readonly nominaService = inject(NominaService);
+    private readonly loaderService = inject(LoaderService);
+    private readonly snackBar = inject(MatSnackBar);
+    private readonly zone = inject(NgZone);
 
   // Agregar este método helper a la clase
   private showSnack(message: string, action: string, duration: number): void {
@@ -77,10 +76,4 @@ export class GenerarProductoComponent {
       }
     });
   }
-
-
-
-
-
-
 }
