@@ -174,10 +174,6 @@ private getSortValue(row: EmpleadoItem, column: string): string | number {
     });
   }
 
-  ngAfterViewInit() {
-    // NO conectar paginator/sort integrado - usamos paginación manual
-  }
-
   private showSnack(message: string, action: string, duration: number): void {
     this.zone.runOutsideAngular(() => {
       setTimeout(() => {
