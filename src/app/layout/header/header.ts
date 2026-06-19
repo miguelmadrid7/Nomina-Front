@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { LoginService } from '../../core/services/login.service';
@@ -19,12 +19,12 @@ export class Header implements OnInit{
   @Output() toggleSidebarClick = new EventEmitter<void>();
   roleName: string = '';
 
-  constructor(
-    private loginService: LoginService, 
-    private rolService: RolService, 
-    private router: Router, 
-    private cdr: ChangeDetectorRef, 
-    private dialog: MatDialog) {}
+
+  private readonly loginService = inject(LoginService);
+  private readonly rolService = inject(RolService);
+  private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly dialog = inject(MatDialog);
 
   ngOnInit(): void {
     // Suscríbete a los cambios de rol

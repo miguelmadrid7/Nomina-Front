@@ -26,8 +26,8 @@ import { SidebarGroup, SidebarModule } from '../../models/sidebar.model';
 })
 export class Sidebar implements OnInit {
 
-  private readonly loginService   = inject(LoginService);
-  private readonly router         = inject(Router);
+  private readonly loginService = inject(LoginService);
+  private readonly router = inject(Router);
   private readonly sidebarService = inject(SidebarService);
 
   collapsed  = false;

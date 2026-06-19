@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -53,11 +53,11 @@ export class PensionAlimenticiaConsulta implements OnInit, AfterViewInit {
   anios: number[] = [2026, 2025, 2024];
   quincenas: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
 
-  constructor(
-    private pensionAlimenticiaService: PensionAlimenticiaService,
-    private fb: FormBuilder,
-    private dialog: MatDialog
-  ) {}
+  private readonly fb = inject(FormBuilder);
+  private readonly dialog = inject(MatDialog);
+  private readonly pensionAlimenticiaService = inject(PensionAlimenticiaService);
+
+  
 
   ngOnInit(): void {
     this.form = this.fb.group({

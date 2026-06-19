@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -41,12 +41,10 @@ export class UsuarioDialog {
   empleadoActual: EmpleadoItem | null = null;
   selectedRoles: number[] = [];
 
-  constructor(
-    private fb: FormBuilder,
-    private ref: MatDialogRef<UsuarioDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    private userService: UserService,
-  ) {}
+  private readonly fb = inject(FormBuilder);
+  private readonly ref = inject(MatDialogRef<UsuarioDialog>);
+  readonly data = inject<any>(MAT_DIALOG_DATA);
+  private readonly userService = inject(UserService);
 
   ngOnInit(): void {
     const user = this.data?.user ?? this.data;

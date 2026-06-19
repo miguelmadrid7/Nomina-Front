@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -50,14 +50,13 @@ export class ConsultaPensionesDialog implements OnInit{
   bancoSeleccionado: number | null = null;
   porcentajeDisponible = 100;
 
-  constructor(
-    private  ref: MatDialogRef<ConsultaPensionesDialog>, 
-    private fb: FormBuilder,
-     @Inject(MAT_DIALOG_DATA) public data: FilaBeneficiario,  
-     private pensionAlimenticiaService: PensionAlimenticiaService,  
-     private dialog: MatDialog, 
-     private cdr: ChangeDetectorRef
-    ){}
+  private readonly ref = inject(MatDialogRef<ConsultaPensionesDialog>);
+  private readonly fb = inject(FormBuilder);
+  readonly data = inject<FilaBeneficiario>(MAT_DIALOG_DATA);
+  private readonly pensionAlimenticiaService = inject(PensionAlimenticiaService);
+  private readonly dialog = inject(MatDialog);
+  private readonly cdr = inject(ChangeDetectorRef);
+
 
   ngOnInit() {
     this.form = this.fb.group({

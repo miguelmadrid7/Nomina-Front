@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NominaRow } from '../../../models/nomina-Row.model';
 import { CommonModule } from '@angular/common';
@@ -63,15 +63,13 @@ export class ConsultaTerceros {
   pageIndex = 0;
   pageSize = 50
 
-   constructor(
-    private fb: FormBuilder,
-    private cd: ChangeDetectorRef,
-    private snackBar: MatSnackBar,
-    private dialog: MatDialog,
-    private zone: NgZone, 
-    private terceroService: TerceroService,
-    private loaderService: LoaderService,
-  ) {}
+  private readonly fb = inject(FormBuilder);
+  private readonly cd = inject(ChangeDetectorRef);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
+  private readonly zone = inject(NgZone);
+  private readonly terceroService = inject(TerceroService);
+  private readonly loaderService = inject(LoaderService);
 
   ngOnInit() {
     this.form = this.fb.group({

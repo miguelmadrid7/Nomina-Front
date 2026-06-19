@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild, NgZone } from '@angular/core';
+import { Component, ViewChild, NgZone, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -58,7 +58,12 @@ export class RegistroTercerosNoInstitucional {
   conceptoUnicoPermitido: any | null = null;
   calendarioRecepcion: CalendarioRecepcion[] = [];
 
-  constructor(private fb: FormBuilder, private snackBar: MatSnackBar, private zone: NgZone, private dialog: MatDialog,private terceroService: TerceroService,private conceptoAccesoService: ConceptoAccesoService) {}
+  private readonly fb = inject(FormBuilder);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly zone = inject(NgZone);
+  private readonly dialog = inject(MatDialog);
+  private readonly terceroService = inject(TerceroService);
+  private readonly conceptoAccesoService = inject(ConceptoAccesoService);
 
     ngOnInit() {
   this.form = this.fb.group({ 

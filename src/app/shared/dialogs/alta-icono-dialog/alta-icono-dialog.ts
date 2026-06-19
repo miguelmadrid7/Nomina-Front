@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { IconService } from '../../../core/services/icon.service';
@@ -30,7 +30,9 @@ export class IconoDialog implements OnInit {
   message = '';
   error = '';
 
-  constructor(private fb: FormBuilder, private iconService: IconService, private dialogRef: MatDialogRef<IconoDialog>) {}
+  private readonly fb = inject(FormBuilder);
+  private readonly iconService = inject(IconService);
+  private readonly dialogRef = inject(MatDialogRef<IconoDialog>);
 
   ngOnInit(): void {
     this.form = this.fb.group({

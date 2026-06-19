@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { Component, inject, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
@@ -48,7 +48,12 @@ export class AltaTercerosNoInstitucionalesDialog implements OnDestroy {
   pdfPreviewUrl: SafeResourceUrl | null = null;
   private pdfObjectUrl: string | null = null;
 
-  constructor(private fb: FormBuilder, private ref: MatDialogRef<AltaTercerosNoInstitucionalesDialog>, private terceroService: TerceroService, private sanitizer: DomSanitizer, @Inject(MAT_DIALOG_DATA) public data: any) {}
+  private readonly fb = inject(FormBuilder);
+  private readonly ref = inject(MatDialogRef<AltaTercerosNoInstitucionalesDialog>);
+  private readonly terceroService = inject(TerceroService);
+  private readonly sanitizer = inject(DomSanitizer);
+  readonly data = inject<any>(MAT_DIALOG_DATA);
+
 
   ngOnInit(): void {
     if (!this.data) {

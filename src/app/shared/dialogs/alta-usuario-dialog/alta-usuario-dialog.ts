@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,11 +29,9 @@ import { UppercaseDirective } from '../../directives/upperCase.directivas';
 export class AltaUsuarioDialog {
   form!: FormGroup;
 
-  constructor(
-    private fb: FormBuilder,
-    private ref: MatDialogRef<AltaUsuarioDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-  ) {}
+  private readonly fb = inject(FormBuilder);
+  private readonly ref = inject(MatDialogRef<AltaUsuarioDialog>);
+  readonly data= inject<any>(MAT_DIALOG_DATA);
 
   ngOnInit(): void {
     const roles = this.data?.roles ?? [];

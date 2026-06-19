@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, NgZone } from '@angular/core';
+import { Component, inject, Inject, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -42,14 +42,12 @@ export class BeneficiarioJmDialog {
   bancos: Banco[] = [];
   factorDecimal = 0;
 
-  constructor(
-    private fb: FormBuilder,
-    private juiciosMercantilesService: JuiciosMercantilesService,
-    private snackBar: MatSnackBar,
-    private zone: NgZone,
-    private dialogRef: MatDialogRef<BeneficiarioJmDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: { empleadoId: number; bancos: Banco[], modo?: 'crear' | 'editar', beneficiario? : any }
-  ) {}
+  private readonly fb = inject(FormBuilder);
+  private readonly juiciosMercantilesService = inject(JuiciosMercantilesService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly zone = inject(NgZone);
+  private readonly dialogRef = inject(MatDialogRef<BeneficiarioJmDialog>);
+  readonly data = inject<{ empleadoId: number; bancos: Banco[], modo?: 'crear' | 'editar', beneficiario? : any }>(MAT_DIALOG_DATA);
 
   ngOnInit(): void {
     this.form = this.fb.group({

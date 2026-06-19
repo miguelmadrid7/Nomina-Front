@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -25,7 +25,6 @@ import { MatSelectModule } from '@angular/material/select';
     MatSelectModule,
     MatNativeDateModule,
     MatCardModule,
-
   ],
   templateUrl: './alta-tercero-institucional-dialog.html',
   styleUrl: './alta-tercero-institucional-dialog.css'
@@ -35,7 +34,9 @@ export class AltaTerceroInstitucionalDialog {
   form!: FormGroup;
   tipoOrdenOptions = [{ label: 'Alta', value: 1 }, { label: 'Baja', value: 2 },];
 
-  constructor(private fb: FormBuilder, private ref: MatDialogRef<AltaTerceroInstitucionalDialog>, @Inject(MAT_DIALOG_DATA) public data: any) {}
+  private readonly fb = inject(FormBuilder);
+  private readonly ref = inject(MatDialogRef<AltaTerceroInstitucionalDialog>);
+  readonly data = inject<any>(MAT_DIALOG_DATA);
 
   ngOnInit() {
     const currentQna = this.getCurrentQna();

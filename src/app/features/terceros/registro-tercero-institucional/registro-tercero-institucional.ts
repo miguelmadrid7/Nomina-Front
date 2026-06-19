@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, NgZone, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -51,15 +51,14 @@ export class RegistroTerceroInstitucional {
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
 
-  constructor(
-    private fb: FormBuilder, 
-    private snackBar: MatSnackBar, 
-    private zone: NgZone,
-    private cd: ChangeDetectorRef,
-    private dialog: MatDialog,
-    private terceroService: TerceroService,
-    private conceptoAccesoService: ConceptoAccesoService 
-  ) {}
+
+  private readonly fb = inject(FormBuilder);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly zone = inject(NgZone);
+  private readonly cd = inject(ChangeDetectorRef);
+  private readonly dialog = inject(MatDialog);
+  private readonly terceroService = inject(TerceroService);
+  private readonly conceptoAccesoService = inject(ConceptoAccesoService);
 
   private showSnack(message: string, action: string, duration: number): void {
     this.zone.runOutsideAngular(() => {

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, ViewChild } from '@angular/core';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -50,12 +50,13 @@ import { formatBeneficiarioJMDisplay, mapBeneficiarioJM, repartirNombre } from '
   styleUrls: ['./juicios-mercantiles.css']
 })
 export class JuiciosMercantiles {
-  constructor(private fb: FormBuilder, 
-    private juiciosMercantilesService: JuiciosMercantilesService, 
-    private dialog: MatDialog,  
-    private zone: NgZone, 
-    private snackBar: MatSnackBar,
-    private cd: ChangeDetectorRef ) {}
+  
+  private readonly fb = inject(FormBuilder);
+  private readonly juiciosMercantilesService = inject(JuiciosMercantilesService);
+  private readonly dialog = inject(MatDialog);
+  private readonly zone = inject(NgZone);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly cd = inject(ChangeDetectorRef);
 
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator?: MatPaginator;

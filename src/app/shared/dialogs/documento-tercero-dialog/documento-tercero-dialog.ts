@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
@@ -18,7 +18,9 @@ import { MatCardModule } from '@angular/material/card';
 })
 export class DocumentoTerceroDialog {
 
-  constructor(private dialogRef: MatDialogRef<DocumentoTerceroDialog>, @Inject(MAT_DIALOG_DATA) public data: any = {}) {}
+  private readonly dialogRef = inject( MatDialogRef<DocumentoTerceroDialog>);
+  readonly data = inject<any>(MAT_DIALOG_DATA);
+
 
   close() {
     this.dialogRef.close();

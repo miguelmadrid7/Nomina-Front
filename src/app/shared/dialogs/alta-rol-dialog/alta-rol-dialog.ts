@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -34,7 +34,10 @@ export class AltaRolDialog {
   form!: FormGroup;
   modules$!: Observable<Module[]>;
 
-  constructor(private  fb: FormBuilder, private  ref: MatDialogRef<AltaRolDialog>, @Inject(MAT_DIALOG_DATA) public data: Role | null, private moduleService: ModuleService) {}
+  private readonly fb = inject(FormBuilder);
+  private readonly ref = inject(MatDialogRef<AltaRolDialog>);
+  readonly data = inject<Role | null>(MAT_DIALOG_DATA);
+  private readonly moduleService = inject(ModuleService);
 
   ngOnInit() {
     this.form = this.fb.group({

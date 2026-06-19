@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Module } from '../../../models/gestion-core/module.model';
@@ -42,14 +42,12 @@ export class ALtaModuleDialog implements OnInit{
   form!: FormGroup;
   roles$!: Observable<Role[]>;
 
-  constructor(
-    private dialogRef: MatDialogRef<ALtaModuleDialog>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private fb: FormBuilder,
-    private moduleService: ModuleService,
-    private userService: UserService,
-    private dialog: MatDialog
-  ) {}
+  private readonly dialogRef = inject(MatDialogRef<ALtaModuleDialog>);
+  readonly data = inject<DialogData>(MAT_DIALOG_DATA);
+  private readonly fb = inject(FormBuilder);
+  private readonly moduleService = inject(ModuleService);
+  private readonly userService = inject(UserService);
+  private readonly dialog = inject(MatDialog);
 
   ngOnInit(): void {
     const module = this.module;
