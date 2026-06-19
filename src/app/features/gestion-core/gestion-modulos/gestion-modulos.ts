@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, ViewChild } from '@angular/core';
 import { ModuleService } from '../../../core/services/module.service';
 import { Module } from '../../../models/gestion-core/module.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -45,7 +45,11 @@ export class GestionModulos {
   pageIndex = 0;
   activeSort: Sort = { active: '', direction: '' };
 
-  constructor(private moduleService: ModuleService, private zone: NgZone, private snackBar: MatSnackBar, private cdr: ChangeDetectorRef, private dialog: MatDialog,) {}
+  private readonly moduleService = inject(ModuleService);
+  private readonly zone = inject(NgZone);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly dialog = inject(MatDialog);
 
   private showSnack(message: string, action: string, duration: number): void {
     this.zone.runOutsideAngular(() => {

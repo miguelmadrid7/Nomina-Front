@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, inject, ViewChild } from '@angular/core';
 import { Role } from '../../../models/rol.model';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
@@ -40,7 +40,9 @@ export class GestionRole {
   activeSort: Sort = { active: 'id', direction: 'asc' };
   loading = false;
 
-  constructor(private rolService: RolService,  private dialog: MatDialog) {}
+  private readonly rolService = inject(RolService);
+  private readonly dialog = inject(MatDialog);
+
 
   ngOnInit(): void {
      this.loadRoles();

@@ -29,9 +29,9 @@ export class GestionParametrizacion implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   private readonly parametrizacionService = inject(ParametrizacionService);
-  private readonly snackBar  = inject(MatSnackBar);
-  private readonly dialog  = inject(MatDialog);
-  private readonly cdr   = inject(ChangeDetectorRef);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly dataSource = new MatTableDataSource<ParametrizacionResponse>([]);
 

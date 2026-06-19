@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,14 +13,13 @@ import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-di
     CommonModule,
     ReactiveFormsModule,
     MatIconModule,
-    
   ],
   templateUrl: './gestion-icono.html',
   styleUrl: './gestion-icono.css'
 })
 export class GestionIcono {
 
-  constructor(private dialog: MatDialog) {}
+  private readonly dialog = inject(MatDialog);
 
   openCreateDialog(): void {
     const dialogRef = this.dialog.open(IconoDialog, {

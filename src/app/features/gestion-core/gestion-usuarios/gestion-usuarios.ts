@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, NgZone, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, ViewChild } from '@angular/core';
 import { EmpleadoItem } from '../../../models/emplado.model';
 import { Role } from '../../../models/rol.model';
 import { AssignRoleRequest } from '../../../models/request/assignrole-request.model';
@@ -78,14 +78,12 @@ export class GestionUsuarios {
   pageIndex = 0;
   activeSort: Sort = { active: 'id', direction: 'asc' };
 
-  constructor(
-    private userService: UserService,
-    private fb: FormBuilder,
-    private snackBar: MatSnackBar,
-    private zone: NgZone,
-    private cd: ChangeDetectorRef,
-    private dialog: MatDialog,
-  ) {}
+  private readonly userService = inject(UserService);
+  private readonly fb = inject(FormBuilder);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly zone = inject(NgZone);
+  private readonly cd = inject(ChangeDetectorRef);
+  private readonly dialog = inject(MatDialog);
 
   ngOnInit() {
     this.form = this.fb.group({
