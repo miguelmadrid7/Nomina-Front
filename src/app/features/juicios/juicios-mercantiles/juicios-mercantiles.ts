@@ -41,7 +41,6 @@ import { formatBeneficiarioJMDisplay, mapBeneficiarioJM, repartirNombre } from '
     MatTableModule,
     MatPaginatorModule,
     MatTooltipModule,
-    MatTooltipModule,
     MatChipsModule,
     MatMenuModule,
     MatSortModule
