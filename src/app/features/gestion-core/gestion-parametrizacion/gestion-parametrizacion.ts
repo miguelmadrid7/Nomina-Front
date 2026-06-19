@@ -24,7 +24,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   templateUrl: './gestion-parametrizacion.html',
   styleUrl: './gestion-parametrizacion.css'
 })
-export class GestionParametrizacion implements OnInit, AfterViewInit, OnDestroy{
+export class GestionParametrizacion implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
