@@ -13,7 +13,7 @@
   align-items: center;
   justify-content: center;
   padding: clamp(20px, 3vw, 40px) 20px;
-   padding-left: clamp(90px, 18vw, 140px); /* ← espacio para el logo */
+   padding-left: clamp(90px, 18vw, 140px); 
   background-color: #bc955b;
   color: #ffffff;
 }
@@ -22,8 +22,8 @@
   position: absolute;
   left: 16px;
   top: 50%;
-  transform: translateY(-50%);   /* ← centra verticalmente siempre */
-  max-height: clamp(45px, 8vw, 75px); /* ← escala con la pantalla */
+  transform: translateY(-50%);  
+  max-height: clamp(45px, 8vw, 75px); 
   width: auto;
 }
 
@@ -32,7 +32,7 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: clamp(0px, 0.5vw, 2px);
-  font-size: clamp(14px, 4vw, 44px);     /* ← escala fluida en móvil */
+  font-size: clamp(14px, 4vw, 44px);    
   text-align: center;
   line-height: 1.2;
 }
@@ -68,7 +68,7 @@
   background: #ffffff;
   color: #333;
   border-radius: 12px;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.15); /* Sombra original para resaltar */
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15); 
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -210,7 +210,7 @@
 }
 
 /* Responsive breakpoint */
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .header-top-gold {
     padding-left: clamp(70px, 20vw, 100px);
     min-height: 64px;
@@ -222,11 +222,11 @@
   }
 
   .header-sub-maroon {
-    padding: 16px;
+    padding: 45px 24px;
   }
 
   .card {
-    margin: 16px auto;
+    margin: 25px auto 24px;
     border-radius: 8px;
   }
 
