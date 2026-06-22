@@ -13,14 +13,17 @@
   align-items: center;
   justify-content: center;
   padding: clamp(20px, 3vw, 40px) 20px;
+   padding-left: clamp(90px, 18vw, 140px); /* ← espacio para el logo */
   background-color: #bc955b;
   color: #ffffff;
 }
 
 .brand-logo {
   position: absolute;
-  left: 24px;
-  max-height: 75px;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);   /* ← centra verticalmente siempre */
+  max-height: clamp(45px, 8vw, 75px); /* ← escala con la pantalla */
   width: auto;
 }
 
@@ -28,8 +31,10 @@
   margin: 0;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: clamp(24px, 4vw, 44px);
+  letter-spacing: clamp(0px, 0.5vw, 2px);
+  font-size: clamp(14px, 4vw, 44px);     /* ← escala fluida en móvil */
+  text-align: center;
+  line-height: 1.2;
 }
 
 /* --- SECCIÓN 2: FRANJA GUINDA SUB-HEADER --- */
@@ -150,7 +155,7 @@
       opacity: 1;
       transform: translateY(0);
     }
-  }
+}
 
 /* --- AJUSTES MATERIAL: LÍNEAS SEPARADORAS --- */
 :host ::ng-deep {
@@ -201,5 +206,31 @@
   .mat-mdc-form-field.ng-invalid.ng-touched
     .mdc-notched-outline__trailing {
     border-color: #b00020 !important;
+  }
+}
+
+/* Responsive breakpoint */
+@media (max-width: 480px) {
+  .header-top-gold {
+    padding-left: clamp(70px, 20vw, 100px);
+    min-height: 64px;
+  }
+
+  .brand-logo {
+    max-height: 45px;
+    left: 12px;
+  }
+
+  .header-sub-maroon {
+    padding: 16px;
+  }
+
+  .card {
+    margin: 16px auto;
+    border-radius: 8px;
+  }
+
+  .aux-links a {
+    font-size: 12px;
   }
 }
