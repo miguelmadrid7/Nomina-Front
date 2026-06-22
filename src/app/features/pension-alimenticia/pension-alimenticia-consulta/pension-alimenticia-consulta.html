@@ -148,12 +148,14 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.row-finalizado]="!!row.qnaFin"></tr>
               </table>
          </div>
+          <div class="table-footer">
             <mat-paginator
               [length]="totalElements"
               [pageSize]="50"
               [pageSizeOptions]="[50, 100, 150, 200]"
               showFirstLastButtons>
             </mat-paginator>
+          </div>
 
           </div>
         </div>

@@ -226,3 +226,55 @@
   color: #ffffff;
   transform: translateY(-1px);
 }
+
+@media (max-width: 768px) {
+
+  /* Barra superior */
+  .actions-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  /* Tabla con scroll horizontal */
+  .table-global {
+    min-width: 700px;
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Ajuste de celdas */
+  .table-global .mat-mdc-header-cell,
+  .table-global .mat-mdc-cell {
+    padding: 8px !important;
+    font-size: 12px;
+  }
+
+  /* Ocultar MXN para ahorrar espacio */
+  .amount-label {
+    display: none;
+  }
+
+  /* Ajuste de columnas */
+  .table-global .mat-column-anio {
+    width: 70px;
+  }
+
+  .table-global .mat-column-importeDiario,
+  .table-global .mat-column-importeMensual {
+    width: 120px;
+  }
+
+  .table-global .mat-column-qnaInicio,
+  .table-global .mat-column-qnaFin {
+    width: 90px;
+  }
+
+  .table-global .mat-column-actions {
+    width: 80px;
+  }
+
+}

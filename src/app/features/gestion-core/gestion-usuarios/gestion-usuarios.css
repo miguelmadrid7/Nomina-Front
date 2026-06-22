@@ -308,3 +308,91 @@
 ::ng-deep .table-global .mat-column-empleado .mat-mdc-cell {
     text-align: center;
 }
+
+@media (max-width: 768px) {
+
+  /* Barra superior */
+  .actions-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .actions-right {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .btn-group {
+    display: flex;
+  }
+
+  /* Botones más compactos */
+  .btn {
+    width: auto;
+    min-width: 110px;
+    font-size: 12px;
+  }
+
+  .btnn {
+    width: 34px;
+    height: 34px;
+  }
+
+  /* Buscador */
+  .global-search {
+    width: 100%;
+  }
+
+  :host ::ng-deep .qna-compact {
+    width: 100% !important;
+  }
+
+  /* Tabla */
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-global {
+    min-width: 900px;
+  }
+
+  .table-global .mat-mdc-header-cell,
+  .table-global .mat-mdc-cell {
+    padding: 8px !important;
+    font-size: 12px;
+  }
+
+  /* Columnas */
+  .table-global .mat-column-id {
+    min-width: 60px !important;
+  }
+
+  .table-global .mat-column-nombreCompleto {
+    min-width: 180px !important;
+  }
+
+  .table-global .mat-column-empleado {
+    min-width: 180px !important;
+  }
+
+  .table-global .mat-column-roles {
+    min-width: 220px !important;
+  }
+
+  .table-global .mat-column-padre {
+    min-width: 220px !important;
+  }
+
+  .table-global .mat-column-hijo {
+    min-width: 220px !important;
+  }
+
+   .table-global .mat-column-acciones {
+    width: 110px !important;
+    min-width: 110px !important;
+    max-width: 110px !important;
+  }
+}

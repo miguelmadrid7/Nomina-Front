@@ -77,13 +77,15 @@
 
           </table>
 
-          <mat-paginator
-            [length]="totalElements"
-            [pageSize]="50"
-            [pageSizeOptions]="[50, 100, 150, 200]"
-            showFirstLastButtons
-            aria-label="Seleccionar página">
-          </mat-paginator>
+          <div class="table-footer">
+            <mat-paginator
+              [length]="totalElements"
+              [pageSize]="50"
+              [pageSizeOptions]="[50, 100, 150, 200]"
+              showFirstLastButtons
+              aria-label="Seleccionar página">
+            </mat-paginator>
+          </div>
 
         </div>
       </div>
