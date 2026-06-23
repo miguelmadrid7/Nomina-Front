@@ -1,0 +1,111 @@
+<div class="page-container">
+    <div class="page-header">
+        <h2 class="page-title">Gestión de calendario de entregas</h2>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="actions-right">
+        <div class="btn-group">
+            <button class="btn btn-succes" (click)="openDialog()" type="button">
+                <mat-icon>add</mat-icon>
+                <span>Agregar</span>
+            </button>
+        </div>
+    </div>
+
+     <div class="table-container">
+        <div class="table-card card">
+            <div class="table-content">
+                <div class="table-scroll">
+                    <table mat-table [dataSource]="dataSource" class="table-global">
+                        <ng-container matColumnDef="ejercicio">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> EJERCICIO </th>
+                            <td mat-cell *matCellDef="let e">
+                                <span class="badge-year"> {{ e.ejercicio }} </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="qna">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> QUINCENA </th>
+                            <td mat-cell *matCellDef="let e">
+                                <span class="badge-year"> {{ e.qna }} </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="tipo">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> TIPO </th>
+                            <td mat-cell *matCellDef="let e">
+                                <span class="badge-year"> {{ e.tipo }} </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="fechaCierre">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> FECHA CIERRE </th>
+                            <td mat-cell *matCellDef="let e">
+                                <span class="badge-year"> {{ e.fechaCierre }} </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="fechaPago">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> FECHA PAGO </th>
+                            <td mat-cell *matCellDef="let e">
+                                <span class="badge-year"> {{ e.fechaPago }} </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="movimientos">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> MOVIMIENTOS </th>
+                            <td mat-cell *matCellDef="let e">
+                                <span class="badge-year"> {{ e.movimientos }} </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="pension">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> PENSION  </th>
+                            <td mat-cell *matCellDef="let e">
+                                <span class="badge-year"> {{ e.pension }} </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="juicios">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> JUICIOS </th>
+                            <td mat-cell *matCellDef="let e">
+                                <span class="badge-year"> {{ e.juicios }} </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="terceros">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> TERCEROS </th>
+                            <td mat-cell *matCellDef="let e">
+                                <span class="badge-year"> {{ e.terceros }} </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="activa">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header> ACTIVA </th>
+                            <td mat-cell *matCellDef="let e">
+                                <span class="badge-year"> {{ e.activa }} </span>
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"> </tr>
+                    </table>
+                </div>
+
+                <div class="table-footer">
+                    <mat-paginator
+                        [length]="totalRecords"
+                        [pageSize]="pageSize"
+                        [pageIndex]="pageIndex"
+                        [pageSizeOptions]="[10, 50, 75, 100]"
+                        showFirstLastButtons
+                        (page)="onPageChange($event)">
+                    </mat-paginator>
+                </div>
+            </div>
+        </div>  
+     </div>
+
+</div>

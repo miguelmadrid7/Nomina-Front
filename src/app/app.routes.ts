@@ -74,7 +74,7 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/gestion-core/gestion-calendario/gestion-calendario')
                 .then(m => m.GestionCalendario),
-            data: { breadcrumb: 'GestionCalendario' }
+            data: { breadcrumb: 'Gestion calendario' }
           },
         ]
       },
