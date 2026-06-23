@@ -1,0 +1,167 @@
+/* Dialog structure */
+.dialog-shell {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.dialog-header {
+  position: relative;
+  background: var(--brand);
+  color: #fff;
+  padding: 25px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+}
+
+/* Titulo modal */
+.dlg-bar-title {
+  justify-content: center;
+  align-items: center;
+}
+
+/* Dialog content - SIN display: grid */
+.dlg-content {
+  padding: 14px 16px;
+  max-height: calc(80vh - 120px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg);
+  flex: 1;
+}
+
+.dialog-close {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.dlg-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  background: #fff;
+  flex-shrink: 0;
+}
+
+/* Form grid*/
+.form-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  align-items: start;
+  justify-content: start;
+}
+
+/* ===== Botones ===== */
+.btn {
+  width: 120px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: .2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: none !important;
+  transition: all .18s ease;
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+  border: 2px solid;
+}
+
+.btn-primary {
+  background: transparent;
+  color: #2563eb;
+  border-color: #2563eb;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background: transparent;
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+.checkbox-group {
+  grid-column: 1 / -1;       
+  display: flex;
+  flex-wrap: nowrap;     
+  gap: 16px;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.row-three {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 8px;
+}
+
+.row-three mat-form-field {
+  flex: 1;
+}
+
+:host ::ng-deep .dlg-bar .mat-mdc-icon-button {
+  --mdc-icon-button-icon-color: #ffffff;
+  --mdc-icon-button-disabled-icon-color: rgba(255, 255, 255, 0.38);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .dlg-bar .mat-mdc-icon-button {
+  --mdc-icon-button-icon-color: #ffffff;
+  --mdc-icon-button-disabled-icon-color: rgba(255, 255, 255, 0.38);
+}
+
+:host ::ng-deep .compact-field mat-icon {
+  font-size: 18px;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-form-field-infix {
+    min-height: 40px !important;
+    display: flex;
+    align-items: center;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .qna-compact input.mat-mdc-input-element {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
