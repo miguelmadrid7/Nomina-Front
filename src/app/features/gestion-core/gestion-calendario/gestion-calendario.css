@@ -259,3 +259,10 @@
   max-width: 70px !important;
   text-align: center;
 }
+
+.table-global .mat-column-acciones {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
