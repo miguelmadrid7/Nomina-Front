@@ -22,13 +22,13 @@
                 <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                     <mat-label>NOMBRE</mat-label>
                         <mat-icon matPrefix>email</mat-icon>
-                            <input matInput formControlName="name" appUppercase/>
+                            <input matInput formControlName="name"/>
                                 <mat-error *ngIf="form.get('name')?.hasError('required')">El nombre es requerido</mat-error>
                 </mat-form-field>
 
                 <mat-form-field  appearance="outline" class="qna-compact search-field with-separator description-field" floatLabel="always">
                     <mat-label>DESCRIPCIÓN</mat-label>
-                        <textarea matInput formControlName="description" rows="4" appUppercase></textarea>
+                        <textarea matInput formControlName="description" rows="4"></textarea>
                             <mat-error *ngIf="form.get('description')?.hasError('required')">La descripción es requerida</mat-error>
                 </mat-form-field>
 
