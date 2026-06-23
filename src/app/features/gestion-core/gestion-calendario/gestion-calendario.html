@@ -100,11 +100,11 @@
 
                         <ng-container matColumnDef="activa">
                             <th mat-header-cell *matHeaderCellDef> ACTIVA </th>
-                            <td mat-cell *matCellDef="let e" style="text-align: center;">
+                            <td mat-cell *matCellDef="let e">
                                 @if (e.activa) {
-                                    <mat-icon style="color: #2e7d32;">check_circle</mat-icon>
+                                    <mat-icon class="icon-active">check_circle</mat-icon>
                                 } @else {
-                                    <mat-icon style="color: #9e9e9e;">radio_button_unchecked</mat-icon>
+                                    <mat-icon class="icon-inactive">radio_button_unchecked</mat-icon>
                                 }
                             </td>
                         </ng-container>
@@ -112,8 +112,8 @@
                         <ng-container matColumnDef="acciones">
                             <th mat-header-cell *matHeaderCellDef> ACCIONES </th>
                             <td mat-cell *matCellDef="let e" style="text-align: center;">
-                                @if (e.activa) {
-                                    <button class="btnn btnn-primary" type="button">
+                                @if (e.qna >= qnaActiva && qnaActiva > 0) {
+                                    <button class="btnn btnn-primary" type="button" (click)="openEditDialog(e)">
                                         <mat-icon>edit</mat-icon>
                                     </button>
                                 } @else {

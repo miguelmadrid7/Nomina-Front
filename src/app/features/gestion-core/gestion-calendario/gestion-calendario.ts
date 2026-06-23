@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, ViewChild, ɵAcxChangeDetectionStrategy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -21,7 +21,8 @@ import { AltaCalendarioDialog } from '../../../shared/dialogs/alta-calendario-di
     MatPaginatorModule,
   ],
   templateUrl: './gestion-calendario.html',
-  styleUrl: './gestion-calendario.css'
+  styleUrl: './gestion-calendario.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GestionCalendario {
 
@@ -33,6 +34,7 @@ export class GestionCalendario {
   
   displayedColumns: string[] = ['ejercicio','qna','tipo', 'fechaCierre','fechaPago','movimientos', 'pension', 'juicios', 'terceros', 'activa', 'acciones'];
   dataSource = new MatTableDataSource<Calendario>([]);
+  qnaActiva = 0;
   totalRecords = 0;
   pageSize = 10;
   pageIndex = 0;
@@ -41,22 +43,26 @@ export class GestionCalendario {
     this.cargarCalendario();
   }
 
-  cargarCalendario(): void {
+  cargarCalendario(mantenerPagina = false): void {
+    const paginaActual = mantenerPagina ? this.pageIndex : 0;
     this.calendarioService.getCalendarioQna().subscribe({
-      next: (res) => {
-        this.dataSource.data = res.data ?? [];
-        this.totalRecords = this.dataSource.data.length;
-        this.dataSource.paginator = this.paginator;
-        this.cdr.markForCheck();
-      },
-      error: () => this.mostrarResultado(false, 'Error al cargar el calendario'),
+        next: (res) => {
+            this.dataSource.data = res.data ?? [];
+            this.totalRecords = this.dataSource.data.length;
+            this.dataSource.paginator = this.paginator;
+            const activa = this.dataSource.data.find(c => c.activa);
+            this.qnaActiva = activa?.qna ?? 0;
+            if (mantenerPagina && this.paginator) {
+                setTimeout(() => {
+                    this.paginator.pageIndex = paginaActual;
+                    this.dataSource.paginator = this.paginator;
+                    this.cdr.detectChanges();
+                });
+            }
+            this.cdr.markForCheck();
+        },
+        error: () => this.mostrarResultado(false, 'Error al cargar el calendario'),
     });
-  }
-
-  onPageChange(event: PageEvent): void {
-    this.pageSize = event.pageSize;
-    this.pageIndex = event.pageIndex;
-    this.cdr.markForCheck();
   }
 
   openDialog(): void {
@@ -82,6 +88,32 @@ export class GestionCalendario {
     });
   }
 
+  openEditDialog(calendario: Calendario): void {
+    this.calendarioService.getCalendarioById(calendario.id).subscribe({
+      next: (res) => {
+        const formRef = this.dialog.open(AltaCalendarioDialog, {
+          width: '850px',
+          maxWidth: '95vw',
+          data: res.data  
+        });
+        formRef.afterClosed().subscribe((payload) => {
+          if (!payload) return;
+          this.calendarioService.updateCalendario(calendario.id, payload).subscribe({
+            next: (updateRes) => {
+              this.mostrarResultado(
+                updateRes.success,
+                updateRes.success ? 'Calendario actualizado con exito' : (updateRes.message ?? 'Fallo al actualizar calendario') 
+              );
+              if (updateRes.success) this.cargarCalendario(true);
+            },
+            error: () => this.mostrarResultado(false, 'Fallo al actualizar'),
+          });
+        });
+      },
+      error: () => this.mostrarResultado(false, 'Error al cargar calendario'),
+    });
+  }
+
   private mostrarResultado(success: boolean, message: string): void {
       this.dialog.open(ConfirmDialog, {
         width: '400px',
@@ -91,6 +123,12 @@ export class GestionCalendario {
           confirmText: 'Accept',
         }
       });
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
+    this.cdr.detectChanges();
   }
 }
 
