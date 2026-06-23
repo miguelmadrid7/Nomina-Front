@@ -31,7 +31,7 @@ export class GestionCalendario {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   
-  displayedColumns: string[] = ['ejercicio','qna','tipo', 'fechaCierre','fechaPago','movimientos', 'pension', 'juicios', 'terceros', 'activa'];
+  displayedColumns: string[] = ['ejercicio','qna','tipo', 'fechaCierre','fechaPago','movimientos', 'pension', 'juicios', 'terceros', 'activa', 'acciones'];
   dataSource = new MatTableDataSource<Calendario>([]);
   totalRecords = 0;
   pageSize = 10;
@@ -60,7 +60,10 @@ export class GestionCalendario {
   }
 
   openDialog(): void {
-    const formRef = this.dialog.open(AltaCalendarioDialog, { width: '520px' });
+    const formRef = this.dialog.open(AltaCalendarioDialog, { 
+      width: '850px',
+      maxWidth: '95vw',
+    });
     formRef.afterClosed().subscribe((payload) => {
       if (!payload) return; 
       this.calendarioService.addCalendario(payload).subscribe({

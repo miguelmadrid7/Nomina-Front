@@ -57,40 +57,73 @@
                         <ng-container matColumnDef="movimientos">
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> MOVIMIENTOS </th>
                             <td mat-cell *matCellDef="let e">
-                                <span class="badge-year"> {{ e.movimientos }} </span>
+                                 @if (e.movimientos) {
+                                    <mat-icon class="icon-check">check</mat-icon>
+                                } @else {
+                                    <mat-icon class="icon-close">close</mat-icon>
+                                }
                             </td>
                         </ng-container>
 
                         <ng-container matColumnDef="pension">
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> PENSION  </th>
                             <td mat-cell *matCellDef="let e">
-                                <span class="badge-year"> {{ e.pension }} </span>
+                                 @if (e.movimientos) {
+                                    <mat-icon class="icon-check">check</mat-icon>
+                                } @else {
+                                    <mat-icon class="icon-close">close</mat-icon>
+                                }
                             </td>
                         </ng-container>
 
                         <ng-container matColumnDef="juicios">
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> JUICIOS </th>
                             <td mat-cell *matCellDef="let e">
-                                <span class="badge-year"> {{ e.juicios }} </span>
+                                 @if (e.movimientos) {
+                                    <mat-icon class="icon-check">check</mat-icon>
+                                } @else {
+                                    <mat-icon class="icon-close">close</mat-icon>
+                                }
                             </td>
                         </ng-container>
 
                         <ng-container matColumnDef="terceros">
                             <th mat-header-cell *matHeaderCellDef mat-sort-header> TERCEROS </th>
                             <td mat-cell *matCellDef="let e">
-                                <span class="badge-year"> {{ e.terceros }} </span>
+                                 @if (e.movimientos) {
+                                    <mat-icon class="icon-check">check</mat-icon>
+                                } @else {
+                                    <mat-icon class="icon-close">close</mat-icon>
+                                }
                             </td>
                         </ng-container>
 
                         <ng-container matColumnDef="activa">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header> ACTIVA </th>
-                            <td mat-cell *matCellDef="let e">
-                                <span class="badge-year"> {{ e.activa }} </span>
+                            <th mat-header-cell *matHeaderCellDef> ACTIVA </th>
+                            <td mat-cell *matCellDef="let e" style="text-align: center;">
+                                @if (e.activa) {
+                                    <mat-icon style="color: #2e7d32;">check_circle</mat-icon>
+                                } @else {
+                                    <mat-icon style="color: #9e9e9e;">radio_button_unchecked</mat-icon>
+                                }
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="acciones">
+                            <th mat-header-cell *matHeaderCellDef> ACCIONES </th>
+                            <td mat-cell *matCellDef="let e" style="text-align: center;">
+                                @if (e.activa) {
+                                    <button class="btnn btnn-primary" type="button">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                } @else {
+                                    <span class="badge-closed">Closed</span>
+                                }
                             </td>
                         </ng-container>
 
                         <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"> </tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.row-closed]="!row.activa"> </tr>
                     </table>
                 </div>
 

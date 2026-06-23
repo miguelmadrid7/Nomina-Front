@@ -57,9 +57,110 @@
   transform: translateY(-1px);
 }
 
+.btnn {
+    width: 40px;
+    height: 36px;
+    padding: 0 4px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: .2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: none !important;
+    transition: all .18s ease;
+    cursor: pointer;
+    position: relative;
+    background: transparent;
+    border: 2px solid;
+    margin-left: 8px;
+}
+
+.btnn {
+    width: 40px;
+    height: 36px;
+    padding: 0 4px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: .2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: none !important;
+    transition: all .18s ease;
+    cursor: pointer;
+    position: relative;
+    background: transparent;
+    border: 2px solid;
+    margin-left: 8px;
+}
+
+.btnn-primary {
+  background: transparent;
+  color: #2563eb;
+  border-color: #2563eb;
+}
+
+.btnn-primary:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+.badge-closed {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #f1f5f9;
+  color: #94a3b8;
+  border: 1px solid #e2e8f0;
+  letter-spacing: 0.4px;
+}
+
+.icon-check {
+  color: #2e7d32;
+}
+
+.icon-close {
+  color: #e53935;
+}
+
+.table-global .mat-column-movimientos,
+.table-global .mat-column-pension,
+.table-global .mat-column-juicios,
+.table-global .mat-column-terceros,
+.table-global .mat-column-activa,
+.table-global .mat-column-acciones {
+  text-align: center;
+}
+
 /* TABLA GLOBAL */
 .table-global {
     width: 100%;
+}
+
+.table-global .row-closed {
+  background: #f8fafc;
+  color: #94a3b8;
+  opacity: 0.75;
+}
+
+.table-global .row-closed:hover {
+  background: #f1f5f9;
+}
+
+.table-global .row-closed .badge-year {
+  color: #94a3b8;
 }
 
 .table-global .mat-mdc-header-row {
