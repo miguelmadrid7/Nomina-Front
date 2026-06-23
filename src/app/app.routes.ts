@@ -69,6 +69,13 @@ export const routes: Routes = [
                 .then(m => m.GestionParametrizacion),
             data: { breadcrumb: 'Parametrizacion' }
           },
+          {    
+            path: 'calendario',
+            loadComponent: () =>
+              import('./features/gestion-core/gestion-calendario/gestion-calendario')
+                .then(m => m.GestionCalendario),
+            data: { breadcrumb: 'GestionCalendario' }
+          },
         ]
       },
 
