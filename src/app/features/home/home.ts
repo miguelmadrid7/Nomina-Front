@@ -42,8 +42,10 @@ export class Home {
     }
 
     ngAfterViewInit(): void {
-      this.isSidebarCollapsed = this.sidebar.collapsed;
-      this.cd.detectChanges();
+      Promise.resolve().then(() => {
+        this.isSidebarCollapsed = this.sidebar.collapsed;
+        this.cd.detectChanges();
+      });
     }
 
     buildBreadCrumb(
