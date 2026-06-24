@@ -1,0 +1,17 @@
+.grupo-row td {
+  background: var(--brand, #6b2a2a);
+  color: #fff;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.grupo-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.grupo-count {
+  font-size: 12px;
+  opacity: 0.8;
+}

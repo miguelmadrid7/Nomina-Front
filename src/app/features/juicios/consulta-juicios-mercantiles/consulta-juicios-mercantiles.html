@@ -1,0 +1,105 @@
+<div class="table-container">
+    <div class="table-card card">
+        <div class="table-content">
+            <div class="table-scroll">
+                <table mat-table [dataSource]="dataSource" class="table-global">
+
+                    <!-- Fila de grupo -->
+                    <ng-container matColumnDef="grupo">
+                        <td mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length">
+                            <div class="grupo-header" (click)="toggleGrupo(row.grupo)">
+                                <mat-icon>{{ row.grupo.expandido ? 'expand_less' : 'expand_more' }}</mat-icon>
+                                <strong>{{ row.grupo.rfc }}</strong>
+                                <span>{{ row.grupo.nombreCompleto }}</span>
+                                <span class="grupo-count">({{ row.grupo.beneficiarios.length }} beneficiarios)</span>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <!-- Columnas normales -->
+                    <ng-container matColumnDef="rfc">
+                        <th mat-header-cell *matHeaderCellDef>RFC</th>
+                        <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="nombreCompleto">
+                        <th mat-header-cell *matHeaderCellDef>NOMBRE COMPLETO</th>
+                        <td mat-cell *matCellDef="let e">{{ e.nombreCompleto }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="qnaProceso">
+                        <th mat-header-cell *matHeaderCellDef>QNA A DESCONTAR</th>
+                        <td mat-cell *matCellDef="let e">{{ e.qnaini }} - {{ e.qnafin }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="citaBancaria">
+                        <th mat-header-cell *matHeaderCellDef>CITA BANCARIA</th>
+                        <td mat-cell *matCellDef="let e">{{ e.numeroDocumento }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="formaAplicacion">
+                        <th mat-header-cell *matHeaderCellDef>FORMA DE APLICACIÓN</th>
+                        <td mat-cell *matCellDef="let e">{{ e.formaAplicacion }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="importeTotal">
+                        <th mat-header-cell *matHeaderCellDef>IMPORTE A PAGAR</th>
+                        <td mat-cell *matCellDef="let e">{{ e.importeTotal | currency:'MXN':'symbol':'1.0-2' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="restoPagar">
+                        <th mat-header-cell *matHeaderCellDef>RESTO A PAGAR</th>
+                        <td mat-cell *matCellDef="let e">{{ e.restoPagar | currency:'MXN':'symbol':'1.0-2' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef>ESTATUS</th>
+                        <td mat-cell *matCellDef="let e">{{ e.status }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="acciones">
+                        <th mat-header-cell *matHeaderCellDef>ACCIONES</th>
+                        <td mat-cell *matCellDef="let e">
+                            <button mat-button color="primary"
+                                (click)="onEditar(e)"
+                                [disabled]="e.status === 'INACTIVO'"
+                                matTooltip="Editar"
+                                [matTooltipDisabled]="e.status === 'INACTIVO'">
+                                <mat-icon>visibility</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
+
+                    <!-- Fila de grupo -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumnsGrupo; when: esFilaGrupo"
+                        class="grupo-row">
+                    </tr>
+
+                    <!-- Filas normales -->
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                        [class.hidden]="row.esGrupo"
+                        [class.inactive-row]="row?.status === 'INACTIVO'">
+                    </tr>
+
+                    <tr class="mat-row" *matNoDataRow [class.hidden]="!hasCheck">
+                        <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
+                            SIN BENEFICIARIOS REGISTRADOS
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="table-footer">
+                <mat-paginator
+                    [length]="dataSource.data.length"
+                    [pageSize]="10"
+                    [pageSizeOptions]="[10, 20, 50, 100]"
+                    showFirstLastButtons
+                    aria-label="Select page">
+                </mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>
