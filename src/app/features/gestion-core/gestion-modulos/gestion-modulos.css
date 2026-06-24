@@ -265,7 +265,7 @@
     text-align: center;
 }
 
-/* ── Responsive ────────────────────────────────────────────────── */
+/*  Responsive  */
 @media (max-width: 768px) {
 
   /* Botones en columna */
@@ -284,17 +284,16 @@
     justify-content: center;
   }
 
-  /* Tabla con scroll horizontal */
   .table-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
   .table-global {
-    min-width: 650px;  /* ← fuerza scroll antes de colapsar */
+    min-width: 650px;  
   }
 
-  /* Paginador más compacto */
+
   .table-footer {
     overflow-x: auto;
   }
