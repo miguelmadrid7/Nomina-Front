@@ -1,16 +1,15 @@
-import { ChangeDetectorRef, Component, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ModuleService } from '../../../core/services/module.service';
 import { Module } from '../../../models/gestion-core/module.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { ALtaModuleDialog } from '../../../shared/dialogs/alta-module-dialog/alta-module-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
-import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-gestion-modulos',
@@ -22,41 +21,33 @@ import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
     MatPaginatorModule,
     MatIconModule,
     MatDialogModule,
-    MatSortModule,
   ],
   templateUrl: './gestion-modulos.html',
   styleUrl: './gestion-modulos.css'
 })
-export class GestionModulos implements OnDestroy {
-
-  @ViewChild(MatSort) sort?: MatSort;
-  @ViewChild(MatPaginator) paginator?: MatPaginator;
-  displayedColumns: string[] = ['name','description','vista','parent','icon','actions'];
-  modules = new MatTableDataSource<Module>([]);
-  loading = false;
-  selectedModule: Module | null = null;
-  detailLoading = false;
-  loadingModuleId: number | null = null;
-  private allModules: Module[] = [];
-
-  // Paginación manual
-  totalModules = 0;
-  pageSize = 10;
-  pageIndex = 0;
-  activeSort: Sort = { active: '', direction: '' };
+export class GestionModulos implements OnInit, OnDestroy {
 
   private readonly moduleService = inject(ModuleService);
-  private readonly zone = inject(NgZone);
   private readonly snackBar = inject(MatSnackBar);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly dialog = inject(MatDialog);
 
-  private showSnack(message: string, action: string, duration: number): void {
-    this.zone.runOutsideAngular(() => {
-      setTimeout(() => {
-        this.zone.run(() => this.snackBar.open(message, action, { duration }));
-      }, 50);
-    });
+  @ViewChild(MatPaginator) paginator?: MatPaginator;
+  displayedColumns: string[] = ['name','description','vista','parent','icon','actions'];
+  modules = new MatTableDataSource<Module>([]);
+  loading = false;
+  loadingModuleId: number | null = null;
+  totalModules = 0;
+  pageSize = 10;
+  pageIndex = 0;
+
+  selectedModule: Module | null = null;
+  detailLoading = false;
+
+  private allModules: Module[] = [];
+
+  private showSnack(message: string, action = 'Cerrar', duration = 4000) {
+    this.snackBar.open(message, action, {duration});
   }
 
   ngOnInit(): void {
@@ -67,16 +58,6 @@ export class GestionModulos implements OnDestroy {
     this.dialog.closeAll();
   }
 
-  ngAfterViewInit(): void {
-    // NO conectar paginator integrado - usamos paginación manual
-  }
-
-  onSortChange(sort: Sort): void {
-    this.activeSort = sort.direction ? sort : { active: '', direction: '' };
-    this.pageIndex = 0;
-    this.applyTableState();
-  }
-
   onPageChange(event: { pageIndex: number; pageSize: number }): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
@@ -84,36 +65,10 @@ export class GestionModulos implements OnDestroy {
   }
 
   private applyTableState(): void {
-    // 1) Ordenar si hay sort activo
-    let sorted = [...this.allModules];
-    if (this.activeSort.active && this.activeSort.direction) {
-      const isAsc = this.activeSort.direction === 'asc';
-      sorted = sorted.sort((a, b) => 
-        this.compare(this.getSortValue(a, this.activeSort.active), this.getSortValue(b, this.activeSort.active), isAsc)
-      );
-    }
-
-    // 2) Agrupar por padre
-    const grouped = this.groupModulesByParent(sorted);
-
-    // 3) Slice para paginación
+    const grouped = this.groupModulesByParent([...this.allModules]);
     const start = this.pageIndex * this.pageSize;
     const end = start + this.pageSize;
     this.modules.data = grouped.slice(start, end);
-  }
-
-
-  private getSortValue(module: Module, column: string): string | number {
-    switch (column) {
-      case 'vista':
-        return module.vista ? 1 : 0;
-      default:
-        return ((module as any)[column] ?? '').toString().toLowerCase();
-    }
-  }
-
-  private compare(a: string | number, b: string | number, isAsc: boolean): number {
-    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
   }
 
   private groupModulesByParent(modules: Module[]): Module[] {

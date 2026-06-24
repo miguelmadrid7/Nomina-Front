@@ -18,10 +18,10 @@
         <div class="table-card card">  
             <div class="table-content">
                 <div class="table-scroll">
-                    <table mat-table [dataSource]="modules" matSort (matSortChange)="onSortChange($event)" class="table-global">
+                    <table mat-table [dataSource]="modules" class="table-global">
                             <!-- Nombre -->
                             <ng-container matColumnDef="name">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> NOMBRE </th>
+                                <th mat-header-cell *matHeaderCellDef> NOMBRE </th>
                                 <td mat-cell *matCellDef="let e">
                                     <span class="badge-year"> {{ e.name }} </span>
                                 </td>
@@ -29,25 +29,25 @@
 
                             <!-- Descripción -->
                             <ng-container matColumnDef="description">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> DESCRIPCIÓN </th>
+                                <th mat-header-cell *matHeaderCellDef> DESCRIPCIÓN </th>
                                 <td mat-cell *matCellDef="let e">{{ e.description }}</td>
                             </ng-container>
 
                             <!-- Visible -->
                             <ng-container matColumnDef="vista">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> VISIBLE </th>
+                                <th mat-header-cell *matHeaderCellDef> VISIBLE </th>
                                 <td mat-cell *matCellDef="let e"> {{ e.vista ? 'Sí' : 'No' }} </td>
                             </ng-container>
 
                             <!-- Parent -->
                             <ng-container matColumnDef="parent">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> PADRE </th>
+                                <th mat-header-cell *matHeaderCellDef> PADRE </th>
                                 <td mat-cell *matCellDef="let e">{{ e.parent }}</td>
                             </ng-container>
 
                             <!-- Icon -->
                             <ng-container matColumnDef="icon">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header> ÍCONO </th>
+                                <th mat-header-cell *matHeaderCellDef> ÍCONO </th>
                                 <td mat-cell *matCellDef="let e">{{ e.icon }}</td>
                             </ng-container>
 
