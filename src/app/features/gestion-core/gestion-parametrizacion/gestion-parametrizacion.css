@@ -73,18 +73,18 @@
 }
 
 /* --- TABLA GLOBAL --- */
-/* --- CARD DE TABLA --- */
 .table-global {
   width: 100%;
-  table-layout: fixed;       
+  /* ← sin table-layout: fixed para que las columnas respiren */
 }
 
-.table-container { 
-  margin-top: 4px; 
+.table-container {
+  margin-top: 4px;
 }
 
-.table-scroll { 
-  overflow-x: auto; 
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table-card {
@@ -94,7 +94,6 @@
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
 }
-
 
 .table-global .mat-mdc-header-row {
   background: #f8fafc;
@@ -109,7 +108,7 @@
   letter-spacing: 0.6px;
   padding: 11px 16px !important;
   white-space: nowrap;
-  text-align: center !important;     
+  text-align: center !important;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -119,7 +118,7 @@
   font-size: 13.5px;
   color: #334155;
   border-bottom: 1px solid #f1f5f9 !important;
-  text-align: center !important;         
+  text-align: center !important;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -133,12 +132,13 @@
   border-bottom: none !important;
 }
 
-.table-global .mat-column-anio { width: 80px; }
-.table-global .mat-column-importeDiario { width: 160px; }
-.table-global .mat-column-importeMensual { width: 160px; }
-.table-global .mat-column-qnaInicio { width: 120px; }
-.table-global .mat-column-qnaFin { width: 120px; }
-.table-global .mat-column-actions { width: 100px; }
+/* ── Anchos de columna ─────────────────────────────────────────── */
+.table-global .mat-column-anio         { width: 8%;  min-width: 80px;  }
+.table-global .mat-column-importeDiario { width: 20%; min-width: 140px; }
+.table-global .mat-column-importeMensual{ width: 20%; min-width: 150px; }
+.table-global .mat-column-qnaInicio    { width: 15%; min-width: 110px; }
+.table-global .mat-column-qnaFin       { width: 15%; min-width: 110px; }
+.table-global .mat-column-actions      { width: 10%; min-width: 100px; }
 
 /* --- BADGES Y ESTILOS DE CELDA --- */
 .badge-year {
@@ -180,7 +180,7 @@
   display: flex;
   gap: 6px;
   align-items: center;
-   justify-content: center;
+  justify-content: center;
 }
 
 .btnn {
@@ -227,54 +227,35 @@
   transform: translateY(-1px);
 }
 
+/* ── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 768px) {
 
-  /* Barra superior */
   .actions-bar {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: stretch;
+    gap: 8px;
   }
 
-  /* Tabla con scroll horizontal */
+  .btn-group {
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .table-global {
-    min-width: 700px;
+    min-width: 650px;
   }
 
-  .table-scroll {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Ajuste de celdas */
   .table-global .mat-mdc-header-cell,
   .table-global .mat-mdc-cell {
     padding: 8px !important;
     font-size: 12px;
   }
 
-  /* Ocultar MXN para ahorrar espacio */
   .amount-label {
     display: none;
   }
-
-  /* Ajuste de columnas */
-  .table-global .mat-column-anio {
-    width: 70px;
-  }
-
-  .table-global .mat-column-importeDiario,
-  .table-global .mat-column-importeMensual {
-    width: 120px;
-  }
-
-  .table-global .mat-column-qnaInicio,
-  .table-global .mat-column-qnaFin {
-    width: 90px;
-  }
-
-  .table-global .mat-column-actions {
-    width: 80px;
-  }
-
 }

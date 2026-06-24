@@ -12,24 +12,24 @@
         <span>Agregar</span>
       </button>
     </div>
-    
   </div>
 
   <div class="table-container">
     <div class="table-card card">
       <div class="table-content">
+
         <div class="table-scroll">
           <table mat-table [dataSource]="dataSource" class="table-global">
 
             <ng-container matColumnDef="anio">
-              <th mat-header-cell *matHeaderCellDef>Año</th>
+              <th mat-header-cell *matHeaderCellDef>AÑO</th>
               <td mat-cell *matCellDef="let e">
                 <span class="badge-year">{{ e.anio }}</span>
               </td>
             </ng-container>
 
             <ng-container matColumnDef="importeDiario">
-              <th mat-header-cell *matHeaderCellDef>Importe diario</th>
+              <th mat-header-cell *matHeaderCellDef>IMPORTE DIARIO</th>
               <td mat-cell *matCellDef="let e">
                 <span class="amount">${{ e.importeDiario | number:'1.2-2' }}</span>
                 <span class="amount-label">MXN</span>
@@ -37,7 +37,7 @@
             </ng-container>
 
             <ng-container matColumnDef="importeMensual">
-              <th mat-header-cell *matHeaderCellDef>Importe mensual</th>
+              <th mat-header-cell *matHeaderCellDef>IMPORTE MENSUAL</th>
               <td mat-cell *matCellDef="let e">
                 <span class="amount">${{ e.importeMensual | number:'1.2-2' }}</span>
                 <span class="amount-label">MXN</span>
@@ -45,21 +45,21 @@
             </ng-container>
 
             <ng-container matColumnDef="qnaInicio">
-              <th mat-header-cell *matHeaderCellDef>QNA inicio</th>
+              <th mat-header-cell *matHeaderCellDef>QNA INICIO</th>
               <td mat-cell *matCellDef="let e">
                 <span class="qna-badge">{{ e.qnaInicio }}</span>
               </td>
             </ng-container>
 
             <ng-container matColumnDef="qnaFin">
-              <th mat-header-cell *matHeaderCellDef>QNA fin</th>
+              <th mat-header-cell *matHeaderCellDef>QNA FIN</th>
               <td mat-cell *matCellDef="let e">
                 <span class="qna-badge">{{ e.qnaFin }}</span>
               </td>
             </ng-container>
 
             <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef>Acciones</th>
+              <th mat-header-cell *matHeaderCellDef>ACCIONES</th>
               <td mat-cell *matCellDef="let e">
                 <div class="actions-cell">
                   <button class="btnn btnn-succes" type="button" (click)="openUpdateDialog(e)" title="Editar">
@@ -76,20 +76,19 @@
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
           </table>
-
-          <div class="table-footer">
-            <mat-paginator
-              [length]="totalElements"
-              [pageSize]="50"
-              [pageSizeOptions]="[50, 100, 150, 200]"
-              showFirstLastButtons
-              aria-label="Seleccionar página">
-            </mat-paginator>
-          </div>
-
         </div>
+
+        <div class="table-footer">
+          <mat-paginator
+            [length]="totalElements"
+            [pageSize]="50"
+            [pageSizeOptions]="[50, 100, 150, 200]"
+            showFirstLastButtons
+            aria-label="Seleccionar página">
+          </mat-paginator>
+        </div>
+
       </div>
     </div>
   </div>
-
 </div>
