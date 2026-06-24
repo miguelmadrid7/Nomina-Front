@@ -171,7 +171,6 @@
   margin-bottom: 0 !important;
 }
 
-/* Agrega esto a tu media query existente */
 @media (max-width: 600px) {
   .form-grid {
     grid-template-columns: 1fr;
@@ -195,7 +194,6 @@
     width: 100%;
   }
 
-  /* ← Agrega estos */
   .dialog-shell {
     max-height: 95vh;
   }
