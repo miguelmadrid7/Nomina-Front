@@ -49,8 +49,13 @@ import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 })
 export class GestionUsuarios implements OnDestroy {
 
+  private readonly userService = inject(UserService);
+  private readonly fb = inject(FormBuilder);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly zone = inject(NgZone);
+  private readonly cd = inject(ChangeDetectorRef);
+  private readonly dialog = inject(MatDialog);
 
-  @ViewChild(MatSort) sort?: MatSort;
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
 
@@ -62,7 +67,7 @@ export class GestionUsuarios implements OnDestroy {
   totalElements = 0;
 
   usersDataSource = new MatTableDataSource<EmpleadoItem>([]);
-  displayedColumns: string[] = ['id', 'nombreCompleto', 'empleado', 'roles', 'padre', 'hijo', 'acciones'];
+  displayedColumns: string[] = ['nombreCompleto', 'empleado', 'roles', 'padre', 'hijo', 'acciones'];
 
 
   empleados: EmpleadoItem[] = [];
@@ -77,13 +82,6 @@ export class GestionUsuarios implements OnDestroy {
   pageSize = 10;
   pageIndex = 0;
   activeSort: Sort = { active: 'id', direction: 'asc' };
-
-  private readonly userService = inject(UserService);
-  private readonly fb = inject(FormBuilder);
-  private readonly snackBar = inject(MatSnackBar);
-  private readonly zone = inject(NgZone);
-  private readonly cd = inject(ChangeDetectorRef);
-  private readonly dialog = inject(MatDialog);
 
   ngOnInit() {
     this.form = this.fb.group({
