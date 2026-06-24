@@ -33,7 +33,7 @@ export class GestionRole implements OnDestroy {
   @ViewChild(MatPaginator) paginator?: MatPaginator
   dataSource  = new MatTableDataSource<Role>([]);
   roles: Role[] = [];
-  displayedColumns: string[] = ['id', 'rol', 'padre', 'acciones'];
+  displayedColumns: string[] = ['rol', 'padre', 'acciones'];
   totalRoles = 0;
   pageSize = 10;
   pageIndex = 0;
