@@ -10,7 +10,6 @@
             <h3>Buscar empleado.</h3>
         </div>
 
-        <!-- Buscar empleado  -->
         <mat-card class="form-card">
             <div class="actions-right">
                 <div class="btn-group">
@@ -19,15 +18,9 @@
                         <span>Limpiar</span>
                     </button>
                 </div>
-
                 <button class="btn btn-primary" (click)="buscarEmpleado()">
                     <mat-icon>search</mat-icon>
                     <span>Buscar</span>
-                </button>
-
-                <button class="btn btn-success" (click)="modalBeneficiario()">
-                    <mat-icon>person_add</mat-icon>
-                    <span>Agregar</span>
                 </button>
             </div>
 
@@ -35,169 +28,235 @@
                 <mat-form-field appearance="outline" class="with-separator qna-compact search-field" floatLabel="always">
                     <mat-icon matPrefix>search</mat-icon>
                     <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
-                        <input
-                            matInput
-                            id="buscarEmpleado"
-                            formControlName="searchText"
-                            [matAutocomplete]="auto"
-                            #autocompleteTrigger="matAutocompleteTrigger" 
-                            (keydown.enter)="$event.preventDefault(); buscarEmpleado()">
-
-                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="empleadoSeleccionado($event.option.value)"[displayWith]="displayFn">
-                            <mat-option *ngFor="let emp of resultado" [value]="emp">{{ displayFn(emp) }}</mat-option>
-                        </mat-autocomplete>
+                    <input
+                        matInput
+                        id="buscarEmpleado"
+                        formControlName="searchText"
+                        [matAutocomplete]="auto"
+                        #autocompleteTrigger="matAutocompleteTrigger"
+                        (keydown.enter)="$event.preventDefault(); buscarEmpleado()">
+                    <mat-autocomplete #auto="matAutocomplete" 
+                        (optionSelected)="empleadoSeleccionado($event.option.value)"
+                        [displayWith]="displayFn">
+                        <mat-option *ngFor="let emp of resultado" [value]="emp">
+                            {{ displayFn(emp) }}
+                        </mat-option>
+                    </mat-autocomplete>
                 </mat-form-field>
 
-                <!-- FILTROS QNA -->
-                <div class="qna-filters">
-                    <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
-                        <mat-label>Año</mat-label>
-                        <mat-select formControlName="anio" (selectionChange)="onQnaModelChange()">
-                            <mat-option *ngFor="let anio of anio" [value]="anio">
-                            {{ anio }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
 
-                    <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
-                        <mat-label>Quincena</mat-label>
-                        <mat-select formControlName="quincena" (selectionChange)="onQnaModelChange()">
-                            <mat-option *ngFor="let q of quincena" [value]="q">
-                            {{ q.toString().padStart(2,'0') }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
             </div>
 
             <mat-card-content class="form-grid">
                 <div>Datos del empleado seleccionado:</div>
                 <div formGroupName="empleado" class="empleado-grid">
-                   
                     <div class="info-field">
                         <mat-icon>person</mat-icon>
                         <div class="info-content">
                             <span class="info-label">Apellido paterno</span>
-                            <span>{{ form.get('empleado.primerApellido')?.value || '—' }} </span>
+                            <span>{{ form.get('empleado.primerApellido')?.value || '—' }}</span>
                         </div>
                     </div>
-
                     <div class="info-field">
                         <mat-icon>person</mat-icon>
                         <div class="info-content">
                             <span class="info-label">Apellido materno</span>
-                            <span>{{ form.get('empleado.segundoApellido')?.value || '—' }} </span>
+                            <span>{{ form.get('empleado.segundoApellido')?.value || '—' }}</span>
                         </div>
                     </div>
-
                     <div class="info-field">
                         <mat-icon>person</mat-icon>
                         <div class="info-content">
                             <span class="info-label">Nombre</span>
-                            <span>{{ form.get('empleado.nombre')?.value || '—' }} </span>
+                            <span>{{ form.get('empleado.nombre')?.value || '—' }}</span>
                         </div>
                     </div>
                 </div>
-
             </mat-card-content>
         </mat-card>
-        
+
         <div class="section-divider"></div>
 
-        <div class="table-container"> 
-            <div class="table-card card">   
-                <div class="table-content">
-                    <div class="table-scroll">
-                        <table mat-table [dataSource]="beneficiarios" class="table-global">
-                            <!-- RFC -->
-                            <ng-container matColumnDef="rfc">
-                                <th mat-header-cell *matHeaderCellDef> RFC </th>
-                                <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
-                            </ng-container>
-
-                            <!-- Nombre completo -->
-                            <ng-container matColumnDef="nombreCompleto">
-                                <th mat-header-cell *matHeaderCellDef> NOMBRE COMPLETO </th>
-                                <td mat-cell *matCellDef="let e">{{ e.nombreCompleto }}</td>
-                            </ng-container>
-
-                            <!-- Quincena a descontar -->
-                            <ng-container matColumnDef="qnaProceso">
-                                <th mat-header-cell *matHeaderCellDef> IMPORTE DE LA QNA A DESCONTAR </th>
-                                <td mat-cell *matCellDef="let e">{{ e.qnaini }} - {{ e.qnafin }}</td>
-                            </ng-container>
-
-                            <!-- Cita bancaria -->
-                            <ng-container matColumnDef="citaBancaria">
-                                <th mat-header-cell *matHeaderCellDef>CITA BANCARIA</th>
-                                <td mat-cell *matCellDef="let e">{{ e.numeroDocumento }}</td>
-                            </ng-container>
-
-                            <!-- Forma aplicacion -->
-                            <ng-container matColumnDef="formaAplicacion">
-                                <th mat-header-cell *matHeaderCellDef> FORMA DE APLICACIÓN</th>
-                                <td mat-cell *matCellDef="let e">{{ e.formaAplicacion }}</td>
-                            </ng-container>
-
-                            <!-- Importe  total a pagar -->
-                            <ng-container matColumnDef="importeTotal">
-                                <th mat-header-cell *matHeaderCellDef>IMPORTE A PAGAR </th>
-                                <td mat-cell *matCellDef="let e">{{ e.importeTotal | currency:'MXN':'symbol':'1.0-2' }}</td>
-                            </ng-container>
-
-                            <!-- Importe  restante  a pagar -->
-                            <ng-container matColumnDef="restoPagar">
-                                <th mat-header-cell *matHeaderCellDef>RESTO A PAGAR </th>
-                                <td mat-cell *matCellDef="let e">{{ e.restoPagar   | currency:'MXN':'symbol':'1.0-2' }}</td>
-                            </ng-container>
-
-                            <!-- Estatus -->
-                            <ng-container matColumnDef="status">
-                                <th mat-header-cell *matHeaderCellDef>ESTATUS</th>
-                                <td mat-cell *matCellDef="let e">{{ e.status }}</td>
-                            </ng-container>
-
-                            
-
-                        
-                            <!-- Acciones -->
-                            <ng-container matColumnDef="acciones">
-                                <th mat-header-cell *matHeaderCellDef>ACCIONES</th>
-                                <td mat-cell *matCellDef="let e">
-                                    <button mat-button 
-                                        color="primary"
-                                        (click)="modalBeneficiario(e)" 
-                                        [disabled]="e.status === 'INACTIVO'"
-                                        matTooltip="Editar"
-                                        [matTooltipDisabled]="e.status === 'INACTIVO'">
-                                    <mat-icon>visibility</mat-icon>
-                                    </button>
-                                </td>
-                            </ng-container>
-
-                        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
-                        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.inactive-row]="row?.status === 'INACTIVO'" [attr.aria-disabled]="row?.status === 'INACTIVO'"> </tr>
-                        
-                        <tr class="mat-row" *matNoDataRow [class.hidden]="!hasCheck || !form.get('busqueda.empleadoId')?.value"> 
-                            <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length"> 
-                                SIN BENEFICIARIOS para el empleado seleccionado 
-                            </td>
-                        </tr>
-                        </table>
-                    </div>
-
-                    <div class="table-footer">
-                        <mat-paginator
-                            [length]="totalElements"
-                            [pageSize]="50"
-                            [pageSizeOptions]="[50, 100, 150, 200]"
-                            showFirstLastButtons
-                            aria-label="Select page">
-                        </mat-paginator>
-                    </div>
-                </div>
-            </div>
+        <div class="section-header">
+          <h3>Alta de juicio</h3>
         </div>
+       
+        <div class="btn-group" style="margin-bottom: 12px;">
+            <button class="btn btn-success" (click)="saveBeneficiary()">
+                <mat-icon>save</mat-icon>
+                    <span>Guardar</span>
+            </button>
+        </div>
+      
+
+         <mat-card class="form-card">
+            <mat-card-content class="form-layout" formGroupName="beneficiario">
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>badge</mat-icon>
+                            <mat-label>RFC*</mat-label>
+                                <input  matInput formControlName="rfc" maxlength="13"  placeholder="RFC del beneficiario" appUppercase/>
+                                    <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('required')">
+                                        El RFC es obligatorio
+                                    </mat-error>
+                                    <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('rfcLongitud')">
+                                        Longitud inválida: debe ser de 12 (Moral) o 13 (Física) caracteres
+                                    </mat-error>
+                                    <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('rfcFecha')">
+                                        La fecha (AAMMDD) dentro del RFC no es válida
+                                    </mat-error>
+                                    <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('rfcFormato')">
+                                        Formato de RFC inválido
+                                    </mat-error>
+                    </mat-form-field>
+                </div>
+                
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>person</mat-icon>
+                            <mat-label>Apellido Paterno*</mat-label>
+                                <input matInput formControlName="primerApellido" placeholder="Apellido paterno" appSoloLetras appUppercase/>
+                                    <mat-error *ngIf="form.get('beneficiario.primerApellido')?.invalid && (form.get('beneficiario.primerApellido')?.touched)">Ingresa el apellido paterno (mín. 2 caracteres).</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>person</mat-icon>
+                            <mat-label>Apellido materno*</mat-label>
+                                <input matInput formControlName="segundoApellido" placeholder="Apellido materno" appSoloLetras appUppercase/>
+                                    <mat-error *ngIf="form.get('beneficiario.segundoApellido')?.invalid && (form.get('beneficiario.segundoApellido')?.touched)"> Ingresa el apellido materno (mín. 2 caracteres).</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>person</mat-icon>
+                            <mat-label>Nombres personales/Nombres empresariales*</mat-label>
+                                <input matInput formControlName="nombre" placeholder="Nombre completo" appUppercase/>
+                                    <mat-error *ngIf="form.get('beneficiario.nombre')?.invalid && (form.get('beneficiario.nombre')?.touched)">Ingresa el nombre (mín. 2 caracteres).</mat-error>
+                    </mat-form-field>  
+                </div>
+                
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>attach_money</mat-icon>
+                            <mat-label>Importe total*</mat-label>
+                                <input matInput formControlName="importeTotal" type="number" min="0" step="any" inputmode="decimal" 
+                                    (keydown)="($event.key === '-' || $event.key === 'e' || $event.key === 'E') ? $event.preventDefault() : null" 
+                                    placeholder="Importe total" />
+                                        <mat-error *ngIf="form.get('beneficiario.importeTotal')?.invalid && (form.get('beneficiario.importeTotal')?.touched)">Captura un importe válido.</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>receipt_long</mat-icon>
+                            <mat-label>Cuenta bancaria*</mat-label>
+                                <input matInput formControlName="citaBancaria" placeholder="Cuenta bancaria" />
+                                    <mat-error *ngIf="form.get('beneficiario.citaBancaria')?.invalid && (form.get('beneficiario.citaBancaria')?.touched)">Captura la cita bancaria.</mat-error>
+                    </mat-form-field> 
+                </div>
+                
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>credit_card</mat-icon>
+                            <mat-label>Clabe interbancaria*</mat-label>
+                                <input  matInput id="clabe" formControlName="clabe" placeholder="18 dígitos" maxlength="18" />
+                                    <mat-error *ngIf="form.get('beneficiario.clabe')?.invalid && (form.get('beneficiario.clabe')?.touched)">La CLABE debe tener exactamente 18 dígitos numéricos.</mat-error>
+                    </mat-form-field>
+                </div>
+     
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field full-width with-separator" floatLabel="always">
+                        <mat-icon matPrefix>account_balance</mat-icon>
+                            <mat-label>Institución bancaria*</mat-label>
+                                <mat-select id="bancoId" formControlName="bancoId" placeholder="Seleccionar banco">
+                                    <mat-option *ngFor="let bank of bancos" [value]="bank.id">{{ bank.banco }}</mat-option>
+                                </mat-select>
+                                    <mat-error *ngIf="form.get('beneficiario.bancoId')?.invalid && (form.get('beneficiario.bancoId')?.touched)">Selecciona un banco.</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field full-width with-separator" floatLabel="always">
+                        <mat-icon matPrefix>tune</mat-icon>
+                            <mat-label>Forma de aplicación*</mat-label>
+                                <mat-select formControlName="formaAplicacion" placeholder="Seleccionar">
+                                    <mat-option value="P">Factor</mat-option>
+                                    <mat-option value="C">Importe fijo</mat-option>
+                                </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix> {{ form.get('beneficiario.formaAplicacion')?.value === 'P' ? 'percent' : 'attach_money' }} </mat-icon>
+                            <mat-label>Factor / Importe*</mat-label>
+                                <input
+                                    matInput
+                                    id="factorImporte"
+                                    formControlName="factorImporte"
+                                    type="number"
+                                    [attr.min]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 0 : null"
+                                    [attr.max]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 100 : null"
+                                    [attr.step]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 1 : 'any'"
+                                    inputmode="decimal"
+                                    (keydown)="($event.key === '-' || $event.key === 'e' || $event.key === 'E' || $event.key === '+') ? $event.preventDefault() : null"
+                                    placeholder="Ingresar cantidad" />
+                                <mat-hint *ngIf="form.get('beneficiario.formaAplicacion')?.value === 'P'"> Equivale a {{ factorDecimal | number:'1.2-2' }} de la base </mat-hint>
+
+                                <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('required') && (form.get('beneficiario.factorImporte')?.touched)">
+                                    Campo obligatorio
+                                </mat-error>
+                                <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('min') && (form.get('beneficiario.factorImporte')?.touched)">
+                                    Debe ser un valor positivo
+                                </mat-error>
+                                <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('max') && (form.get('beneficiario.factorImporte')?.touched)">
+                                    El porcentaje no puede ser mayor a 100
+                                </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field full-width with-separator" floatLabel="always">
+                        <mat-icon matPrefix>tune</mat-icon>
+                            <mat-label>Estatus*</mat-label>
+                                <mat-select formControlName="estatus" placeholder="Seleccionar">
+                                    <mat-option value="ACTIVO">Activo</mat-option>
+                                    <mat-option value="INACTIVO">Inactivo</mat-option>
+                                    <mat-option value="PAUSA">Pausa</mat-option>
+                                </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field  appearance="outline" class="qna-compact search-field with-separator description-field" floatLabel="always">
+                        <mat-label>Descripción*</mat-label>
+                            <textarea matInput formControlName="descripcion" rows="4" appUppercase></textarea>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>calendar_today</mat-icon>
+                            <mat-label>Inicio*</mat-label>
+                                <input matInput id="vigenciaInicio" formControlName="inicio" placeholder="AAAAQQ" maxlength="6"/>
+                                    <mat-error *ngIf="form.get('beneficiario.inicio')?.invalid && (form.get('beneficiario.inicio')?.touched)">Captura la vigencia de inicio en formato AAAAQQ.</mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>calendar_today</mat-icon>
+                            <mat-label>Hasta*</mat-label>
+                                <input matInput id="vigenciaFin" formControlName="fin" placeholder="AAAAQQ" maxlength="6"/>
+                                    <mat-error *ngIf="form.get('beneficiario.fin')?.invalid && (form.get('beneficiario.fin')?.touched)">Captura la vigencia de fin en formato AAAAQQ.</mat-error>
+                    </mat-form-field>
+                </div>
+            </mat-card-content>
+         </mat-card>
     </div>
-</div>   
-        
+</div>
