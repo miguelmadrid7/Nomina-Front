@@ -1,25 +1,51 @@
+<div class="page-container">
+    <div class="page-header">
+        <h2 class="page-title">Información de juicios mercantiles</h2>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="section-header span-3">
+        <h3>Filtros.</h3>
+    </div>
+
+    <div class="actions-right">
+        <div class="btn-group">
+            <button class="btn btn-primary">
+                <mat-icon>task_alt</mat-icon>
+                    <span>Buscar</span>
+            </button>
+        </div>
+
+        <button class="btn btn-danger">
+            <mat-icon>delete_outline</mat-icon>
+                <span>Limpiar</span>
+        </button>
+    </div>
+
+    <div [formGroup]="searchForm" class="global-search">
+        <mat-form-field appearance="outline" class="with-separator qna-compact search-field" floatLabel="always">
+            <mat-icon matPrefix>search</mat-icon>
+            <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
+            <input matInput id="buscarEmpleado" formControlName="searchText" appUppercase>
+        </mat-form-field>
+    </div>
+
+
 <div class="table-container">
     <div class="table-card card">
         <div class="table-content">
             <div class="table-scroll">
                 <table mat-table [dataSource]="dataSource" class="table-global">
-
-                    <!-- Fila de grupo -->
-                    <ng-container matColumnDef="grupo">
-                        <td mat-cell *matCellDef="let row" [attr.colspan]="displayedColumns.length">
-                            <div class="grupo-header" (click)="toggleGrupo(row.grupo)">
-                                <mat-icon>{{ row.grupo.expandido ? 'expand_less' : 'expand_more' }}</mat-icon>
-                                <strong>{{ row.grupo.rfc }}</strong>
-                                <span>{{ row.grupo.nombreCompleto }}</span>
-                                <span class="grupo-count">({{ row.grupo.beneficiarios.length }} beneficiarios)</span>
-                            </div>
-                        </td>
+                    
+                    <ng-container matColumnDef="nombreEmpleado">
+                        <th mat-header-cell *matHeaderCellDef>NOMBRE EMPLEADO</th>
+                        <td mat-cell *matCellDef="let e"> {{e.nombreEmpleado}}</td>
                     </ng-container>
 
-                    <!-- Columnas normales -->
                     <ng-container matColumnDef="rfc">
                         <th mat-header-cell *matHeaderCellDef>RFC</th>
-                        <td mat-cell *matCellDef="let e">{{ e.rfc }}</td>
+                        <td mat-cell *matCellDef="let e"> {{e.rfcEmpleado}} </td>
                     </ng-container>
 
                     <ng-container matColumnDef="nombreCompleto">
@@ -61,7 +87,7 @@
                         <th mat-header-cell *matHeaderCellDef>ACCIONES</th>
                         <td mat-cell *matCellDef="let e">
                             <button mat-button color="primary"
-                                (click)="onEditar(e)"
+                                (click)="openEditDialog(e)"
                                 [disabled]="e.status === 'INACTIVO'"
                                 matTooltip="Editar"
                                 [matTooltipDisabled]="e.status === 'INACTIVO'">
@@ -71,17 +97,7 @@
                     </ng-container>
 
                     <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
-
-                    <!-- Fila de grupo -->
-                    <tr mat-row *matRowDef="let row; columns: displayedColumnsGrupo; when: esFilaGrupo"
-                        class="grupo-row">
-                    </tr>
-
-                    <!-- Filas normales -->
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"
-                        [class.hidden]="row.esGrupo"
-                        [class.inactive-row]="row?.status === 'INACTIVO'">
-                    </tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.inactive-row]="row?.status === 'INACTIVO'"></tr>
 
                     <tr class="mat-row" *matNoDataRow [class.hidden]="!hasCheck">
                         <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
@@ -102,4 +118,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>
