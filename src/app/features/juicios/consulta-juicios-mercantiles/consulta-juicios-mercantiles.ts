@@ -71,48 +71,59 @@ export class ConsultaJuiciosMercantiles {
   }
 
   loadBeneficiaries(): void {
-  this.juiciosMercantilesService.getTodosBeneficiarios().subscribe({
-    next: (resp: any) => {
-      const grupos: any[] = resp?.data ?? [];
+    this.juiciosMercantilesService.getTodosBeneficiarios().subscribe({
+      next: (resp: any) => {
+        const grupos: any[] = resp?.data ?? [];
 
-      const beneficiarios = grupos.flatMap((grupo: any) => {
-        return (grupo.beneficiarios ?? []).map((b: any) => ({
-          nombreEmpleado: grupo.nombreCompleto, // ← siempre, no solo index === 0
-          rfcEmpleado: b?.rfc ?? '',
-          nombreCompleto: `${b?.primerApellido ?? ''} ${b?.segundoApellido ?? ''} ${b?.nombre ?? ''}`.trim(),
-          primerApellido: b?.primerApellido ?? '',
-          segundoApellido: b?.segundoApellido ?? '',
-          nombre: b?.nombre ?? '',
-          rfc: b?.rfc ?? '',
-          importeTotal: Number(b?.importeTotal ?? 0),
-          factorImporte: Number(b?.factorImporte ?? 0),
-          qnaini: Number(b?.qnaini ?? 0),
-          qnafin: b?.qnafin ? Number(b.qnafin) : null,
-          status: b?.estatus ?? b?.status ?? 'ACTIVO',
-          numeroDocumento: b?.numeroDocumento ?? '',
-          formaAplicacion: b?.formaAplicacion ?? '',
-          tabEmpleadosId: grupo.empleadoId,
-          id: b?.id,
-          tabBeneficiariosJmId: b?.tabBeneficiariosJmId ?? null,
-          tabBeneficiario: b?.tabBeneficiario ?? null
-        }));
-      })
-      .sort((a, b) => a.id - b.id); // ← orden fijo por id ascendente
+        const sorted = grupos.flatMap((grupo: any) => {
+          return (grupo.beneficiarios ?? []).map((b: any) => ({
+            showEmpleado: false,
+            nombreEmpleado: grupo.nombreCompleto,
+            rfcEmpleado: b?.rfc ?? '',
+            nombreCompleto: `${b?.primerApellido ?? ''} ${b?.segundoApellido ?? ''} ${b?.nombre ?? ''}`.trim(),
+            primerApellido: b?.primerApellido ?? '',
+            segundoApellido: b?.segundoApellido ?? '',
+            nombre: b?.nombre ?? '',
+            rfc: b?.rfc ?? '',
+            importeTotal: Number(b?.importeTotal ?? 0),
+            factorImporte: Number(b?.factorImporte ?? 0),
+            qnaini: Number(b?.qnaini ?? 0),
+            qnafin: b?.qnafin ? Number(b.qnafin) : null,
+            status: b?.estatus ?? b?.status ?? 'ACTIVO',
+            numeroDocumento: b?.numeroDocumento ?? '',
+            formaAplicacion: b?.formaAplicacion ?? '',
+            tabEmpleadosId: grupo.empleadoId,
+            id: b?.id,
+            tabBeneficiariosJmId: b?.tabBeneficiariosJmId ?? null,
+            tabBeneficiario: b?.tabBeneficiario ?? null
+          }));
+        })
+        .sort((a: any, b: any) => {
+          if (a.tabEmpleadosId !== b.tabEmpleadosId) return a.tabEmpleadosId - b.tabEmpleadosId;
+          return a.id - b.id;
+        });
 
-      this.zone.runOutsideAngular(() => {
-        this.dataSource.data = beneficiarios;
-        this.hasCheck = true;
-        setTimeout(() => {
-          this.zone.run(() => {
-            this.dataSource.paginator = this.paginator;
-            this.cd.markForCheck();
+        // Recalcula showEmpleado después del sort
+        const seenEmployees = new Set<number>();
+        sorted.forEach((row: any) => {
+          row.showEmpleado = !seenEmployees.has(row.tabEmpleadosId);
+          seenEmployees.add(row.tabEmpleadosId);
+        });
+
+        this.zone.runOutsideAngular(() => {
+          this.dataSource.data = sorted;
+          this.hasCheck = true;
+          setTimeout(() => {
+            this.zone.run(() => {
+              this.dataSource.paginator = this.paginator;
+              this.cd.markForCheck();
+            });
           });
         });
-      });
-    },
-    error: () => console.error('Error al cargar beneficiarios')
-  });
-}
+      },
+      error: () => console.error('Error al cargar beneficiarios')
+    });
+  }
 
   openEditDialog(row: any): void {
     const dialogRef = this.dialog.open(BeneficiarioJmDialog, {
