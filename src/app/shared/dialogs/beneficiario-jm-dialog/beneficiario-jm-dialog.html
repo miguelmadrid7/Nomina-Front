@@ -1,18 +1,16 @@
 <div class="dialog-shell">
-  <div class="dialog-header">
-    <button mat-icon-button class="dialog-close" aria-label="Cerrar" (click)="cerrar()">
-      <mat-icon>close</mat-icon>
-    </button>
+  <div class="dialog-header dlg-bar">
+    <span class="dialog-title"> {{ data.modo === 'editar' ? 'Editar Beneficiario' : 'Agregar Beneficiario' }} </span>
+      <button mat-icon-button class="dialog-close" (click)="cerrar()">
+        <mat-icon>close</mat-icon>
+      </button>
   </div>
-  
 
   <div class="dlg-content">
     <div *ngIf="form" [formGroup]="form">
       <div formGroupName="beneficiario">
         <div class="form-card">
           <div class="form-grid">
-            
-            <div class="dlg-bar-title">Agregar Beneficiario</div>
 
             <div class="section-divider"></div>
             <!-- RFC -->
@@ -252,6 +250,6 @@
 
   <div class="dlg-actions">
     <button mat-flat-button class="btn-small-success" type="button" (click)="guardar()">Guardar</button>
-    <button mat-flat-button class="btn-small-danger" type="button" (click)="cancelar()">Cancelar</button>
+    <button mat-flat-button class="btn-small-danger" type="button" (click)="cerrar()">Cancelar</button>
   </div>
 </div>

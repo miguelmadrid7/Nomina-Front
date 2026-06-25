@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Inject, NgZone } from '@angular/core';
+import { Component, inject, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -12,11 +12,12 @@ import { JuiciosMercantilesService } from '../../../core/services/juicios-mercan
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { factorImporteValidator, vigenciaRangoValidator } from '../../validators/juicios.validators';
 import { factorImporteControlValidator, rfcValidator, vigenciaMinimaValidator } from '../../../shared/validators/validaciones.validators';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { vigenciaFormatoValidator } from '../../validators/validaciones.validators';
 import { SoloLetrasDirectiva } from '../../directives/solo-letras.directivas';
 import { startWith, distinctUntilChanged } from 'rxjs';
 import { UppercaseDirective } from '../../directives/upperCase.directivas';
+import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-beneficiario-jm-dialog',
@@ -30,7 +31,7 @@ import { UppercaseDirective } from '../../directives/upperCase.directivas';
     MatInputModule,
     MatIconModule,
     MatButtonModule,
-    SoloLetrasDirectiva, 
+    MatDialogModule,
     UppercaseDirective
   ],
   templateUrl: './beneficiario-jm-dialog.html',
@@ -38,15 +39,17 @@ import { UppercaseDirective } from '../../directives/upperCase.directivas';
 })
 export class BeneficiarioJmDialog {
 
-  form!: FormGroup;
-  bancos: Banco[] = [];
-  factorDecimal = 0;
-
   private readonly fb = inject(FormBuilder);
   private readonly juiciosMercantilesService = inject(JuiciosMercantilesService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly zone = inject(NgZone);
   private readonly dialogRef = inject(MatDialogRef<BeneficiarioJmDialog>);
+  private readonly dialog = inject(MatDialog);
+
+  form!: FormGroup;
+  bancos: Banco[] = [];
+  factorDecimal = 0;
+
   readonly data = inject<{ empleadoId: number; bancos: Banco[], modo?: 'crear' | 'editar', beneficiario? : any }>(MAT_DIALOG_DATA);
 
   ngOnInit(): void {
@@ -90,9 +93,11 @@ export class BeneficiarioJmDialog {
     }, { emitEvent: false });
     const beneficiarioGroup = this.form.get('beneficiario');
     if (beneficiarioGroup) {
-      beneficiarioGroup.addValidators(vigenciaMinimaValidator(minAaaaqq));
-      beneficiarioGroup.updateValueAndValidity({ emitEvent: false });
-    }
+  if (this.data?.modo !== 'editar') {
+    beneficiarioGroup.addValidators(vigenciaMinimaValidator(minAaaaqq));
+    beneficiarioGroup.updateValueAndValidity({ emitEvent: false });
+  }
+}
 
 
     const b = this.form.get('beneficiario') as FormGroup;
@@ -145,7 +150,6 @@ export class BeneficiarioJmDialog {
       );
       const bancoId = bancoMatch?.id ?? null;
 
-
       this.form.patchValue({
         beneficiario: {
           nomId: b.id,
@@ -160,11 +164,10 @@ export class BeneficiarioJmDialog {
           importeTotal: b.importeTotal,
           inicio: b.qnaini,
           fin: b.qnafin,
-          
-      // CORREGIDO: leer del TAB
-      clabe: (tab.clabeInterbancaria ?? '').toString().toUpperCase().trim() || null,
-      ctaBancaria: tab.ctaBancaria ?? null,
-      bancoId // si hay match por nombre, preselecciona
+          clabe: (tab.clabeInterbancaria ?? '').toString().trim() || null,
+          ctaBancaria: tab.ctaBancaria ?? null,
+          bancoId,
+          estatus: (b.status ?? b.estatus ?? '').toString().toUpperCase().trim() // ← agregar
         }
       });
     }
@@ -241,45 +244,64 @@ export class BeneficiarioJmDialog {
 }
 
   guardar(): void {
-  if (this.form.invalid) {
-    this.form.markAllAsTouched();
-    this.showSnack('Formulario inválido', 'Cerrar', 4000);
-    return;
-  }
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
 
-  const payload = this.buildPayload();
-  if (!payload) return; // <-- evitar POST sin body
-  const nomId = this.form.get('beneficiario.nomId')?.value ?? this.data?.beneficiario?.id ?? null;
+        console.log('Form errors:', this.form.errors);
+        console.log('Beneficiario errors:', this.form.get('beneficiario')?.errors);
+          Object.keys((this.form.get('beneficiario') as any).controls).forEach(key => {
+            const ctrl = this.form.get('beneficiario')?.get(key);
+            if (ctrl?.invalid) {
+              console.log(`Campo inválido: ${key}`, ctrl.errors);
+            }
+          });
 
-  if (this.data?.modo === 'editar' && nomId) {
-    this.juiciosMercantilesService.actualizarBeneficiario(nomId, payload)
-    .subscribe({
-      next: () => { 
-        this.showSnack('Beneficiario actualizado correctamente', 'Cerrar', 4000); 
-        this.cerrar(); 
-      },
-      error: () => { 
-        this.showSnack('Error al actualizar beneficiario', 'Cerrar', 4000); 
-      }
-    });
-
-  } else {
-    this.juiciosMercantilesService.agregarBeneficiario(payload).subscribe({
-      next: () => { 
-        this.showSnack('Beneficiario guardado correctamente', 'Cerrar', 4000); 
-        this.cerrar(); }
-        ,
-      error: () => { 
-        this.showSnack('Error al guardar beneficiario', 'Cerrar', 4000); 
-      }
-    });
-  }
-  this.form.get('beneficiario.rfc')?.valueChanges.subscribe(val => {
-    if (typeof val === 'string') {
-      const up = val.toUpperCase().trim();
-      if (val !== up) this.form.get('beneficiario.rfc')?.setValue(up, { emitEvent: false });
+      this.showSnack('Formulario inválido', 'Cerrar', 4000);
+      return;
     }
-  });
+
+    const payload = this.buildPayload();
+    if (!payload) return; // <-- evitar POST sin body
+    const nomId = this.form.get('beneficiario.nomId')?.value ?? this.data?.beneficiario?.id ?? null;
+
+    if (this.data?.modo === 'editar' && nomId) {
+  this.juiciosMercantilesService.actualizarBeneficiario(nomId, payload)
+    .subscribe({
+      next: () => {
+        this.cerrar();
+        this.dialog.open(ConfirmDialog, {
+          width: '420px',
+          data: {
+            title: 'Actualización exitosa',
+            message: 'El beneficiario fue actualizado correctamente.',
+            confirmText: 'Aceptar',
+            type: 'info'
+          }
+        });
+      },
+      error: () => {
+        this.dialog.open(ConfirmDialog, {
+          width: '420px',
+          data: {
+            title: 'Error',
+            message: 'Ocurrió un error al actualizar. Intenta nuevamente.',
+            confirmText: 'Cerrar',
+            type: 'danger'
+          }
+        });
+      }
+    });
+} else {
+      this.juiciosMercantilesService.agregarBeneficiario(payload).subscribe({
+        next: () => { 
+          this.showSnack('Beneficiario guardado correctamente', 'Cerrar', 4000); 
+          this.cerrar(); 
+        },
+        error: () => { 
+          this.showSnack('Error al guardar beneficiario', 'Cerrar', 4000); 
+        }
+      });
+    }
   }
 
   getCurrentQna(): { anio: number; qna: number; aaaaqq: number } {
@@ -300,7 +322,7 @@ export class BeneficiarioJmDialog {
   } 
 
   cancelar(): void {
-    this.dialogRef.close({ cancelled: true });
+    this.dialogRef.close(null);
   }
 
   cerrar(): void {
