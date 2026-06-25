@@ -5,7 +5,7 @@ import { BeneficiarioJMRequest } from "../../models/request/beneficiariojm-reque
 import { ApiResponse } from "../../models/response/api-Response.model";
 import { Banco } from "../../models/banco.model";
 import { BeneficiarioNom } from "../../models/beneficiario-nom.model";
-import { map } from "rxjs";
+import { map, switchMap } from "rxjs";
 
 type AnyRow = Record<string, any>;
 
@@ -73,23 +73,42 @@ export class JuiciosMercantilesService {
     return this.http.get<ApiResponse<Banco[]>>(`${this.base}/catalogo/bancos`);
   }
 
-  //Se obtiene los beneficiarios del empleado seleccionado
-  getobtenerBeneficiarios(empleadoId: number) {
-    return this.http.get<ApiResponse<BeneficiarioNom[]>>(`${this.base}/beneficiarios/nom/${empleadoId}`);
+  getTodosBeneficiarios() {
+    return this.http.get<ApiResponse<any[]>>(`${this.base}/beneficiarios/nom`);
+  }
+
+  saveBeneficiary(formValue: any, employeeId: number) {
+    const payload = {
+      rfc: formValue.rfc,
+      primerApellido: formValue.primerApellido,
+      segundoApellido: formValue.segundoApellido,
+      nombre: formValue.nombre,
+      clabeInterbancaria: formValue.clabe,
+      ctaBancaria: formValue.citaBancaria,
+      institucionBancaria: formValue.bancoId,
+      formaAplicacion: formValue.formaAplicacion,
+      factorImporte: formValue.factorImporte,
+      importeTotal: formValue.importeTotal, 
+      qnaini: formValue.inicio,
+      qnafin: formValue.fin,
+      numeroDocumento: formValue.descripcion,
+      tabEmpleadosId: employeeId
+    };
+    return this.http.post<ApiResponse<any>>(`${this.base}/beneficiarios/tab`, payload);
   }
 
   //Se hace post en el modal de dar de alta un beneficiario
   agregarBeneficiario(data: any) {
-  return this.http.post<ApiResponse<any>>(`${this.base}/beneficiarios/nom`, data, {
-    headers: { 'Content-Type': 'application/json' }
-  });
-}
+    return this.http.post<ApiResponse<any>>(`${this.base}/beneficiarios/nom`, data, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 
   //Se actualiza los datos de un beneficiario seleccionado
   actualizarBeneficiario(id: number, data: any) {
-  return this.http.put<ApiResponse<any>>(`${this.base}/beneficiarios/nom/${id}`, data, {
-    headers: { 'Content-Type': 'application/json' }
-  });
-}
+    return this.http.put<ApiResponse<any>>(`${this.base}/beneficiarios/nom/${id}`, data, {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 
 }
