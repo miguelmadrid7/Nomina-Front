@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, NgZone } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -14,10 +14,11 @@ import { factorImporteValidator, vigenciaRangoValidator } from '../../validators
 import { factorImporteControlValidator, rfcValidator, vigenciaMinimaValidator } from '../../../shared/validators/validaciones.validators';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { vigenciaFormatoValidator } from '../../validators/validaciones.validators';
-import { SoloLetrasDirectiva } from '../../directives/solo-letras.directivas';
 import { startWith, distinctUntilChanged } from 'rxjs';
 import { UppercaseDirective } from '../../directives/upperCase.directivas';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
+import { CalendarioService } from '../../../core/services/calendario.service';
+import { Calendario } from '../../../models/calendario.model';
 
 @Component({
   selector: 'app-beneficiario-jm-dialog',
@@ -45,10 +46,14 @@ export class BeneficiarioJmDialog {
   private readonly zone = inject(NgZone);
   private readonly dialogRef = inject(MatDialogRef<BeneficiarioJmDialog>);
   private readonly dialog = inject(MatDialog);
+  private readonly calendarioService = inject(CalendarioService);
+  private readonly cd = inject(ChangeDetectorRef);
 
   form!: FormGroup;
   bancos: Banco[] = [];
   factorDecimal = 0;
+  calendarioActual: Calendario | null = null;
+  cargandoQna = false;
 
   readonly data = inject<{ empleadoId: number; bancos: Banco[], modo?: 'crear' | 'editar', beneficiario? : any }>(MAT_DIALOG_DATA);
 
@@ -76,70 +81,82 @@ export class BeneficiarioJmDialog {
         ctaBancaria: [null, [Validators.pattern(/^\d{1,10}$/)]],
         estatus: [null],
         descripcion: [null],
-        inicio: [null, [vigenciaFormatoValidator()]],
+        inicio: [null],
         fin: [null, [vigenciaFormatoValidator()]],
       })
     },
     { validators: [factorImporteValidator(), vigenciaRangoValidator()] });
     this.bancos = this.data?.bancos ?? [];
+ this.cargandoQna = true;
+
+this.calendarioService.getQnaActiva().subscribe({
+  next: (response: any) => {
+    console.log('QNA Activa response:', response);
+    this.calendarioActual = response.data ?? null;
+    this.cargandoQna = false;
     
-    const curr = this.getCurrentQna();
-    const minObj = this.nextQna(curr.aaaaqq);
-    const minAaaaqq = minObj.aaaaqq;
-    this.form.patchValue({
-      beneficiario: {
-        inicio: String(minAaaaqq)
+    if (this.calendarioActual && this.data?.modo !== 'editar') {
+      const qnaInicio = `${this.calendarioActual.ejercicio}${this.calendarioActual.qna.toString().padStart(2, '0')}`;
+      this.form.patchValue({
+        beneficiario: {
+          inicio: qnaInicio
+        }
+      }, { emitEvent: false });
+      
+      const beneficiarioGroup = this.form.get('beneficiario');
+      if (beneficiarioGroup) {
+        beneficiarioGroup.addValidators(vigenciaMinimaValidator(Number(qnaInicio)));
+        beneficiarioGroup.updateValueAndValidity({ emitEvent: false });
       }
-    }, { emitEvent: false });
-    const beneficiarioGroup = this.form.get('beneficiario');
-    if (beneficiarioGroup) {
-  if (this.data?.modo !== 'editar') {
-    beneficiarioGroup.addValidators(vigenciaMinimaValidator(minAaaaqq));
-    beneficiarioGroup.updateValueAndValidity({ emitEvent: false });
+    }
+    
+    this.cd.detectChanges();
+  },
+  error: (err) => {
+    console.error('Error al cargar QNA activa:', err);
+    this.cargandoQna = false;
+    this.cd.detectChanges();
+    this.showSnack('Error al cargar QNA activa', 'Cerrar', 4000);
   }
-}
+});
 
+      const b = this.form.get('beneficiario') as FormGroup;
+      const formaCtrl  = b.get('formaAplicacion')!;
+      const factorCtrl = b.get('factorImporte')!;
+      const totalCtrl  = b.get('importeTotal')!;
 
-    const b = this.form.get('beneficiario') as FormGroup;
-    const formaCtrl  = b.get('formaAplicacion')!;
-    const factorCtrl = b.get('factorImporte')!;
-    const totalCtrl  = b.get('importeTotal')!;
+      formaCtrl.valueChanges.pipe(startWith(formaCtrl.value)).subscribe((m: string) => {
+        if (m === 'C') {
+          totalCtrl.setValidators([Validators.required, Validators.min(0)]);
+          totalCtrl.updateValueAndValidity({ emitEvent: false });
+          factorCtrl.setValidators([Validators.min(0)]);
+          factorCtrl.updateValueAndValidity({ emitEvent: false });
+        } else if (m === 'P') {
+          // Porcentaje
+          factorCtrl.setValidators([
+            Validators.required,
+            Validators.min(0),
+            Validators.max(100),
+            Validators.pattern(/^\d{1,3}$/)
+          ]);
+          factorCtrl.updateValueAndValidity({ emitEvent: false });
 
-    formaCtrl.valueChanges.pipe(startWith(formaCtrl.value)).subscribe((m: string) => {
-      if (m === 'C') {
-        // Importe fijo
-        totalCtrl.setValidators([Validators.required, Validators.min(0)]);
-        totalCtrl.updateValueAndValidity({ emitEvent: false });
+          // Importe total permitido pero no requerido
+          totalCtrl.setValidators([Validators.min(0)]);
+          totalCtrl.updateValueAndValidity({ emitEvent: false });
+        } else {
+          // Sin selección aún: ambos opcionales
+          factorCtrl.setValidators([Validators.min(0)]);
+          factorCtrl.updateValueAndValidity({ emitEvent: false });
+          totalCtrl.setValidators([Validators.min(0)]);
+          totalCtrl.updateValueAndValidity({ emitEvent: false });
+        }
+      });
 
-        factorCtrl.setValidators([Validators.min(0)]); // sin required
-        factorCtrl.updateValueAndValidity({ emitEvent: false });
-      } else if (m === 'P') {
-        // Porcentaje
-        factorCtrl.setValidators([
-          Validators.required,
-          Validators.min(0),
-          Validators.max(100),
-          Validators.pattern(/^\d{1,3}$/)
-        ]);
-        factorCtrl.updateValueAndValidity({ emitEvent: false });
-
-        // Importe total permitido pero no requerido
-        totalCtrl.setValidators([Validators.min(0)]);
-        totalCtrl.updateValueAndValidity({ emitEvent: false });
-      } else {
-        // Sin selección aún: ambos opcionales
-        factorCtrl.setValidators([Validators.min(0)]);
-        factorCtrl.updateValueAndValidity({ emitEvent: false });
-        totalCtrl.setValidators([Validators.min(0)]);
-        totalCtrl.updateValueAndValidity({ emitEvent: false });
-      }
-    });
-
-    // Hint decimal (1 => 0.01)
-    factorCtrl.valueChanges.pipe(startWith(factorCtrl.value)).subscribe(v => {
-      const n = Number(v);
-      this.factorDecimal = Number.isFinite(n) ? n / 100 : 0;
-    });
+        factorCtrl.valueChanges.pipe(startWith(factorCtrl.value)).subscribe(v => {
+          const n = Number(v);
+          this.factorDecimal = Number.isFinite(n) ? n / 100 : 0;
+        });
 
     if (this.data?.beneficiario) {
       const b = this.data.beneficiario;
@@ -194,9 +211,9 @@ export class BeneficiarioJmDialog {
     upperPipe('beneficiario.nombre');
     upperPipe('beneficiario.formaAplicacion'); // es string 'P' | 'C'
     upperPipe('beneficiario.citaBancaria');
-    upperPipe('beneficiario.inicio'); // AAAAQQ
     upperPipe('beneficiario.fin');    // AAAAQQ
   }
+
   
   
   private showSnack(message: string, action: string, duration: number): void {
@@ -208,90 +225,75 @@ export class BeneficiarioJmDialog {
   }
 
   private buildPayload() {
-  const v = this.form.value.beneficiario ?? {};
-  const S = (x:any)=> typeof x === 'string' ? x.toUpperCase().trim() : (x ?? null);
+    const v = this.form.value.beneficiario ?? {};
+    const S = (x:any)=> typeof x === 'string' ? x.toUpperCase().trim() : (x ?? null);
+    const rfc = typeof v.rfc === 'string' ? v.rfc.trim().toUpperCase() : null;
+      if (!v.tabBeneficiariosJmId && (!rfc || rfc.length === 0)) {
+        this.showSnack('Captura un RFC existente en TAB o selecciona un beneficiario del catálogo.', 'Cerrar', 4000);
+        return;
+      }
 
-  const rfc = typeof v.rfc === 'string' ? v.rfc.trim().toUpperCase() : null;
-  if (!v.tabBeneficiariosJmId && (!rfc || rfc.length === 0)) {
-    this.showSnack('Captura un RFC existente en TAB o selecciona un beneficiario del catálogo.', 'Cerrar', 4000);
-    return;
+    const bancoNombreSel = this.bancos.find(b => b.id === v.bancoId)?.banco;
+    const bancoNombreOrig = (this.data?.beneficiario?.tabBeneficiario?.institucionBancaria ?? '') as string;
+      return {
+        tabBeneficiariosJmId: v.tabBeneficiariosJmId ?? null,
+        tabEmpleadosId: this.data.empleadoId,
+        rfc: S(v.rfc),
+        primerApellido: S(v.primerApellido),
+        segundoApellido: S(v.segundoApellido),
+        nombre: S(v.nombre),
+        formaAplicacion: S(v.formaAplicacion),
+        factorImporte: v.factorImporte != null ? Number(v.factorImporte) : null,
+        importeTotal: v.importeTotal != null ? Number(v.importeTotal) : null,
+        numeroDocumento: S(v.citaBancaria),
+        qnaini: this.calendarioActual ?   Number(`${this.calendarioActual.ejercicio}${this.calendarioActual.qna.toString().padStart(2, '0')}`) :  (v.inicio != null ? Number(v.inicio) : null),
+        qnafin: v.fin != null ? Number(v.fin) : null,
+        numeroBenef: 1,
+        clabeInterbancaria: S(v.clabe),
+        ctaBancaria: v.ctaBancaria != null && v.ctaBancaria !== '' ? Number(v.ctaBancaria) : null,
+        institucionBancaria: S(bancoNombreSel || bancoNombreOrig || null)
+      };
   }
-
-  // Nombre del banco seleccionado (si hay)
-  const bancoNombreSel = this.bancos.find(b => b.id === v.bancoId)?.banco;
-  // Fallback: el nombre que viene del beneficiario actual (si es edición)
-  const bancoNombreOrig = (this.data?.beneficiario?.tabBeneficiario?.institucionBancaria ?? '') as string;
-
-  return {
-    tabBeneficiariosJmId: v.tabBeneficiariosJmId ?? null,
-    tabEmpleadosId: this.data.empleadoId,
-    rfc: S(v.rfc),
-    primerApellido: S(v.primerApellido),
-    segundoApellido: S(v.segundoApellido),
-    nombre: S(v.nombre),
-    formaAplicacion: S(v.formaAplicacion),
-    factorImporte: v.factorImporte != null ? Number(v.factorImporte) : null,
-    importeTotal: v.importeTotal != null ? Number(v.importeTotal) : null,
-    numeroDocumento: S(v.citaBancaria),
-    qnaini: v.inicio != null ? Number(v.inicio) : null,
-    qnafin: v.fin != null ? Number(v.fin) : null,
-    numeroBenef: 1,
-
-    clabeInterbancaria: S(v.clabe),
-    ctaBancaria: v.ctaBancaria != null && v.ctaBancaria !== '' ? Number(v.ctaBancaria) : null,
-    institucionBancaria: S(bancoNombreSel || bancoNombreOrig || null)
-  };
-}
 
   guardar(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-
-        console.log('Form errors:', this.form.errors);
-        console.log('Beneficiario errors:', this.form.get('beneficiario')?.errors);
-          Object.keys((this.form.get('beneficiario') as any).controls).forEach(key => {
-            const ctrl = this.form.get('beneficiario')?.get(key);
-            if (ctrl?.invalid) {
-              console.log(`Campo inválido: ${key}`, ctrl.errors);
-            }
-          });
-
       this.showSnack('Formulario inválido', 'Cerrar', 4000);
       return;
     }
 
     const payload = this.buildPayload();
-    if (!payload) return; // <-- evitar POST sin body
+    if (!payload) return;
     const nomId = this.form.get('beneficiario.nomId')?.value ?? this.data?.beneficiario?.id ?? null;
 
     if (this.data?.modo === 'editar' && nomId) {
-  this.juiciosMercantilesService.actualizarBeneficiario(nomId, payload)
-    .subscribe({
-      next: () => {
-        this.cerrar();
-        this.dialog.open(ConfirmDialog, {
-          width: '420px',
-          data: {
-            title: 'Actualización exitosa',
-            message: 'El beneficiario fue actualizado correctamente.',
-            confirmText: 'Aceptar',
-            type: 'info'
-          }
-        });
-      },
-      error: () => {
-        this.dialog.open(ConfirmDialog, {
-          width: '420px',
-          data: {
-            title: 'Error',
-            message: 'Ocurrió un error al actualizar. Intenta nuevamente.',
-            confirmText: 'Cerrar',
-            type: 'danger'
-          }
-        });
-      }
-    });
-} else {
+      this.juiciosMercantilesService.actualizarBeneficiario(nomId, payload)
+        .subscribe({
+          next: () => {
+            this.cerrar();
+            this.dialog.open(ConfirmDialog, {
+              width: '420px',
+              data: {
+                title: 'Actualización exitosa',
+                message: 'El beneficiario fue actualizado correctamente.',
+                confirmText: 'Aceptar',
+                type: 'info'
+              }
+            });
+          },
+            error: () => {
+              this.dialog.open(ConfirmDialog, {
+                width: '420px',
+                data: {
+                  title: 'Error',
+                  message: 'Ocurrió un error al actualizar. Intenta nuevamente.',
+                  confirmText: 'Cerrar',
+                  type: 'danger'
+                }
+              });
+            }
+          });
+      } else {
       this.juiciosMercantilesService.agregarBeneficiario(payload).subscribe({
         next: () => { 
           this.showSnack('Beneficiario guardado correctamente', 'Cerrar', 4000); 
@@ -320,10 +322,6 @@ export class BeneficiarioJmDialog {
   if (qna > 24) { qna = 1; anio += 1; }
   return { anio, qna, aaaaqq: anio * 100 + qna };
   } 
-
-  cancelar(): void {
-    this.dialogRef.close(null);
-  }
 
   cerrar(): void {
     this.dialogRef.close(true);

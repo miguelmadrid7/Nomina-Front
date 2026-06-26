@@ -7,11 +7,24 @@
   </div>
 
  
-  <div class="dlg-content">
-    <div *ngIf="form" [formGroup]="form">
-      <div formGroupName="beneficiario">
-        <div class="form-card">
-          <div class="form-grid">
+            <div class="qna-summary">
+              <span class="qna-label">Quincena activa</span>
+                @if (cargandoQna) {
+                  <span class="qna-tag">Cargando...</span>
+                } @else if (calendarioActual) {
+                  <span class="qna-tag">
+                    {{ calendarioActual.qna.toString().padStart(2, '0') }} / {{ calendarioActual.ejercicio }}
+                  </span>
+                } @else {
+                  <span class="qna-tag">No disponible</span>
+                }
+            </div>
+          <div class="dlg-content">
+            <div *ngIf="form" [formGroup]="form">
+              <div formGroupName="beneficiario">
+                <div class="form-card">
+                  <div class="form-grid">
+
 
             <div class="section-divider"></div>
 
@@ -183,15 +196,6 @@
 
       
         <mat-card-content class="form-grid vigencia-grid">
-          <div>
-              <mat-form-field appearance="outline" class="login-field compact-field" floatLabel="always">
-                <mat-icon matPrefix>calendar_today</mat-icon>
-                  <mat-label>DESDE*</mat-label>
-                    <input matInput id="vigenciaInicio" formControlName="inicio" placeholder="AAAAQQ" maxlength="6"/>
-                      <mat-error *ngIf="form.get('beneficiario.inicio')?.invalid && (form.get('beneficiario.inicio')?.touched)">Captura la vigencia de inicio en formato AAAAQQ.</mat-error>
-              </mat-form-field>
-          </div>
-
           <div>
               <mat-form-field appearance="outline" class="login-field compact-field" floatLabel="always">
                 <mat-icon matPrefix>calendar_today</mat-icon>
