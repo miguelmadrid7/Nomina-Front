@@ -16,6 +16,7 @@ import { Banco } from '../../../models/banco.model';
 import { ApiResponse } from '../../../models/response/api-Response.model';
 import { formatBeneficiarioJMDisplay, mapBeneficiarioJM, repartirNombre } from '../../../shared/helpers/beneficiario-jm.helper';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
+import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 
 @Component({
   selector: 'app-juicios-mercantiles',
@@ -31,9 +32,9 @@ import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-di
     MatButtonModule,
     MatSelectModule,
     MatSnackBarModule,
-    MatDialogModule
-
-  ],
+    MatDialogModule,
+    UppercaseDirective
+],
   templateUrl: './juicios-mercantiles.html',
   styleUrls: ['./juicios-mercantiles.css']
 })
@@ -91,6 +92,11 @@ export class JuiciosMercantiles implements OnDestroy {
   });
 
   readonly displayFn = (emp: BeneficiarioJMRequest | string | null): string => formatBeneficiarioJMDisplay(emp);
+
+
+  ngOnInit(): void {
+    this.loadBanks();
+  }
 
   ngOnDestroy() {
     this.dialog.closeAll();
@@ -193,6 +199,17 @@ export class JuiciosMercantiles implements OnDestroy {
               });
           }
         });
+  }
+
+  loadBanks(): void {
+    this.juiciosMercantilesService.getBancos().subscribe({
+      next: (response: ApiResponse<Banco[]>) => {
+        this.bancos = response.data ?? [];
+      },
+      error: (err) => {
+        this.showSnack('Error al cargar bancos', 'Cerrar', 4000);
+      }
+    });
   }
 
   clearFilters(): void {
