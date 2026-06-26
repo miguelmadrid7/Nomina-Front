@@ -84,41 +84,38 @@ export class BeneficiarioJmDialog {
         inicio: [null],
         fin: [null, [vigenciaFormatoValidator()]],
       })
-    },
-    { validators: [factorImporteValidator(), vigenciaRangoValidator()] });
+    }, { validators: [factorImporteValidator(), vigenciaRangoValidator()] });
     this.bancos = this.data?.bancos ?? [];
- this.cargandoQna = true;
-
-this.calendarioService.getQnaActiva().subscribe({
-  next: (response: any) => {
-    console.log('QNA Activa response:', response);
-    this.calendarioActual = response.data ?? null;
-    this.cargandoQna = false;
-    
-    if (this.calendarioActual && this.data?.modo !== 'editar') {
-      const qnaInicio = `${this.calendarioActual.ejercicio}${this.calendarioActual.qna.toString().padStart(2, '0')}`;
-      this.form.patchValue({
-        beneficiario: {
-          inicio: qnaInicio
+    this.cargandoQna = true;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (response: any) => {
+        this.calendarioActual = response.data ?? null;
+        this.cargandoQna = false;
+        
+        if (this.calendarioActual && this.data?.modo !== 'editar') {
+          const qnaInicio = `${this.calendarioActual.ejercicio}${this.calendarioActual.qna.toString().padStart(2, '0')}`;
+          this.form.patchValue({
+            beneficiario: {
+              inicio: qnaInicio
+            }
+          }, { emitEvent: false });
+          
+          const beneficiarioGroup = this.form.get('beneficiario');
+          if (beneficiarioGroup) {
+            beneficiarioGroup.addValidators(vigenciaMinimaValidator(Number(qnaInicio)));
+            beneficiarioGroup.updateValueAndValidity({ emitEvent: false });
+          }
         }
-      }, { emitEvent: false });
-      
-      const beneficiarioGroup = this.form.get('beneficiario');
-      if (beneficiarioGroup) {
-        beneficiarioGroup.addValidators(vigenciaMinimaValidator(Number(qnaInicio)));
-        beneficiarioGroup.updateValueAndValidity({ emitEvent: false });
+        
+        this.cd.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error al cargar QNA activa:', err);
+        this.cargandoQna = false;
+        this.cd.detectChanges();
+        this.showSnack('Error al cargar QNA activa', 'Cerrar', 4000);
       }
-    }
-    
-    this.cd.detectChanges();
-  },
-  error: (err) => {
-    console.error('Error al cargar QNA activa:', err);
-    this.cargandoQna = false;
-    this.cd.detectChanges();
-    this.showSnack('Error al cargar QNA activa', 'Cerrar', 4000);
-  }
-});
+    });
 
       const b = this.form.get('beneficiario') as FormGroup;
       const formaCtrl  = b.get('formaAplicacion')!;
@@ -153,68 +150,63 @@ this.calendarioService.getQnaActiva().subscribe({
         }
       });
 
-        factorCtrl.valueChanges.pipe(startWith(factorCtrl.value)).subscribe(v => {
+      factorCtrl.valueChanges.pipe(startWith(factorCtrl.value)).subscribe(v => {
           const n = Number(v);
           this.factorDecimal = Number.isFinite(n) ? n / 100 : 0;
+      });
+
+      if (this.data?.beneficiario) {
+        const b = this.data.beneficiario;
+        const tab = b.tabBeneficiario ?? {};
+        const bancoMatch = this.bancos.find(
+          bk => (bk.banco ?? '').toString().trim().toUpperCase() === (tab.institucionBancaria ?? '').toString().trim().toUpperCase()
+        );
+        const bancoId = bancoMatch?.id ?? null;
+        this.form.patchValue({
+          beneficiario: {
+            nomId: b.id,
+            tabBeneficiariosJmId: b.tabBeneficiariosJmId ?? null,
+            rfc: (b.rfc ?? '').toString().toUpperCase().trim(),
+            primerApellido: (b.primerApellido ?? '').toString().toUpperCase().trim(),
+            segundoApellido: (b.segundoApellido ?? '').toString().toUpperCase().trim(),
+            nombre: (b.nombre ?? '').toString().toUpperCase().trim(),
+            formaAplicacion: (b.formaAplicacion ?? '').toString().toUpperCase().trim(),
+            citaBancaria: (b.numeroDocumento ?? '').toString().toUpperCase().trim(),
+            factorImporte: b.factorImporte,
+            importeTotal: b.importeTotal,
+            inicio: b.qnaini,
+            fin: b.qnafin,
+            clabe: (tab.clabeInterbancaria ?? '').toString().trim() || null,
+            ctaBancaria: tab.ctaBancaria ?? null,
+            bancoId,
+            estatus: (b.status ?? b.estatus ?? '').toString().toUpperCase().trim() 
+          }
+        });
+      }
+        this.form.get('beneficiario.rfc')?.valueChanges.subscribe(val => {
+          if (typeof val === 'string') {
+            const up = val.toUpperCase().trim();
+            if (val !== up) this.form.get('beneficiario.rfc')?.setValue(up, { emitEvent: false });
+          }
         });
 
-    if (this.data?.beneficiario) {
-      const b = this.data.beneficiario;
-      const tab = b.tabBeneficiario ?? {};
-
-      const bancoMatch = this.bancos.find(
-        bk => (bk.banco ?? '').toString().trim().toUpperCase() === (tab.institucionBancaria ?? '').toString().trim().toUpperCase()
-      );
-      const bancoId = bancoMatch?.id ?? null;
-
-      this.form.patchValue({
-        beneficiario: {
-          nomId: b.id,
-          tabBeneficiariosJmId: b.tabBeneficiariosJmId ?? null,
-          rfc: (b.rfc ?? '').toString().toUpperCase().trim(),
-          primerApellido: (b.primerApellido ?? '').toString().toUpperCase().trim(),
-          segundoApellido: (b.segundoApellido ?? '').toString().toUpperCase().trim(),
-          nombre: (b.nombre ?? '').toString().toUpperCase().trim(),
-          formaAplicacion: (b.formaAplicacion ?? '').toString().toUpperCase().trim(),
-          citaBancaria: (b.numeroDocumento ?? '').toString().toUpperCase().trim(),
-          factorImporte: b.factorImporte,
-          importeTotal: b.importeTotal,
-          inicio: b.qnaini,
-          fin: b.qnafin,
-          clabe: (tab.clabeInterbancaria ?? '').toString().trim() || null,
-          ctaBancaria: tab.ctaBancaria ?? null,
-          bancoId,
-          estatus: (b.status ?? b.estatus ?? '').toString().toUpperCase().trim() // ← agregar
-        }
-      });
-    }
-
-    this.form.get('beneficiario.rfc')?.valueChanges.subscribe(val => {
-    if (typeof val === 'string') {
-      const up = val.toUpperCase().trim();
-      if (val !== up) this.form.get('beneficiario.rfc')?.setValue(up, { emitEvent: false });
-    }
-  });
-
-    const upperPipe = (path: string) => {
-    const c = this.form.get(path);
-    c?.valueChanges.pipe(distinctUntilChanged()).subscribe((val: any) => {
-      if (typeof val === 'string') {
-        const up = val.toUpperCase().trim();
-        if (up !== val) c.setValue(up, { emitEvent: false });
-      }
-    });
-  };
-    upperPipe('beneficiario.rfc');
-    upperPipe('beneficiario.primerApellido');
-    upperPipe('beneficiario.segundoApellido');
-    upperPipe('beneficiario.nombre');
-    upperPipe('beneficiario.formaAplicacion'); // es string 'P' | 'C'
-    upperPipe('beneficiario.citaBancaria');
-    upperPipe('beneficiario.fin');    // AAAAQQ
+        const upperPipe = (path: string) => {
+        const c = this.form.get(path);
+        c?.valueChanges.pipe(distinctUntilChanged()).subscribe((val: any) => {
+          if (typeof val === 'string') {
+            const up = val.toUpperCase().trim();
+            if (up !== val) c.setValue(up, { emitEvent: false });
+          }
+        });
+        };
+        upperPipe('beneficiario.rfc');
+        upperPipe('beneficiario.primerApellido');
+        upperPipe('beneficiario.segundoApellido');
+        upperPipe('beneficiario.nombre');
+        upperPipe('beneficiario.formaAplicacion'); 
+        upperPipe('beneficiario.citaBancaria');
+        upperPipe('beneficiario.fin'); 
   }
-
-  
   
   private showSnack(message: string, action: string, duration: number): void {
     this.zone.runOutsideAngular(() => {
