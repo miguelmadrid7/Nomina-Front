@@ -8,6 +8,37 @@
   margin-top: 15px;
 }
 
+.actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.qna-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+
+.qna-label {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+
+.qna-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #f3f4f6;
+  color: #374151;
+}
+
 .btn-group {
   display: inline-flex;
   justify-content: flex-start;
@@ -377,7 +408,6 @@ button[disabled] {
 }
 
 /* ===== UPPERCASE ===== */
-
 :host ::ng-deep input[matinput],
 :host ::ng-deep .mdc-text-field__input{
   text-transform:uppercase;
@@ -389,8 +419,6 @@ button[disabled] {
 .mat-mdc-option .mdc-list-item__primary-text{
   text-transform:uppercase;
 }
-
-
 
 :host ::ng-deep .qna-compact .mat-mdc-floating-label {
   white-space: nowrap;

@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
@@ -17,6 +17,8 @@ import { ApiResponse } from '../../../models/response/api-Response.model';
 import { formatBeneficiarioJMDisplay, mapBeneficiarioJM, repartirNombre } from '../../../shared/helpers/beneficiario-jm.helper';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
+import { CalendarioService } from '../../../core/services/calendario.service';
+import { Calendario } from '../../../models/calendario.model';
 
 @Component({
   selector: 'app-juicios-mercantiles',
@@ -46,6 +48,7 @@ export class JuiciosMercantiles implements OnDestroy {
   private readonly zone = inject(NgZone);
   private readonly snackBar = inject(MatSnackBar);
   private readonly cd = inject(ChangeDetectorRef);
+  private readonly calendarioService = inject(CalendarioService);
 
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
 
@@ -56,6 +59,8 @@ export class JuiciosMercantiles implements OnDestroy {
   bancos: Banco[] = [];
   beneficiarios: any[] = [];
   factorDecimal = 0;
+  calendarioActual: Calendario | null = null;
+  cargandoQna = false;
   
  
   readonly form = this.fb.group({
@@ -86,8 +91,6 @@ export class JuiciosMercantiles implements OnDestroy {
         factorImporte: [''],
         estatus: [''],
         descripcion: [''],
-        inicio: [''],
-        fin: [''],
       }),
   });
 
@@ -96,6 +99,7 @@ export class JuiciosMercantiles implements OnDestroy {
 
   ngOnInit(): void {
     this.loadBanks();
+    this.loadQnaActiva();
   }
 
   ngOnDestroy() {
@@ -171,34 +175,40 @@ export class JuiciosMercantiles implements OnDestroy {
     }
 
     const formValue = this.form.get('beneficiario')?.value;
-      this.juiciosMercantilesService.saveBeneficiary(formValue, this.empleadoIdActual)
-        .subscribe({
-          next: () => {
-            this.form.get('beneficiario')?.reset();
-            this.clearFilters();
-            this.dialog.open(ConfirmDialog, {
-              width: '420px',
-                data: {
-                  title: 'Registro exitoso',
-                  message: 'El juicio fue guardado con exito',
-                  confirmText: 'Aceptar',
-                  type: 'info'
-                }
-            });
-          },
-          error: (err) => {
-            console.error(err);
-             this.dialog.open(ConfirmDialog, {
-              width: '420px',
-                data: {
-                  title: 'Error',
-                  message: 'Ocurrio un error al guardar el juicio. Intenta nuevamente',
-                  confirmText: 'Cerrar',
-                  type: 'danger'
-                }
-              });
-          }
-        });
+    const payload = {
+      ...formValue,
+      qnaini: this.calendarioActual ? `${this.calendarioActual.ejercicio}${this.calendarioActual.qna.toString().padStart(2, '0')}` : '',
+      qnafin: '999999'
+    };
+
+    this.juiciosMercantilesService.saveBeneficiary(payload, this.empleadoIdActual)
+      .subscribe({
+        next: () => {
+          this.form.get('beneficiario')?.reset();
+          this.clearFilters();
+          this.dialog.open(ConfirmDialog, {
+            width: '420px',
+            data: {
+              title: 'Registro exitoso',
+              message: 'El juicio fue guardado con exito',
+              confirmText: 'Aceptar',
+              type: 'info'
+            }
+          });
+        },
+        error: (err) => {
+          console.error(err);
+          this.dialog.open(ConfirmDialog, {
+            width: '420px',
+            data: {
+              title: 'Error',
+              message: 'Ocurrio un error al guardar el juicio. Intenta nuevamente',
+              confirmText: 'Cerrar',
+              type: 'danger'
+            }
+          });
+        }
+      });
   }
 
   loadBanks(): void {
@@ -208,6 +218,24 @@ export class JuiciosMercantiles implements OnDestroy {
       },
       error: (err) => {
         this.showSnack('Error al cargar bancos', 'Cerrar', 4000);
+      }
+    });
+  }
+
+  loadQnaActiva(): void {
+    this.cargandoQna = true;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (response: ApiResponse<Calendario>) => {
+        this.zone.run(() => {
+          this.calendarioActual = response.data ?? null;
+          this.cargandoQna = false;
+        });
+      },
+      error: (err) => {
+        this.zone.run(() => {
+          this.cargandoQna = false;
+        });
+        this.showSnack('Error al cargar QNA activa', 'Cerrar', 4000);
       }
     });
   }

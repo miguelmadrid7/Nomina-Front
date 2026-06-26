@@ -81,11 +81,25 @@
           <h3>Alta de juicio</h3>
         </div>
        
-        <div class="btn-group" style="margin-bottom: 12px;">
-            <button class="btn btn-success" (click)="saveBeneficiary()">
-                <mat-icon>save</mat-icon>
-                    <span>Guardar</span>
-            </button>
+       <div class="actions-row">
+            <div class="btn-group">
+                <button class="btn btn-success" (click)="saveBeneficiary()">
+                    <mat-icon>save</mat-icon>
+                        <span>Guardar</span>
+                </button>
+            </div>
+            <div class="qna-summary">
+                <span class="qna-label">Quincena activa</span>
+                    @if (cargandoQna) {
+                        <span class="qna-tag">Cargando...</span>
+                    } @else if (calendarioActual) {
+                        <span class="qna-tag">
+                            {{ calendarioActual.qna.toString().padStart(2, '0') }} / {{ calendarioActual.ejercicio }}
+                        </span>
+                    } @else {
+                        <span class="qna-tag">No disponible</span>
+                    }
+            </div>
         </div>
       
 
@@ -236,24 +250,6 @@
                     <mat-form-field  appearance="outline" class="qna-compact search-field with-separator description-field" floatLabel="always">
                         <mat-label>Descripción*</mat-label>
                             <textarea matInput formControlName="descripcion" rows="4" appUppercase></textarea>
-                    </mat-form-field>
-                </div>
-
-                <div class="field-group">
-                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-                        <mat-icon matPrefix>calendar_today</mat-icon>
-                            <mat-label>Inicio*</mat-label>
-                                <input matInput id="vigenciaInicio" formControlName="inicio" placeholder="AAAAQQ" maxlength="6"/>
-                                    <mat-error *ngIf="form.get('beneficiario.inicio')?.invalid && (form.get('beneficiario.inicio')?.touched)">Captura la vigencia de inicio en formato AAAAQQ.</mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class="field-group">
-                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
-                        <mat-icon matPrefix>calendar_today</mat-icon>
-                            <mat-label>Hasta*</mat-label>
-                                <input matInput id="vigenciaFin" formControlName="fin" placeholder="AAAAQQ" maxlength="6"/>
-                                    <mat-error *ngIf="form.get('beneficiario.fin')?.invalid && (form.get('beneficiario.fin')?.touched)">Captura la vigencia de fin en formato AAAAQQ.</mat-error>
                     </mat-form-field>
                 </div>
             </mat-card-content>

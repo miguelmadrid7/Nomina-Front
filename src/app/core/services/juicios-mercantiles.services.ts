@@ -89,8 +89,8 @@ export class JuiciosMercantilesService {
       formaAplicacion: formValue.formaAplicacion,
       factorImporte: formValue.factorImporte,
       importeTotal: formValue.importeTotal, 
-      qnaini: formValue.inicio,
-      qnafin: formValue.fin,
+      qnaini: formValue.qnaini,
+      qnafin: formValue.qnafin,
       numeroDocumento: formValue.descripcion,
       tabEmpleadosId: employeeId
     };
