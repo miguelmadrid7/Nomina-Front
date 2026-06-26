@@ -33,14 +33,12 @@
                         id="buscarEmpleado"
                         formControlName="searchText"
                         [matAutocomplete]="auto"
-                        #autocompleteTrigger="matAutocompleteTrigger"
-                        (keydown.enter)="$event.preventDefault(); buscarEmpleado()">
-                    <mat-autocomplete #auto="matAutocomplete" 
-                        (optionSelected)="empleadoSeleccionado($event.option.value)"
-                        [displayWith]="displayFn">
-                        <mat-option *ngFor="let emp of resultado" [value]="emp">
-                            {{ displayFn(emp) }}
-                        </mat-option>
+                        #inputTrigger="matAutocompleteTrigger"
+                        #searchInput
+                        (keydown.enter)="$event.preventDefault(); 
+                        buscarEmpleado()">
+                    <mat-autocomplete #auto="matAutocomplete"  (optionSelected)="empleadoSeleccionado($event.option.value)" [displayWith]="displayFn">
+                        <mat-option *ngFor="let emp of resultado" [value]="emp"> {{ displayFn(emp) }}  </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
 

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, inject, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -40,7 +40,7 @@ import { Calendario } from '../../../models/calendario.model';
   templateUrl: './juicios-mercantiles.html',
   styleUrls: ['./juicios-mercantiles.css']
 })
-export class JuiciosMercantiles implements OnDestroy {
+export class JuiciosMercantiles implements OnInit, OnDestroy {
 
   private readonly fb = inject(FormBuilder);
   private readonly juiciosMercantilesService = inject(JuiciosMercantilesService);
@@ -51,6 +51,7 @@ export class JuiciosMercantiles implements OnDestroy {
   private readonly calendarioService = inject(CalendarioService);
 
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
+  @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>; 
 
   empleadoIdActual: number | null = null;
   hasCheck = false;
@@ -139,11 +140,15 @@ export class JuiciosMercantiles implements OnDestroy {
         this.resultado = lista.map(mapBeneficiarioJM)
           .filter(e => e.rfc.trim() || e.primerApellido.trim() || e.segundoApellido.trim() || e.nombre.trim());
         this.cargandoBusqueda = false;
-        if (this.resultado.length > 0) {
-          setTimeout(() => this.autocompleteTrigger?.openPanel());
-        } else {
-          this.autocompleteTrigger?.closePanel();
-        }
+       if (this.resultado.length > 0) {
+  setTimeout(() => {
+    this.searchInput?.nativeElement.focus(); // ← primero enfoca
+    this.autocompleteTrigger?.openPanel();   // ← luego abre
+  });
+} else {
+  this.autocompleteTrigger?.closePanel();
+  this.showSnack('No se encontraron resultados', 'Cerrar', 4000);
+}
       },
       error: () => {
         this.cargandoBusqueda = false;
@@ -222,19 +227,15 @@ export class JuiciosMercantiles implements OnDestroy {
     });
   }
 
-  loadQnaActiva(): void {
+ loadQnaActiva(): void {
     this.cargandoQna = true;
     this.calendarioService.getQnaActiva().subscribe({
       next: (response: ApiResponse<Calendario>) => {
-        this.zone.run(() => {
-          this.calendarioActual = response.data ?? null;
-          this.cargandoQna = false;
-        });
+        this.calendarioActual = response.data ?? null;
+        this.cargandoQna      = false;
       },
-      error: (err) => {
-        this.zone.run(() => {
-          this.cargandoQna = false;
-        });
+      error: () => {
+        this.cargandoQna = false;
         this.showSnack('Error al cargar QNA activa', 'Cerrar', 4000);
       }
     });
