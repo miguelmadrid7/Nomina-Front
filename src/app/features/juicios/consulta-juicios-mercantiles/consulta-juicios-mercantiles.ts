@@ -54,6 +54,8 @@ export class ConsultaJuiciosMercantiles {
     'acciones'
   ];
 
+  private todosLosRegistros: any[] = [];
+
   searchForm = new FormGroup({
     searchText: new FormControl('')
   });
@@ -61,6 +63,20 @@ export class ConsultaJuiciosMercantiles {
   ngOnInit(): void {
     this.loadBanks();
     this.loadBeneficiaries();
+  }
+
+  buscar(): void {
+    const texto = this.searchForm.get('searchText')?.value?.trim().toUpperCase() ?? '';
+    const base = !texto ? this.todosLosRegistros : this.todosLosRegistros.filter(r =>
+      r.nombreEmpleado?.toUpperCase().includes(texto) ||
+      r.rfcEmpleado?.toUpperCase().includes(texto)    ||
+      r.nombreCompleto?.toUpperCase().includes(texto)
+    );
+    const seenEmployees = new Set<number>();
+    this.dataSource.data = base.map(r => ({
+      ...r,
+      showEmpleado: !seenEmployees.has(r.tabEmpleadosId) && seenEmployees.add(r.tabEmpleadosId) !== null
+    }));
   }
 
   loadBanks(): void {
@@ -110,6 +126,7 @@ export class ConsultaJuiciosMercantiles {
           seenEmployees.add(row.tabEmpleadosId);
         });
 
+        this.todosLosRegistros = sorted;
         this.zone.runOutsideAngular(() => {
           this.dataSource.data = sorted;
           this.hasCheck = true;
@@ -143,5 +160,14 @@ export class ConsultaJuiciosMercantiles {
       if (!result) return;
       this.loadBeneficiaries();
     });
+  }
+
+  limpiar(): void {
+    this.searchForm.reset();
+    const seenEmployees = new Set<number>();
+    this.dataSource.data = this.todosLosRegistros.map(r => ({
+      ...r,
+      showEmpleado: !seenEmployees.has(r.tabEmpleadosId) && seenEmployees.add(r.tabEmpleadosId) !== null
+    }));
   }
 }

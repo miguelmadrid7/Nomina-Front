@@ -11,13 +11,13 @@
 
     <div class="actions-right">
         <div class="btn-group">
-            <button class="btn btn-primary">
+            <button class="btn btn-primary" (click)="buscar()">
                 <mat-icon>task_alt</mat-icon>
                     <span>Buscar</span>
             </button>
         </div>
 
-        <button class="btn btn-danger">
+        <button class="btn btn-danger"  (click)="limpiar()">
             <mat-icon>delete_outline</mat-icon>
                 <span>Limpiar</span>
         </button>
@@ -27,7 +27,7 @@
         <mat-form-field appearance="outline" class="with-separator qna-compact search-field" floatLabel="always">
             <mat-icon matPrefix>search</mat-icon>
             <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
-            <input matInput id="buscarEmpleado" formControlName="searchText" appUppercase>
+            <input matInput id="buscarEmpleado" formControlName="searchText" appUppercase (keydown.enter)="buscar()">
         </mat-form-field>
     </div>
 
