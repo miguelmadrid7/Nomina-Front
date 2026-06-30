@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BeneficiarioJmDialog } from './beneficiario-jm-dialog';
+import { AltaBeneficiarioJmDialog } from './alta-beneficiario-jm-dialog';
 
-describe('BeneficiarioJmDialog', () => {
-  let component: BeneficiarioJmDialog;
-  let fixture: ComponentFixture<BeneficiarioJmDialog>;
+describe('AltaBeneficiarioJmDialog', () => {
+  let component: AltaBeneficiarioJmDialog;
+  let fixture: ComponentFixture<AltaBeneficiarioJmDialog>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [BeneficiarioJmDialog]
+      imports: [AltaBeneficiarioJmDialog]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(BeneficiarioJmDialog);
+    fixture = TestBed.createComponent(AltaBeneficiarioJmDialog);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
