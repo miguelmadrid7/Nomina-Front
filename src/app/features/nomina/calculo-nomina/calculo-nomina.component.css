@@ -16,12 +16,56 @@
   margin-bottom: 0.5rem;
 }
 
+.subtitle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.subtitle-row .page-subtitle {
+  margin-bottom: 0; 
+}
+
+.meta-tags {
+  display: flex;
+  flex-direction: row;  
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;     
+  margin-top: 8px;
+}
+
+.meta-tag-row {
+  display: flex;
+  flex-direction: column; 
+  align-items: flex-start;
+  gap: 4px;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 6px 10px;
+  background: #fafafa;
+}
+
+.meta-tag-row .field-label {
+  font-size: 10px;
+  color: #9ca3af;
+}
+
+.meta-tag-row .bottom-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* Cards */
 .actions-card,
 .progress-card {
   border-radius: 12px !important;
   padding: 16px 20px;
   margin-bottom: 12px;
+  margin-top: 16px;
 }
 
 .progress-card {
@@ -255,6 +299,119 @@
   padding: 8px 0;
 }
 
+.concepto-header {
+  display: flex;
+  gap: 16px;
+  padding: 6px 12px;
+  background: #f8fafc;
+  font-size: 10px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 0.5px solid #e5e7eb;
+}
+
+.conceptos-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.concepto-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 12px;
+  border-bottom: 0.5px solid #f0f0f0;
+  font-size: 13px;
+}
+
+.concepto-row:last-child {
+  border-bottom: none;
+}
+
+.concepto-row:hover {
+  background: #f8fafc;
+}
+
+.concepto-cve {
+  font-weight: 600;
+  color: #374151;
+  min-width: 40px;
+}
+
+.concepto-modelo {
+  font-size: 11px;
+  color: #9ca3af;
+  min-width: 70px;
+}
+
+.concepto-desc {
+  flex: 1;
+  color: #4b5563;
+}
+
+.concepto-status {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #f3f4f6;
+  color: #9ca3af;
+}
+
+.concepto-check {
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+}
+
+.concepto-excluido {
+    opacity: 0.45;
+    background: #fafafa;
+}
+
+.concepto-excluido .concepto-cve,
+.concepto-excluido .concepto-desc {
+    text-decoration: line-through;
+    color: #9ca3af;
+}
+
+
+.btn-toggle-pasos {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: 0.5px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all .18s ease;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.btn-toggle-pasos:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+.btn-toggle-pasos mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+}
+
 :host ::ng-deep .mat-vertical-stepper-header {
   min-height: 44px;
   padding: 6px 8px;
@@ -291,6 +448,34 @@
 :host ::ng-deep .mat-mdc-card {
   padding: 16px 20px;
   overflow: visible !important;
+}
+
+:host ::ng-deep .meta-check {
+  --mdc-checkbox-state-layer-size: 20px; /* ← reduce el área táctil */
+}
+
+:host ::ng-deep .meta-check .mdc-checkbox {
+  width: 18px;
+  height: 18px;
+  padding: 0 !important;
+  flex: none;
+}
+
+:host ::ng-deep .meta-check .mdc-checkbox__background {
+  top: 0 !important;
+  left: 0 !important;
+}
+
+:host ::ng-deep .meta-check .mdc-form-field {
+  align-items: center;
+  gap: 4px;
+}
+
+:host ::ng-deep .meta-check label {
+  padding-left: 4px !important;
+  font-size: 11px;
+  color: #6b7280;
+  cursor: pointer;
 }
 
 /* Responsive */
@@ -360,5 +545,10 @@
 
   .step-icon {
     font-size: 16px;
+  }
+
+  .btn-toggle-pasos {
+    width: 100%;
+    justify-content: center;
   }
 }

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, ChangeDetectionStrategy, Component, NgZone, inject } from '@angular/core';
+import { ChangeDetectorRef, ChangeDetectionStrategy, Component, NgZone, inject, OnInit } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatStepperModule } from '@angular/material/stepper';
@@ -12,9 +12,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { buildQnaCode } from '../../../shared/helpers/nomina.helper';
-import { MatFormField, MatLabel } from "@angular/material/form-field";
-import { MatSelect, MatOption } from "@angular/material/select";
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { getCurrentQna } from '../../../shared/validators/validaciones.validators';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { Calendario } from '../../../models/calendario.model';
+import { CalendarioService } from '../../../core/services/calendario.service';
+import { ConceptoExtra } from '../../../models/concepto-extra.model';
 
 @Component({
   selector: 'app-calculo-nomina',
@@ -29,38 +32,51 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
     MatCardModule,
     MatIconModule,
     MatProgressBarModule,
-    MatSelect,
-    MatOption
+    MatCheckboxModule
 ],
   templateUrl: './calculo-nomina.component.html',
   styleUrls:[ './calculo-nomina.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { 'ngSkipHydration': 'true' }
 })
-export class CalculoNominaComponent {
+export class CalculoNominaComponent implements OnInit {
 
   private readonly nominaService = inject(NominaService);
+  private readonly calendarioService = inject(CalendarioService)
   private readonly zone = inject(NgZone);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly snackBar = inject(MatSnackBar);
   private readonly fb = inject(FormBuilder);
 
 
-  readonly currentYear = new Date().getFullYear();
+  readonly buildQnaCode = buildQnaCode;
   readonly form: FormGroup = this.fb.group({
-    anio: [null, Validators.required],
+    anio:     [null, Validators.required],
     quincena: [null, Validators.required]
   });
+  
+  readonly fechaCaptura: string = new Date().toLocaleDateString('es-MX', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+
+  readonly qnaActual: string = (() => {
+    const { anio, qna } = getCurrentQna();
+    return `${qna.toString().padStart(2, '0')} / ${anio}`;
+  })();
 
   readonly stepsWithProgress: { label: string; progress: number }[];
-  
+
   progress = 0;
-  progressTarget = 0;
   processing = false;
   deliverableReady = false;
   currentStepIdx = 0;
-  anios: number[] = Array.from({ length: 10 }, (_, i) => this.currentYear -i);
-  quincena: number[] = Array.from({ length: 24}, (_, i) => i + 1);
+  calendarioActual:  Calendario | null = null;
+  cargandoCalendario = false;
+  conceptosExtra: ConceptoExtra[] = [];
+  conceptoSeleccionado = new Set<String>();
+  showSteps = false;
 
   private stompClient: any;
   private readonly steps = [
@@ -89,6 +105,64 @@ export class CalculoNominaComponent {
     { label: 'Actualizando importes' },             // updateImportes
   ];
 
+  ngOnInit(): void {
+    this.cargarCalendarioActual();
+    this.cargarConceptosExtra();
+  }
+
+  get qnaDisplay(): string {
+    if (!this.calendarioActual) return this.qnaActual;
+    return `${this.calendarioActual.qna.toString().padStart(2, '0')} / ${this.calendarioActual.ejercicio}`;
+  }
+
+  private cargarCalendarioActual(): void {
+    this.cargandoCalendario = true;
+    this.calendarioService.getQnaActiva()
+      .subscribe({
+        next: (resp: any) => {
+          this.calendarioActual   = resp?.data ?? null;
+          this.cargandoCalendario = false;
+          if (this.calendarioActual) {
+            this.form.patchValue({
+              anio: this.calendarioActual.ejercicio,
+              quincena: this.calendarioActual.qna
+            })
+
+          }
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          this.cargandoCalendario = false;
+          this.showSnack('Error al cargar el calendario', 'Cerrar', 4000);
+        }
+      });
+  }
+
+  private cargarConceptosExtra(): void {
+    this.calendarioService.getConceptosExtra().subscribe({
+      next: (res: any) => {
+        this.conceptosExtra = res.data ?? [];
+        this.conceptoSeleccionado = new Set(
+          this.conceptosExtra.map(c => c.catConceptoCve + c.catModeloId)
+        );
+        this.cdr.markForCheck();
+      },
+      error: () => this.showSnack('Error al cargar conceptos extra', 'Cerrar', 4000)
+    })
+  }
+
+  toogleConcepto(key: string): void {
+    if (this.conceptoSeleccionado.has(key)) {
+      this.conceptoSeleccionado.delete(key);
+    } else {
+      this.conceptoSeleccionado.add(key);
+    }
+    this.cdr.markForCheck();
+  }
+
+  isConceptoSeleccionado(key: string): boolean {
+    return this.conceptoSeleccionado.has(key);
+  }
 
   constructor() {
     const total = this.steps.length;
@@ -173,7 +247,7 @@ export class CalculoNominaComponent {
 
     const {anio, quincena } = this.form.value;
     const qnaProceso = buildQnaCode(anio, quincena);
-    
+
     this.processing = true;
     this.progress = 0;
     this.deliverableReady = false;
