@@ -250,3 +250,41 @@ mat-form-field {
   transform: translateY(-1px);
 }
 
+@media (max-width: 768px) {
+  .dialog-header {
+    padding: 16px 40px;
+  }
+
+  .row-4 {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .toggle-container {
+    min-height: auto;
+    flex-wrap: wrap;
+  }
+
+  .dlg-actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+
+  .dlg-actions .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .dialog-header {
+    padding: 14px 36px;
+  }
+
+  .dialog-close {
+    right: 10px;
+  }
+}
