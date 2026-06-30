@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, Inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -58,8 +58,6 @@ export class ConsultaPensionesDialog implements OnInit {
 
   readonly data = inject<FilaBeneficiario>(MAT_DIALOG_DATA);
 
-
-
   ngOnInit() {
     this.form = this.fb.group({
       id: [null],
@@ -94,39 +92,37 @@ export class ConsultaPensionesDialog implements OnInit {
   }
 
   cargarDetalle(): void {
-  this.pensionAlimenticiaService.getBeneficiario(this.data.id).subscribe({
-    next: (resp) => {
-      const arr = resp?.data as any[];
-      if (!arr || arr.length === 0) return;
-      const d = arr[0];
-      this.detalle = d;
+    this.pensionAlimenticiaService.getBeneficiario(this.data.id).subscribe({
+      next: (resp) => {
+        const arr = resp?.data as any[];
+        if (!arr || arr.length === 0) return;
+        const d = arr[0];
+        this.detalle = d;
 
-      this.form.patchValue({
-        nombreEmpleado: this.armarNombreEmpleado(d),
-        rfcEmpleado: d.empleado_rfc,
-        curpEmpleado: d.empleado_curp,
-        nombreBeneficiario: this.armarNombreBeneficiario(d),
-        rfc: d.beneficiario_rfc,
-        numeroBeneficiario: d.numero_benef ?? '',
-        numeroOficio: d.numero_oficio ?? '',
-        formaAplicacion: d.forma_aplicacion,
-        factorImporte: d.factor_importe,
-        bancoSeleccionado: d.cat_banco_id,
-        clabe: d.numero_documento ?? '',
-        qnaInicio: d.qnaini,
-        qnaFin: d.qnafin,
-        numeroDocumento: d.numero_documento ?? ''
-      }, { emitEvent: false });
-
-      // ← Reemplaza queueMicrotask por esto:
-      if (d.qnafin) {
-        this.form.get('pensionTerminada')?.setValue(true, { emitEvent: false });
-      }
-       this.cdr.detectChanges(); // ← fuerza detección de cambios sincrónicamente
-    },
-    error: (err: any) => console.error('Error al cargar detalle', err)
-  });
-}
+        this.form.patchValue({
+          nombreEmpleado: this.armarNombreEmpleado(d),
+          rfcEmpleado: d.empleado_rfc,
+          curpEmpleado: d.empleado_curp,
+          nombreBeneficiario: this.armarNombreBeneficiario(d),
+          rfc: d.beneficiario_rfc,
+          numeroBeneficiario: d.numero_benef ?? '',
+          numeroOficio: d.numero_oficio ?? '',
+          formaAplicacion: d.forma_aplicacion,
+          factorImporte: d.factor_importe,
+          bancoSeleccionado: d.cat_banco_id,
+          clabe: d.numero_documento ?? '',
+          qnaInicio: d.qnaini,
+          qnaFin: d.qnafin,
+          numeroDocumento: d.numero_documento ?? ''
+        }, { emitEvent: false });
+        if (d.qnafin) {
+          this.form.get('pensionTerminada')?.setValue(true, { emitEvent: false });
+        }
+        this.cdr.detectChanges();
+      },
+      error: (err: any) => console.error('Error al cargar detalle', err)
+    });
+  }
 
   private armarNombreEmpleado(d: any): string {
     return [d.empleado_primer_apellido, d.empleado_segundo_apellido, d.empleado_nombre]
