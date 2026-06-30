@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { UppercaseDirective } from '../../../shared/directives/upperCase.directivas';
-import { BeneficiarioJmDialog } from '../../../shared/dialogs/beneficiario-jm-dialog/beneficiario-jm-dialog';
+import { AltaBeneficiarioJmDialog } from '../../../shared/dialogs/alta-beneficiario-jm-dialog/alta-beneficiario-jm-dialog';
 import { MatDialog } from '@angular/material/dialog';
 
 @Component({
@@ -143,7 +143,7 @@ export class ConsultaJuiciosMercantiles {
   }
 
   openEditDialog(row: any): void {
-    const dialogRef = this.dialog.open(BeneficiarioJmDialog, {
+    const dialogRef = this.dialog.open(AltaBeneficiarioJmDialog, {
       width: '1200px',
       maxWidth: '92vw',
       maxHeight: '90vh',
