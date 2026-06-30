@@ -57,7 +57,7 @@ export class PensionAlimenticiaService {
     }
 
     getBeneficiaryByEmployee(empleadoId: number): Observable<ApiResponse<BeneficiarioEmpleadoResponse>> {
-        return this.http.get<ApiResponse<BeneficiarioEmpleadoResponse>>(`${this.base}/empleado/${empleadoId}`);
+        return this.http.get<ApiResponse<BeneficiarioEmpleadoResponse>>(`${this.base}/beneficiarios/empleado/${empleadoId}`);
     }
 
     getLiquidoByRfc(rfc: string): Observable<ApiResponse<LiquidoResponse>> {
