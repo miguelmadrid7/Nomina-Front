@@ -13,28 +13,37 @@
   </div>
 
   <div [formGroup]="form" class="global-search">
-    <div formGroupName="busqueda" class="qna-filters">
 
+    <mat-form-field appearance="outline" class="with-separator qna-compact search-field" floatLabel="always">
+      <mat-icon matPrefix>search</mat-icon>
+      <mat-label>Buscar empleado (nombre o RFC)</mat-label>
+        <input
+          matInput
+          formControlName="nombreEmpleado"
+          placeholder="Nombre o RFC del empleado"
+          appUppercase
+          (keydown.enter)="buscar()">
+    </mat-form-field>
+
+    <div formGroupName="busqueda" class="qna-filters">
       <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
         <mat-label>Año</mat-label>
         <mat-select formControlName="anio">
-        
-          <mat-option *ngFor="let anio of anios" [value]="anio">
-            {{ anio }}
-          </mat-option>
+          @for (anio of anios; track anio) {
+            <mat-option [value]="anio">{{ anio }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
         <mat-label>Quincena</mat-label>
-        <mat-select formControlName="quincena" >
-          <mat-option *ngFor="let q of quincenas" [value]="q">
-            {{ q.toString().padStart(2, '0') }}
-          </mat-option>
+        <mat-select formControlName="quincena">
+          @for (q of quincenas; track q) {
+            <mat-option [value]="q">{{ q.toString().padStart(2, '0') }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
-
-    
+    </div>
   </div>
 
   <div class="section-divider"></div>
@@ -50,12 +59,6 @@
 
                 <ng-container matColumnDef="nombreEmpleado">
                   <th mat-header-cell *matHeaderCellDef class="header-with-select"> NOMBRE <br> EMPLEADO
-                    <div class="header-column">
-                      <mat-form-field appearance="outline" class="header-text-input-small" floatLabel="always">
-                        <mat-label>Buscar</mat-label>
-                        <input matInput formControlName="nombreEmpleado" (keydown.enter)="buscar()" appUppercase>
-                      </mat-form-field>
-                    </div>
                   </th>
                   <td mat-cell *matCellDef="let e">
                     <span *ngIf="e.mostrarEmpleado">{{ e.nombreEmpleado }}</span>
@@ -64,12 +67,7 @@
 
                 <ng-container matColumnDef="rfcEmpleado">
                   <th mat-header-cell *matHeaderCellDef> RFC <br> EMPLEADO 
-                    <div class="header-column">
-                      <mat-form-field appearance="outline" class="header-text-input-small" floatLabel="always">
-                        <mat-label>Buscar</mat-label>
-                        <input matInput formControlName="rfcEmpleado" (keydown.enter)="buscar()" appUppercase>
-                      </mat-form-field>
-                    </div>
+                   
                   </th>
                     <td mat-cell *matCellDef="let e">
                       <span *ngIf="e.mostrarEmpleado"> {{ e.rfcEmpleado }} </span>
@@ -78,24 +76,14 @@
 
                 <ng-container matColumnDef="nombreBeneficiario">
                   <th mat-header-cell *matHeaderCellDef class="header-with-select"> NOMBRE <br> BENEFICIARIO
-                    <div class="header-column">
-                      <mat-form-field appearance="outline" class="header-text-input-small" floatLabel="always">
-                        <mat-label>Buscar</mat-label>
-                        <input matInput formControlName="nombreBeneficiario" (keydown.enter)="buscar()" appUppercase>
-                      </mat-form-field>
-                    </div>
+                    
                   </th>
                   <td mat-cell *matCellDef="let e">{{ e.nombreBeneficiario }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="rfcReferencia">
                   <th mat-header-cell *matHeaderCellDef class="header-with-select"> RFC <br> REFERENCIA
-                    <div class="header-column">
-                      <mat-form-field appearance="outline" class="header-text-input-small" floatLabel="always">
-                        <mat-label>Buscar</mat-label>
-                        <input matInput formControlName="rfcReferencia" (keydown.enter)="buscar()" appUppercase>
-                      </mat-form-field>
-                    </div>
+                    
                   </th>
                   <td mat-cell *matCellDef="let e">{{ e.rfcReferencia }}</td>
                 </ng-container>
@@ -112,14 +100,16 @@
 
                 <ng-container matColumnDef="qna">
                   <th mat-header-cell *matHeaderCellDef>QNA</th>
-                  <td mat-cell *matCellDef="let e">{{ e.qna }}</td>
+                  <td mat-cell *matCellDef="let e">
+                    {{ e.qnaIni }} - {{ e.qnaFin === 999999 ? '999999' : e.qnaFin }}
+                  </td>
                 </ng-container>
 
                 <ng-container matColumnDef="estado">
                   <th mat-header-cell *matHeaderCellDef>ESTADO</th>
                   <td mat-cell *matCellDef="let e">
-                    <span class="chip" [class.chip-ok]="!e.qnaFin" [class.chip-off]="!!e.qnaFin">
-                      {{ e.qnaFin ? 'Finalizado' : 'Activo' }}
+                    <span class="chip" [class.chip-ok]="!e.qnaFin || e.qnaFin === 999999" [class.chip-off]="!!e.qnaFin && e.qnaFin !== 999999">
+                      {{ (!e.qnaFin || e.qnaFin === 999999) ? 'Activo' : 'Finalizado' }}
                     </span>
                   </td>
                 </ng-container>
@@ -127,16 +117,16 @@
                 <ng-container matColumnDef="acciones">
                   <th mat-header-cell *matHeaderCellDef>ACCIONES</th>
                   <td mat-cell *matCellDef="let e">
-                    <div class="table-actions">
+                    <div class="table-actions" *ngIf="!e.qnaFin || e.qnaFin === 999999">
                       <div class="bttn-group">
                         <button mat-icon-button class="bttn ico-btn-primary" 
                           (click)="abrirDialog(e)"
-                          [disabled]="!!e.qnaFin" matTooltip="{{ e.qnaFin ? 'Registro finalizado' : 'Editar' }}">
+                          [disabled]="!!e.qnaFin && e.qnaFin !== 999999" matTooltip="{{ (e.qnaFin && e.qnaFin !== 999999) ? 'Registro finalizado' : 'Editar' }}">
                           <mat-icon>edit</mat-icon>
                         </button>
                         <button mat-icon-button class="bttn ico-btn-danger" 
                           (click)="eliminarBeneficiario(e)"
-                          [disabled]="!!e.qnaFin" matTooltip="{{ e.qnaFin ? 'Registro finalizado' : 'Eliminar' }}">
+                          [disabled]="!!e.qnaFin && e.qnaFin !== 999999" matTooltip="{{ (e.qnaFin && e.qnaFin !== 999999) ? 'Registro finalizado' : 'Editar' }}">
                           <mat-icon>delete_outline</mat-icon>
                         </button>
                       </div>
@@ -145,7 +135,11 @@
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.row-finalizado]="!!row.qnaFin"></tr>
+                <tr mat-row 
+                  *matRowDef="let row; columns: displayedColumns;" 
+                  [class.row-finalizado]="!!row.qnaFin && row.qnaFin !== 999999"
+                  [class.inicio-grupo]="row.mostrarEmpleado">
+                </tr>
               </table>
          </div>
           <div class="table-footer">
@@ -162,4 +156,3 @@
       </div>
     </div>
   </div>
-</div>
