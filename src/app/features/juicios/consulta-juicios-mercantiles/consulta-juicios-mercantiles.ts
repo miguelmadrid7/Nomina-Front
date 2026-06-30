@@ -12,6 +12,8 @@ import { MatInputModule } from '@angular/material/input';
 import { UppercaseDirective } from '../../../shared/directives/upperCase.directivas';
 import { AltaBeneficiarioJmDialog } from '../../../shared/dialogs/alta-beneficiario-jm-dialog/alta-beneficiario-jm-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { LoaderService } from '../../../core/services/loader.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-consulta-juicios-mercantiles',
@@ -37,6 +39,7 @@ export class ConsultaJuiciosMercantiles {
   private readonly cd = inject(ChangeDetectorRef);
   private readonly zone = inject(NgZone);
   private readonly dialog = inject(MatDialog); 
+  private readonly loaderService = inject(LoaderService);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -87,61 +90,63 @@ export class ConsultaJuiciosMercantiles {
   }
 
   loadBeneficiaries(): void {
-    this.juiciosMercantilesService.getTodosBeneficiarios().subscribe({
-      next: (resp: any) => {
-        const grupos: any[] = resp?.data ?? [];
+    this.loaderService.show();
+    this.juiciosMercantilesService.getTodosBeneficiarios()
+      .pipe(finalize(() => this.loaderService.hide()))
+      .subscribe({
+        next: (resp: any) => {
+          const grupos: any[] = resp?.data ?? [];
 
-        const sorted = grupos.flatMap((grupo: any) => {
-          return (grupo.beneficiarios ?? []).map((b: any) => ({
-            showEmpleado: false,
-            nombreEmpleado: grupo.nombreCompleto,
-            rfcEmpleado: b?.rfc ?? '',
-            nombreCompleto: `${b?.primerApellido ?? ''} ${b?.segundoApellido ?? ''} ${b?.nombre ?? ''}`.trim(),
-            primerApellido: b?.primerApellido ?? '',
-            segundoApellido: b?.segundoApellido ?? '',
-            nombre: b?.nombre ?? '',
-            rfc: b?.rfc ?? '',
-            importeTotal: Number(b?.importeTotal ?? 0),
-            factorImporte: Number(b?.factorImporte ?? 0),
-            qnaini: Number(b?.qnaini ?? 0),
-            qnafin: b?.qnafin ? Number(b.qnafin) : null,
-            status: b?.estatus ?? b?.status ?? 'ACTIVO',
-            numeroDocumento: b?.numeroDocumento ?? '',
-            formaAplicacion: b?.formaAplicacion ?? '',
-            tabEmpleadosId: grupo.empleadoId,
-            id: b?.id,
-            tabBeneficiariosJmId: b?.tabBeneficiariosJmId ?? null,
-            tabBeneficiario: b?.tabBeneficiario ?? null
-          }));
-        })
-        .sort((a: any, b: any) => {
-          if (a.tabEmpleadosId !== b.tabEmpleadosId) return a.tabEmpleadosId - b.tabEmpleadosId;
-          return a.id - b.id;
-        });
+          const sorted = grupos.flatMap((grupo: any) => {
+            return (grupo.beneficiarios ?? []).map((b: any) => ({
+              showEmpleado: false,
+              nombreEmpleado: grupo.nombreCompleto,
+              rfcEmpleado: b?.rfc ?? '',
+              nombreCompleto: `${b?.primerApellido ?? ''} ${b?.segundoApellido ?? ''} ${b?.nombre ?? ''}`.trim(),
+              primerApellido: b?.primerApellido ?? '',
+              segundoApellido: b?.segundoApellido ?? '',
+              nombre: b?.nombre ?? '',
+              rfc: b?.rfc ?? '',
+              importeTotal: Number(b?.importeTotal ?? 0),
+              factorImporte: Number(b?.factorImporte ?? 0),
+              qnaini: Number(b?.qnaini ?? 0),
+              qnafin: b?.qnafin ? Number(b.qnafin) : null,
+              status: b?.estatus ?? b?.status ?? 'ACTIVO',
+              numeroDocumento: b?.numeroDocumento ?? '',
+              formaAplicacion: b?.formaAplicacion ?? '',
+              tabEmpleadosId: grupo.empleadoId,
+              id: b?.id,
+              tabBeneficiariosJmId: b?.tabBeneficiariosJmId ?? null,
+              tabBeneficiario: b?.tabBeneficiario ?? null
+            }));
+          })
+          .sort((a: any, b: any) => {
+            if (a.tabEmpleadosId !== b.tabEmpleadosId) return a.tabEmpleadosId - b.tabEmpleadosId;
+            return a.id - b.id;
+          });
 
-        // Recalcula showEmpleado después del sort
-        const seenEmployees = new Set<number>();
-        sorted.forEach((row: any) => {
-          row.showEmpleado = !seenEmployees.has(row.tabEmpleadosId);
-          seenEmployees.add(row.tabEmpleadosId);
-        });
+          const seenEmployees = new Set<number>();
+          sorted.forEach((row: any) => {
+            row.showEmpleado = !seenEmployees.has(row.tabEmpleadosId);
+            seenEmployees.add(row.tabEmpleadosId);
+          });
 
-        this.todosLosRegistros = sorted;
-        this.zone.runOutsideAngular(() => {
-          this.dataSource.data = sorted;
-          this.hasCheck = true;
-          setTimeout(() => {
-            this.zone.run(() => {
-              this.dataSource.paginator = this.paginator;
-              this.cd.markForCheck();
+          this.todosLosRegistros = sorted;
+          this.zone.runOutsideAngular(() => {
+            this.dataSource.data = sorted;
+            this.hasCheck = true;
+            setTimeout(() => {
+              this.zone.run(() => {
+                this.dataSource.paginator = this.paginator;
+                this.cd.markForCheck();
+              });
             });
           });
-        });
-      },
-      error: () => console.error('Error al cargar beneficiarios')
-    });
+        },
+        error: () => console.error('Error al cargar beneficiarios')
+      });
   }
-
+  
   openEditDialog(row: any): void {
     const dialogRef = this.dialog.open(AltaBeneficiarioJmDialog, {
       width: '1200px',
