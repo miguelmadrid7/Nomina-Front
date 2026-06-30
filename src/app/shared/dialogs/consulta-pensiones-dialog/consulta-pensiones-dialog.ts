@@ -41,7 +41,13 @@ import { getCurrentQna } from '../../validators/validaciones.validators';
   templateUrl: './consulta-pensiones-dialog.html',
   styleUrl: './consulta-pensiones-dialog.css'
 })
-export class ConsultaPensionesDialog implements OnInit{
+export class ConsultaPensionesDialog implements OnInit {
+
+  private readonly pensionAlimenticiaService = inject(PensionAlimenticiaService);
+  private readonly dialog = inject(MatDialog);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly ref = inject(MatDialogRef<ConsultaPensionesDialog>);
+  private readonly fb = inject(FormBuilder);
 
   form!: FormGroup;
   detalle: any = null;
@@ -50,12 +56,8 @@ export class ConsultaPensionesDialog implements OnInit{
   bancoSeleccionado: number | null = null;
   porcentajeDisponible = 100;
 
-  private readonly ref = inject(MatDialogRef<ConsultaPensionesDialog>);
-  private readonly fb = inject(FormBuilder);
   readonly data = inject<FilaBeneficiario>(MAT_DIALOG_DATA);
-  private readonly pensionAlimenticiaService = inject(PensionAlimenticiaService);
-  private readonly dialog = inject(MatDialog);
-  private readonly cdr = inject(ChangeDetectorRef);
+
 
 
   ngOnInit() {
@@ -268,6 +270,10 @@ export class ConsultaPensionesDialog implements OnInit{
     this.pensionAlimenticiaService.getBancos()
     .subscribe({
       next: (response: ApiResponse<Banco[]>) => {
+        setTimeout(() => {
+          this.bancos = response.data;
+          this.cdr.detectChanges();
+        })
         this.bancos = response.data;
       },
       error: (err: any) => {
