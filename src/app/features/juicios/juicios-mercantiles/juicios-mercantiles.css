@@ -450,6 +450,21 @@ button[disabled] {
 }
 
 @media (max-width: 768px) {
+
+  .form-layout {
+    grid-template-columns: 1fr;
+  }
+
+  :host ::ng-deep .form-layout.mat-mdc-card-content {
+    grid-template-columns: 1fr !important;
+  }
+
+  
+
+  .field-group mat-form-field {
+    width: 100%;
+  }
+
   /* Botones en columna */
   .actions-right {
     flex-direction: column;
