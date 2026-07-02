@@ -4,8 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { BeneficiarioJMRequest } from "../../models/request/beneficiariojm-request.model";
 import { ApiResponse } from "../../models/response/api-Response.model";
 import { Banco } from "../../models/banco.model";
-import { BeneficiarioNom } from "../../models/beneficiario-nom.model";
-import { map, switchMap } from "rxjs";
+import { map } from "rxjs";
 
 type AnyRow = Record<string, any>;
 

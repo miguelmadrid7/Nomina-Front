@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { JuiciosMercantilesService } from '../../../core/services/juicios-mercantiles.services';
+import { JuiciosMercantilesService } from '../../../core/services/juicios-mercantiles.service';
 import { BeneficiarioJMRequest } from '../../../models/request/beneficiariojm-request.model';
 import { Banco } from '../../../models/banco.model';
 import { ApiResponse } from '../../../models/response/api-Response.model';
