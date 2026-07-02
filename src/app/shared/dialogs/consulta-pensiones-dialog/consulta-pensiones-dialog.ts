@@ -183,7 +183,7 @@ export class ConsultaPensionesDialog implements OnInit {
       tabEmpleadosId: this.detalle!.tab_empleado_id,
       tabBeneficiariosAlimId: alimId,
       catBancoId: d.bancoSeleccionado,
-      formaAplicacion: d.formaAplicacion as 'P' | 'F',
+      formaAplicacion: d.formaAplicacion as 'P' | 'C',
       factorImporte: factor,
       qnaini: qIni,
       qnafin: 999999,                 

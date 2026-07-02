@@ -1,7 +1,7 @@
 export interface BeneficiarioRequest {
   tabEmpleadosId: number;
   tabBeneficiariosAlimId: number;
-  formaAplicacion: 'P' | 'F';
+  formaAplicacion: 'P' | 'C';
   tipoPorcentaje?: 1 | 2 | 3;  
   tipoBase?: 'A' | 'B'; 
   factorImporte: number;
