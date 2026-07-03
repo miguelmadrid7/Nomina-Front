@@ -30,6 +30,8 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { LiquidoResponse } from '../../../models/response/liquido-response.model';
 import { BeneficiarioRequest } from '../../../models/request/beneficiario-request.model';
 import { formatEmployeeDisplay, mapEmpleado } from '../../../shared/helpers/empelado.helper';
+import { CalendarioService } from '../../../core/services/calendario.service';
+import { Calendario } from '../../../models/calendario.model';
 
 @Component({
   selector: 'app-pension-alimenticia',
@@ -58,7 +60,15 @@ import { formatEmployeeDisplay, mapEmpleado } from '../../../shared/helpers/empe
   styleUrl: './pension-alimenticia.css'
 })
 export class PensionAlimenticia implements OnDestroy {
+
+  private readonly  fb = inject(FormBuilder); 
+  private readonly  pensionAlimenticiaService = inject(PensionAlimenticiaService); 
+  private readonly  dialog = inject(MatDialog); 
+  private readonly  cdr = inject(ChangeDetectorRef); 
+  private readonly calendarioService = inject(CalendarioService);
+  
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
+  
   form!: FormGroup;
   empleadoId: number | null = null;
   bancos: Banco[] = [];
@@ -68,18 +78,23 @@ export class PensionAlimenticia implements OnDestroy {
   liquidoInfo: LiquidoResponse | null = null;
   liquidoError: string | null = null;
   cargandoLiquido = false;
-  readonly  porcentajeTotal = 100;
   porcentajeDisponible = 100;
-  beneficiariosCapturados: number[] = [];  
+  beneficiariosCapturados: number[] = []; 
+  
+  calendarioActual: Calendario | null = null;
+  cargandoQna = false; 
+  errorQna = false;
+  baseCalculo: number | null = null;
+  cargandoBase = false;
+  empleadoRfc: string | null = null;
 
-  private readonly  fb = inject(FormBuilder); 
-  private readonly  pensionAlimenticiaService = inject(PensionAlimenticiaService); 
-  private readonly  dialog = inject(MatDialog); 
-  private readonly  cdr = inject(ChangeDetectorRef); 
+  readonly  porcentajeTotal = 100;
+
 
   ngOnInit (): void {
     this.loadBanksCatalog();
     this.initForm();
+    this.loadQnaActiva();
   }
 
   ngOnDestroy () {
@@ -87,7 +102,6 @@ export class PensionAlimenticia implements OnDestroy {
   }
 
   initForm (){
-    const { aaaaqq } = getCurrentQna();
       this.form = this.fb.group({
         numeroBeneficiario: [null],
         searchText: [''],
@@ -105,8 +119,39 @@ export class PensionAlimenticia implements OnDestroy {
         factorImporte: [null, [Validators.required, factorImporteValidator()]],
         bancoSeleccionado: [null],
         numeroDocumento: [null, [Validators.pattern(/^\d{18}$/)]],
-        vigenciaInicio: [aaaaqq.toString(), [Validators.required, vigenciaFormatoValidator()]],
+        vigenciaInicio: [
+          this.calendarioActual ? this.toAaaaqq(this.calendarioActual) : '', [Validators.required, vigenciaFormatoValidator()]
+        ],
       });
+  }
+
+
+  loadQnaActiva(): void  {
+    this.cargandoQna = true;
+    this.errorQna = false;
+
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (resp) => {
+        const calendario = resp?.data ?? null;
+          this.calendarioActual = calendario;
+          this.cargandoQna = false;
+          this.errorQna = !calendario;
+          this.initForm();
+          this.cdr.detectChanges();      
+      }, 
+        error: (err) => {
+          this.calendarioActual = null;
+          this.cargandoQna = false;
+          this.errorQna = true;
+          this.initForm();
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
+  private toAaaaqq (calendario: Calendario): string  {
+    const qnaPadded = calendario.qna.toString().padStart(2, '0');
+    return `${calendario.ejercicio}${qnaPadded}`;
   }
 
   get f(){
@@ -114,7 +159,7 @@ export class PensionAlimenticia implements OnDestroy {
   }
 
   get disponiblePension(): boolean {
-    if (this.guardando) return false;
+    if (this.guardando || this.cargandoQna || this.errorQna) return false;
       const forma = this.form.get('formaAplicacion')?.value;
       if (forma === 'P') {
         return this.porcentajeDisponible > 0;
@@ -206,10 +251,12 @@ export class PensionAlimenticia implements OnDestroy {
     this.empleadoId = emp.id;
     this.cargarPorcentajeDisponible(emp.id);
     const rfc = (emp.rfc ?? emp.RFC ?? '').toString().trim();
+    this.empleadoRfc = rfc || null;
     if (rfc) {
       this.cargarLiquidoByRfc(rfc);
     }
   }
+
 
   private cargarLiquidoByRfc(rfc: string): void {
     this.cargandoLiquido = true;
@@ -247,6 +294,7 @@ export class PensionAlimenticia implements OnDestroy {
     this.pensionAlimenticiaService.getBeneficiaryByEmployee(empleadoId)
       .subscribe({
         next: (resp) => {
+          console.log('Respuesta cruda del backend:', resp); 
           const disponible = Number(resp.data?.porcentajeDisponible ?? 100);
           this.porcentajeDisponible = Math.max(0, disponible);
           this.renderChartFromDisponible();
@@ -314,7 +362,7 @@ export class PensionAlimenticia implements OnDestroy {
       };
 
       if (!this.empleadoId) return fail('Selecciona un empleado antes de guardar.');
-      if (!['P','F'].includes(value.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
+      if (!['P','C'].includes(value.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
       if (value.factorImporte == null) return fail('Captura Factor/Importe.');
       if (!value.vigenciaInicio) return fail('Captura la vigencia de inicio.');
 
@@ -342,10 +390,9 @@ export class PensionAlimenticia implements OnDestroy {
           if (Number.isNaN(factor)) {
             return fail('El campo Factor/Importe debe ser numérico.');
           }
-          
+
           if (value.formaAplicacion === 'P') {
-            if (factor > 1) factor = factor / 100;
-            if (!(factor > 0 && factor <= 1)) {
+            if (!(factor > 0 && factor <= 100)) {
               return fail('Para Factor, usa un porcentaje válido (ej. 20 = 20%). Debe ser mayor a 0 y hasta 100%.');
             }
           } else {
@@ -358,8 +405,7 @@ export class PensionAlimenticia implements OnDestroy {
             tabEmpleadosId: this.empleadoId!,
             tabBeneficiariosAlimId: beneficiarioAlimId,
             catBancoId: value.bancoSeleccionado || null,
-            formaAplicacion: value.formaAplicacion as 'P' | 'F',
-           
+            formaAplicacion: value.formaAplicacion as 'P' | 'C',
             tipoPorcentaje: value.formaAplicacion === 'P' ? value.tipoPorcentaje : undefined,
             tipoBase: value.tipoPorcentaje === 1 ? value.tipoBase : undefined,
             factorImporte: factor,
@@ -429,7 +475,7 @@ export class PensionAlimenticia implements OnDestroy {
         factorImporte: null,
         bancoSeleccionado: null,
         numeroDocumento: null,
-        vigenciaInicio: aaaaqq.toString(),
+        vigenciaInicio: this.calendarioActual ? this.toAaaaqq(this.calendarioActual) : '',
       });
 
     Object.keys(this.form.controls).forEach(key => {
@@ -455,7 +501,7 @@ export class PensionAlimenticia implements OnDestroy {
         factorImporte: null,
         bancoSeleccionado: null,
         numeroDocumento: null,
-        vigenciaInicio: aaaaqq.toString(),
+        vigenciaInicio: this.calendarioActual ? this.toAaaaqq(this.calendarioActual) : '',
     });
 
     this.beneficiariosCapturados = [];
@@ -475,7 +521,7 @@ export class PensionAlimenticia implements OnDestroy {
     if (factorImporte == null) return;
     let valor = Number(factorImporte);
     if (isNaN(valor)) return;
-    if (formaAplicacion === 'F') {
+    if (formaAplicacion === 'C') {
       if (valor < 0) valor = 0;
       this.form.get('factorImporte')?.setValue(Number(valor.toFixed(2)));
     }
@@ -485,12 +531,12 @@ export class PensionAlimenticia implements OnDestroy {
     this.form.get('factorImporte')?.setValue(null);
     this.form.get('tipoPorcentaje')?.setValue(null);
     this.form.get('tipoBase')?.setValue(null);
-
     const formaAplicacion = this.form.get('formaAplicacion')?.value;
     const monto = this.form.get('montoTotal');
+    this.renderChartFromDisponible();
+    this.baseCalculo = null; 
     if (!monto) return;
-
-    if (formaAplicacion === 'F') {
+    if (formaAplicacion === 'C') {
       monto.enable();
       monto.setValidators([Validators.min(1)]);
     } else {
@@ -503,23 +549,29 @@ export class PensionAlimenticia implements OnDestroy {
   }
 
   onFactorImporteInput() {
-  const formaAplicacion = this.form.get('formaAplicacion')?.value;
-  const factorImporte = this.form.get('factorImporte')?.value;
+    const formaAplicacion = this.form.get('formaAplicacion')?.value;
+    const factorImporte = this.form.get('factorImporte')?.value;
     if (factorImporte == null) return;
+
     if (formaAplicacion === 'P') {
       let valor = factorImporte.toString();
-        valor =  valor.replace(/\D/g, '');
+      valor = valor.replace(/\D/g, '');
       if (valor.length > 3) {
         valor = valor.substring(0, 3);
       }
       let numero = Number(valor);
       const disponibleReal = this.porcentajeDisponible;
-        if (numero > disponibleReal) {
-          numero = disponibleReal;
-        }
+      if (numero > disponibleReal) {
+        numero = disponibleReal;
+      }
       this.form.get('factorImporte')?.setValue(numero, {
         emitEvent: false
       });
+
+      const previewDisponible = Math.max(0, disponibleReal - numero);
+      this.chartOptions = withChartPercent(this.chartOptions, previewDisponible);
+      this.cdr.markForCheck();
+
     } else {
       let numero = Number(factorImporte);
       if (isNaN(numero)) {
@@ -531,20 +583,6 @@ export class PensionAlimenticia implements OnDestroy {
       this.form.get('factorImporte')?.setValue(numero, {
         emitEvent: false
       });
-    }
-  }
-
-  onVigenciaInput(tipo: 'inicio') {
-    if (tipo === 'inicio') {
-      const vigenciaInicio = this.form.get('vigenciaInicio')?.value;
-      if (!vigenciaInicio) return;
-
-      let valor = vigenciaInicio.toString();
-      valor = valor.replace(/\D/g, '');
-      if (valor.length > 6) {
-        valor = valor.substring(0, 6);
-      }
-      this.form.get('vigenciaInicio')?.setValue(valor);
     }
   }
 

@@ -52,11 +52,11 @@
   align-items: start;
 }
 
-
 .row-inline {
-  display: flex;
+  display: grid;
   gap: 16px;
-  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  min-width: 0;
 }
 
 .row-inline mat-form-field {
@@ -79,7 +79,6 @@ mat-form-field {
   opacity: 0.15; 
   margin: 5px 0 10px; 
 }
-
 
 /* Search */
 .global-search {
@@ -175,7 +174,7 @@ mat-form-field {
     width: 100%;           
 }
 
-/* ── Cada tarjeta de dato (líquido, concepto07, pensión) ─────── */
+/* Cada tarjeta de dato (líquido, concepto07, pensión) */
 .liquido-card {
     display: flex;
     align-items: center;
@@ -258,13 +257,27 @@ mat-form-field {
     animation: bounce 1.2s infinite ease-in-out;
 }
 
-.liquido-loading-dot:nth-child(1) { animation-delay: 0s;    }
-.liquido-loading-dot:nth-child(2) { animation-delay: 0.2s;  }
-.liquido-loading-dot:nth-child(3) { animation-delay: 0.4s;  }
+.liquido-loading-dot:nth-child(1) { 
+  animation-delay: 0s;    
+}
+
+.liquido-loading-dot:nth-child(2) { 
+  animation-delay: 0.2s;  
+}
+
+.liquido-loading-dot:nth-child(3) { 
+  animation-delay: 0.4s;  
+}
 
 @keyframes bounce {
-    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-    40%           { transform: scale(1);   opacity: 1;   }
+    0%, 80%, 100% { 
+      transform: scale(0.6); 
+      opacity: 0.4; 
+    }
+    40% { 
+      transform: scale(1);  
+       opacity: 1;   
+    }
 }
 
 /* Animación de entrada suave  */
@@ -308,9 +321,17 @@ mat-form-field {
 }
 
 /* Cada plaza aparece con delay escalonado */
-.liquido-plaza:nth-child(1) { animation: fadeSlideIn 0.3s ease 0.05s both; }
-.liquido-plaza:nth-child(2) { animation: fadeSlideIn 0.3s ease 0.15s both; }
-.liquido-plaza:nth-child(3) { animation: fadeSlideIn 0.3s ease 0.25s both; }
+.liquido-plaza:nth-child(1) { 
+  animation: fadeSlideIn 0.3s ease 0.05s both; 
+}
+
+.liquido-plaza:nth-child(2) { 
+  animation: fadeSlideIn 0.3s ease 0.15s both; 
+}
+
+.liquido-plaza:nth-child(3) { 
+  animation: fadeSlideIn 0.3s ease 0.25s both; 
+}
 
 /* Cada card dentro de la plaza */
 .liquido-card {
@@ -326,9 +347,17 @@ mat-form-field {
     animation: fadeSlideIn 0.3s ease both;  
 }
 
-.liquido-card:nth-child(2) { animation-delay: 0.08s; }
-.liquido-card:nth-child(3) { animation-delay: 0.16s; }
-.liquido-card:nth-child(4) { animation-delay: 0.24s; }
+.liquido-card:nth-child(2) { 
+  animation-delay: 0.08s; 
+}
+
+.liquido-card:nth-child(3) { 
+  animation-delay: 0.16s; 
+}
+
+.liquido-card:nth-child(4) { 
+  animation-delay: 0.24s; 
+}
 
 /* Buscador full width encima del layout */
 .search-wrapper {
@@ -377,17 +406,6 @@ mat-form-field {
   height: auto !important;
   min-height: 20px;
   padding-top: 18px;
-}
-
-/* En móvil — apila las columnas */
-@media (max-width: 900px) {
-    .two-col-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .col-info {
-        position: static;
-    }
 }
 
 .plazas-badge {
@@ -581,7 +599,38 @@ mat-form-field {
   justify-content: flex-start;
   align-items: center;
   margin: 0px 0 15px;
+  margin-top: 15px;
 }
+
+.actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.qna-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.qna-label {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.qna-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #f3f4f6;
+  color: #374151;
+}
+
 
 .btn-group {
   display: inline-flex;
@@ -739,6 +788,15 @@ mat-form-field {
 }
 
 @media (max-width: 768px) {
+  .actions-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .qna-summary {
+      justify-content: center;
+  }
 
   .row-4 {
     grid-template-columns: 1fr;
@@ -804,12 +862,6 @@ mat-form-field {
     flex-wrap: wrap;
   }
 
-  /* Fila inline en columna */
-  .row-inline {
-    flex-direction: column;
-    gap: 0;
-  }
-
   /* Plazas en una columna */
   .liquido-plazas-grid {
     grid-template-columns: 1fr;
@@ -854,3 +906,13 @@ mat-form-field {
   }
 }
 
+/* En móvil — apila las columnas */
+@media (max-width: 900px) {
+    .two-col-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .col-info {
+        position: static;
+    }
+}

@@ -1,5 +1,5 @@
 import { Injectable} from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../models/response/api-Response.model';
 import { Banco } from '../../models/banco.model';
@@ -12,8 +12,6 @@ import { Observable } from 'rxjs';
 import { Empleado } from '../../features/servicios/empleado';
 import { LiquidoResponse } from '../../models/response/liquido-response.model';
 import { BeneficiarioEmpleadoResponse } from '../../models/response/beneficiarioempleado-response.model';
-
-
 
 @Injectable({ providedIn: 'root' })
 export class PensionAlimenticiaService {

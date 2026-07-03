@@ -19,7 +19,7 @@
   </div>
 
   <form [formGroup]="form" (ngSubmit)="saveEmployee()">
-    <div class="search-wrapper">
+    <div class="global-search">
       <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
         <mat-icon matPrefix>search</mat-icon>
         <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
@@ -43,16 +43,33 @@
 
     <div class="two-col-layout">
       <div class="col-form">
+        
         <div class="section-header">
-          <h3>Agregar Beneficiaria(o)</h3>
+          <h3>Agregar beneficiaria(o)</h3>
         </div>
 
-        <div class="btn-group" style="margin-bottom: 12px;">
-          <button class="btn btn-success" type="submit" [disabled]="!disponiblePension">
-            <mat-icon>save</mat-icon>
-            <span>Guardar</span>
-          </button>
+        <div class="actions-row">
+          <div class="btn-group">
+            <button class="btn btn-success" type="submit" [disabled]="!disponiblePension">
+              <mat-icon>save</mat-icon>
+              <span>Guardar</span>
+            </button>
+          </div>
+
+           <div class="qna-summary">
+                <span class="qna-label">Quincena activa</span>
+                    @if (cargandoQna) {
+                        <span class="qna-tag">Cargando...</span>
+                    } @else if (calendarioActual) {
+                        <span class="qna-tag">
+                            {{ calendarioActual.qna.toString().padStart(2, '0') }} / {{ calendarioActual.ejercicio }}
+                        </span>
+                    } @else {
+                        <span class="qna-tag">No disponible</span>
+                    }
+            </div>
         </div>
+        
 
         <mat-card class="form-card">
           <mat-card-content class="form-layout">
@@ -113,7 +130,7 @@
                 <mat-label>Forma de aplicación*</mat-label>
                 <mat-select formControlName="formaAplicacion" (selectionChange)="onFormaChange()" required>
                   <mat-option value="P">Factor</mat-option>
-                  <mat-option value="F">Importe fijo</mat-option>
+                  <mat-option value="C">Importe fijo</mat-option>
                 </mat-select>
                 <mat-error *ngIf="f['formaAplicacion']?.invalid && f['formaAplicacion']?.touched">Selecciona la forma de aplicación.</mat-error>
               </mat-form-field>
@@ -173,18 +190,6 @@
                 <mat-error *ngIf="f['numeroDocumento']?.invalid && f['numeroDocumento']?.touched">La CLABE debe tener exactamente 18 dígitos numéricos.</mat-error>
               </mat-form-field>
             </div>
-
-            <div class="row row-single">
-              <div>
-                <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
-                  <mat-icon matPrefix>calendar_today</mat-icon>
-                  <mat-label>Inicio*</mat-label>
-                  <input matInput type="text" formControlName="vigenciaInicio" placeholder="AAAAQQ" required maxlength="6" pattern="^\d{6}$" (input)="onVigenciaInput('inicio')"/>
-                  <mat-error *ngIf="f['vigenciaInicio']?.invalid && f['vigenciaInicio']?.touched">Captura la vigencia de inicio, debe de ser menor a 6 dígitos.</mat-error>
-                </mat-form-field>
-              </div>
-            </div>
-
           </mat-card-content>
         </mat-card>
       </div>
@@ -257,6 +262,15 @@
               <div>
                 <span class="liquido-label">Pensión actual</span>
                 <span class="liquido-valor">{{ plaza.pensionActual | currency:'MXN' }}</span>
+              </div>
+            </div>
+
+            <div class="liquido-card" *ngIf="baseCalculo !== null || cargandoBase">
+              <mat-icon>calculate</mat-icon>
+              <div>
+                <span class="liquido-label">Base de cálculo (simulada)</span>
+                <span class="liquido-valor" *ngIf="!cargandoBase">{{ baseCalculo | currency:'MXN' }}</span>
+                <span class="liquido-valor" *ngIf="cargandoBase">Calculando...</span>
               </div>
             </div>
           </div>
