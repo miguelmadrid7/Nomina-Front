@@ -77,12 +77,14 @@ export class CalculoNominaComponent implements OnInit {
   conceptosExtra: ConceptoExtra[] = [];
   conceptoSeleccionado = new Set<String>();
   showSteps = false;
+  failedStepIndex: number | null = null;
+  failedStepName: string | null = null;
 
   private stompClient: any;
   private readonly steps = [
-    { label: 'Inicializando proceso' },              // truncate
+    { label: 'Inicializando proceso' },             // truncate
     { label: 'Insertando nómina cheque plaza' },    // insertNomChequePza
-    { label: 'Insertando nómina cheque concepto' },  // insertNomChequeCptoTab
+    { label: 'Insertando nómina cheque concepto' }, // insertNomChequeCptoTab
     { label: 'Calculando concepto H0' },            // cpto_ho
     { label: 'Calculando concepto E2' },            // cpto_E2
     { label: 'Calculando concepto informados' },    // cpto_informados
@@ -93,8 +95,8 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando concepto 04' },            // cpto_04
     { label: 'Calculando concepto 58' },            // cpto_58
     { label: 'Calculando concepto 77' },            // cpto_77
-    { label: 'Calculando concepto 62' },             // cpto_62
-    { label: 'Calculando deducciones informadas' },  // deducciones informadas
+    { label: 'Calculando concepto 62' },            // cpto_62
+    { label: 'Calculando deducciones informadas' }, // deducciones informadas
     { label: 'Calculando bonos BA' },               // bono_BA
     { label: 'Calculando bonos BE' },               // bono_BE
     { label: 'Calculando bonos BI' },               // bono_BI
@@ -103,6 +105,7 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando bonos IH' },               // bono_IH
     { label: 'Calculando bonos RM' },               // bono_RM
     { label: 'Actualizando importes' },             // updateImportes
+    { label: 'Preparando descuentos de pensiones alimenticias' },    // cpto_62
   ];
 
   ngOnInit(): void {
@@ -195,16 +198,14 @@ export class CalculoNominaComponent implements OnInit {
             const serverProgress = resp?.data?.progress ?? 0;
             const serverStatus   = resp?.data?.status   ?? '';
               this.zone.run(() => {
-                setTimeout(() => {
-                  if (serverProgress > this.progress) {
-                    this.progress = serverProgress;
-                    this.recomputeStepIndex();
-                    this.cdr.markForCheck();
-                  }
-                  if (intentos >= maxIntentos || serverStatus === 'COMPLETED' || serverStatus === 'ERROR') {
-                    clearInterval(polling);
-                  }
-                }, 0);
+                if (serverProgress > this.progress) {
+                  this.progress = serverProgress;
+                  this.recomputeStepIndex();
+                  this.cdr.detectChanges();
+                }
+                if (intentos >= maxIntentos || serverStatus === 'COMPLETED' || serverStatus === 'ERROR') {
+                  clearInterval(polling);
+                }
               });
             },
           error: () => this.zone.run(() => clearInterval(polling))
@@ -213,17 +214,23 @@ export class CalculoNominaComponent implements OnInit {
   }
 
   private handleProgressUpdate(data: any): void {
-  setTimeout(() => {
     this.progress = Math.max(this.progress, data.progress);
-    this.recomputeStepIndex();
+
     if (data.status === 'ERROR') {
-      // Mostrar error al usuario
+      this.failedStepIndex = data.failedStepIndex ?? null;
+      this.failedStepName = data.failedStepName ?? null;
+      if (this.failedStepIndex !== null) {
+        this.currentStepIdx = this.failedStepIndex;
+      }
       this.snackBar.open(data.errorMsg || 'Ocurrió un error en el cálculo', 'Cerrar', { duration: 8000 });
       this.processing = false;
       if (this.stompClient) {
         this.stompClient.disconnect(() => {});
       }
+    } else {
+      this.recomputeStepIndex();
     }
+
     if (data.progress === 100 || data.status === 'COMPLETED') {
       this.deliverableReady = true;
       this.processing = false;
@@ -231,9 +238,8 @@ export class CalculoNominaComponent implements OnInit {
         this.stompClient.disconnect(() => {});
       }
     }
-    this.cdr.markForCheck();
-  }, 0);
-}
+    this.cdr.detectChanges();
+  }
 
   get currentStepIndex(): number {
     return this.currentStepIdx;
@@ -251,21 +257,41 @@ export class CalculoNominaComponent implements OnInit {
     this.processing = true;
     this.progress = 0;
     this.deliverableReady = false;
+    this.failedStepIndex = null;
+    this.failedStepName = null;
 
     const ws = new SockJS(`${environment.apiUrl}/ws`);
     this.stompClient = Stomp.over(ws);
-    this.stompClient.connect({}, () => {
-      this.nominaService.executePayrollProcess(qnaProceso).subscribe({
-        next: (resp: any) => {
-          const jobId = resp?.data;
-          if (!jobId) return;
-          this.subscribeToJob(jobId);
-        },
-        error: () => {
+
+    this.stompClient.connect(
+      {},
+      () => {
+        // Conexión WebSocket exitosa
+        this.nominaService.executePayrollProcess(qnaProceso).subscribe({
+          next: (resp: any) => {
+            const jobId = resp?.data;
+            if (!jobId) {
+              this.processing = false;
+              this.showSnack('No se recibió el identificador del proceso.', 'Cerrar', 5000);
+              return;
+            }
+            this.subscribeToJob(jobId);
+          },
+          error: () => {
+            this.processing = false;
+            this.showSnack('No se pudo iniciar el proceso. Verifica que el servidor esté disponible.', 'Cerrar', 6000);
+          }
+        });
+      },
+      (error: any) => {
+        // Falló la conexión WebSocket misma — típico de "backend caído"
+        this.zone.run(() => {
           this.processing = false;
-        }
-      });
-    });
+          this.showSnack('No se pudo conectar con el servidor. Verifica tu conexión o que el backend esté activo.', 'Cerrar', 8000);
+          this.cdr.markForCheck();
+        });
+      }
+    );
   }
 
   private recomputeStepIndex(): void {

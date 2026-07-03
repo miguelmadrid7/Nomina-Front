@@ -152,9 +152,12 @@
     <mat-card class="progress-card" appearance="outlined">
       <div class="progress-header">
         <div class="status">
-          <span class="status-dot" [class.running]="processing" [class.done]="progress===100"></span>
+          <span class="status-dot" 
+            [class.running]="processing" 
+            [class.done]="progress===100" 
+            [class.error]="failedStepIndex !== null"></span>
           <span class="status-text">
-            {{ processing ? 'En ejecución' : (progress===100 ? 'Completado' : 'Pendiente') }}
+            {{ failedStepIndex !== null ? 'Error' : (processing ? 'En ejecución' : (progress===100 ? 'Completado' : 'Pendiente')) }}
           </span>
         </div>
         <div class="progress-number">{{ progress }}%</div>
@@ -166,30 +169,35 @@
         [value]="progress">
       </mat-progress-bar>
 
-      <div class="process-steps" *ngIf="processing || progress === 100">
+      <div class="process-steps" *ngIf="processing || progress === 100 || failedStepIndex !== null">
         <mat-vertical-stepper [selectedIndex]="currentStepIndex" linear>
           <mat-step *ngFor="let step of stepsWithProgress; let i = index"
-            [completed]="progress >= step.progress">
+            [completed]="progress >= step.progress && failedStepIndex !== i">
             <ng-template matStepLabel>
               <div class="step-label">
                 <mat-icon class="step-icon"
-                  [class.done]="progress >= step.progress"
-                  [class.running]="i === currentStepIndex && processing">
-                  {{ progress >= step.progress ? 'check_circle' :
-                    (i === currentStepIndex && processing) ? 'pending' : 'schedule' }}
+                  [class.error]="failedStepIndex === i"
+                  [class.done]="failedStepIndex !== i && progress >= step.progress"
+                  [class.running]="failedStepIndex === null && i === currentStepIndex && processing">
+                  {{ failedStepIndex === i ? 'cancel' :
+                    (progress >= step.progress ? 'check_circle' :
+                    (i === currentStepIndex && processing) ? 'pending' : 'schedule') }}
                 </mat-icon>
                 {{ step.label }}
               </div>
             </ng-template>
             <div class="step-content">
-              <ng-container *ngIf="progress >= step.progress">
+              <ng-container *ngIf="failedStepIndex === i">
+                <span class="chip chip-error">Error</span>
+              </ng-container>
+              <ng-container *ngIf="failedStepIndex !== i && progress >= step.progress">
                 <span class="chip chip-done">Completado</span>
               </ng-container>
-              <ng-container *ngIf="progress < step.progress && i === currentStepIndex && processing">
+              <ng-container *ngIf="failedStepIndex === null && progress < step.progress && i === currentStepIndex && processing">
                 <mat-progress-spinner diameter="22" mode="indeterminate" strokeWidth="3"/>
                 Ejecutando...
               </ng-container>
-              <ng-container *ngIf="progress < step.progress && i !== currentStepIndex">
+              <ng-container *ngIf="failedStepIndex !== i && progress < step.progress && i !== currentStepIndex">
                 <span class="chip chip-pending">Pendiente</span>
               </ng-container>
             </div>

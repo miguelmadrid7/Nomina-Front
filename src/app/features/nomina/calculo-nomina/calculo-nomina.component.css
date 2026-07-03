@@ -273,6 +273,19 @@
   width: 100%;
 }
 
+.step-icon.error {
+  color: #E24B4A;
+}
+
+.chip-error {
+  background: #FCEBEB;
+  color: #A32D2D;
+}
+
+.status-dot.error {
+  background: #E24B4A;
+}
+
 .step-label {
   display: flex;
   align-items: center;
