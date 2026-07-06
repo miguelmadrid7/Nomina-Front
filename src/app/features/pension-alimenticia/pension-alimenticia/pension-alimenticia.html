@@ -264,15 +264,6 @@
                 <span class="liquido-valor">{{ plaza.pensionActual | currency:'MXN' }}</span>
               </div>
             </div>
-
-            <div class="liquido-card" *ngIf="baseCalculo !== null || cargandoBase">
-              <mat-icon>calculate</mat-icon>
-              <div>
-                <span class="liquido-label">Base de cálculo (simulada)</span>
-                <span class="liquido-valor" *ngIf="!cargandoBase">{{ baseCalculo | currency:'MXN' }}</span>
-                <span class="liquido-valor" *ngIf="cargandoBase">Calculando...</span>
-              </div>
-            </div>
           </div>
           </div>
         </div>

@@ -61,10 +61,10 @@ import { Calendario } from '../../../models/calendario.model';
 })
 export class PensionAlimenticia implements OnDestroy {
 
-  private readonly  fb = inject(FormBuilder); 
-  private readonly  pensionAlimenticiaService = inject(PensionAlimenticiaService); 
-  private readonly  dialog = inject(MatDialog); 
-  private readonly  cdr = inject(ChangeDetectorRef); 
+  private readonly fb = inject(FormBuilder); 
+  private readonly pensionAlimenticiaService = inject(PensionAlimenticiaService); 
+  private readonly dialog = inject(MatDialog); 
+  private readonly cdr = inject(ChangeDetectorRef); 
   private readonly calendarioService = inject(CalendarioService);
   
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
@@ -124,7 +124,6 @@ export class PensionAlimenticia implements OnDestroy {
         ],
       });
   }
-
 
   loadQnaActiva(): void  {
     this.cargandoQna = true;
@@ -257,8 +256,7 @@ export class PensionAlimenticia implements OnDestroy {
     }
   }
 
-
-  private cargarLiquidoByRfc(rfc: string): void {
+  cargarLiquidoByRfc(rfc: string): void {
     this.cargandoLiquido = true;
     this.liquidoInfo = null;
     this.liquidoError = null;
@@ -285,12 +283,13 @@ export class PensionAlimenticia implements OnDestroy {
     });
   }
 
-  private renderChartFromDisponible(): void {
+  renderChartFromDisponible(): void {
+    this.chartOptions.series = [this.porcentajeDisponible];
     this.chartOptions = withChartPercent(this.chartOptions, this.porcentajeDisponible);
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
-  private cargarPorcentajeDisponible(empleadoId: number): void {
+  cargarPorcentajeDisponible(empleadoId: number): void {
     this.pensionAlimenticiaService.getBeneficiaryByEmployee(empleadoId)
       .subscribe({
         next: (resp) => {
@@ -462,8 +461,7 @@ export class PensionAlimenticia implements OnDestroy {
       });
   }
 
-  private resetForm () {
-    const { aaaaqq } = getCurrentQna();
+  resetForm () {
       this.form.reset({
         numeroBeneficiario: null,
         searchText: this.form.get('searchText')?.value, 
@@ -489,7 +487,6 @@ export class PensionAlimenticia implements OnDestroy {
   }
 
   clearSearch () {
-    const { aaaaqq } = getCurrentQna();
       this.form.reset({
         numeroBeneficiario: null,
         searchText: '',
@@ -503,7 +500,6 @@ export class PensionAlimenticia implements OnDestroy {
         numeroDocumento: null,
         vigenciaInicio: this.calendarioActual ? this.toAaaaqq(this.calendarioActual) : '',
     });
-
     this.beneficiariosCapturados = [];
     this.porcentajeDisponible = 100;
     this.renderChartFromDisponible();
