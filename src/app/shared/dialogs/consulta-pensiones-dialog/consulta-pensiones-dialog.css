@@ -250,6 +250,28 @@ mat-form-field {
   transform: translateY(-1px);
 }
 
+.qna-summary-dialog {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+    justify-content: flex-end;
+}
+
+.qna-label {
+    font-size: 12px;
+    color: #9ca3af;
+}
+
+.qna-tag {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 99px;
+    background: #f3f4f6;
+    color: #374151;
+}
+
 @media (max-width: 768px) {
   .dialog-header {
     padding: 16px 40px;

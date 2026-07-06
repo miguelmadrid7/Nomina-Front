@@ -7,6 +7,18 @@
 
     <mat-dialog-content class="dlg-content">
         <form [formGroup]="form">
+            <div class="qna-summary-dialog">
+                <span class="qna-label">Quincena activa</span>
+                @if (cargandoQna) {
+                    <span class="qna-tag">Cargando...</span>
+                } @else if (calendarioActual) {
+                    <span class="qna-tag">
+                        {{ calendarioActual.qna.toString().padStart(2, '0') }} / {{ calendarioActual.ejercicio }}
+                    </span>
+                } @else {
+                    <span class="qna-tag">No disponible</span>
+                }
+            </div>
             <div class="dlg-bar-title">Detalle de empelado</div> 
                 <div class="row row-4"> 
                     <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">

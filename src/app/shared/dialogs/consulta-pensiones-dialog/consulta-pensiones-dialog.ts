@@ -20,6 +20,8 @@ import { Banco } from '../../../models/banco.model';
 import { ApiResponse } from '../../../models/response/api-Response.model';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { getCurrentQna } from '../../validators/validaciones.validators';
+import { CalendarioService } from '../../../core/services/calendario.service';
+import { Calendario } from '../../../models/calendario.model';
 
 @Component({
   selector: 'app-consulta-pensiones-dialog',
@@ -48,6 +50,8 @@ export class ConsultaPensionesDialog implements OnInit {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly ref = inject(MatDialogRef<ConsultaPensionesDialog>);
   private readonly fb = inject(FormBuilder);
+  private readonly calendarioService = inject(CalendarioService);
+
 
   form!: FormGroup;
   detalle: any = null;
@@ -55,6 +59,8 @@ export class ConsultaPensionesDialog implements OnInit {
   saving = false;
   bancoSeleccionado: number | null = null;
   porcentajeDisponible = 100;
+  calendarioActual: Calendario | null = null;
+  cargandoQna = false;
 
   readonly data = inject<FilaBeneficiario>(MAT_DIALOG_DATA);
 
@@ -80,14 +86,17 @@ export class ConsultaPensionesDialog implements OnInit {
       const finCtrl  = this.form.get('qnaFin');
       const termCtrl = this.form.get('pensionTerminada');
       termCtrl?.valueChanges.subscribe((on: boolean) => {
-        const { aaaaqq } = getCurrentQna(); 
-        if (on) {
-          finCtrl?.setValue(aaaaqq.toString()); 
-        } else {
-          finCtrl?.setValue(''); 
+        if (this.calendarioActual) {
+          const qnaActual = this.toAaaaqq(this.calendarioActual);
+           if (on) {
+            finCtrl?.setValue(qnaActual); 
+          } else {
+            finCtrl?.setValue(''); 
+          }
         }
       });
     this.loadBanksCatalog();
+    this.loadQnaActiva();
     this.cargarDetalle();
   }
 
@@ -98,6 +107,7 @@ export class ConsultaPensionesDialog implements OnInit {
         if (!arr || arr.length === 0) return;
         const d = arr[0];
         this.detalle = d;
+        const qnaInicio = d.qnaini || (this.calendarioActual ? this.toAaaaqq(this.calendarioActual) : '');
 
         this.form.patchValue({
           nombreEmpleado: this.armarNombreEmpleado(d),
@@ -111,17 +121,54 @@ export class ConsultaPensionesDialog implements OnInit {
           factorImporte: d.factor_importe,
           bancoSeleccionado: d.cat_banco_id,
           clabe: d.numero_documento ?? '',
-          qnaInicio: d.qnaini,
+          qnaInicio: qnaInicio,
           qnaFin: d.qnafin,
           numeroDocumento: d.numero_documento ?? ''
         }, { emitEvent: false });
+
         if (d.qnafin) {
           this.form.get('pensionTerminada')?.setValue(true, { emitEvent: false });
+        }
+
+        if (d.tab_empleado_id) {
+           this.cargarPorcentajeDisponible(d.tab_empleado_id);
         }
         this.cdr.detectChanges();
       },
       error: (err: any) => console.error('Error al cargar detalle', err)
     });
+  }
+
+  cargarPorcentajeDisponible( empleadoId: number): void {
+    this.pensionAlimenticiaService.getBeneficiaryByEmployee(empleadoId).subscribe({
+      next: (resp) => {
+        this.porcentajeDisponible = Number(resp.data?.porcentajeDisponible ?? 100);
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.porcentajeDisponible = 100;
+      }
+    });
+  }
+
+  loadQnaActiva(): void {
+    this.cargandoQna = true;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (response) => {
+        this.calendarioActual = response?.data ?? null;
+        this.cargandoQna = false;
+        this.cdr.detectChanges();
+      },
+      error: () => {
+        this.calendarioActual = null;
+        this.cargandoQna = false;
+      }
+    });
+  }
+
+  toAaaaqq(calendario: Calendario): string {
+    const qnaPadded = calendario.qna.toString().padStart(2, '0');
+    return  `${calendario.ejercicio}${qnaPadded}`;
   }
 
   private armarNombreEmpleado(d: any): string {
@@ -156,8 +203,9 @@ export class ConsultaPensionesDialog implements OnInit {
     let qFin   = d.qnaFin ? Number(d.qnaFin) : null;
 
     if (d.pensionTerminada && !qFin) {
-      const { aaaaqq } = getCurrentQna();
-      qFin = aaaaqq;
+      if(this.calendarioActual) {
+        qFin = Number(this.toAaaaqq(this.calendarioActual));
+      }
     }
 
     if (qFin !== null && (Number.isNaN(qFin) || qFin < qIni)) {
