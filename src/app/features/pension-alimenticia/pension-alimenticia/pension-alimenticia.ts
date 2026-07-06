@@ -68,7 +68,8 @@ export class PensionAlimenticia implements OnDestroy {
   private readonly calendarioService = inject(CalendarioService);
   
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
-  
+  @ViewChild('chart') chartComponent: any;
+   
   form!: FormGroup;
   empleadoId: number | null = null;
   bancos: Banco[] = [];
@@ -286,6 +287,9 @@ export class PensionAlimenticia implements OnDestroy {
   renderChartFromDisponible(): void {
     this.chartOptions.series = [this.porcentajeDisponible];
     this.chartOptions = withChartPercent(this.chartOptions, this.porcentajeDisponible);
+    if(this.chartComponent ) {
+      this.chartComponent.updateSeries([this.porcentajeDisponible], true);
+    }
     this.cdr.detectChanges();
   }
 
@@ -566,7 +570,10 @@ export class PensionAlimenticia implements OnDestroy {
 
       const previewDisponible = Math.max(0, disponibleReal - numero);
       this.chartOptions = withChartPercent(this.chartOptions, previewDisponible);
-      this.cdr.markForCheck();
+      if (this.chartComponent) {
+        this.chartComponent.updateSeries([previewDisponible], true);
+      }
+      this.cdr.detectChanges();
 
     } else {
       let numero = Number(factorImporte);
