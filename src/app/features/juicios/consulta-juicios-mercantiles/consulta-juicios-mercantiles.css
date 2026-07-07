@@ -135,6 +135,41 @@
   padding-left: 8px;
 }
 
+/* Filtros de quincena */
+.qna-filters {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.qna-filters mat-form-field {
+  width: 125px;
+  min-width: 100px;
+}
+
+:host ::ng-deep .qna-compact{
+  width:130px;
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-form-field-infix{
+  min-height:44px;
+  padding-top:10px;
+  padding-bottom:10px;
+}
+
+:host ::ng-deep .search-field .mat-mdc-form-field-infix {
+  min-height: 44px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .search-field .mat-mdc-text-field-wrapper {
+  padding-left: 8px;
+}
+
 /* Estatus de tabla */
 .chip {
   display: inline-block;

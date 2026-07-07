@@ -7,13 +7,14 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { JuiciosMercantilesService } from '../../../core/services/juicios-mercantiles.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, ValueChangeEvent } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { UppercaseDirective } from '../../../shared/directives/upperCase.directivas';
 import { AltaBeneficiarioJmDialog } from '../../../shared/dialogs/alta-beneficiario-jm-dialog/alta-beneficiario-jm-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { LoaderService } from '../../../core/services/loader.service';
 import { finalize } from 'rxjs';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-consulta-juicios-mercantiles',
@@ -26,6 +27,7 @@ import { finalize } from 'rxjs';
     MatPaginatorModule,
     MatButtonModule,
     MatTooltipModule,
+    MatSelectModule,
     MatFormFieldModule,
     MatInputModule,
     UppercaseDirective
@@ -57,29 +59,88 @@ export class ConsultaJuiciosMercantiles {
     'acciones'
   ];
 
+  anios: number[] = [2026, 2025, 2024];
+  quincenas: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
+
+  readonly estados = [
+    { value: 'TODOS', label: 'Todos' },
+    { value: 'ACTIVOS', label: 'Activos' },
+    { value: 'FINALIZADOS', label: 'Finalizados'}
+  ]
+   
+
   private todosLosRegistros: any[] = [];
 
   searchForm = new FormGroup({
-    searchText: new FormControl('')
+    searchText: new FormControl(''),
+    busqueda: new FormGroup({
+      anio: new FormControl<number | null>(null),
+      quincena: new FormControl<number | null>(null),
+      estado: new FormControl('TODOS')
+    })
   });
 
   ngOnInit(): void {
     this.loadBanks();
     this.loadBeneficiaries();
+    this.searchForm.get('busqueda')?.valueChanges.subscribe(() => {
+      this.loaderService.show();
+        setTimeout(() => {
+          this.buscar();
+          this.loaderService.hide();
+        }, 200);
+    })
   }
 
   buscar(): void {
     const texto = this.searchForm.get('searchText')?.value?.trim().toUpperCase() ?? '';
-    const base = !texto ? this.todosLosRegistros : this.todosLosRegistros.filter(r =>
-      r.nombreEmpleado?.toUpperCase().includes(texto) ||
-      r.rfcEmpleado?.toUpperCase().includes(texto)    ||
-      r.nombreCompleto?.toUpperCase().includes(texto)
-    );
-    const seenEmployees = new Set<number>();
-    this.dataSource.data = base.map(r => ({
-      ...r,
-      showEmpleado: !seenEmployees.has(r.tabEmpleadosId) && seenEmployees.add(r.tabEmpleadosId) !== null
-    }));
+    let filtrados = this.todosLosRegistros;
+
+    if(texto) {
+      filtrados = filtrados.filter(r => 
+        r.nombreEmpleado?.toUpperCase().includes(texto) ||
+        r.rfcEmpleado?.toUpperCase().includes(texto)    ||
+        r.nombreCompleto?.toUpperCase().includes(texto)
+      );
+    }
+    this.applyFilters(filtrados);
+  }
+
+  applyFilters(base: any[]): void {
+    const anio = this.searchForm.get('busqueda.anio')?.value;
+    const quincena = this.searchForm.get('busqueda.quincena')?.value;
+    const estado = this.searchForm.get('busqueda.estado')?.value;
+    let filtrados = [...base];
+      if(anio && quincena) {
+        const qnaSeleccionada = Number(`${anio} ${String(quincena).padStart(2, '0')}`);
+        filtrados = filtrados.filter(r => r.qnaini === qnaSeleccionada);
+      }
+      if (estado === 'ACTIVOS') {
+        filtrados = filtrados.filter(r => r.status !== 'INACTIVO');
+      }
+
+      if (estado === 'FINALIZADOS') {
+        filtrados = filtrados.filter(r => r.status === 'INACTIVO');
+      }
+    this.updateTable(filtrados);
+  }
+
+
+  updateTable(registros: any[]): void {
+    const empleadosMostrados = new Set<number>();
+    this.dataSource.data = registros.map(r => {
+        const mostrar = !empleadosMostrados.has(r.tabEmpleadosId);
+        if (mostrar) {
+            empleadosMostrados.add(r.tabEmpleadosId);
+        }
+        return {
+            ...r,
+            showEmpleado: mostrar
+        };
+    });
+    this.dataSource.paginator = this.paginator;
+    this.totalElements = registros.length;
+    this.paginator?.firstPage();
   }
 
   loadBanks(): void {
@@ -125,23 +186,10 @@ export class ConsultaJuiciosMercantiles {
             return a.id - b.id;
           });
 
-          const seenEmployees = new Set<number>();
-          sorted.forEach((row: any) => {
-            row.showEmpleado = !seenEmployees.has(row.tabEmpleadosId);
-            seenEmployees.add(row.tabEmpleadosId);
-          });
-
-          this.todosLosRegistros = sorted;
-          this.zone.runOutsideAngular(() => {
-            this.dataSource.data = sorted;
-            this.hasCheck = true;
-            setTimeout(() => {
-              this.zone.run(() => {
-                this.dataSource.paginator = this.paginator;
-                this.cd.markForCheck();
-              });
-            });
-          });
+        this.todosLosRegistros = sorted;
+        this.updateTable(sorted);
+        this.hasCheck = true;
+        this.cd.markForCheck();
         },
         error: () => console.error('Error al cargar beneficiarios')
       });
@@ -168,11 +216,14 @@ export class ConsultaJuiciosMercantiles {
   }
 
   limpiar(): void {
-    this.searchForm.reset();
-    const seenEmployees = new Set<number>();
-    this.dataSource.data = this.todosLosRegistros.map(r => ({
-      ...r,
-      showEmpleado: !seenEmployees.has(r.tabEmpleadosId) && seenEmployees.add(r.tabEmpleadosId) !== null
-    }));
+    this.searchForm.reset({
+      searchText: '',
+      busqueda: {
+        anio: null,
+        quincena: null,
+        estado: 'TODOS'
+      }
+    });
+    this.updateTable(this.todosLosRegistros);
   }
 }
