@@ -136,17 +136,32 @@
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
-                <mat-icon matPrefix>{{ form.get('formaAplicacion')?.value === 'P' ? 'percent' : 'attach_money' }}</mat-icon>
-                <mat-label>Factor / Importe*</mat-label>
+                <mat-icon matPrefix>{{ form.get('formaAplicacion')?.value === 'P' ? 'percent' : 'payments' }}</mat-icon>
+                <mat-label>
+                  {{ form.get('formaAplicacion')?.value === 'C' ? 'Importe quincenal a descontar*' : 'Factor / Importe*' }}
+                </mat-label>
                 <input matInput formControlName="factorImporte"
                   [type]="form.get('formaAplicacion')?.value === 'P' ? 'text' : 'number'"
-                  [placeholder]="form.get('formaAplicacion')?.value === 'P' ? '0 – 100%' : 'Ingrese importe'"
+                  [placeholder]="form.get('formaAplicacion')?.value === 'P' ? '0 – 100%' : 'Monto a descontar cada QNA'"
                   [attr.maxlength]="form.get('formaAplicacion')?.value === 'P' ? 3 : null"
+                  [attr.step]="form.get('formaAplicacion')?.value === 'C' ? '0.01' : null"
                   (input)="onFactorImporteInput()" required/>
                 <mat-hint *ngIf="form.get('formaAplicacion')?.value === 'P' && form.get('factorImporte')?.value">
                   Equivale a: {{ (form.get('factorImporte')?.value / 100) | number:'1.2-4' }}
                 </mat-hint>
                 <mat-error *ngIf="form.get('factorImporte')?.invalid && form.get('factorImporte')?.touched">Ingresa un valor válido.</mat-error>
+              </mat-form-field>
+
+              <mat-form-field *ngIf="form.get('formaAplicacion')?.value === 'C'" appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+                <mat-icon matPrefix>account_balance_wallet</mat-icon>
+                <mat-label>Total a pagar</mat-label>
+                <input 
+                  matInput 
+                  formControlName="importeTotal" 
+                  type="number" 
+                  placeholder="Tope máximo (dejar vacío para sin límite)" 
+                  step="0.01">
+                <mat-error *ngIf="f['importeTotal']?.invalid && f['importeTotal']?.touched">Ingresa un importe válido.</mat-error>
               </mat-form-field>
 
               <mat-form-field *ngIf="form.get('formaAplicacion')?.value === 'P'"

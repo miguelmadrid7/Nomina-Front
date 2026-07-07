@@ -81,7 +81,6 @@ export class PensionAlimenticia implements OnDestroy {
   cargandoLiquido = false;
   porcentajeDisponible = 100;
   beneficiariosCapturados: number[] = []; 
-  
   calendarioActual: Calendario | null = null;
   cargandoQna = false; 
   errorQna = false;
@@ -111,8 +110,8 @@ export class PensionAlimenticia implements OnDestroy {
         nombreCompleto: ['', [Validators.required, Validators.minLength(2)]],
         rfc: ['', [Validators.required,Validators.pattern(/^.{13}$/)]],
         formaAplicacion: ['', Validators.required],
+        importeTotal: [null],
         aplicarDescuento: [false], 
-        montoTotal: [{ value: null, disabled: true }],
         aplicarDescuentoAguinaldo: [false],
         tipoPorcentaje: [null],
         tipoBase: [null],
@@ -367,6 +366,15 @@ export class PensionAlimenticia implements OnDestroy {
       if (!this.empleadoId) return fail('Selecciona un empleado antes de guardar.');
       if (!['P','C'].includes(value.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
       if (value.factorImporte == null) return fail('Captura Factor/Importe.');
+      
+      if(value.formaAplicacion === 'C') {
+        if(!value.factorImporte || Number(value.factorImporte) <= 0) {
+          return fail('El importe quincenal es requerido para Importe fijo');
+        }
+        if(value.importeTotal && Number(value.importeTotal) > 0 && Number(value.factorImporte) > Number(value.importeTotal)) {
+          return fail('El importe quincenal debe ser menor o igual al tope máximo total');
+        }
+      }
       if (!value.vigenciaInicio) return fail('Captura la vigencia de inicio.');
 
       // Normalizar y validar CLABE (18 dígitos)
@@ -411,10 +419,10 @@ export class PensionAlimenticia implements OnDestroy {
             formaAplicacion: value.formaAplicacion as 'P' | 'C',
             tipoPorcentaje: value.formaAplicacion === 'P' ? value.tipoPorcentaje : undefined,
             tipoBase: value.tipoPorcentaje === 1 ? value.tipoBase : undefined,
-            factorImporte: factor,
+            factorImporte: Number(value.factorImporte),
+            importeTotal: value.importeTotal ? Number(value.importeTotal) : null,
             qnaini: Number(value.vigenciaInicio),
             qnafin: 999999,
-            importeTotal: value.montoTotal ? Number(value.montoTotal) : null,
             aplicarDescuentoAguinaldo: value.aplicarDescuentoAguinaldo ?? false,
             numeroDocumento: clabe || null,
             numeroOficio: value.numeroOficio || null
@@ -478,6 +486,7 @@ export class PensionAlimenticia implements OnDestroy {
         bancoSeleccionado: null,
         numeroDocumento: null,
         vigenciaInicio: this.calendarioActual ? this.toAaaaqq(this.calendarioActual) : '',
+        importeTotal: null,
       });
 
     Object.keys(this.form.controls).forEach(key => {
@@ -503,6 +512,7 @@ export class PensionAlimenticia implements OnDestroy {
         bancoSeleccionado: null,
         numeroDocumento: null,
         vigenciaInicio: this.calendarioActual ? this.toAaaaqq(this.calendarioActual) : '',
+        importeTotal: null,
     });
     this.beneficiariosCapturados = [];
     this.porcentajeDisponible = 100;
@@ -532,19 +542,19 @@ export class PensionAlimenticia implements OnDestroy {
     this.form.get('tipoPorcentaje')?.setValue(null);
     this.form.get('tipoBase')?.setValue(null);
     const formaAplicacion = this.form.get('formaAplicacion')?.value;
-    const monto = this.form.get('montoTotal');
+    const importeTotal = this.form.get('importeTotal');
     this.renderChartFromDisponible();
     this.baseCalculo = null; 
-    if (!monto) return;
+
     if (formaAplicacion === 'C') {
-      monto.enable();
-      monto.setValidators([Validators.min(1)]);
+      importeTotal?.enable();
+      importeTotal?.setValidators([Validators.required, Validators.min(1)]);
     } else {
-      monto.clearValidators();
-      monto.reset();
-      monto.disable();
+      importeTotal?.clearValidators();
+      importeTotal?.reset();
+      importeTotal?.disable();
     }
-    monto.updateValueAndValidity();
+    importeTotal?.updateValueAndValidity();
     this.cdr.detectChanges();
   }
 
@@ -570,8 +580,12 @@ export class PensionAlimenticia implements OnDestroy {
 
       const previewDisponible = Math.max(0, disponibleReal - numero);
       this.chartOptions = withChartPercent(this.chartOptions, previewDisponible);
+
       if (this.chartComponent) {
         this.chartComponent.updateSeries([previewDisponible], true);
+        this.chartComponent.updateOptions({
+          colors: this.chartOptions.colors
+        }, true);
       }
       this.cdr.detectChanges();
 
@@ -583,9 +597,12 @@ export class PensionAlimenticia implements OnDestroy {
       if (numero < 0) {
         numero = 0;
       }
-      this.form.get('factorImporte')?.setValue(numero, {
-        emitEvent: false
-      });
+
+      if (Number(factorImporte) !== numero) {
+        this.form.get('factorImporte')?.setValue(numero, {
+          emitEvent: false
+        });
+      }
     }
   }
 
