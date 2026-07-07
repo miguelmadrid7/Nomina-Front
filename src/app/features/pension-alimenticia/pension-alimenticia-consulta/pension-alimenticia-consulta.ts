@@ -130,7 +130,6 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
     this.actualizarTabla(filtrados);
   }
 
-
   private actualizarTabla(filas: FilaBeneficiario[]): void {
     const empleadosMostrados = new Set<string>();
     const filasConAgrupado = filas.map(fila => {
@@ -159,7 +158,7 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
         next: (resp) => {
           const datos: BeneficiarioDTO[] = resp?.data ?? [];
           this.todosLosBeneficiarios = datos.map(b => this.mapearFila(b));
-          this.actualizarTabla(this.todosLosBeneficiarios);
+          this.buscar();
         },
         error: () => {
           this.snackBar.open('Error al cargar beneficiarios', 'Cerrar', { duration: 4000 });
