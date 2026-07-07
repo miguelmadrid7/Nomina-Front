@@ -100,12 +100,18 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando bonos BA' },               // bono_BA
     { label: 'Calculando bonos BE' },               // bono_BE
     { label: 'Calculando bonos BI' },               // bono_BI
+    { label: 'Calculando bonos CU' },               // bono_CU
     { label: 'Calculando bonos DM' },               // bono_DM
+    { label: 'Calculando bonos FA' },               // bono_FA
+    { label: 'Calculando bonos GT' },               // bono_GT
     { label: 'Calculando bonos IC' },               // bono_IC
     { label: 'Calculando bonos IH' },               // bono_IH
+    { label: 'Calculando bonos OF' },               // bono_OF
     { label: 'Calculando bonos RM' },               // bono_RM
-    { label: 'Actualizando importes' },             // updateImportes
     { label: 'Preparando descuentos de pensiones alimenticias' },    // cpto_62
+    { label: 'Consolidando pensiones alimenticias' },    // cpto_62
+    { label: 'Actualizando importes' },             // updateImportes
+
   ];
 
   ngOnInit(): void {
