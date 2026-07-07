@@ -43,6 +43,19 @@
           }
         </mat-select>
       </mat-form-field>
+
+      <mat-form-field appearance="outline" class="compact-field qna-compact estado-field" floatLabel="always">
+         <mat-label>Estado</mat-label>
+          <mat-select formControlName="estado">
+            @for (estado of estados; track estado.value){
+              <mat-option [value]= "estado.value">
+                {{ estado.label}}
+              </mat-option>
+            }
+          </mat-select>
+      </mat-form-field>
+
+
     </div>
   </div>
 

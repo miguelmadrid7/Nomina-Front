@@ -63,13 +63,27 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
   readonly form = this.fb.group({
     busqueda: this.fb.group({         
       anio:     [null],
-      quincena: [null]
+      quincena: [null],
+      estado: ['TODOS']
     }),
     nombreEmpleado: ['']                     
   });
-  
+
+  readonly estados = [
+    { value: 'TODOS', label: 'Todos' },
+    { value: 'ACTIVOS', label: 'Activos' },
+    { value: 'FINALIZADOS', label: 'Finalizados'}
+  ]
+    
   ngOnInit(): void {
     this.cargarBeneficiarios();
+    this.form.get('busqueda')?.valueChanges.subscribe(() => {
+      this.loaderService.show();
+        setTimeout(() => {
+          this.buscar();
+          this.loaderService.hide();
+        }, 200);
+    })
   }
      
   ngOnDestroy () {
@@ -85,23 +99,37 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
         b.rfcEmpleado?.toUpperCase().includes(textoEmpleado)
       );
     }
-    this.aplicarFiltroQna(filtrados);
+    this.applyFilters(filtrados);
   }
 
-  private aplicarFiltroQna(base: FilaBeneficiario[]): void {
+  private applyFilters(base: FilaBeneficiario[]): void {
     const anio = this.form.get('busqueda.anio')?.value;
     const quincena = this.form.get('busqueda.quincena')?.value;
-    if (!anio || !quincena) {
-      this.actualizarTabla(base);
-      return;
-    }
-    const qnaSeleccionada = Number(`${anio}${String(quincena).padStart(2, '0')}`);
-    const filtrados = base.filter(b => {
-      return b.qnaIni === qnaSeleccionada;
-    });
+    const estado = this.form.get('busqueda.estado')?.value;
 
+    let filtrados = [...base];
+      if (anio && quincena) {
+        const qnaSeleccionada = Number(`${anio}${String(quincena).padStart(2, '0')}`);
+        
+        filtrados = filtrados.filter(b => 
+          b.qnaIni === qnaSeleccionada
+        );
+      }
+
+      if(estado === 'ACTIVOS') {
+        filtrados = filtrados.filter(b => 
+          !b.qnaFin || b.qnaFin === 999999
+        );
+      }
+
+      if( estado === 'FINALIZADOS') { 
+        filtrados = filtrados.filter(b =>
+          b.qnaFin && b.qnaFin !== 999999
+        );
+      }
     this.actualizarTabla(filtrados);
   }
+
 
   private actualizarTabla(filas: FilaBeneficiario[]): void {
     const empleadosMostrados = new Set<string>();
@@ -182,15 +210,16 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
   }
 
   clearFilters(): void {
-  this.form.reset({ 
-    busqueda: { 
-      anio: null, 
-      quincena: null 
-    },
-    nombreEmpleado: ''
-  });
-  this.actualizarTabla(this.todosLosBeneficiarios);
-}
+    this.form.reset({ 
+      busqueda: { 
+        anio: null, 
+        quincena: null,
+        estado: 'TODOS'
+      },
+      nombreEmpleado: ''
+    });
+    this.actualizarTabla(this.todosLosBeneficiarios);
+  }
 
   private mapearFila(b: BeneficiarioDTO): FilaBeneficiario {
     const alim = b.beneficiarioAlim;

@@ -143,6 +143,10 @@
   padding-left: 8px;
 }
 
+/* Filtro de estado */
+.estado-field {
+  width: 160px !important;
+}
 
 /* Estatus de tabla*/
 .chip {
