@@ -159,6 +159,9 @@
           <span class="status-text">
             {{ failedStepIndex !== null ? 'Error' : (processing ? 'En ejecución' : (progress===100 ? 'Completado' : 'Pendiente')) }}
           </span>
+          @if (deliverableReady){
+            <mat-icon class="checkmark-success">check_circle</mat-icon>
+          }
         </div>
         <div class="progress-number">{{ progress }}%</div>
       </div>

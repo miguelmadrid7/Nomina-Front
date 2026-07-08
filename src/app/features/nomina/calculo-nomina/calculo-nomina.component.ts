@@ -51,7 +51,7 @@ export class CalculoNominaComponent implements OnInit {
 
   readonly buildQnaCode = buildQnaCode;
   readonly form: FormGroup = this.fb.group({
-    anio:     [null, Validators.required],
+    anio: [null, Validators.required],
     quincena: [null, Validators.required]
   });
   
@@ -72,7 +72,7 @@ export class CalculoNominaComponent implements OnInit {
   processing = false;
   deliverableReady = false;
   currentStepIdx = 0;
-  calendarioActual:  Calendario | null = null;
+  calendarioActual: Calendario | null = null;
   cargandoCalendario = false;
   conceptosExtra: ConceptoExtra[] = [];
   conceptoSeleccionado = new Set<String>();
@@ -108,10 +108,10 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando bonos IH' },               // bono_IH
     { label: 'Calculando bonos OF' },               // bono_OF
     { label: 'Calculando bonos RM' },               // bono_RM
-    { label: 'Preparando descuentos de pensiones alimenticias' },    // cpto_62
-    { label: 'Consolidando pensiones alimenticias' },    // cpto_62
-    { label: 'Actualizando importes' },             // updateImportes
-
+    { label: 'Actualizando importes' },               // bono_RM
+    { label: 'Preparando descuentos de pensiones alimenticias' }, // cpto_62
+    { label: 'Consolidando pensiones alimenticias' }, // cpto_62
+    { label: 'Actualizando importes finales' },             // updateImportes
   ];
 
   ngOnInit(): void {
@@ -129,7 +129,7 @@ export class CalculoNominaComponent implements OnInit {
     this.calendarioService.getQnaActiva()
       .subscribe({
         next: (resp: any) => {
-          this.calendarioActual   = resp?.data ?? null;
+          this.calendarioActual = resp?.data ?? null;
           this.cargandoCalendario = false;
           if (this.calendarioActual) {
             this.form.patchValue({
@@ -240,9 +240,9 @@ export class CalculoNominaComponent implements OnInit {
     if (data.progress === 100 || data.status === 'COMPLETED') {
       this.deliverableReady = true;
       this.processing = false;
-      if (this.stompClient) {
-        this.stompClient.disconnect(() => {});
-      }
+        if (this.stompClient) {
+          this.stompClient.disconnect(() => {});
+        }
     }
     this.cdr.detectChanges();
   }

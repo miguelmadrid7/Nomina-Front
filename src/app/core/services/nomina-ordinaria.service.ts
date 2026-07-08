@@ -10,8 +10,6 @@ export class NominaService {
 
   constructor(private http: HttpClient) {}
 
-
-
   getNominaCheque(): Observable<ApiResponse<any[]>> {
     return this.http.get<ApiResponse<any[]>>(`${this.base}/calculation/nomina-cheque`);
   }

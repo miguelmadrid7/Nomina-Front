@@ -59,6 +59,83 @@
   gap: 8px;
 }
 
+.checkmark-success {
+  font-size: 20px;
+  color: #1D9E75;
+  animation: fadeInScale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
+/* Card de auditoria: */
+.title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+
+.title-row .page-title {
+  margin: 0;
+  white-space: nowrap;
+}
+
+
+.last-execution-card {
+  flex: 1;
+  max-width: 750px;
+  border-radius: 12px !important;
+}
+
+
+.execution-tittle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+
+.execution-grid {
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  gap: 20px;
+}
+
+
+.execution-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+
+.execution-label {
+  font-size: 10px;
+  color: #9ca3af;
+  text-transform: uppercase;
+}
+
+
+.execution-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+}
+
 /* Cards */
 .actions-card,
 .progress-card {
