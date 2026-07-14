@@ -1,5 +1,5 @@
-import { Banco } from "../banco.model";
-import { BeneficiarioAlimDTO } from "../dto/beneficiarioalimDTO.model";
+import { Banco } from "../../../models/banco.model";
+import { BeneficiarioAlimDTO } from "./beneficiarioalimDTO.model";
 
 export interface BeneficiarioDTO {
   id: number;       
@@ -13,7 +13,7 @@ export interface BeneficiarioDTO {
   };    
   tabEmpleadosId: number;      
   tabBeneficiariosAlimId: number;      
-  formaAplicacion: 'P' | 'F';   
+  formaAplicacion: 'P' | 'C';   
   factorImporte: number; 
   numeroOficio?: string;     
   qnaini: number;       
@@ -21,4 +21,5 @@ export interface BeneficiarioDTO {
   numeroDocumento: string;    
   banco?: Banco;   
   beneficiarioAlim?: BeneficiarioAlimDTO;
+  deleted?: boolean;
 }
