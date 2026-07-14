@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
-import { BeneficiarioJMRequest } from "../../models/request/beneficiariojm-request.model";
+import { BeneficiarioJMRequest } from "../../core/model/request/beneficiariojm-request.model";
 import { ApiResponse } from "../../core/model/response/api-Response.model";
 import { Banco } from "../../models/banco.model";
 import { map } from "rxjs";

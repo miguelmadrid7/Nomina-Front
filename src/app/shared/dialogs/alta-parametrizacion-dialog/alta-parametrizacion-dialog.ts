@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ParametrizacionService } from '../../../core/services/parametrizacion.service';
 import { DialogData } from '../../../models/dialogdata.model';
-import { ParametrizacionRequest } from '../../../models/request/parametrizacion-request.model';
+import { ParametrizacionRequest } from '../../../core/model/request/parametrizacion-request.model';
 import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 

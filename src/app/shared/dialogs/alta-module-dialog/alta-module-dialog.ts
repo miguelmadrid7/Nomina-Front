@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Module } from '../../../core/model/gestion-core/module.model';
 import { DialogData,  } from '../../../core/model/gestion-core/modulodialogdata.model';
-import { ModuleRequest } from '../../../models/request/module-request.model';
+import { ModuleRequest } from '../../../core/model/request/module-request.model';
 import { MatIconModule } from '@angular/material/icon';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ModuleService } from '../../../core/services/module.service';

@@ -4,7 +4,7 @@ import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../core/model/response/api-Response.model';
 import { Module } from '../model/gestion-core/module.model';
-import { ModuleRequest } from '../../models/request/module-request.model';
+import { ModuleRequest } from '../../core/model/request/module-request.model';
 
 @Injectable({ providedIn: 'root' })
 export class ModuleService {
