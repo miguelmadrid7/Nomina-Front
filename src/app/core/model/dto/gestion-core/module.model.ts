@@ -1,4 +1,4 @@
-import { ModuleRole } from "./modulerole.model";
+import { ModuleRole } from "../../../../models/gestion-core/modulerole.model";
 
 export interface Module {
   id?: number;
