@@ -1,4 +1,4 @@
-import { ModuleRole } from "./modulerole.model";
+import { ModuleRole } from "./module-role.model";
 
 export interface Module {
   id?: number;
