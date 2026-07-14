@@ -4,7 +4,7 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../../core/model/response/api-Response.model';
 import { Calendario } from '../model/calendario.model';
-import { ConceptoExtra } from '../../models/concepto-extra.model';
+import { ConceptoExtra } from '../model/concepto-extra.model';
 
 @Injectable({ providedIn: 'root' })
 export class CalendarioService {

@@ -17,7 +17,7 @@ import { getCurrentQna } from '../../../shared/validators/validaciones.validator
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Calendario } from '../../../core/model/calendario.model';
 import { CalendarioService } from '../../../core/services/calendario.service';
-import { ConceptoExtra } from '../../../models/concepto-extra.model';
+import { ConceptoExtra } from '../../../core/model/concepto-extra.model';
 
 @Component({
   selector: 'app-calculo-nomina',

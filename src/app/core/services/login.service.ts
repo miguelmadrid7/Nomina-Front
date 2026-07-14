@@ -2,7 +2,7 @@ import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { LoginPayload } from '../../models/login.model';
+import { LoginPayload } from '../model/login.model';
 import { isPlatformBrowser } from '@angular/common';
 import { SidebarModule } from '../model/sidebar.model';
 

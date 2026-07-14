@@ -14,4 +14,5 @@ export interface FilaBeneficiario {
   qnaIni: number;
   qnaFin: number;
   mostrarEmpleado?: boolean; 
+  estatus: 'VIGENTE' | 'CANCELADO' | 'FINALIZADO';
 }
