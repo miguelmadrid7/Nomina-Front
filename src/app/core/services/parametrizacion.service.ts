@@ -2,9 +2,9 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../models/response/api-Response.model';
+import { ApiResponse } from '../../core/model/response/api-Response.model';
 import { ParametrizacionRequest } from '../../models/request/parametrizacion-request.model';
-import { ParametrizacionResponse } from '../../models/response/parametrizacion-response.model';
+import { ParametrizacionResponse } from '../../core/model/response/parametrizacion-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class ParametrizacionService {

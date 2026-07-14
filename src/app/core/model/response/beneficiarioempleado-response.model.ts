@@ -1,4 +1,4 @@
-import { BeneficiarioDTO } from "../../core/model/dto/beneficiarioDTO.model";
+import { BeneficiarioDTO } from "../../model/dto/beneficiarioDTO.model";
 
 export interface BeneficiarioEmpleadoResponse {
   empleadoId: number;

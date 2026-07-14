@@ -13,7 +13,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { JuiciosMercantilesService } from '../../../core/services/juicios-mercantiles.service';
 import { BeneficiarioJMRequest } from '../../../models/request/beneficiariojm-request.model';
 import { Banco } from '../../../models/banco.model';
-import { ApiResponse } from '../../../models/response/api-Response.model';
+import { ApiResponse } from '../../../core/model/response/api-Response.model';
 import { formatBeneficiarioJMDisplay, mapBeneficiarioJM, repartirNombre } from '../../../shared/helpers/beneficiario-jm.helper';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";

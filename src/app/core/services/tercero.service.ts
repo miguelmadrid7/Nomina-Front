@@ -2,7 +2,7 @@ import { Injectable  } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { map, Observable } from 'rxjs';
-import { ApiResponse } from '../../models/response/api-Response.model';
+import { ApiResponse } from '../../core/model/response/api-Response.model';
 import { Empleado } from '../../features/servicios/empleado';
 import { RegistroNp } from '../../models/terceros.model';
 import { CalendarioRecepcion } from '../../models/calendario-recepcion.model';

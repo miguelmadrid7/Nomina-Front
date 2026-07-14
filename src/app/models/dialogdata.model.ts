@@ -1,4 +1,4 @@
-import { ParametrizacionResponse } from "./response/parametrizacion-response.model";
+import { ParametrizacionResponse } from "../core/model/response/parametrizacion-response.model";
 
 export interface DialogData {
   mode: 'create' | 'update';

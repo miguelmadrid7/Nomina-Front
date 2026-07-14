@@ -1,11 +1,11 @@
 import { AfterViewInit, ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { ParametrizacionResponse } from '../../../models/response/parametrizacion-response.model';
+import { ParametrizacionResponse } from '../../../core/model/response/parametrizacion-response.model';
 import { ParametrizacionService } from '../../../core/services/parametrizacion.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { ApiResponse } from '../../../models/response/api-Response.model';
+import { ApiResponse } from '../../../core/model/response/api-Response.model';
 import { AltaParametrizacionDialog } from '../../../shared/dialogs/alta-parametrizacion-dialog/alta-parametrizacion-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { CommonModule } from '@angular/common';
