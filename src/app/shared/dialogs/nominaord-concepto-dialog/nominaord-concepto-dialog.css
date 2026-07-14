@@ -448,6 +448,37 @@
     gap: 6px;
   }
 
+  .employee-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .employee-card {
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .card-title {
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+
+  .info-box {
+    padding: 8px;
+  }
+
+  .info-box strong {
+    font-size: 12px;
+    word-break: break-word;
+  }
+
+  .entity-box strong {
+    font-size: 14px;
+  }
+  
   /* Tablas en una columna aunque sea "ambas" */
   .pd-grid {
     grid-template-columns: 1fr;

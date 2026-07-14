@@ -207,7 +207,7 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
           }));
 
     this.dialog.open(NominaordConceptoDialog, {
-      width: '850px',
+      width: '950px',
       maxWidth: '95vw',
       maxHeight: '90vh',
       autoFocus: false,
