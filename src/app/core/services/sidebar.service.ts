@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable, map } from 'rxjs';
 import { ApiResponse } from '../../core/model/response/api-Response.model';
-import { SidebarModule } from '../../models/sidebar.model';
+import { SidebarModule } from '../model/sidebar.model';
 
 @Injectable({ providedIn: 'root' })
 export class SidebarService {

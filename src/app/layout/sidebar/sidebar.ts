@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 import { LoginService } from '../../core/services/login.service';
 import { SidebarService } from '../../core/services/sidebar.service';
-import { SidebarGroup, SidebarModule } from '../../models/sidebar.model';
+import { SidebarGroup, SidebarModule } from '../../core/model/sidebar.model';
 
 @Component({
   selector: 'sidebar',

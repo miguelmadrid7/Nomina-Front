@@ -1,18 +1,17 @@
 import { Injectable} from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ApiResponse } from '../../models/response/api-Response.model';
-import { Banco } from '../../models/banco.model';
-import { BeneficiarioDTO } from '../../models/dto/beneficiarioDTO.model';
-import { BeneficiarioDetalleResponse } from '../../models/response/beneficiariodetalle-response.model';
-import { BeneficiarioRequest } from '../../models/request/beneficiario-request.model';
-import { IdResponse } from '../../models/response/id-response.model';
-import { BeneficiarioAlimRequest } from '../../models/request/beneficiarioalim-request.model';
+import { ApiResponse } from '../../core/model/response/api-Response.model';
+import { Banco } from '../model/banco.model';
+import { BeneficiarioDTO } from '../model/dto/beneficiarioDTO.model';
+import { BeneficiarioDetalleResponse } from '../../core/model/response/beneficiariodetalle-response.model';
+import { BeneficiarioRequest } from '../../core/model/request/beneficiario-request.model';
+import { IdResponse } from '../../core/model/response/id-response.model';
+import { BeneficiarioAlimRequest } from '../../core/model/request/beneficiarioalim-request.model';
 import { Observable } from 'rxjs';
 import { Empleado } from '../../features/servicios/empleado';
-import { LiquidoResponse } from '../../models/response/liquido-response.model';
-import { BeneficiarioEmpleadoResponse } from '../../models/response/beneficiarioempleado-response.model';
-
+import { LiquidoResponse } from '../../core/model/response/liquido-response.model';
+import { BeneficiarioEmpleadoResponse } from '../../core/model/response/beneficiarioempleado-response.model';
 @Injectable({ providedIn: 'root' })
 export class PensionAlimenticiaService {
   private base = environment.apiUrl;
@@ -62,6 +61,11 @@ export class PensionAlimenticiaService {
         return this.http.get<ApiResponse<LiquidoResponse>>(`${this.base}/calculation/nomina-cheque/liquido/${rfc}`);
     }
 
+    getHistoricByEmployee(empleadoId: number): Observable<ApiResponse<any>> {
+       return this.http.get<ApiResponse<any>>(`${this.base}/beneficiarios/empleado/${empleadoId}/historico`)
+    
+    }
+ 
     updateBeneficiario(id: number, payload: BeneficiarioRequest): Observable<ApiResponse<any>> {
         return this.http.patch<ApiResponse<any>>(`${this.base}/beneficiarios/${id}`, payload);
     }

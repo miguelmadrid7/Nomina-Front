@@ -4,7 +4,7 @@ import { environment } from '../../../environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { LoginPayload } from '../../models/login.model';
 import { isPlatformBrowser } from '@angular/common';
-import { SidebarModule } from '../../models/sidebar.model';
+import { SidebarModule } from '../model/sidebar.model';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {

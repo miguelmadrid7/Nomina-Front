@@ -4,7 +4,7 @@ import { LoginService } from '../services/login.service';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { SidebarService } from '../services/sidebar.service';
-import { SidebarModule } from '../../models/sidebar.model';
+import { SidebarModule } from '../model/sidebar.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate, CanActivateChild {
