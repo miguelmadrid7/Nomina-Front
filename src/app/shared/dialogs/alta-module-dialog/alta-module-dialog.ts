@@ -3,7 +3,7 @@ import { Component, inject, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Module } from '../../../core/model/dto/gestion-core/module.model';
-import { DialogData,  } from '../../../models/gestion-core/modulodialogdata.model';
+import { DialogData,  } from '../../../core/model/dto/gestion-core/modulodialogdata.model';
 import { ModuleRequest } from '../../../models/request/module-request.model';
 import { MatIconModule } from '@angular/material/icon';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
