@@ -9,7 +9,7 @@ import { UppercaseDirective } from '../../directives/upperCase.directivas';
 import { Role } from '../../../models/rol.model';
 import { MatSelectModule } from '@angular/material/select';
 import { ModuleService } from '../../../core/services/module.service';
-import { Module } from '../../../core/model/dto/gestion-core/module.model';
+import { Module } from '../../../core/model/gestion-core/module.model';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
