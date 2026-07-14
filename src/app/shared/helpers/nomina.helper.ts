@@ -1,4 +1,4 @@
-import { NominaRow } from "../../models/nomina-Row.model";
+import { NominaRow } from "../../core/model/nomina-Row.model";
 
     export function parsePeriodoToQna(periodo: any): number | null {
     const per = String(periodo ?? '');

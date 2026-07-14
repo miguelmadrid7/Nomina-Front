@@ -1,4 +1,4 @@
-import { PlazaLiquido } from "../../../models/plaza-liquido.model";
+import { PlazaLiquido } from "../plaza-liquido.model";
 
 export interface LiquidoResponse {
      rfc: string;

@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { EmpleadoItem } from '../../../models/emplado.model';
 import { TerceroService } from '../../../core/services/tercero.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { NominaRow } from '../../../models/nomina-Row.model';
+import { NominaRow } from '../../../core/model/nomina-Row.model';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
 import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
