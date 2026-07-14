@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, ViewChild } from '@angular/core';
-import { Role } from '../../../models/rol.model';
+import { Role } from '../../../core/model/rol.model';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';

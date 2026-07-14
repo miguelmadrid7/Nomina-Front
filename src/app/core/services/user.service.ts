@@ -4,7 +4,7 @@ import { environment } from '../../../environments/environment';
 import { Observable, map } from 'rxjs';
 import { ApiResponse } from '../../core/model/response/api-Response.model';
 import { EmpleadoItem } from '../../models/emplado.model';
-import { Role } from '../../models/rol.model';
+import { Role } from '../model/rol.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
