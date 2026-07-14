@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Module } from '../../../core/model/gestion-core/module.model';
-import { DialogData,  } from '../../../core/model/gestion-core/modulodialogdata.model';
+import { DialogData,  } from '../../../core/model/gestion-core/module-dialog-data.model';
 import { ModuleRequest } from '../../../core/model/request/module-request.model';
 import { MatIconModule } from '@angular/material/icon';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';

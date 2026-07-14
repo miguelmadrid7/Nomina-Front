@@ -9,7 +9,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { PensionAlimenticiaService } from '../../../core/services/pension-alimenticia.service';
 import { MatCardModule } from '@angular/material/card';
-import { FilaBeneficiario } from '../../../models/filabeneficiario.model';
+import { FilaBeneficiario } from '../../../core/model/filabeneficiario.model';
 import { BeneficiarioRequest } from '../../../core/model/request/beneficiario-request.model';
 import { BeneficiarioAlimRequest } from '../../../core/model/request/beneficiarioalim-request.model';
 import { finalize, switchMap } from 'rxjs/operators';
