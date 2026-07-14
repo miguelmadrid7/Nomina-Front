@@ -21,7 +21,7 @@ import { ApiResponse } from '../../../core/model/response/api-Response.model';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { getCurrentQna } from '../../validators/validaciones.validators';
 import { CalendarioService } from '../../../core/services/calendario.service';
-import { Calendario } from '../../../models/calendario.model';
+import { Calendario } from '../../../core/model/calendario.model';
 
 @Component({
   selector: 'app-consulta-pensiones-dialog',

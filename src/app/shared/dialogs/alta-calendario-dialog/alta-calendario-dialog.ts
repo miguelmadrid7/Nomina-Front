@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { Calendario } from '../../../models/calendario.model';
+import { Calendario } from '../../../core/model/calendario.model';
 
 @Component({
   selector: 'app-alta-calendario-dialog',

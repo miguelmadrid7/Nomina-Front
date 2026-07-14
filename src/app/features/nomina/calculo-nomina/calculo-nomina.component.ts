@@ -15,7 +15,7 @@ import { buildQnaCode } from '../../../shared/helpers/nomina.helper';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { getCurrentQna } from '../../../shared/validators/validaciones.validators';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { Calendario } from '../../../models/calendario.model';
+import { Calendario } from '../../../core/model/calendario.model';
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { ConceptoExtra } from '../../../models/concepto-extra.model';
 

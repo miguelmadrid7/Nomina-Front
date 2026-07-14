@@ -17,7 +17,7 @@ import { vigenciaFormatoValidator } from '../../validators/validaciones.validato
 import { startWith, distinctUntilChanged } from 'rxjs';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 import { CalendarioService } from '../../../core/services/calendario.service';
-import { Calendario } from '../../../models/calendario.model';
+import { Calendario } from '../../../core/model/calendario.model';
 
 @Component({
   selector: 'app-beneficiario-jm-dialog',

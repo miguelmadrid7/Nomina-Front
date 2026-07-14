@@ -18,7 +18,7 @@ import { formatBeneficiarioJMDisplay, mapBeneficiarioJM, repartirNombre } from '
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 import { CalendarioService } from '../../../core/services/calendario.service';
-import { Calendario } from '../../../models/calendario.model';
+import { Calendario } from '../../../core/model/calendario.model';
 
 @Component({
   selector: 'app-juicios-mercantiles',

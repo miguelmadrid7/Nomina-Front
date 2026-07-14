@@ -6,7 +6,7 @@ import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/p
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Calendario } from '../../../models/calendario.model';
+import { Calendario } from '../../../core/model/calendario.model';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { AltaCalendarioDialog } from '../../../shared/dialogs/alta-calendario-dialog/alta-calendario-dialog';
 
