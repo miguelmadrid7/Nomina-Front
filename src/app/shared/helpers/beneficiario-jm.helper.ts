@@ -1,4 +1,4 @@
-import { BeneficiarioJMRequest } from '../../models/request/beneficiariojm-request.model';
+import { BeneficiarioJMRequest } from '../../core/model/request/beneficiariojm-request.model';
 
     export function mapBeneficiarioJM(raw: any): BeneficiarioJMRequest {
         return {
