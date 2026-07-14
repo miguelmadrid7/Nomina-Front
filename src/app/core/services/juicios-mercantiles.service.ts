@@ -3,7 +3,7 @@ import { environment } from "../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import { BeneficiarioJMRequest } from "../../core/model/request/beneficiariojm-request.model";
 import { ApiResponse } from "../../core/model/response/api-Response.model";
-import { Banco } from "../../models/banco.model";
+import { Banco } from "../model/banco.model";
 import { map } from "rxjs";
 
 type AnyRow = Record<string, any>;

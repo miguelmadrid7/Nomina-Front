@@ -16,7 +16,7 @@ import { finalize, switchMap } from 'rxjs/operators';
 import { UppercaseDirective } from '../../directives/upperCase.directivas';
 import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { MatSelectModule } from '@angular/material/select';
-import { Banco } from '../../../models/banco.model';
+import { Banco } from '../../../core/model/banco.model';
 import { ApiResponse } from '../../../core/model/response/api-Response.model';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { getCurrentQna } from '../../validators/validaciones.validators';

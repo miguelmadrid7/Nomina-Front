@@ -12,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { JuiciosMercantilesService } from '../../../core/services/juicios-mercantiles.service';
 import { BeneficiarioJMRequest } from '../../../core/model/request/beneficiariojm-request.model';
-import { Banco } from '../../../models/banco.model';
+import { Banco } from '../../../core/model/banco.model';
 import { ApiResponse } from '../../../core/model/response/api-Response.model';
 import { formatBeneficiarioJMDisplay, mapBeneficiarioJM, repartirNombre } from '../../../shared/helpers/beneficiario-jm.helper';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';

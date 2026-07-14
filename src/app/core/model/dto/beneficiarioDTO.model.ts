@@ -1,4 +1,4 @@
-import { Banco } from "../../../models/banco.model";
+import { Banco } from "../banco.model";
 import { BeneficiarioAlimDTO } from "./beneficiarioalimDTO.model";
 
 export interface BeneficiarioDTO {
