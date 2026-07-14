@@ -233,7 +233,7 @@
             </div>
             <div class="legend-item" [class.active]="porcentajeDisponible <= 0">
               <span class="legend-dot dot-red"></span>
-              <span>No disponible para pensión</span>
+              <span [class.font-bold]="shouldBoldLegendItem(porcentajeDisponible)">No disponible para pensión</span>
             </div>
           </div>
         </div>

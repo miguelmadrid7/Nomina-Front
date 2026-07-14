@@ -13,25 +13,25 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Empleado } from '../../servicios/empleado';
-import { EmpleadoItem } from '../../../models/emplado.model';
+import { EmpleadoItem } from '../../../core/model/emplado.model';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dialog';
-import { IdResponse } from '../../../models/response/id-response.model';
-import { Banco } from '../../../models/banco.model';
-import { ApiResponse } from '../../../models/response/api-Response.model';
-import { getCurrentQna, vigenciaFormatoValidator } from '../../../shared/validators/validaciones.validators';
+import { IdResponse } from '../../../core/model/response/id-response.model';
+import { Banco } from '../../../core/model/banco.model';
+import { ApiResponse } from '../../../core/model/response/api-Response.model';
+import { vigenciaFormatoValidator } from '../../../shared/validators/validaciones.validators';
 import { factorImporteValidator } from '../../../shared/validators/juicios.validators';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 import { SoloLetrasDirectiva } from "../../../shared/directives/solo-letras.directivas";
-import { esCURP, esRFC, withChartPercent } from '../../../shared/helpers/helpers.helpers';
+import { esCURP, esRFC, withChartPercent, shouldBoldLegendItem  } from '../../../shared/helpers/helpers.helpers';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { LiquidoResponse } from '../../../models/response/liquido-response.model';
-import { BeneficiarioRequest } from '../../../models/request/beneficiario-request.model';
+import { LiquidoResponse } from '../../../core/model/response/liquido-response.model';
+import { BeneficiarioRequest } from '../../../core/model/request/beneficiario-request.model';
 import { formatEmployeeDisplay, mapEmpleado } from '../../../shared/helpers/empelado.helper';
 import { CalendarioService } from '../../../core/services/calendario.service';
-import { Calendario } from '../../../models/calendario.model';
+import { Calendario } from '../../../core/model/calendario.model';
 
 @Component({
   selector: 'app-pension-alimenticia',
@@ -89,6 +89,7 @@ export class PensionAlimenticia implements OnDestroy {
   empleadoRfc: string | null = null;
 
   readonly  porcentajeTotal = 100;
+  readonly shouldBoldLegendItem = shouldBoldLegendItem;
 
 
   ngOnInit (): void {
@@ -331,15 +332,6 @@ export class PensionAlimenticia implements OnDestroy {
 
   saveEmployee () {
     if (this.guardando) return;
-
-    console.log('Form válido:', this.form.valid);
-    console.log('Form errors:', this.form.errors);
-    console.log('Controles inválidos:',
-      Object.entries(this.form.controls)
-        .filter(([, ctrl]) => ctrl.invalid)
-        .map(([key, ctrl]) => ({ key, errors: ctrl.errors }))
-    );
-
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;

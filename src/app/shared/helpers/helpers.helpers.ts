@@ -40,3 +40,7 @@
       colors: [color],
     };
   }
+
+  export function shouldBoldLegendItem(percent: number): boolean {
+    return clampPercent(percent) <= 0;
+  }
