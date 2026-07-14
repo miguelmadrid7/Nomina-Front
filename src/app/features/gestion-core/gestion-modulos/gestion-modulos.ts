@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ModuleService } from '../../../core/services/module.service';
-import { Module } from '../../../models/gestion-core/module.model';
+import { Module } from '../../../core/model/dto/gestion-core/module.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule, NgIf } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
