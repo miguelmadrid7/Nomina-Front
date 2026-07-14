@@ -121,8 +121,11 @@
                 <ng-container matColumnDef="estado">
                   <th mat-header-cell *matHeaderCellDef>ESTADO</th>
                   <td mat-cell *matCellDef="let e">
-                    <span class="chip" [class.chip-ok]="!e.qnaFin || e.qnaFin === 999999" [class.chip-off]="!!e.qnaFin && e.qnaFin !== 999999">
-                      {{ (!e.qnaFin || e.qnaFin === 999999) ? 'Activo' : 'Finalizado' }}
+                    <span class="chip" 
+                      [class.chip-ok]="e.estatus === 'VIGENTE'" 
+                      [class.chip-off]="e.estatus === 'FINALIZADO'"
+                       [class.chip-cancelado]="e.estatus === 'CANCELADO'">
+                      {{ e.estatus === 'VIGENTE' ? 'Activo' : (e.estatus === 'FINALIZADO' ? 'Finalizado' : 'Cancelado') }}
                     </span>
                   </td>
                 </ng-container>
@@ -130,11 +133,12 @@
                 <ng-container matColumnDef="acciones">
                   <th mat-header-cell *matHeaderCellDef>ACCIONES</th>
                   <td mat-cell *matCellDef="let e">
-                    <div class="table-actions" *ngIf="!e.qnaFin || e.qnaFin === 999999">
+                    <div class="table-actions" *ngIf="e.estatus === 'VIGENTE'">
                       <div class="bttn-group">
                         <button mat-icon-button class="bttn ico-btn-primary" 
                           (click)="abrirDialog(e)"
-                          [disabled]="!!e.qnaFin && e.qnaFin !== 999999" matTooltip="{{ (e.qnaFin && e.qnaFin !== 999999) ? 'Registro finalizado' : 'Editar' }}">
+                          [disabled]="e.estatus !== 'VIGENTE'"
+                          [matTooltip]="e.estatus !== 'VIGENTE' ? 'Registro' +  e.estatus.toLowerCase() : 'Editar'">
                           <mat-icon>edit</mat-icon>
                         </button>
                         <button mat-icon-button class="bttn ico-btn-danger" 

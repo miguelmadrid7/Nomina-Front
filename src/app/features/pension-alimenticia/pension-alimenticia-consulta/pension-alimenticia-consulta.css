@@ -170,6 +170,11 @@
   border-color: #fca5a5;
 }
 
+.chip-cancelado {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
 /* Fila finalizada en gris tenue */
 .row-finalizado {
   opacity: .55;

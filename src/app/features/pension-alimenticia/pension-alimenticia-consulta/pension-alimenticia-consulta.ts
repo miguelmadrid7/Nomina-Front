@@ -19,6 +19,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { LoaderService } from '../../../core/services/loader.service';
 import { finalize } from 'rxjs';
+import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
 
 @Component({
   selector: 'app-pension-alimenticia-consulta',
@@ -50,19 +51,29 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  displayedColumns: string[] = ['nombreEmpleado', 'rfcEmpleado', 'nombreBeneficiario', 'rfcReferencia', 'noBeneficiario', 'numeroOficio', 'qna', 'estado', 'acciones'];
+  readonly displayedColumns: string[] = [
+    'nombreEmpleado', 
+    'rfcEmpleado', 
+    'nombreBeneficiario', 
+    'rfcReferencia', 
+    'noBeneficiario', 
+    'numeroOficio', 
+    'qna', 
+    'estado', 
+    'acciones'
+  ];
   dataSource = new MatTableDataSource<FilaBeneficiario>([]);
   todosLosBeneficiarios: FilaBeneficiario[] = [];
   totalElements = 0;
   cargando = false;
   empleadosFiltrados: string[] = [];
 
-  anios: number[] = [2026, 2025, 2024];
-  quincenas: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
+  anios: number[] = [];
+  quincenas: number[] = [];
 
   readonly form = this.fb.group({
     busqueda: this.fb.group({         
-      anio:     [null],
+      anio: [null],
       quincena: [null],
       estado: ['TODOS']
     }),
@@ -76,6 +87,8 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
   ]
     
   ngOnInit(): void {
+    this.anios = DateYearsHelper.getYears(1,1);
+    this.quincenas = DateYearsHelper.getQna();
     this.cargarBeneficiarios();
     this.form.get('busqueda')?.valueChanges.subscribe(() => {
       this.loaderService.show();
@@ -108,9 +121,9 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
     const estado = this.form.get('busqueda.estado')?.value;
 
     let filtrados = [...base];
+
       if (anio && quincena) {
         const qnaSeleccionada = Number(`${anio}${String(quincena).padStart(2, '0')}`);
-        
         filtrados = filtrados.filter(b => 
           b.qnaIni === qnaSeleccionada
         );
@@ -118,13 +131,13 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
 
       if(estado === 'ACTIVOS') {
         filtrados = filtrados.filter(b => 
-          !b.qnaFin || b.qnaFin === 999999
+          b.estatus === 'VIGENTE'
         );
       }
 
-      if( estado === 'FINALIZADOS') { 
+      if(estado === 'FINALIZADOS') { 
         filtrados = filtrados.filter(b =>
-          b.qnaFin && b.qnaFin !== 999999
+          b.estatus ==='FINALIZADO' || b.estatus === 'CANCELADO'
         );
       }
     this.actualizarTabla(filtrados);
@@ -238,7 +251,9 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
         qna: `${b.qnaini} → ${b.qnafin === 999999 ? 'Indefinido' : (b.qnafin ?? '—')}`,
         qnaIni: b.qnaini,   
         qnaFin: b.qnafin,   
-        mostrarEmpleado: false
+        mostrarEmpleado: false,
+        estatus: (!b.qnafin || b.qnafin === 999999) ? 'VIGENTE' : 'FINALIZADO'
+        
       };
   }
 }
