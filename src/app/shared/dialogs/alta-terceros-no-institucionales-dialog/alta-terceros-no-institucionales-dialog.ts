@@ -14,7 +14,7 @@ import { Spanish } from 'flatpickr/dist/l10n/es';
 import { TerceroService } from '../../../core/services/tercero.service';
 import { MatCardModule } from '@angular/material/card';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { CalendarioRecepcion } from '../../../models/calendario-recepcion.model';
+import { CalendarioRecepcion } from '../../../core/model/calendario-recepcion.model';
 import { ApiResponse } from '../../../core/model/response/api-Response.model';
 
 @Component({

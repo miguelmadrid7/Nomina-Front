@@ -5,7 +5,7 @@ import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../../core/model/response/api-Response.model';
 import { Empleado } from '../../features/servicios/empleado';
 import { RegistroNp } from '../../models/terceros.model';
-import { CalendarioRecepcion } from '../../models/calendario-recepcion.model';
+import { CalendarioRecepcion } from '../model/calendario-recepcion.model';
 
 @Injectable({ providedIn: 'root' })
 export class TerceroService {

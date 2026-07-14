@@ -20,7 +20,7 @@ import { Observable, tap, map, switchMap } from 'rxjs';
 import { MatOptionModule } from '@angular/material/core';
 import { ConceptoAccesoService } from '../../../core/services/concepto-acceso.service';
 import { searchEmployeeValidator } from '../../../shared/validators/validaciones.validators';
-import { CalendarioRecepcion } from '../../../models/calendario-recepcion.model';
+import { CalendarioRecepcion } from '../../../core/model/calendario-recepcion.model';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 
 @Component({
