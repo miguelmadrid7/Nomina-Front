@@ -6,67 +6,139 @@
   </div>
 
   <mat-dialog-content class="dlg-content">
-    <div class="employee-info">
-      <!-- Entidad -->
-      <div class="employee-field full">
-        <div class="dlg-bar-title">Entidad Federativa: HIDALGO</div>
-      </div>
+    
+<div class="employee-card">
 
-      <!-- fila 1 -->
-      <div class="employee-field">
-        <span class="label">Nombre:</span>
-        <span class="value">{{ data.nombreEmpleado }}</span>
-      </div>
-
-      <div class="employee-field">
-        <span class="label">Clave:</span>
-        <span class="value">{{ data.plaza }}</span>
-      </div>
-
-      <!-- fila 2 -->
-      <div class="employee-field">
-        <span class="label">RFC:</span>
-        <span class="value">{{ data.rfc }}</span>
-      </div>
-
-      <div class="employee-field">
-        <span class="label">QNA:</span>
-        <span class="value">{{ data.qnaTexto }}</span>
-      </div>
-
-      <!-- fila 3 -->
-      <div class="employee-field">
-        <span class="label">CURP:</span>
-        <span class="value">{{ data.curp }}</span>
-      </div>
-
-      <div class="employee-field">
-        <span class="label">No. Comprobante:</span>
-        <span class="value">{{ noComprobanteCab }}</span>
-      </div>
-
-      <div class="employee-field">
-        <span class="label">Nómina (ordinaria, extraoirdinaria):</span>
-        <span class="value"></span>
-      </div>
+  <div class="card-title">
+    <mat-icon>badge</mat-icon>
+    Información del trabajador
+  </div>
 
 
-    <!-- totales -->
-    <div class="employee-totals">
-      <div>Percepciones: $ {{ totalPercepciones | number:'1.2-2' }}</div>
-      <div>Deducciones: $ {{ totalDeducciones | number:'1.2-2' }}</div>
-      <div>Líquido: $ {{ liquido | number:'1.2-2' }}</div>
-    </div>
+  <div class="entity-box">
+
+    <span>
+      Entidad Federativa
+    </span>
+
+    <strong>
+      HIDALGO
+    </strong>
+
+  </div>
+
+
+
+  <div class="employee-grid">
+
+
+    <div class="info-box">
+
+      <span>Nombre</span>
+
+      <strong>
+        {{data.nombreEmpleado}}
+      </strong>
 
     </div>
+
+
+    <div class="info-box">
+
+      <span>Clave</span>
+
+      <strong>
+        {{data.plaza}}
+      </strong>
+
+    </div>
+
+
+
+    <div class="info-box">
+
+      <span>RFC</span>
+
+      <strong>
+        {{data.rfc}}
+      </strong>
+
+    </div>
+
+
+    <div class="info-box">
+
+      <span>QNA</span>
+
+      <strong>
+        {{data.qnaTexto}}
+      </strong>
+
+    </div>
+
+
+
+    <div class="info-box">
+
+      <span>CURP</span>
+
+      <strong>
+        {{data.curp}}
+      </strong>
+
+    </div>
+
+
+
+    <div class="info-box">
+      <span>No. Comprobante</span>
+      <strong>
+        {{noComprobanteCab}}
+      </strong>
+    </div>
+  </div>
+
+
+  <div class="payroll-box">
+      <span>Nómina</span>
+  </div>
+</div>
+
+    <div class="summary-grid">
+        <div class="summary-card success">
+          <mat-icon>account_balance_wallet</mat-icon>
+          <span class="summary-title"> Percepciones </span>
+          <span class="summary-value"> $ {{ totalPercepciones | number:'1.2-2' }} </span>
+        </div>
+
+        <div class="summary-card danger">
+          <mat-icon>remove_circle</mat-icon>
+          <span class="summary-title"> Deducciones </span>
+          <span class="summary-value"> $ {{ totalDeducciones | number:'1.2-2' }} </span>
+        </div>
+
+        <div class="summary-card primary">
+          <mat-icon>payments</mat-icon>
+          <span class="summary-title"> Líquido </span>
+          <span class="summary-value"> $ {{ liquido | number:'1.2-2' }} </span>
+        </div>
+      </div>
 
     <!-- Selector de vista -->
     <div class="view-toggle">
-      <mat-radio-group [(ngModel)]="selectedView">
-        <mat-radio-button value="ambas">Ambas</mat-radio-button>
-        <mat-radio-button value="percepciones">Percepciones</mat-radio-button>
-        <mat-radio-button value="deducciones">Deducciones</mat-radio-button>
-      </mat-radio-group>
+      <mat-button-toggle-group [(ngModel)]="selectedView">
+        <mat-button-toggle value="ambas">
+          Ambas
+        </mat-button-toggle>
+
+        <mat-button-toggle value="percepciones">
+          Percepciones
+        </mat-button-toggle>
+
+        <mat-button-toggle value="deducciones">
+          Deducciones
+        </mat-button-toggle>
+      </mat-button-toggle-group>
     </div>
 
     <div class="section-divider"></div>

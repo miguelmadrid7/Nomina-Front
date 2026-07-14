@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @Component({
   selector: 'app-nominaord-concepto-dialog',
@@ -21,7 +22,8 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule,
     MatInputModule,
     MatRadioModule,
-    MatIconModule
+    MatIconModule,
+    MatButtonToggleModule
   ],
   templateUrl: './nominaord-concepto-dialog.html',
   styleUrls: ['./nominaord-concepto-dialog.css']
