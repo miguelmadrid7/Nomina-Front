@@ -19,6 +19,7 @@ import { finalize } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 import { buildQnaCode, groupNominaRows, mapRawRowToNominaRow } from '../../../shared/helpers/nomina.helper';
+import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
 
 @Component({
   selector: 'app-nomina-ordinaria',
@@ -46,15 +47,22 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<NominaRow>([]);
-  displayedColumns: string[] = ['curp', 'rfc', 'nombreEmpleado', 'qnaProceso', 'clavePlaza', 'baseCalculoIsr', 'conceptoDetalle',];
+  readonly displayedColumns: string[] = [
+    'curp', 
+    'rfc', 
+    'nombreEmpleado', 
+    'qnaProceso', 
+    'clavePlaza', 
+    'baseCalculoIsr', 
+    'conceptoDetalle'
+  ];
 
+  anios: number[] = [];
+  quincenas: number[] = [];
 
-  readonly currentYear = new Date().getFullYear();
-  anios: number[] = Array.from({ length: 10 }, (_, i) => this.currentYear - i);
-
-  quincenas: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
   anioSeleccionado: number | null = null;
   quincenaSeleccionada: number | null = null;
+  
   search: string = '';
   qnaProceso!: number;
   totalElements = 0;
@@ -72,6 +80,9 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
   private readonly zone = inject(NgZone);
 
   ngOnInit(): void {
+    this.anios = DateYearsHelper.getYears(1,1);
+    this.quincenas = DateYearsHelper.getQna();
+    
     this.dataSource.filterPredicate = (data: any, filter: string) => {
     const search = filter.trim().toUpperCase();
       return (
