@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { UppercaseDirective } from '../../../shared/directives/upperCase.directivas';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { EmpleadoItem } from '../../../models/emplado.model';
+import { EmpleadoItem } from '../../../core/model/emplado.model';
 import { TerceroService } from '../../../core/services/tercero.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NominaRow } from '../../../core/model/nomina-Row.model';

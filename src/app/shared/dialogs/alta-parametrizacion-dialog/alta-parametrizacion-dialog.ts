@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ParametrizacionService } from '../../../core/services/parametrizacion.service';
-import { DialogData } from '../../../models/dialogdata.model';
+import { DialogData } from '../../../core/model/dialogdata.model';
 import { ParametrizacionRequest } from '../../../core/model/request/parametrizacion-request.model';
 import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';

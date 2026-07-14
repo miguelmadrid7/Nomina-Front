@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable, map } from 'rxjs';
 import { ApiResponse } from '../../core/model/response/api-Response.model';
-import { EmpleadoItem } from '../../models/emplado.model';
+import { EmpleadoItem } from '../model/emplado.model';
 import { Role } from '../model/rol.model';
 
 @Injectable({ providedIn: 'root' })

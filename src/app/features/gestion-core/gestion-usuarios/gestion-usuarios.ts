@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
-import { EmpleadoItem } from '../../../models/emplado.model';
+import { EmpleadoItem } from '../../../core/model/emplado.model';
 import { Role } from '../../../core/model/rol.model';
 import { AssignRoleRequest } from '../../../core/model/request/assignrole-request.model';
 import { CommonModule } from '@angular/common';

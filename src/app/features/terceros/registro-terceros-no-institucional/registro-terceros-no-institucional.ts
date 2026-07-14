@@ -15,7 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import { AltaTercerosNoInstitucionalesDialog } from '../../../shared/dialogs/alta-terceros-no-institucionales-dialog/alta-terceros-no-institucionales-dialog';
 import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
-import { EmpleadoItem } from '../../../models/emplado.model';
+import { EmpleadoItem } from '../../../core/model/emplado.model';
 import { Observable, tap, map, switchMap } from 'rxjs';
 import { MatOptionModule } from '@angular/material/core';
 import { ConceptoAccesoService } from '../../../core/services/concepto-acceso.service';

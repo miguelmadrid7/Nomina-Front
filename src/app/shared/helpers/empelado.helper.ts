@@ -1,4 +1,4 @@
-import { EmpleadoItem } from '../../models/emplado.model';
+import { EmpleadoItem } from '../../core/model/emplado.model';
 
     export function mapEmpleado(raw: any): EmpleadoItem {
         let rfc  = (raw?.rfc  ?? raw?.RFC  ?? '').toString().trim();
