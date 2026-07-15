@@ -89,8 +89,9 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando concepto E2' },            // cpto_E2
     { label: 'Calculando concepto informados' },    // cpto_informados
     { label: 'Calculando concepto quinquenios' },   // cpto_quinquenios
-    { label: 'Calculando nómina cheque concepto 14 sustítuto gravidez' }, // nom_cheque_cpto_primas
-    { label: 'Calculando nómina cheque concepto 15 sustítuto pre-pensionaria' }, // nom_cheque_cpto_primas
+    { label: 'Calculando nómina cheque concepto 14 sustítuto gravidez' }, // nom_cheque_cpto_14
+    { label: 'Calculando nómina cheque concepto 15 sustítuto pre-pensionaria' }, // nom_cheque_cpto_15
+    { label: 'Calculando nómina cheque concepto 38' }, // nom_cheque_cpto_38
     { label: 'Calculando nómina cheque concepto primas' }, // nom_cheque_cpto_primas
     { label: 'Calculando concepto 01' },            // cpto_01
     { label: 'Calculando concepto 02' },            // cpto_02
