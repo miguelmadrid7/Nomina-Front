@@ -442,6 +442,22 @@
   line-height: 16px;
 }
 
+.toast-container {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  z-index: 99999;
+}
+
+.toast-container app-toast {
+    pointer-events: auto;
+}
+
 :host ::ng-deep .mat-vertical-stepper-header {
   min-height: 44px;
   padding: 6px 8px;

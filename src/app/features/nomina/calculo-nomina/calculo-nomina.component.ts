@@ -18,6 +18,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Calendario } from '../../../core/model/calendario.model';
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { ConceptoExtra } from '../../../core/model/concepto-extra.model';
+import { Toast } from '../../../core/model/toast.model';
+import { ToastComponent } from '../../../shared/toast/toast.component';
 
 @Component({
   selector: 'app-calculo-nomina',
@@ -32,7 +34,8 @@ import { ConceptoExtra } from '../../../core/model/concepto-extra.model';
     MatCardModule,
     MatIconModule,
     MatProgressBarModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    ToastComponent
 ],
   templateUrl: './calculo-nomina.component.html',
   styleUrls:[ './calculo-nomina.component.css'],
@@ -75,10 +78,11 @@ export class CalculoNominaComponent implements OnInit {
   calendarioActual: Calendario | null = null;
   cargandoCalendario = false;
   conceptosExtra: ConceptoExtra[] = [];
-  conceptoSeleccionado = new Set<String>();
+  conceptoSeleccionado = new Set<string>();
   showSteps = false;
   failedStepIndex: number | null = null;
   failedStepName: string | null = null;
+  toasts: Toast[] = [];
 
   private stompClient: any;
   private readonly steps = [
@@ -92,7 +96,6 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando concepto quinquenios' },   // cpto_quinquenios
     { label: 'Calculando nómina cheque concepto 14 sustítuto gravidez' }, // nom_cheque_cpto_14
     { label: 'Calculando nómina cheque concepto 15 sustítuto pre-pensionaria' }, // nom_cheque_cpto_15
-  
     { label: 'Calculando nómina cheque concepto primas' }, // nom_cheque_cpto_primas
     { label: 'Calculando concepto 01' },            // cpto_01
     { label: 'Calculando concepto 02' },            // cpto_02
@@ -123,6 +126,35 @@ export class CalculoNominaComponent implements OnInit {
     this.cargarConceptosExtra();
   }
 
+  private showSnack(message: string, action: string, duration: number): void {
+    this.zone.runOutsideAngular(() => {
+      setTimeout(() => {
+        this.zone.run(() => this.snackBar.open(message, action, { duration }));
+      }, 50);
+    });
+  }
+
+  private showToast(
+    type: 'success' | 'info' | 'warning' | 'error',
+    title: string,
+    message: string,
+  ){
+
+    const toast: Toast = {
+      id: Date.now(),
+      type,
+      title,
+      message
+    };
+    this.toasts = [...this.toasts, toast];
+    this.cdr.markForCheck();
+  }
+
+  removeToast (id: number): void {
+    this.toasts = this.toasts.filter(t => t.id !== id); 
+    this.cdr.markForCheck();
+  }
+
   get qnaDisplay(): string {
     if (!this.calendarioActual) return this.qnaActual;
     return `${this.calendarioActual.qna.toString().padStart(2, '0')} / ${this.calendarioActual.ejercicio}`;
@@ -146,7 +178,8 @@ export class CalculoNominaComponent implements OnInit {
         },
         error: () => {
           this.cargandoCalendario = false;
-          this.showSnack('Error al cargar el calendario', 'Cerrar', 4000);
+          this.showToast('error','Calendario', 'Error al cargar el calendario');
+          this.cdr.markForCheck();
         }
       });
   }
@@ -160,11 +193,14 @@ export class CalculoNominaComponent implements OnInit {
         );
         this.cdr.markForCheck();
       },
-      error: () => this.showSnack('Error al cargar conceptos extra', 'Cerrar', 4000)
+      error: () => {
+        this.showToast('error', 'Conceptos extra', 'Error al cargar conceptos extra');
+      this.cdr.markForCheck();
+      }
     })
   }
 
-  toogleConcepto(key: string): void {
+  toggleConcepto(key: string): void {
     if (this.conceptoSeleccionado.has(key)) {
       this.conceptoSeleccionado.delete(key);
     } else {
@@ -183,14 +219,6 @@ export class CalculoNominaComponent implements OnInit {
       ...step,
       progress: Math.round(((i + 1) / total) * 99)
     }));
-  }
-
-  private showSnack(message: string, action: string, duration: number): void {
-    this.zone.runOutsideAngular(() => {
-      setTimeout(() => {
-        this.zone.run(() => this.snackBar.open(message, action, { duration }));
-      }, 50);
-    });
   }
 
   private subscribeToJob(jobId: number): void {
@@ -232,7 +260,7 @@ export class CalculoNominaComponent implements OnInit {
       if (this.failedStepIndex !== null) {
         this.currentStepIdx = this.failedStepIndex;
       }
-      this.snackBar.open(data.errorMsg || 'Ocurrió un error en el cálculo', 'Cerrar', { duration: 8000 });
+      this.showToast('error', 'Proceso detenido', data.errorMsg || 'Ocurrió un error en el cálculo');
       this.processing = false;
       if (this.stompClient) {
         this.stompClient.disconnect(() => {});
@@ -241,9 +269,10 @@ export class CalculoNominaComponent implements OnInit {
       this.recomputeStepIndex();
     }
 
-    if (data.progress === 100 || data.status === 'COMPLETED') {
+    if (!this.deliverableReady &&  (data.progress === 100 || data.status === 'COMPLETED')) {
       this.deliverableReady = true;
       this.processing = false;
+      this.showToast( 'success', 'Proceso finalizado', 'El cálculo de nómina terminó correctamente.');
         if (this.stompClient) {
           this.stompClient.disconnect(() => {});
         }
@@ -256,48 +285,42 @@ export class CalculoNominaComponent implements OnInit {
   }
 
   executePayrollProcess(): void {
-    if(this.form.invalid) {
-      this.showSnack('Debe de seleccionar un año y una quincena de favor.', 'Cerrar', 4000);
-      return;
-    }
-
-    const {anio, quincena } = this.form.value;
+    const { anio, quincena } = this.form.value;
     const qnaProceso = buildQnaCode(anio, quincena);
-
     this.processing = true;
     this.progress = 0;
     this.deliverableReady = false;
     this.failedStepIndex = null;
     this.failedStepName = null;
-
+    this.cdr.markForCheck();
     const ws = new SockJS(`${environment.apiUrl}/ws`);
     this.stompClient = Stomp.over(ws);
-
     this.stompClient.connect(
       {},
       () => {
-        // Conexión WebSocket exitosa
-        this.nominaService.executePayrollProcess(qnaProceso).subscribe({
-          next: (resp: any) => {
-            const jobId = resp?.data;
-            if (!jobId) {
+        this.nominaService.executePayrollProcess(qnaProceso)
+          .subscribe({
+            next: (resp: any) => {
+              const jobId = resp?.data;
+              if (!jobId) {
+                this.processing = false;
+                this.showToast('error', 'Proceso' ,'No se recibió el identificador del proceso.');
+                this.cdr.markForCheck();
+                return;
+              }
+              this.subscribeToJob(jobId);
+            },
+            error: () => {
               this.processing = false;
-              this.showSnack('No se recibió el identificador del proceso.', 'Cerrar', 5000);
-              return;
+              this.showToast('error', 'Proceso', 'No se pudo iniciar el proceso. Verifica que el servidor esté disponible.');
+              this.cdr.markForCheck();
             }
-            this.subscribeToJob(jobId);
-          },
-          error: () => {
-            this.processing = false;
-            this.showSnack('No se pudo iniciar el proceso. Verifica que el servidor esté disponible.', 'Cerrar', 6000);
-          }
-        });
+          });
       },
       (error: any) => {
-        // Falló la conexión WebSocket misma — típico de "backend caído"
         this.zone.run(() => {
           this.processing = false;
-          this.showSnack('No se pudo conectar con el servidor. Verifica tu conexión o que el backend esté activo.', 'Cerrar', 8000);
+          this.showToast('error', 'WebSocket', 'No se pudo conectar con el servidor. Verifica tu conexión o que el backend esté activo.');
           this.cdr.markForCheck();
         });
       }

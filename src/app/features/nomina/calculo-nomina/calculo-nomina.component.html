@@ -4,6 +4,17 @@
 
 <div class="section-divider"></div>
 
+<div class="toast-container">
+    @for (toast of toasts; track toast.id) {
+      <app-toast
+        [type]="toast.type"
+        [title]="toast.title"
+        [message]="toast.message"
+        (closed)="removeToast(toast.id)">
+      </app-toast>
+    }
+  </div>
+
 <div class="page-header">
 
   <div class="subtitle-row">
@@ -108,7 +119,7 @@
                 <span class="concepto-check">
                     <mat-checkbox class="meta-check"
                         [checked]="isConceptoSeleccionado(concepto.catConceptoCve + concepto.catModeloId)"
-                        (change)="toogleConcepto(concepto.catConceptoCve + concepto.catModeloId)">
+                        (change)="toggleConcepto(concepto.catConceptoCve + concepto.catModeloId)">
                     </mat-checkbox>
                 </span>
                 <span class="concepto-cve">{{ concepto.catConceptoCve }}</span>
