@@ -446,16 +446,81 @@
   position: fixed;
   top: 24px;
   right: 24px;
-
   display: flex;
   flex-direction: column;
   gap: 16px;
-
   z-index: 99999;
 }
 
 .toast-container app-toast {
     pointer-events: auto;
+}
+
+.step-details {
+  width: fit-content;
+  min-width: 220px;
+  margin-top: 12px;
+  margin-left: auto;
+  padding: 10px 14px;
+  background: #f8fafc;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+:host ::ng-deep .mat-vertical-content {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+.execution-info {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.execution-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #475569;
+  font-size: 13px;
+}
+
+
+.execution-item mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  color: #64748b;
+}
+
+
+.chip-done {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  background: #dcfce7;
+  color: #166534;
+
+  padding: 5px 12px;
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+.chip-done mat-icon {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
 }
 
 :host ::ng-deep .mat-vertical-stepper-header {

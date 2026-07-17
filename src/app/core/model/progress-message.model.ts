@@ -5,4 +5,9 @@ export interface ProgressMessage {
     errorMsg: string | null;
     failedStepIndex: number | null;
     failedStepName: string | null;
+    
+    stepIndex?: number;
+    stepName?: string;
+    endTime?: string;
+    durationMs?: number;
 }

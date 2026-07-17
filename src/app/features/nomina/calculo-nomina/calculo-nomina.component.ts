@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, ChangeDetectionStrategy, Component, NgZone, inject, OnInit } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatStepperModule } from '@angular/material/stepper';
 import { NominaService } from '../../../core/services/nomina-ordinaria.service';
 import { environment } from '../../../../environments/environment';
@@ -20,6 +20,9 @@ import { CalendarioService } from '../../../core/services/calendario.service';
 import { ConceptoExtra } from '../../../core/model/concepto-extra.model';
 import { Toast } from '../../../core/model/toast.model';
 import { ToastComponent } from '../../../shared/toast/toast.component';
+import { ProgressMessage } from '../../../core/model/progress-message.model';
+import { StepExecution } from '../../../core/model/step-execution.model';
+import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
 
 @Component({
   selector: 'app-calculo-nomina',
@@ -48,7 +51,6 @@ export class CalculoNominaComponent implements OnInit {
   private readonly calendarioService = inject(CalendarioService)
   private readonly zone = inject(NgZone);
   private readonly cdr = inject(ChangeDetectorRef);
-  private readonly snackBar = inject(MatSnackBar);
   private readonly fb = inject(FormBuilder);
 
 
@@ -70,6 +72,8 @@ export class CalculoNominaComponent implements OnInit {
   })();
 
   readonly stepsWithProgress: { label: string; progress: number }[];
+  readonly DateYearsHelper = DateYearsHelper;
+  executionHistory = new Map<number, StepExecution>();
 
   progress = 0;
   processing = false;
@@ -124,14 +128,6 @@ export class CalculoNominaComponent implements OnInit {
   ngOnInit(): void {
     this.cargarCalendarioActual();
     this.cargarConceptosExtra();
-  }
-
-  private showSnack(message: string, action: string, duration: number): void {
-    this.zone.runOutsideAngular(() => {
-      setTimeout(() => {
-        this.zone.run(() => this.snackBar.open(message, action, { duration }));
-      }, 50);
-    });
   }
 
   private showToast(
@@ -251,8 +247,20 @@ export class CalculoNominaComponent implements OnInit {
       }, 500);
   }
 
-  private handleProgressUpdate(data: any): void {
+
+  getExecution(stepIndex: number) {
+    return this.executionHistory.get(stepIndex);
+  }
+
+  private handleProgressUpdate(data: ProgressMessage): void {
     this.progress = Math.max(this.progress, data.progress);
+    if (data.stepIndex != null && data.stepName != null && data.durationMs != null) {
+      this.executionHistory.set(data.stepIndex, {
+        stepName: data.stepName,
+        endTime: data.endTime ?? '',
+        durationMs: data.durationMs
+      });
+    }
 
     if (data.status === 'ERROR') {
       this.failedStepIndex = data.failedStepIndex ?? null;
@@ -295,6 +303,7 @@ export class CalculoNominaComponent implements OnInit {
     this.cdr.markForCheck();
     const ws = new SockJS(`${environment.apiUrl}/ws`);
     this.stompClient = Stomp.over(ws);
+    this.executionHistory.clear();
     this.stompClient.connect(
       {},
       () => {

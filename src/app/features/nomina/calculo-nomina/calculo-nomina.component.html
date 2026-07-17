@@ -185,8 +185,7 @@
 
       <div class="process-steps" *ngIf="processing || progress === 100 || failedStepIndex !== null">
         <mat-vertical-stepper [selectedIndex]="currentStepIndex" linear>
-          <mat-step *ngFor="let step of stepsWithProgress; let i = index"
-            [completed]="progress >= step.progress && failedStepIndex !== i">
+          <mat-step *ngFor="let step of stepsWithProgress; let i = index" [completed]="progress >= step.progress && failedStepIndex !== i">
             <ng-template matStepLabel>
               <div class="step-label">
                 <mat-icon class="step-icon"
@@ -214,11 +213,25 @@
               <ng-container *ngIf="failedStepIndex !== i && progress < step.progress && i !== currentStepIndex">
                 <span class="chip chip-pending">Pendiente</span>
               </ng-container>
+
+              @if (getExecution(i); as exec) {
+                <div class="step-details">
+                  <div class="execution-info">
+                    <div class="execution-item">
+                      <mat-icon>schedule</mat-icon>
+                      <span>{{ exec.endTime }}</span>
+                    </div>
+                    <div class="execution-item">
+                      <mat-icon>timer</mat-icon>
+                      <span>{{ DateYearsHelper.formatDuration(exec.durationMs) }}</span>
+                    </div>
+                  </div>
+                </div>
+              }
             </div>
           </mat-step>
         </mat-vertical-stepper>
       </div>
     </mat-card>
   </div>
-
 </div>
