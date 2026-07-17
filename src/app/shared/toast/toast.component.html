@@ -1,0 +1,15 @@
+<div class="toast" [ngClass]="type">
+    <div class="toast-icon">
+        <mat-icon *ngIf="type === 'success'">check_circle</mat-icon>
+        <mat-icon *ngIf="type === 'error'">cancel</mat-icon>
+        <mat-icon *ngIf="type === 'warning'">warning</mat-icon>
+        <mat-icon *ngIf="type === 'info'">info</mat-icon>
+    </div>
+    <div class="toast-content">
+        <div class="toast-title"> {{ title }}</div>
+        <div class="toast-message"> {{ message }}</div>
+    </div>
+     <button class="toast-close" type="button" (click) ="close()">
+            <mat-icon>close</mat-icon>
+    </button>
+</div>
