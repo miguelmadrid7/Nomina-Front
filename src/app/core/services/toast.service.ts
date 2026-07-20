@@ -22,7 +22,7 @@ export class ToastService {
         this.add('warning', title, message);
     }
 
-    infoo(title: string, message: string) {
+    info(title: string, message: string) {
         this.add('info', title, message);
     }
 
@@ -32,7 +32,7 @@ export class ToastService {
         );
     }
 
-    add(
+    private add(
         type: Toast['type'],
         title: string,
         message: string) {

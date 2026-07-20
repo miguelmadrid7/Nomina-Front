@@ -4,16 +4,7 @@
 
 <div class="section-divider"></div>
 
-<div class="toast-container">
-    @for (toast of toasts; track toast.id) {
-      <app-toast
-        [type]="toast.type"
-        [title]="toast.title"
-        [message]="toast.message"
-        (closed)="removeToast(toast.id)">
-      </app-toast>
-    }
-  </div>
+
 
 <div class="page-header">
 

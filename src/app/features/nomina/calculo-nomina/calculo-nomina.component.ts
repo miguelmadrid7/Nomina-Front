@@ -18,11 +18,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Calendario } from '../../../core/model/calendario.model';
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { ConceptoExtra } from '../../../core/model/concepto-extra.model';
-import { Toast } from '../../../core/model/toast.model';
-import { ToastComponent } from '../../../shared/toast/toast.component';
 import { ProgressMessage } from '../../../core/model/progress-message.model';
 import { StepExecution } from '../../../core/model/step-execution.model';
 import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-calculo-nomina',
@@ -38,7 +37,6 @@ import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
     MatIconModule,
     MatProgressBarModule,
     MatCheckboxModule,
-    ToastComponent
 ],
   templateUrl: './calculo-nomina.component.html',
   styleUrls:[ './calculo-nomina.component.css'],
@@ -52,6 +50,7 @@ export class CalculoNominaComponent implements OnInit {
   private readonly zone = inject(NgZone);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly fb = inject(FormBuilder);
+  readonly toastService = inject(ToastService);
 
 
   readonly buildQnaCode = buildQnaCode;
@@ -86,7 +85,6 @@ export class CalculoNominaComponent implements OnInit {
   showSteps = false;
   failedStepIndex: number | null = null;
   failedStepName: string | null = null;
-  toasts: Toast[] = [];
   totalDurationMs = 0;
 
   private stompClient: any;
@@ -123,33 +121,12 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Actualizando importes' },               // bono_RM
     { label: 'Preparando descuentos de pensiones alimenticias' }, // cpto_62
     { label: 'Consolidando pensiones alimenticias' }, // cpto_62
-    { label: 'Actualizando importes finales' },             // updateImportes
+    { label: 'Actualizando importes finales' },      // updateImportes
   ];
 
   ngOnInit(): void {
     this.cargarCalendarioActual();
     this.cargarConceptosExtra();
-  }
-
-  private showToast(
-    type: 'success' | 'info' | 'warning' | 'error',
-    title: string,
-    message: string,
-  ){
-
-    const toast: Toast = {
-      id: Date.now(),
-      type,
-      title,
-      message
-    };
-    this.toasts = [...this.toasts, toast];
-    this.cdr.markForCheck();
-  }
-
-  removeToast (id: number): void {
-    this.toasts = this.toasts.filter(t => t.id !== id); 
-    this.cdr.markForCheck();
   }
 
   get qnaDisplay(): string {
@@ -175,7 +152,10 @@ export class CalculoNominaComponent implements OnInit {
         },
         error: () => {
           this.cargandoCalendario = false;
-          this.showToast('error','Calendario', 'Error al cargar el calendario');
+          this.toastService.error(
+            'Calendario', 
+            'Error al cargar el calendario'
+          );
           this.cdr.markForCheck();
         }
       });
@@ -191,7 +171,10 @@ export class CalculoNominaComponent implements OnInit {
         this.cdr.markForCheck();
       },
       error: () => {
-        this.showToast('error', 'Conceptos extra', 'Error al cargar conceptos extra');
+        this.toastService.error(
+          'Conceptos extra', 
+          'Error al cargar conceptos extra'
+        );
       this.cdr.markForCheck();
       }
     })
@@ -248,7 +231,6 @@ export class CalculoNominaComponent implements OnInit {
       }, 500);
   }
 
-
   getExecution(stepIndex: number) {
     return this.executionHistory.get(stepIndex);
   }
@@ -280,7 +262,10 @@ export class CalculoNominaComponent implements OnInit {
       if (this.failedStepIndex !== null) {
         this.currentStepIdx = this.failedStepIndex;
       }
-      this.showToast('error', 'Proceso detenido', data.errorMsg || 'Ocurrió un error en el cálculo');
+      this.toastService.error(
+        'Proceso detenido', 
+        data.errorMsg || 'Ocurrió un error en el cálculo'
+      );
       this.processing = false;
       if (this.stompClient) {
         this.stompClient.disconnect(() => {});
@@ -292,7 +277,10 @@ export class CalculoNominaComponent implements OnInit {
     if (!this.deliverableReady &&  (data.progress === 100 || data.status === 'COMPLETED')) {
       this.deliverableReady = true;
       this.processing = false;
-      this.showToast( 'success', 'Proceso finalizado', 'El cálculo de nómina terminó correctamente.');
+      this.toastService.success( 
+        'Proceso finalizado', 
+        'El cálculo de nómina terminó correctamente.'
+      );
         if (this.stompClient) {
           this.stompClient.disconnect(() => {});
         }
@@ -325,7 +313,10 @@ export class CalculoNominaComponent implements OnInit {
               const jobId = resp?.data;
               if (!jobId) {
                 this.processing = false;
-                this.showToast('error', 'Proceso' ,'No se recibió el identificador del proceso.');
+                this.toastService.warning(
+                  'Proceso',
+                  'No se recibió el identificador del proceso.'
+                );
                 this.cdr.markForCheck();
                 return;
               }
@@ -333,7 +324,10 @@ export class CalculoNominaComponent implements OnInit {
             },
             error: () => {
               this.processing = false;
-              this.showToast('error', 'Proceso', 'No se pudo iniciar el proceso. Verifica que el servidor esté disponible.');
+              this.toastService.error(
+                'Proceso', 
+                'No se pudo iniciar el proceso. Verifica que el servidor esté disponible.'
+              );
               this.cdr.markForCheck();
             }
           });
@@ -341,7 +335,10 @@ export class CalculoNominaComponent implements OnInit {
       (error: any) => {
         this.zone.run(() => {
           this.processing = false;
-          this.showToast('error', 'WebSocket', 'No se pudo conectar con el servidor. Verifica tu conexión o que el backend esté activo.');
+          this.toastService.warning(
+            'WebSocket', 
+            'No se pudo conectar con el servidor. Verifica tu conexión o que el backend esté activo.'
+          );
           this.cdr.markForCheck();
         });
       }
