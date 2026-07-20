@@ -174,30 +174,29 @@
             <mat-icon class="checkmark-success">check_circle</mat-icon>
           }
         </div>
-@if(totalDurationMs > 0){
-  <div class="total-time-box">
 
-    <div class="total-time-header">
-      <mat-icon>timer</mat-icon>
-      <span class="title">Tiempo total</span>
-    </div>
+          @if(totalDurationMs > 0){
+            <div class="total-time-box">
+              <div class="total-time-header">
+                <mat-icon>timer</mat-icon>
+                <span class="title">Tiempo total</span>
+              </div>
 
-    <div class="total-time-row">
-      <div class="time-item">
-        <mat-icon>schedule</mat-icon>
-        <span>{{ getExecution(stepsWithProgress.length - 1)?.endTime }}</span>
-      </div>
+              <div class="total-time-row">
+                <div class="time-item">
+                  <mat-icon>schedule</mat-icon>
+                  <span>{{ getExecution(stepsWithProgress.length - 1)?.endTime }}</span>
+                </div>
 
-      <div class="divider"></div>
+                <div class="divider"></div>
 
-      <div class="time-item">
-        <mat-icon>hourglass_bottom</mat-icon>
-        <span>{{ totalDurationFormatted }}</span>
-      </div>
-    </div>
-
-  </div>
-}
+                <div class="time-item">
+                  <mat-icon>hourglass_bottom</mat-icon>
+                  <span>{{ totalDurationFormatted }}</span>
+                </div>
+              </div>
+            </div>
+          }
       </div>
 
       <mat-progress-bar class="progress-bar"
