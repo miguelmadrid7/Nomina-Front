@@ -87,6 +87,7 @@ export class CalculoNominaComponent implements OnInit {
   failedStepIndex: number | null = null;
   failedStepName: string | null = null;
   toasts: Toast[] = [];
+  totalDurationMs = 0;
 
   private stompClient: any;
   private readonly steps = [
@@ -252,8 +253,19 @@ export class CalculoNominaComponent implements OnInit {
     return this.executionHistory.get(stepIndex);
   }
 
+  get totalDurationFormatted(): string {
+    if(!this.totalDurationMs){
+      return '';
+    }
+    return DateYearsHelper.formatDuration(this.totalDurationMs);
+  }
+
   private handleProgressUpdate(data: ProgressMessage): void {
-    this.progress = Math.max(this.progress, data.progress);
+   this.progress = Math.max(this.progress, data.progress);
+    if(data.totalDurationMs){
+        this.totalDurationMs = data.totalDurationMs;
+    }
+
     if (data.stepIndex != null && data.stepName != null && data.durationMs != null) {
       this.executionHistory.set(data.stepIndex, {
         stepName: data.stepName,

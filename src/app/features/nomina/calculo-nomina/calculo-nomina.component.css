@@ -475,7 +475,6 @@
   box-sizing: border-box;
 }
 
-
 .execution-info {
   display: flex;
   gap: 16px;
@@ -487,11 +486,9 @@
   display: flex;
   align-items: center;
   gap: 6px;
-
   color: #475569;
   font-size: 13px;
 }
-
 
 .execution-item mat-icon {
   font-size: 18px;
@@ -500,27 +497,72 @@
   color: #64748b;
 }
 
-
 .chip-done {
   display: flex;
   align-items: center;
   gap: 5px;
-
   background: #dcfce7;
   color: #166534;
-
   padding: 5px 12px;
   border-radius: 20px;
-
   font-size: 12px;
   font-weight: 600;
 }
-
 
 .chip-done mat-icon {
   font-size: 15px;
   width: 15px;
   height: 15px;
+}
+
+.total-time-box{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:10px 14px;
+    border:1px solid #d7e3fc;
+    border-radius:10px;
+    background:#f8fbff;
+}
+
+.total-time-header{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-weight:600;
+    color:#1e3a8a;
+}
+
+.total-time-header mat-icon{
+    color:#2563eb;
+}
+
+.total-time-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.time-item{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    color:#374151;
+    font-size:.88rem;
+    white-space:nowrap;
+}
+
+.time-item mat-icon{
+    width:18px;
+    height:18px;
+    font-size:18px;
+    color:#6b7280;
+}
+
+.divider{
+    width:1px;
+    height:18px;
+    background:#d1d5db;
 }
 
 :host ::ng-deep .mat-vertical-stepper-header {
