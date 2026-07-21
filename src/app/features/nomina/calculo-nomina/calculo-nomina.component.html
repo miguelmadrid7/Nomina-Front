@@ -4,8 +4,6 @@
 
 <div class="section-divider"></div>
 
-
-
 <div class="page-header">
 
   <div class="subtitle-row">
@@ -195,6 +193,56 @@
         mode="determinate"
         [value]="progress">
       </mat-progress-bar>
+
+      @if(failedStepIndex !== null){
+        <div class="error-panel">
+
+          <div class="error-header">
+            <mat-icon>error</mat-icon>
+            <span>Detalle del error</span>
+          </div>
+
+
+          <!-- Información para usuario final -->
+          <div class="error-section user-error">
+
+            <div class="error-title">
+              <mat-icon>person</mat-icon>
+              <span>Mensaje para usuario</span>
+            </div>
+
+            <div class="error-row">
+              <span>
+                {{ userMessage }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Información técnica -->
+          <div class="error-section technical-error">
+
+            <div class="error-title">
+              <mat-icon>code</mat-icon>
+              <span>Detalle técnico</span>
+            </div>
+
+            <div class="error-row">
+              <strong>Paso:</strong>
+              <span>{{ failedStepName }}</span>
+            </div>
+
+            <div class="error-row">
+              <strong>Tipo:</strong>
+              <span>{{ errorType }}</span>
+            </div>
+
+            <div class="error-row">
+              <strong>Error:</strong>
+              <span>{{ errorMessage }}</span>
+            </div>
+          </div>
+        </div>
+      }
 
       <div class="process-steps" *ngIf="processing || progress === 100 || failedStepIndex !== null">
         <mat-vertical-stepper [selectedIndex]="currentStepIndex" linear>

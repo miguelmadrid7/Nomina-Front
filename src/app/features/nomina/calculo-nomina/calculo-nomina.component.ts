@@ -85,6 +85,9 @@ export class CalculoNominaComponent implements OnInit {
   showSteps = false;
   failedStepIndex: number | null = null;
   failedStepName: string | null = null;
+  errorMessage: string | null = null;
+  errorType: string | null = null;
+  userMessage: string | null = null;
   totalDurationMs = 0;
 
   private stompClient: any;
@@ -259,12 +262,18 @@ export class CalculoNominaComponent implements OnInit {
     if (data.status === 'ERROR') {
       this.failedStepIndex = data.failedStepIndex ?? null;
       this.failedStepName = data.failedStepName ?? null;
+
+      this.errorMessage = data.errorMsg ?? 'Error sin detalle';
+      this.userMessage = data.userMessage ?? 'Ocurrió un error durante el cálculo de nómina.'
+      this.errorType = data.errorType ?? 'Exception';
+
+
       if (this.failedStepIndex !== null) {
         this.currentStepIdx = this.failedStepIndex;
       }
       this.toastService.error(
-        'Proceso detenido', 
-        data.errorMsg || 'Ocurrió un error en el cálculo'
+        'Proceso detenido',
+        this.userMessage
       );
       this.processing = false;
       if (this.stompClient) {
@@ -300,6 +309,11 @@ export class CalculoNominaComponent implements OnInit {
     this.deliverableReady = false;
     this.failedStepIndex = null;
     this.failedStepName = null;
+
+    this.errorMessage = null;
+    this.userMessage = null;
+    this.errorType = null;
+
     this.cdr.markForCheck();
     const ws = new SockJS(`${environment.apiUrl}/ws`);
     this.stompClient = Stomp.over(ws);

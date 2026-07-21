@@ -3,6 +3,8 @@ export interface ProgressMessage {
     progress: number;
     status: string;
     errorMsg: string | null;
+    errorType?: string;
+    userMessage?: string | null;
     failedStepIndex: number | null;
     failedStepName: string | null;
     stepIndex?: number;
