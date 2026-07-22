@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, EventEmitter, inject, NgZone, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -7,7 +7,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { JuiciosMercantilesService } from '../../../core/services/juicios-mercantiles.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, FormGroup, ReactiveFormsModule, ValueChangeEvent } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { UppercaseDirective } from '../../../shared/directives/upperCase.directivas';
 import { AltaBeneficiarioJmDialog } from '../../../shared/dialogs/alta-beneficiario-jm-dialog/alta-beneficiario-jm-dialog';
@@ -15,6 +15,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { LoaderService } from '../../../core/services/loader.service';
 import { finalize } from 'rxjs';
 import { MatSelectModule } from '@angular/material/select';
+import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
 
 @Component({
   selector: 'app-consulta-juicios-mercantiles',
@@ -59,8 +60,8 @@ export class ConsultaJuiciosMercantiles {
     'acciones'
   ];
 
-  anios: number[] = [2026, 2025, 2024];
-  quincenas: number[] = Array.from({ length: 24 }, (_, i) => i + 1);
+  anios: number[] = [];
+  quincenas: number[] = [];
 
   readonly estados = [
     { value: 'TODOS', label: 'Todos' },
@@ -81,6 +82,8 @@ export class ConsultaJuiciosMercantiles {
   });
 
   ngOnInit(): void {
+    this.anios = DateYearsHelper.getYears(1,1);
+    this.quincenas = DateYearsHelper.getQna();
     this.loadBanks();
     this.loadBeneficiaries();
     this.searchForm.get('busqueda')?.valueChanges.subscribe(() => {
