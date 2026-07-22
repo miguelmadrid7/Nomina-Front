@@ -565,10 +565,6 @@
     background:#d1d5db;
 }
 
-/* ================================
-   Panel de errores
-================================ */
-
 .error-panel {
   margin-top: 20px;
   padding: 18px;
@@ -578,9 +574,7 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
-
 /* Encabezado principal */
-
 .error-header {
   display: flex;
   align-items: center;
@@ -599,44 +593,34 @@
   height: 22px;
 }
 
-
 /* Secciones internas */
-
 .error-section {
   border-radius: 10px;
   padding: 14px;
   margin-bottom: 12px;
 }
 
-
 /* Mensaje usuario final */
-
 .user-error {
   background: #fff7ed;
   border: 1px solid #fed7aa;
 }
 
-
 .user-error .error-title {
   color: #c2410c;
 }
 
-
 /* Error técnico */
-
 .technical-error {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
 }
 
-
 .technical-error .error-title {
   color: #475569;
 }
 
-
 /* Títulos de sección */
-
 .error-title {
   display: flex;
   align-items: center;
@@ -646,16 +630,13 @@
   margin-bottom: 12px;
 }
 
-
 .error-title mat-icon {
   font-size: 18px;
   width: 18px;
   height: 18px;
 }
 
-
 /* Filas */
-
 .error-row {
   display: flex;
   gap: 10px;
@@ -665,19 +646,15 @@
   color: #374151;
 }
 
-
 .error-row strong {
   min-width: 90px;
   color: #6b7280;
 }
 
-
 /* Mensaje largo técnico */
-
 .technical-error .error-row:last-child {
   align-items: flex-start;
 }
-
 
 .technical-error .error-row:last-child span {
   flex: 1;
@@ -691,9 +668,7 @@
   border: 1px solid #e5e7eb;
 }
 
-
 /* Separación entre bloques */
-
 .error-section:last-child {
   margin-bottom: 0;
 }
