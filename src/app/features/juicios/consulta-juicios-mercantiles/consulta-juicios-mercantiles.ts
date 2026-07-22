@@ -95,6 +95,10 @@ export class ConsultaJuiciosMercantiles {
     })
   }
 
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+  }
+
   buscar(): void {
     const texto = this.searchForm.get('searchText')?.value?.trim().toUpperCase() ?? '';
     let filtrados = this.todosLosRegistros;
