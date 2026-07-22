@@ -8,15 +8,16 @@
     <div class="actions-bar">
         <div class="actions-right">
             <div class="btn-group">
-                <button class="btn btn-danger" (click)="clearFilters()">
-                    <mat-icon>delete_outline</mat-icon>
-                    <span>Limpiar</span>
+                <button class="btn btn-primary" (click)="buscarUsuario()">
+                    <mat-icon>search</mat-icon>
+                    <span>Buscar</span>
                 </button>
             </div>
-            <button class="btn btn-primary" (click)="buscarUsuario()">
-                <mat-icon>search</mat-icon>
-                <span>Buscar</span>
+            <button class="btn btn-danger" (click)="clearFilters()">
+                <mat-icon>delete_outline</mat-icon>
+                <span>Limpiar</span>
             </button>
+           
 
             <button class="btn btn-success" type="button" (click)="openAltaUsuarioDialog()">
                 <mat-icon>person_add</mat-icon>
