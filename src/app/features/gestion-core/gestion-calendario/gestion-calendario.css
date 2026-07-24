@@ -177,16 +177,8 @@
 }
 
 .table-global .mat-mdc-header-cell {
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  color: #64748b !important;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  padding: 11px 16px !important;
-  white-space: nowrap;
-  text-align: center !important;     
-  overflow: hidden;
-  text-overflow: ellipsis;
+    vertical-align: middle !important;
+    padding: 10px 8px !important;
 }
 
 .table-global .mat-mdc-row:hover {

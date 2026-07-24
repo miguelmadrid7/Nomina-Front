@@ -2,12 +2,12 @@ import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewChild } fr
 import { ModuleService } from '../../../core/services/module.service';
 import { Module } from '../../../core/model/gestion-core/module.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ALtaModuleDialog } from '../../../shared/dialogs/alta-module-dialog/alta-module-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 

@@ -15,7 +15,6 @@
   margin-bottom: 16px;
 }
 
-
 .btn-group {
   display: inline-flex;
   justify-content: flex-start;
@@ -146,24 +145,15 @@
   line-height: 24px;
 }
 
-/* --- BADGES Y ESTILOS DE CELDA --- */
-.badge-year {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: #eff6ff;
-  color: #1d4ed8;
-  border-radius: 6px;
-  padding: 3px 10px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-}
-
-
 /* TABLA GLOBAL */
 .table-global {
     width: 100%;
+    table-layout:fixed;
+}
+
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
 }
 
 .table-global .mat-mdc-header-row {
@@ -172,16 +162,8 @@
 }
 
 .table-global .mat-mdc-header-cell {
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  color: #64748b !important;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  padding: 11px 16px !important;
-  white-space: nowrap;
-  text-align: center !important;     
-  overflow: hidden;
-  text-overflow: ellipsis;
+    vertical-align: middle !important;
+    padding: 10px 8px !important;
 }
 
 .table-global .mat-mdc-cell {
@@ -204,35 +186,41 @@
     padding: 10px 8px !important;
 }
 
-.table-global .mat-column-name {
+.table-global 
+.mat-column-name {
   width: 20%;
   min-width: 120px;
 }
 
-.table-global .mat-column-description {
+.table-global 
+.mat-column-description {
   width: 30%;
   min-width: 150px;
 }
 
-.table-global .mat-column-vista {
+.table-global 
+.mat-column-vista {
   width: 8%;
   min-width: 80px;
   text-align: center;
 }
 
-.table-global .mat-column-parent {
+.table-global 
+.mat-column-parent {
   width: 8%;
   min-width: 80px;
   text-align: center;
 }
 
-.table-global .mat-column-icon {
+.table-global 
+.mat-column-icon {
   width: 8%;
   min-width: 80px;
   text-align: center;
 }
 
-.table-global .mat-column-actions {
+.table-global 
+.mat-column-actions {
   width: 10%;
   min-width: 100px;
   text-align: center;
