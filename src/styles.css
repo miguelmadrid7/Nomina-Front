@@ -104,6 +104,16 @@ mat-sidenav-content {
 
 
 /* Tabla global*/
+.table-global {
+    width: 100%;
+    table-layout:fixed;
+}
+
+.table-scroll {
+    width: 100%;
+    overflow-x: auto;
+}
+
 .table-container {
   flex: 1 1 auto;
   display: flex;
