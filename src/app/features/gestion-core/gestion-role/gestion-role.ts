@@ -10,7 +10,6 @@ import { AltaRolDialog } from '../../../shared/dialogs/alta-rol-dialog/alta-rol-
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
-import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-gestion-role-usuarios',
@@ -22,14 +21,14 @@ import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
     MatTableModule,
     MatIconModule,
     MatDialogModule,
-    MatSortModule  
+
   ],
   templateUrl: './gestion-role.html',
   styleUrl: './gestion-role.css'
 })
 export class GestionRole implements OnDestroy {
 
-  @ViewChild(MatSort) sort?: MatSort;
+
   @ViewChild(MatPaginator) paginator?: MatPaginator
   dataSource  = new MatTableDataSource<Role>([]);
   roles: Role[] = [];
@@ -37,7 +36,7 @@ export class GestionRole implements OnDestroy {
   totalRoles = 0;
   pageSize = 10;
   pageIndex = 0;
-  activeSort: Sort = { active: 'id', direction: 'asc' };
+
   loading = false;
 
   private readonly rolService = inject(RolService);
@@ -69,11 +68,7 @@ export class GestionRole implements OnDestroy {
     });
   }
 
-  onSortChange(sort: Sort): void {
-    this.activeSort = sort.direction ? sort : { active: 'id', direction: 'asc' };
-    this.pageIndex = 0;
-    this.applyTableState();
-  }
+ 
 
   onPageChange(event: { pageIndex: number; pageSize: number }): void {
     this.pageIndex = event.pageIndex;
@@ -82,22 +77,12 @@ export class GestionRole implements OnDestroy {
   }
 
   private applyTableState(): void {
-    const sortedRoles = [...this.roles].sort((a, b) => this.compareRoles(a, b));
     const start = this.pageIndex * this.pageSize;
     const end = start + this.pageSize;
-    this.dataSource.data = sortedRoles.slice(start, end);
+    this.dataSource.data = this.roles.slice(start, end);   
   }
 
-  private compareRoles(a: Role, b: Role): number {
-    const direction = this.activeSort.direction === 'asc' ? 1 : -1;
-    const valueA = this.getSortValue(a, this.activeSort.active);
-    const valueB = this.getSortValue(b, this.activeSort.active);
-
-    if (valueA < valueB) return -1 * direction;
-    if (valueA > valueB) return 1 * direction;
-    return 0;
-  }
-
+ 
   private getSortValue(role: Role, column: string): string | number {
     switch (column) {
       case 'id':

@@ -18,14 +18,14 @@
         <div class="table-card card">
             <div class="table-content">
                 <div class="table-scroll">
-                    <table mat-table [dataSource]="dataSource" matSort matSortActive="id" matSortDirection="asc" (matSortChange)="onSortChange($event)" class="table-global">
+                    <table mat-table [dataSource]="dataSource" class="table-global">
                             <ng-container matColumnDef="rol">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header = "name"> ROL </th>
+                                <th mat-header-cell *matHeaderCellDef> ROL </th>
                                 <td mat-cell *matCellDef="let row" class="rol-cell"> {{ row.name }} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="padre">
-                                <th mat-header-cell *matHeaderCellDef mat-sort-header = "modulesName"> MÓDULOS </th>
+                                <th mat-header-cell *matHeaderCellDef> MÓDULOS </th>
                                 <td mat-cell *matCellDef="let row">
                                     <ng-container *ngIf="getRoleModules(row).length; else noModules">
                                         <div *ngFor="let module of getRoleModules(row)">{{ module }}</div>
