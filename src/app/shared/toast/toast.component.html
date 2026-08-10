@@ -1,4 +1,4 @@
-<div class="toast" [ngClass]="type">
+<div class="toast" [ngClass]="type" [class.closing]="closing">
     <div class="toast-icon">
         <mat-icon *ngIf="type === 'success'">check_circle</mat-icon>
         <mat-icon *ngIf="type === 'error'">cancel</mat-icon>

@@ -17,9 +17,13 @@ export class ToastComponent {
   @Input() title = '';
   @Input() message = '';
   @Output() closed = new EventEmitter<void>();
+  
+  closing = false;
 
   close(): void {
-    this.closed.emit();
+    this.closing = true;
+      setTimeout(() => {
+        this.closed.emit();
+      }, 300); 
   }
-
 }
