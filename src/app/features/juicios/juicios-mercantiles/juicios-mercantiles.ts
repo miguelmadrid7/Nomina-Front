@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, inject, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -19,6 +19,7 @@ import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-di
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { Calendario } from '../../../core/model/calendario.model';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-juicios-mercantiles',
@@ -45,10 +46,9 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly juiciosMercantilesService = inject(JuiciosMercantilesService);
   private readonly dialog = inject(MatDialog);
-  private readonly zone = inject(NgZone);
-  private readonly snackBar = inject(MatSnackBar);
   private readonly cd = inject(ChangeDetectorRef);
   private readonly calendarioService = inject(CalendarioService);
+  private readonly toastService = inject(ToastService);
 
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>; 
@@ -107,14 +107,6 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
     this.dialog.closeAll();
   }
 
-  private showSnack(message: string, action: string, duration: number): void {
-    this.zone.runOutsideAngular(() => {
-      setTimeout(() => {
-        this.zone.run(() => this.snackBar.open(message, action, { duration }));
-      }, 50);
-    });
-  }
-
   buscarEmpleado(): void {
     const value = this.form.get('busqueda.searchText')?.value;
     if (value && typeof value === 'object') return;
@@ -123,13 +115,13 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
     if (!texto) {
       this.resultado = [];
       this.autocompleteTrigger?.closePanel();
-      this.showSnack('Captura un criterio de búsqueda', 'Cerrar', 4000);
+      this.toastService.warning('Warning', 'Captura un criterio de búsqueda.', 4000);
       return;
     }
     if (texto.length < 3) {
       this.resultado = [];
       this.autocompleteTrigger?.closePanel();
-      this.showSnack('Captura al menos 3 caracteres para buscar', 'Cerrar', 4000);
+      this.toastService.warning('Warning', 'Captura al menos 3 caracteres para buscar.', 4000);
       return;
     }
 
@@ -141,18 +133,18 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
           .filter(e => e.rfc.trim() || e.primerApellido.trim() || e.segundoApellido.trim() || e.nombre.trim());
         this.cargandoBusqueda = false;
        if (this.resultado.length > 0) {
-  setTimeout(() => {
-    this.searchInput?.nativeElement.focus(); // ← primero enfoca
-    this.autocompleteTrigger?.openPanel();   // ← luego abre
-  });
-} else {
-  this.autocompleteTrigger?.closePanel();
-  this.showSnack('No se encontraron resultados', 'Cerrar', 4000);
-}
+        setTimeout(() => {
+          this.searchInput?.nativeElement.focus(); 
+          this.autocompleteTrigger?.openPanel(); 
+        });
+      } else {
+        this.autocompleteTrigger?.closePanel();
+        this.toastService.warning('Warning', 'No se encontraron resultados.', 4000);
+      }
       },
       error: () => {
         this.cargandoBusqueda = false;
-        this.showSnack('Error en la búsqueda', 'Cerrar', 4000);
+        this.toastService.error('Error', 'Error en la búsqueda.', 4000);
       }
     });
   }
@@ -175,7 +167,7 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
 
   saveBeneficiary(): void {
     if (!this.empleadoIdActual) {
-      this.showSnack('Selecciona un empleado primero', 'Cerrar', 4000);
+      this.toastService.warning('Warning', 'Selecciona un empleado primero.', 4000);
       return;
     }
 
@@ -222,7 +214,7 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
         this.bancos = response.data ?? [];
       },
       error: (err) => {
-        this.showSnack('Error al cargar bancos', 'Cerrar', 4000);
+        this.toastService.error('Error', 'Error al cargar bancos.', 4000);
       }
     });
   }
@@ -236,15 +228,27 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
       },
       error: () => {
         this.cargandoQna = false;
-        this.showSnack('Error al cargar QNA activa', 'Cerrar', 4000);
+        this.toastService.error('Error', 'Error al cargar QNA activa.', 4000);
       }
     });
   }
 
   clearFilters(): void {
     this.form.patchValue({
-      busqueda: { searchText: '', empleadoId: null, rfc: '', primerApellido: '', segundoApellido: '', nombre: '' },
-      empleado: { rfc: '', primerApellido: '', segundoApellido: '', nombre: '' }
+      busqueda: { 
+        searchText: '', 
+        empleadoId: null, 
+        rfc: '', 
+        primerApellido: '', 
+        segundoApellido: '', 
+        nombre: '' 
+      },
+      empleado: { 
+        rfc: '', 
+        primerApellido: '', 
+        segundoApellido: '', 
+        nombre: '' 
+      }
     }, { emitEvent: false });
     this.resultado = [];
     this.autocompleteTrigger?.closePanel();
