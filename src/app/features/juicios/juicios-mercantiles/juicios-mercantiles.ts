@@ -9,7 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { JuiciosMercantilesService } from '../../../core/services/juicios-mercantiles.service';
 import { BeneficiarioJMRequest } from '../../../core/model/request/beneficiariojm-request.model';
 import { Banco } from '../../../core/model/banco.model';
