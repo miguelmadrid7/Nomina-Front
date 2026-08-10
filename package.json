@@ -34,7 +34,7 @@
     "@angular/platform-server": "^20.2.0",
     "@angular/router": "^20.2.0",
     "@angular/ssr": "^20.2.0",
-    "apexcharts": "^5.13.0",
+    "apexcharts": "^5.16.0",
     "bootstrap": "^5.3.8",
     "express": "^5.1.0",
     "flatpickr": "^4.6.13",
