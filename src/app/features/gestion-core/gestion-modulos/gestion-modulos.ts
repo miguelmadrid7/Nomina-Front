@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ModuleService } from '../../../core/services/module.service';
 import { Module } from '../../../core/model/gestion-core/module.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -10,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ALtaModuleDialog } from '../../../shared/dialogs/alta-module-dialog/alta-module-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-gestion-modulos',
@@ -28,9 +28,9 @@ import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-di
 export class GestionModulos implements OnInit, OnDestroy {
 
   private readonly moduleService = inject(ModuleService);
-  private readonly snackBar = inject(MatSnackBar);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly dialog = inject(MatDialog);
+  private readonly toastService = inject(ToastService);
 
   @ViewChild(MatPaginator) paginator?: MatPaginator;
   displayedColumns: string[] = ['name','description','vista','parent','icon','actions'];
@@ -46,9 +46,6 @@ export class GestionModulos implements OnInit, OnDestroy {
 
   private allModules: Module[] = [];
 
-  private showSnack(message: string, action = 'Cerrar', duration = 4000) {
-    this.snackBar.open(message, action, {duration});
-  }
 
   ngOnInit(): void {
     this.getAllModules();
@@ -141,7 +138,7 @@ export class GestionModulos implements OnInit, OnDestroy {
         this.modules.data = [];
         this.totalModules = 0;
         this.loading = false;
-        this.showSnack('No se pudieron cargar los módulos.', 'Cerrar', 4000);
+        this.toastService.error('Error', 'No se pudieron cargar los módulos.', 4000);
         this.cdr.markForCheck();
       }
     });
@@ -180,7 +177,7 @@ export class GestionModulos implements OnInit, OnDestroy {
       error: () => {
         this.selectedModule = null;
         this.loadingModuleId = null;
-        this.showSnack('No se pudo obtener el detalle del módulo.', 'Cerrar', 4000);
+        this.toastService.error('Error', 'No se pudo obtener el detalle del módulo.', 4000);
         this.cdr.markForCheck();
       }
     });

@@ -192,4 +192,25 @@
   .table-global .mat-column-baseCalculoIsr {
     display: none !important;
   }
+
+  /* Ajustar anchos de columnas en móvil */
+  .table-global .mat-column-nombreEmpleado {
+    width: 25%;
+    min-width: 120px;
+  }
+
+  .table-global .mat-column-qnaProceso {
+    width: 20%;
+    min-width: 100px;
+  }
+
+  .table-global .mat-column-importeTotal {
+    width: 15%;
+    min-width: 100px;
+  }
+
+  .table-global .mat-column-acciones {
+    width: 15%;
+    min-width: 80px;
+  }
 }

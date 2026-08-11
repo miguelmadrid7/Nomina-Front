@@ -10,6 +10,7 @@ import { AltaRolDialog } from '../../../shared/dialogs/alta-rol-dialog/alta-rol-
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-gestion-role-usuarios',
@@ -21,7 +22,6 @@ import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-di
     MatTableModule,
     MatIconModule,
     MatDialogModule,
-
   ],
   templateUrl: './gestion-role.html',
   styleUrl: './gestion-role.css'
@@ -41,6 +41,7 @@ export class GestionRole implements OnDestroy {
 
   private readonly rolService = inject(RolService);
   private readonly dialog = inject(MatDialog);
+  private readonly toastService = inject(ToastService);
 
 
   ngOnInit(): void {
@@ -61,9 +62,9 @@ export class GestionRole implements OnDestroy {
         this.applyTableState();
         this.loading = false;
       },
-      error: (err) => {
+      error: () => {
         this.loading = false;
-        console.error('Error cargando roles', err);
+        this.toastService.error('Error', 'No se pudieron cargar correctamente los roles. Intente nuevamente.', 6000);
       },
     });
   }
@@ -176,66 +177,66 @@ export class GestionRole implements OnDestroy {
               });
               this.loadRoles();
             },
-            error: (err) => {
+            error: () => {
               this.loading = false;
-              console.error('Error actualizando rol', err);
+              this.toastService.error('Error', 'No se pudo actulizar correctamente el rol', 6000);
             }
           });
         });
       },
-      error: (err) => {
+      error: () => {
         this.loading = false;
-        console.error('Error cargando detalle del rol', err);
+        this.toastService.error('Error', 'No se pudo cargar correctamente el detalle del rol', 6000);
       }
     });
   }
 
- softDeleteRole(role: Role): void {
-  const ref = this.dialog.open(ConfirmDialog, {
-    width: '420px',
-    maxWidth: '95vw',
-    disableClose: true,
-    data: {
-      type: 'danger',
-      title: 'Eliminar rol',
-      message: `¿Seguro que deseas eliminar el rol "${role.name}"?`,
-      cancelText: 'Cancelar',
-      confirmText: 'Eliminar'
-    }
-  });
-
-  ref.afterClosed().subscribe((confirmed: boolean) => {
-    if (!confirmed) {
-      return;
-    }
-
-    this.loading = true;
-    this.rolService.softDeleteRole(role.id).subscribe({
-      next: () => {
-        this.loading = false;
-        this.dialog.open(PensionAlimenDialog, {
-          width: '420px',
-          data: {
-            type: 'success',
-            title: 'Eliminación correcta',
-            message: 'El rol se eliminó correctamente.'
-          }
-        });
-        this.loadRoles();
-      },
-      error: (err) => {
-        this.loading = false;
-        console.error('Error eliminando rol', err);
-        this.dialog.open(PensionAlimenDialog, {
-          width: '420px',
-          data: {
-            type: 'error',
-            title: 'Error',
-            message: 'No se pudo eliminar el rol.'
-          }
-        });
+  softDeleteRole(role: Role): void {
+    const ref = this.dialog.open(ConfirmDialog, {
+      width: '420px',
+      maxWidth: '95vw',
+      disableClose: true,
+      data: {
+        type: 'danger',
+        title: 'Eliminar rol',
+        message: `¿Seguro que deseas eliminar el rol "${role.name}"?`,
+        cancelText: 'Cancelar',
+        confirmText: 'Eliminar'
       }
     });
-  });
-}
+
+    ref.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) {
+        return;
+      }
+
+      this.loading = true;
+      this.rolService.softDeleteRole(role.id).subscribe({
+        next: () => {
+          this.loading = false;
+          this.dialog.open(PensionAlimenDialog, {
+            width: '420px',
+            data: {
+              type: 'success',
+              title: 'Eliminación correcta',
+              message: 'El rol se eliminó correctamente.'
+            }
+          });
+          this.loadRoles();
+        },
+        error: (err) => {
+          this.loading = false;
+          console.error('Error eliminando rol', err);
+          this.dialog.open(PensionAlimenDialog, {
+            width: '420px',
+            data: {
+              type: 'error',
+              title: 'Error',
+              message: 'No se pudo eliminar el rol.'
+            }
+          });
+        }
+      });
+    });
+  }
 }

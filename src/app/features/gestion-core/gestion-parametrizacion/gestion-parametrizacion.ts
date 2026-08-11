@@ -3,7 +3,6 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ParametrizacionResponse } from '../../../core/model/response/parametrizacion-response.model';
 import { ParametrizacionService } from '../../../core/services/parametrizacion.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ApiResponse } from '../../../core/model/response/api-Response.model';
 import { AltaParametrizacionDialog } from '../../../shared/dialogs/alta-parametrizacion-dialog/alta-parametrizacion-dialog';
@@ -11,6 +10,7 @@ import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-di
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ToastService } from '../../../core/services/toast.service';
 @Component({
   selector: 'app-gestion-parametrizacion',
   standalone: true,
@@ -29,9 +29,9 @@ export class GestionParametrizacion implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   private readonly parametrizacionService = inject(ParametrizacionService);
-  private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly toastService = inject(ToastService);
 
   readonly dataSource = new MatTableDataSource<ParametrizacionResponse>([]);
 
@@ -71,7 +71,7 @@ export class GestionParametrizacion implements OnInit, AfterViewInit, OnDestroy 
       error: () => {
         this.totalElements = 0;
         this.loading = false;
-        this.snackBar.open('No se cargaron correctamente los datos', 'Cerrar', { duration: 4000 });
+        this.toastService.error('Error', 'No se cargaron correctamente los datos.', 4000);
       }
     });
   }

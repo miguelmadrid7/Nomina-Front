@@ -101,24 +101,24 @@
 }
 
 .table-global .mat-column-rfc {
-  width: 110px !important;
+  width: 12%;
   min-width: 110px !important;
-  max-width: 110px !important;
+  max-width: 140px !important;
   text-align: center;
 }
 
 .table-global .mat-column-curp {
-  width: 140px !important;
-  min-width: 140px !important;
-  max-width: 140px !important;
+  width: 14%;
+  min-width: 120px !important;
+  max-width: 160px !important;
   text-align: center;
 }
 
 
 .table-global .mat-column-nombreCompleto {
-  width: 150px !important;
+  width: 18%;
   min-width: 150px !important;
-  max-width: 150px !important;
+  max-width: 200px !important;
   text-align: center;
   white-space: normal !important;
   word-break: break-word;
@@ -127,59 +127,59 @@
 }
 
 .table-global .mat-column-numeroOrden {
-    width: 110px !important;
+    width: 12%;
     min-width: 110px !important;
-    max-width: 110px !important;
-    text-align: center !important;
-}
-
-.table-global .mat-column-tipoOrden {
-    width: 130px !important;
-    min-width: 130px !important;
     max-width: 130px !important;
     text-align: center !important;
 }
 
+.table-global .mat-column-tipoOrden {
+    width: 14%;
+    min-width: 120px !important;
+    max-width: 150px !important;
+    text-align: center !important;
+}
+
 .table-global .mat-column-importeMensual {
-    width: 105px !important;
-    min-width: 105px !important;
-    max-width: 105px !important;
+    width: 12%;
+    min-width: 100px !important;
+    max-width: 120px !important;
     text-align: center !important;
 }
 
 .table-global .mat-column-concepto {
-  width: 75px !important;
+  width: 8%;
   min-width: 75px !important;
-  max-width: 75px !important;
+  max-width: 90px !important;
   text-align: center;
 }
 
 
 .table-global .mat-column-qnaProceso {
-    width: 180px !important;
-    min-width: 180px !important;
-    max-width: 180px !important;
+    width: 16%;
+    min-width: 150px !important;
+    max-width: 200px !important;
     text-align: center !important;
 }
 
 .table-global .mat-column-estatus {
-    width: 130px !important;
-    min-width: 130px !important;
-    max-width: 130px !important;
+    width: 12%;
+    min-width: 110px !important;
+    max-width: 140px !important;
     text-align: center !important;
 }
 
 .table-global .mat-column-documento {
-  width: 100px !important;
-  min-width: 100px !important;
-  max-width: 100px !important;
+  width: 10%;
+  min-width: 90px !important;
+  max-width: 110px !important;
   text-align: center;
 }
 
 .table-global .mat-column-fechaRegistro {
-  width: 120px !important;
-  min-width: 120px !important;
-  max-width: 120px !important;
+  width: 12%;
+  min-width: 110px !important;
+  max-width: 140px !important;
   text-align: center;
   white-space: normal !important;
   word-break: break-word;
