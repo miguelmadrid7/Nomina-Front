@@ -111,7 +111,7 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
     }
     const value = (this.search || '').trim().toUpperCase();
     if (!value) {
-      this.toastService.warning('Búsqueda requerida.', 'Debe ingresar un CURP, RFC o nombre de empleado', 4000);
+      this.toastService.warning('Búsqueda requerida.', 'Debe ingresar un CURP, RFC o nombre del trabajador.', 4000);
       return;
     }
     this.dataSource.filter = value;
