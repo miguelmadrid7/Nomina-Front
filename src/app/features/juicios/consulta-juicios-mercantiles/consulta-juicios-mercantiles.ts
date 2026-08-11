@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, NgZone, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -16,6 +16,7 @@ import { LoaderService } from '../../../core/services/loader.service';
 import { finalize } from 'rxjs';
 import { MatSelectModule } from '@angular/material/select';
 import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-consulta-juicios-mercantiles',
@@ -40,9 +41,9 @@ export class ConsultaJuiciosMercantiles {
 
   private readonly juiciosMercantilesService = inject(JuiciosMercantilesService);
   private readonly cd = inject(ChangeDetectorRef);
-  private readonly zone = inject(NgZone);
   private readonly dialog = inject(MatDialog); 
   private readonly loaderService = inject(LoaderService);
+  private readonly toastService = inject(ToastService);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -81,18 +82,18 @@ export class ConsultaJuiciosMercantiles {
     })
   });
 
-  ngOnInit(): void {
+   ngOnInit(): void {
     this.anios = DateYearsHelper.getYears(1,1);
     this.quincenas = DateYearsHelper.getQna();
     this.loadBanks();
     this.loadBeneficiaries();
     this.searchForm.get('busqueda')?.valueChanges.subscribe(() => {
       this.loaderService.show();
-        setTimeout(() => {
-          this.buscar();
-          this.loaderService.hide();
-        }, 200);
-    })
+      setTimeout(() => {
+          this.applyFilters(this.todosLosRegistros);
+        this.loaderService.hide();
+      }, 200);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -101,15 +102,16 @@ export class ConsultaJuiciosMercantiles {
 
   buscar(): void {
     const texto = this.searchForm.get('searchText')?.value?.trim().toUpperCase() ?? '';
-    let filtrados = this.todosLosRegistros;
-
-    if(texto) {
-      filtrados = filtrados.filter(r => 
-        r.nombreEmpleado?.toUpperCase().includes(texto) ||
-        r.rfcEmpleado?.toUpperCase().includes(texto)    ||
-        r.nombreCompleto?.toUpperCase().includes(texto)
-      );
+    if (texto.length < 3) {
+      this.toastService.warning('Búsqueda requerida.', 'Captura al menos 3 caracteres para buscar.',  4000);
+      return;
     }
+    let filtrados = this.todosLosRegistros;
+    filtrados = filtrados.filter(r =>
+      r.nombreEmpleado?.toUpperCase().includes(texto) ||
+      r.rfcEmpleado?.toUpperCase().includes(texto) ||
+      r.nombreCompleto?.toUpperCase().includes(texto)
+    );
     this.applyFilters(filtrados);
   }
 
@@ -119,7 +121,7 @@ export class ConsultaJuiciosMercantiles {
     const estado = this.searchForm.get('busqueda.estado')?.value;
     let filtrados = [...base];
       if(anio && quincena) {
-        const qnaSeleccionada = Number(`${anio} ${String(quincena).padStart(2, '0')}`);
+        const qnaSeleccionada = Number(`${anio}${String(quincena).padStart(2, '0')}`);
         filtrados = filtrados.filter(r => r.qnaini === qnaSeleccionada);
       }
       if (estado === 'ACTIVOS') {
@@ -153,7 +155,9 @@ export class ConsultaJuiciosMercantiles {
   loadBanks(): void {
     this.juiciosMercantilesService.getBancos().subscribe({
       next: (resp: any) => this.banco = resp?.data ?? [],
-      error: () => console.error('Error al cargar bancos')
+      error: () => {
+        this.toastService.error('Error', 'Error al cargar bancos', 4000)
+      }
     });
   }
 
@@ -198,7 +202,9 @@ export class ConsultaJuiciosMercantiles {
         this.hasCheck = true;
         this.cd.markForCheck();
         },
-        error: () => console.error('Error al cargar beneficiarios')
+        error: () => {
+          this.toastService.error('Error', 'Error al cargar beneficiarios', 4000)
+        }
       });
   }
   

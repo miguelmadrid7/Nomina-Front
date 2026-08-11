@@ -213,7 +213,7 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
       next: (response: ApiResponse<Banco[]>) => {
         this.bancos = response.data ?? [];
       },
-      error: (err) => {
+      error: () => {
         this.toastService.error('Error', 'Error al cargar bancos.', 4000);
       }
     });
