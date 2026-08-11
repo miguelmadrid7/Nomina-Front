@@ -1,16 +1,13 @@
-import { Component, inject, NgZone } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NominaService } from '../../../core/services/nomina-ordinaria.service';
 import { LoaderService } from '../../../core/services/loader.service';
 import { finalize } from 'rxjs';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-generar-producto',
   standalone: true,
-  imports: [
-    MatSnackBarModule,
-
-  ],
+  imports: [],
   templateUrl: './generar-producto.component.html',
   styleUrl: './generar-producto.component.css'
 })
@@ -18,51 +15,36 @@ export class GenerarProductoComponent {
 
     private readonly nominaService = inject(NominaService);
     private readonly loaderService = inject(LoaderService);
-    private readonly snackBar = inject(MatSnackBar);
-    private readonly zone = inject(NgZone);
-
-  // Agregar este método helper a la clase
-  private showSnack(message: string, action: string, duration: number): void {
-    this.zone.runOutsideAngular(() => {
-      setTimeout(() => {
-        this.zone.run(() => this.snackBar.open(message, action, { duration }));
-      }, 50);
-    });
-  }
+    private readonly toastService = inject(ToastService);
 
 
-  //Anexo V
+
+
   descargarCSVAnexoV() {
     this.loaderService.show();
-
     this.nominaService.exportarAnexoV().pipe(
       finalize (() => this.loaderService.hide())
-    )
-  
-    .subscribe({
+    ).subscribe({
       next: (blob: Blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'Anexo V.csv'; // o toma el nombre del header si quieres
+        a.download = 'Anexo V.csv'; // Nombre del archivo
         a.click();
         window.URL.revokeObjectURL(url);
       },
       error: () => {
-        this.showSnack('Error al descargar el anexo V', 'Cerrar', 4000);
+        this.toastService.error('Error', 'Error al descargar el anexo V', 4000);
 
       }
       });
   }
 
-  //ANEXO VI
   descargarCSVAnexoVI() {
     this.loaderService.show();
-  
     this.nominaService.exportarAnexoVI().pipe(
       finalize(() => this.loaderService.hide())
-    )
-    .subscribe({
+    ) .subscribe({
       next: (blob: Blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -72,7 +54,7 @@ export class GenerarProductoComponent {
         window.URL.revokeObjectURL(url);
       },
       error: () => {
-        this.showSnack('Error al descargar el anexo VI', 'Cerrar', 4000);
+        this.toastService.error('Error', 'Error al descargar el anexo VI', 4000);
       }
     });
   }
