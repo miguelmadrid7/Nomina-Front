@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, ViewChild } from '@angular/core';
 import { EmpleadoItem } from '../../../core/model/emplado.model';
 import { Role } from '../../../core/model/rol.model';
 import { AssignRoleRequest } from '../../../core/model/request/assignrole-request.model';
@@ -7,7 +7,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';;
 import { NominaRow } from '../../../core/model/nomina-Row.model';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatTableModule } from '@angular/material/table';
@@ -24,6 +23,7 @@ import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-di
 import { AltaUsuarioDialog } from '../../../shared/dialogs/alta-usuario-dialog/alta-usuario-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-gestion-usuarios',
@@ -35,7 +35,6 @@ import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
     MatFormFieldModule,
     MatInputModule,
     MatAutocompleteModule,
-    MatSnackBarModule,
     MatTableModule,
     MatPaginatorModule,
     MatCheckboxModule,
@@ -51,10 +50,9 @@ export class GestionUsuarios implements OnDestroy {
 
   private readonly userService = inject(UserService);
   private readonly fb = inject(FormBuilder);
-  private readonly snackBar = inject(MatSnackBar);
-  private readonly zone = inject(NgZone);
   private readonly cd = inject(ChangeDetectorRef);
   private readonly dialog = inject(MatDialog);
+  private readonly toastService = inject(ToastService);
 
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
@@ -97,43 +95,43 @@ export class GestionUsuarios implements OnDestroy {
     this.dialog.closeAll();
   }
 
- onSortChange(sort: Sort): void {
-  this.activeSort = sort.direction ? sort : { active: 'id', direction: 'desc' };
-  this.pageIndex = 0;
-  this.applyTableState();
-}
-
-onPageChange(event: PageEvent): void {
-  this.pageIndex = event.pageIndex;
-  this.pageSize = event.pageSize;
-  this.applyTableState();
-}
-
-private applyTableState(): void {
-  const sorted = [...this.allUsers].sort((a, b) => {
-    const dir = this.activeSort.direction === 'asc' ? 1 : -1;
-    const va = this.getSortValue(a, this.activeSort.active);
-    const vb = this.getSortValue(b, this.activeSort.active);
-    if (va < vb) return -1 * dir;
-    if (va > vb) return 1 * dir;
-    return 0;
-  });
-  const start = this.pageIndex * this.pageSize;
-  const end = start + this.pageSize;
-  this.usersDataSource.data = sorted.slice(start, end);
-}
-
-private getSortValue(row: EmpleadoItem, column: string): string | number {
-  switch (column) {
-    case 'id': return row.id ?? 0;
-    case 'nombreCompleto': return (row.nombreCompleto ?? '').toLowerCase();
-    case 'empleado': return (row.empleado ?? '').toLowerCase();
-    case 'rolesName': return (row.rolesName ?? row.rolesname ?? '').toLowerCase();
-    case 'parentModulesName': return (row.parentModulesName ?? row.parentmodulesname ?? '').toLowerCase();
-    case 'childModulesName': return (row.childModulesName ?? row.childmodulesname ?? '').toLowerCase();
-    default: return '';
+  onSortChange(sort: Sort): void {
+    this.activeSort = sort.direction ? sort : { active: 'id', direction: 'desc' };
+    this.pageIndex = 0;
+    this.applyTableState();
   }
-}
+
+  onPageChange(event: PageEvent): void {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.applyTableState();
+  }
+
+  private applyTableState(): void {
+    const sorted = [...this.allUsers].sort((a, b) => {
+      const dir = this.activeSort.direction === 'asc' ? 1 : -1;
+      const va = this.getSortValue(a, this.activeSort.active);
+      const vb = this.getSortValue(b, this.activeSort.active);
+      if (va < vb) return -1 * dir;
+      if (va > vb) return 1 * dir;
+      return 0;
+    });
+    const start = this.pageIndex * this.pageSize;
+    const end = start + this.pageSize;
+    this.usersDataSource.data = sorted.slice(start, end);
+  }
+
+  private getSortValue(row: EmpleadoItem, column: string): string | number {
+    switch (column) {
+      case 'id': return row.id ?? 0;
+      case 'nombreCompleto': return (row.nombreCompleto ?? '').toLowerCase();
+      case 'empleado': return (row.empleado ?? '').toLowerCase();
+      case 'rolesName': return (row.rolesName ?? row.rolesname ?? '').toLowerCase();
+      case 'parentModulesName': return (row.parentModulesName ?? row.parentmodulesname ?? '').toLowerCase();
+      case 'childModulesName': return (row.childModulesName ?? row.childmodulesname ?? '').toLowerCase();
+      default: return '';
+    }
+  }
 
   openAltaUsuarioDialog(): void {
     const ref = this.dialog.open(AltaUsuarioDialog, {
@@ -176,24 +174,15 @@ private getSortValue(row: EmpleadoItem, column: string): string | number {
     });
   }
 
-  private showSnack(message: string, action: string, duration: number): void {
-    this.zone.runOutsideAngular(() => {
-      setTimeout(() => {
-        this.zone.run(() => this.snackBar.open(message, action, { duration }));
-      }, 50);
-    });
-  }
-
-  // consumir endpoint de roles
   loadRoles(): void {
     this.userService.getRoles().subscribe({
-    next: (data: Role[]) => {
-      this.roles = data;
-    },
-    error: (err) => {
-      console.error('Error cargando roles', err);
-    }
-  });
+      next: (data: Role[]) => {
+        this.roles = data;
+      },
+      error: () => {
+        this.toastService.error('Error', 'No se pudo obtener la carga de roles.', 6000);
+      }
+    });
   }
 
   loadEmpleados(): void {
@@ -263,13 +252,13 @@ private getSortValue(row: EmpleadoItem, column: string): string | number {
     if (!texto) {
       this.resultado = [];
       this.autocompleteTrigger?.closePanel();
-      this.showSnack('Captura un criterio de busqueda', 'Cerrar', 4000);
+      this.toastService.warning('Referencia de búsqueda', 'Captura un criterio de búsqueda.', 6000);
       return;
     }
     if (texto.length < 3) {
       this.resultado = [];
       this.autocompleteTrigger?.closePanel();
-      this.showSnack('Captura almenos 3 caractares para buscar', 'Cerrar', 4000);
+      this.toastService.warning('Referencia de búsqueda', 'Captura almenos 3 caractares para buscar.', 6000);
       return;
     }
 
@@ -487,17 +476,13 @@ private getSortValue(row: EmpleadoItem, column: string): string | number {
         searchText: '',
       }
     }, { emitEvent: false });
-
     this.resultado = [];
     this.empleadoActual = null;
     this.selectedRoles = [];
-    
-    // Restaurar allUsers desde empleados originales
     this.allUsers = [...this.empleados];
     this.totalUsers = this.allUsers.length;
     this.pageIndex = 0;
     this.applyTableState();
-    
     this.autocompleteTrigger?.closePanel();
     this.cd.markForCheck();
   }
