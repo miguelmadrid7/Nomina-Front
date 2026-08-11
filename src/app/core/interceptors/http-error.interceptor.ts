@@ -15,7 +15,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
                 case 0:
                     toastService.error(
                         'Sin conexión', 
-                        'No fue posible conectar con el servidor. Inténtalo nuevamente más tarde.', 
+                        'No fue posible conectar con el servidor. Inténtalo nuevamente.', 
                         6000
                     );
                 break;
@@ -55,7 +55,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
                 case 500:
                     toastService.error(
                         'Error del servidor', 
-                        'Ocurrió un problema en el servidor. Inténtalo nuevamente más tarde.',
+                        'Ocurrió un problema en el servidor. Inténtalo nuevamente.',
                         6000
                     );
                 break;
@@ -65,7 +65,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
                 case 504:
                     toastService.error(
                         'Servicio no disponible', 
-                        'El servidor no está disponible actualmente. Inténtalo nuevamente más tarde.',
+                        'El servidor no está disponible actualmente. Inténtalo nuevamente.',
                         6000
                     );
                 break;
