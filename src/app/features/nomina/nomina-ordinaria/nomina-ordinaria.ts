@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, NgZone, inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -11,7 +11,6 @@ import { NominaService } from '../../../core/services/nomina-ordinaria.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { NominaordConceptoDialog } from '../../../shared/dialogs/nominaord-concepto-dialog/nominaord-concepto-dialog';
 import { MatInputModule } from '@angular/material/input';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { NominaRow } from '../../../core/model/nomina-Row.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LoaderService } from '../../../core/services/loader.service';
@@ -20,6 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 import { buildQnaCode, groupNominaRows, mapRawRowToNominaRow } from '../../../shared/helpers/nomina.helper';
 import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-nomina-ordinaria',
@@ -36,7 +36,6 @@ import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
     MatOption,
     MatDialogModule,
     MatInputModule,
-    MatSnackBarModule,
     MatIconModule,
     UppercaseDirective
 ],
@@ -76,8 +75,7 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
   private readonly nominaService = inject(NominaService);
   private readonly loaderService = inject(LoaderService);
   private readonly dialog = inject(MatDialog);
-  private readonly snackBar = inject(MatSnackBar);
-  private readonly zone = inject(NgZone);
+  private readonly toastService = inject(ToastService);
 
   ngOnInit(): void {
     this.anios = DateYearsHelper.getYears(1,1);
@@ -106,23 +104,14 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
     }, 0);
   }
 
-  // Método helper de la clase
-  private showSnack(message: string, action: string, duration: number): void {
-    this.zone.runOutsideAngular(() => {
-      setTimeout(() => {
-        this.zone.run(() => this.snackBar.open(message, action, { duration }));
-      }, 50);
-    });
-  }
-
   applySearchFilter(): void {
     if (!this.anioSeleccionado || !this.quincenaSeleccionada) {
-      this.showSnack('Debe seleccionar Año y Quincena','Cerrar',4000);
+      this.toastService.warning('Búsqueda requerida.', 'Debe seleccionar Año y Quincena', 4000);
       return;
     }
     const value = (this.search || '').trim().toUpperCase();
     if (!value) {
-      this.showSnack('Debe ingresar un CURP, RFC o nombre de empleado','Cerrar', 4000);
+      this.toastService.warning('Búsqueda requerida.', 'Debe ingresar un CURP, RFC o nombre de empleado', 4000);
       return;
     }
     this.dataSource.filter = value;
@@ -130,10 +119,12 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
       this.paginator.firstPage();
     }
   }
+
   onQnaChange(): void {
     if (!this.showRecords || !this.filtersReady) return;
       clearTimeout(this.qnaDebounceId);
       this.qnaDebounceId = setTimeout(() => {
+        
         if (this.anioSeleccionado && !this.quincenaSeleccionada) {
           this.loaderService.show();
           this.dataSource.data = [];
@@ -174,7 +165,7 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
       ).subscribe({
         next: (response) => {
           if (!response.success) {
-            this.showSnack(response.message || 'Error', 'Cerrar', 4000);
+            this.toastService.error('Error', response.message || 'No fue posible cargar la nómina.', 4000);
             return;
           }
       const targetQna = buildQnaCode(this.anioSeleccionado!, this.quincenaSeleccionada!);
@@ -189,7 +180,6 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
       error: () => {
         this.dataSource.data = [];
         this.totalElements   = 0;
-        this.showSnack('Error al obtener la nómina', 'Cerrar', 4000);
       },
     });
   }
