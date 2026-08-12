@@ -32,6 +32,7 @@ import { BeneficiarioRequest } from '../../../core/model/request/beneficiario-re
 import { formatEmployeeDisplay, mapEmpleado } from '../../../shared/helpers/empelado.helper';
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { Calendario } from '../../../core/model/calendario.model';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-pension-alimenticia',
@@ -66,6 +67,8 @@ export class PensionAlimenticia implements OnDestroy {
   private readonly dialog = inject(MatDialog); 
   private readonly cdr = inject(ChangeDetectorRef); 
   private readonly calendarioService = inject(CalendarioService);
+  private readonly toastService = inject(ToastService);
+
   
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild('chart') chartComponent: any;
@@ -214,6 +217,7 @@ export class PensionAlimenticia implements OnDestroy {
     if (q.length < 3 && !esRFC(q) && !esCURP(q)) {
       this.resultados = [];
       this.cargandoBusqueda = false;
+      this.toastService.warning('Búsqueda inválida', 'Captura al menos 3 caracteres para buscar.', 4000)
       return;
     }
     const obs =
@@ -297,7 +301,6 @@ export class PensionAlimenticia implements OnDestroy {
     this.pensionAlimenticiaService.getBeneficiaryByEmployee(empleadoId)
       .subscribe({
         next: (resp) => {
-          console.log('Respuesta cruda del backend:', resp); 
           const disponible = Number(resp.data?.porcentajeDisponible ?? 100);
           this.porcentajeDisponible = Math.max(0, disponible);
           this.renderChartFromDisponible();
@@ -319,13 +322,12 @@ export class PensionAlimenticia implements OnDestroy {
   }
 
   loadBanksCatalog (): void {
-    this.pensionAlimenticiaService.getBancos()
-    .subscribe({
+    this.pensionAlimenticiaService.getBancos().subscribe({
       next: (response: ApiResponse<Banco[]>) => {
         this.bancos = response.data;
       },
-      error: (err: any) => {
-        console.error('Error al  cargar bancos', err)
+      error: () => {
+        this.toastService.error('Error', 'Error al  cargar bancos', 4000)
       }
     })
   }
@@ -599,17 +601,8 @@ export class PensionAlimenticia implements OnDestroy {
   }
 
   recalcularDisponible() {
-    const acumulado =
-      this.beneficiariosCapturados.reduce(
-        (a, b) => a + b,
-        0
-      );
-
-    this.porcentajeDisponible =
-      Math.max(
-        0,
-        this.porcentajeTotal - acumulado
-      );
+    const acumulado = this.beneficiariosCapturados.reduce((a, b) => a + b,  0);
+    this.porcentajeDisponible = Math.max(0, this.porcentajeTotal - acumulado);
   }
 
   onAplicarDescuentoChange() {
