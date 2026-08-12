@@ -50,3 +50,10 @@ import { BeneficiarioJMRequest } from '../../core/model/request/beneficiariojm-r
         }
         return { primerApellido: limpia(pa), segundoApellido: limpia(sa), nombre: limpia(no) };
     }
+
+    export function  calculateFactorDecimal(porcentaje: number | null | undefined): number {
+        if(porcentaje == null || isNaN(Number(porcentaje))) {
+            return 0;
+        }
+        return Number(porcentaje) / 100;
+    }

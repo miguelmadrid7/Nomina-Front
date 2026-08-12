@@ -14,8 +14,7 @@ import { JuiciosMercantilesService } from '../../../core/services/juicios-mercan
 import { BeneficiarioJMRequest } from '../../../core/model/request/beneficiariojm-request.model';
 import { Banco } from '../../../core/model/banco.model';
 import { ApiResponse } from '../../../core/model/response/api-Response.model';
-import { formatBeneficiarioJMDisplay, mapBeneficiarioJM, repartirNombre } from '../../../shared/helpers/beneficiario-jm.helper';
-import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
+import { calculateFactorDecimal, formatBeneficiarioJMDisplay, mapBeneficiarioJM, repartirNombre } from '../../../shared/helpers/beneficiario-jm.helper';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { Calendario } from '../../../core/model/calendario.model';
@@ -89,7 +88,7 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
         clabe: [''],
         bancoId: [''],
         formaAplicacion: [''],
-        factorImporte: [''],
+        factorImporte: ['', Validators.max(100)],
         estatus: [''],
         descripcion: [''],
       }),
@@ -115,13 +114,13 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
     if (!texto) {
       this.resultado = [];
       this.autocompleteTrigger?.closePanel();
-      this.toastService.warning('Warning', 'Captura un criterio de búsqueda.', 4000);
+      this.toastService.warning('Búsqueda requerida', 'Captura un criterio de búsqueda.', 4000);
       return;
     }
     if (texto.length < 3) {
       this.resultado = [];
       this.autocompleteTrigger?.closePanel();
-      this.toastService.warning('Warning', 'Captura al menos 3 caracteres para buscar.', 4000);
+      this.toastService.warning('Búsqueda invalida', 'Captura al menos 3 caracteres para buscar.', 4000);
       return;
     }
 
@@ -149,11 +148,14 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
     });
   }
 
-  empleadoSeleccionado(emp: BeneficiarioJMRequest): void {
+  employeeSelect(emp: BeneficiarioJMRequest): void {
     this.empleadoIdActual = Number(emp.id);
     const partes = repartirNombre(emp);
     this.form.patchValue({
-      busqueda: { empleadoId: Number(emp.id), searchText: emp },
+      busqueda: { 
+        empleadoId: Number(emp.id), 
+        searchText: emp 
+      },
       empleado: {
         rfc: emp.rfc ?? '',
         primerApellido: partes.primerApellido,
@@ -167,7 +169,7 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
 
   saveBeneficiary(): void {
     if (!this.empleadoIdActual) {
-      this.toastService.warning('Warning', 'Selecciona un empleado primero.', 4000);
+      this.toastService.warning('Acción invalida', 'Selecciona un empleado primero.', 4000);
       return;
     }
 
@@ -183,29 +185,41 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
         next: () => {
           this.form.get('beneficiario')?.reset();
           this.clearFilters();
-          this.dialog.open(ConfirmDialog, {
-            width: '420px',
-            data: {
-              title: 'Registro exitoso',
-              message: 'El juicio fue guardado con exito',
-              confirmText: 'Aceptar',
-              type: 'info'
-            }
-          });
+          this.toastService.info('Información guardada', 'Juicio guardado correctamente.', 6000);
         },
-        error: (err) => {
-          console.error(err);
-          this.dialog.open(ConfirmDialog, {
-            width: '420px',
-            data: {
-              title: 'Error',
-              message: 'Ocurrio un error al guardar el juicio. Intenta nuevamente',
-              confirmText: 'Cerrar',
-              type: 'danger'
-            }
-          });
+        error: () => {
+          this.toastService.error('Error', 'Juicio no se guardo correctamente. Intenta nuevamente', 6000);
         }
       });
+  }
+
+  updateFactorValidator(): void {
+    const forma = this.form.get('beneficiario.formaAplicacion');
+    const factor = this.form.get('beneficiario.factorImporte');
+    
+    if(forma?.value === 'P') {
+      factor?.setValidators([
+        Validators.min(0),
+        Validators.max(100)
+      ]);
+    } else {
+      factor?.setValidators([
+        Validators.min(0)
+      ]);
+    }
+    factor?.updateValueAndValidity();
+  }
+
+  updateFactorDecimal(): void {
+    const forma = this.form.get('beneficiario.formaAplicacion')?.value;
+    const valor = Number (this.form.get('beneficiario.factorImporte')?.value);
+
+    if(forma === 'P') {
+      this.factorDecimal = calculateFactorDecimal(valor);
+    } else {
+      this.factorDecimal = 0;
+    }
+
   }
 
   loadBanks(): void {
@@ -219,7 +233,7 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
     });
   }
 
- loadQnaActiva(): void {
+  loadQnaActiva(): void {
     this.cargandoQna = true;
     this.calendarioService.getQnaActiva().subscribe({
       next: (response: ApiResponse<Calendario>) => {

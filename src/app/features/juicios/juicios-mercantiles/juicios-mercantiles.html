@@ -33,7 +33,7 @@
                         #searchInput
                         (keydown.enter)="$event.preventDefault(); 
                         buscarEmpleado()">
-                    <mat-autocomplete #auto="matAutocomplete"  (optionSelected)="empleadoSeleccionado($event.option.value)" [displayWith]="displayFn">
+                    <mat-autocomplete #auto="matAutocomplete"  (optionSelected)="employeeSelect($event.option.value)" [displayWith]="displayFn">
                         <mat-option *ngFor="let emp of resultado" [value]="emp"> {{ displayFn(emp) }}  </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
@@ -126,7 +126,6 @@
                         <mat-icon matPrefix>person</mat-icon>
                             <mat-label>Apellido Paterno*</mat-label>
                                 <input matInput formControlName="primerApellido" placeholder="Apellido paterno" appSoloLetras appUppercase/>
-                                    <mat-error *ngIf="form.get('beneficiario.primerApellido')?.invalid && (form.get('beneficiario.primerApellido')?.touched)">Ingresa el apellido paterno (mín. 2 caracteres).</mat-error>
                     </mat-form-field>
                 </div>
 
@@ -135,8 +134,7 @@
                         <mat-icon matPrefix>person</mat-icon>
                             <mat-label>Apellido materno*</mat-label>
                                 <input matInput formControlName="segundoApellido" placeholder="Apellido materno" appSoloLetras appUppercase/>
-                                    <mat-error *ngIf="form.get('beneficiario.segundoApellido')?.invalid && (form.get('beneficiario.segundoApellido')?.touched)"> Ingresa el apellido materno (mín. 2 caracteres).</mat-error>
-                    </mat-form-field>
+                        </mat-form-field>
                 </div>
 
                 <div class="field-group">
@@ -144,7 +142,6 @@
                         <mat-icon matPrefix>person</mat-icon>
                             <mat-label>Nombres personales/Nombres empresariales*</mat-label>
                                 <input matInput formControlName="nombre" placeholder="Nombre completo" appUppercase/>
-                                    <mat-error *ngIf="form.get('beneficiario.nombre')?.invalid && (form.get('beneficiario.nombre')?.touched)">Ingresa el nombre (mín. 2 caracteres).</mat-error>
                     </mat-form-field>  
                 </div>
                 
@@ -152,10 +149,15 @@
                     <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
                         <mat-icon matPrefix>attach_money</mat-icon>
                             <mat-label>Importe total*</mat-label>
-                                <input matInput formControlName="importeTotal" type="number" min="0" step="any" inputmode="decimal" 
+                                <input 
+                                    matInput 
+                                    formControlName="importeTotal" 
+                                    type="number" 
+                                    min="0" 
+                                    step="any" 
+                                    inputmode="decimal" 
                                     (keydown)="($event.key === '-' || $event.key === 'e' || $event.key === 'E') ? $event.preventDefault() : null" 
-                                    placeholder="Importe total" />
-                                        <mat-error *ngIf="form.get('beneficiario.importeTotal')?.invalid && (form.get('beneficiario.importeTotal')?.touched)">Captura un importe válido.</mat-error>
+                                    placeholder="Importe total"/>
                     </mat-form-field>
                 </div>
 
@@ -164,7 +166,6 @@
                         <mat-icon matPrefix>receipt_long</mat-icon>
                             <mat-label>Cuenta bancaria*</mat-label>
                                 <input matInput formControlName="citaBancaria" placeholder="Cuenta bancaria" />
-                                    <mat-error *ngIf="form.get('beneficiario.citaBancaria')?.invalid && (form.get('beneficiario.citaBancaria')?.touched)">Captura la cita bancaria.</mat-error>
                     </mat-form-field> 
                 </div>
                 
@@ -173,7 +174,6 @@
                         <mat-icon matPrefix>credit_card</mat-icon>
                             <mat-label>Clabe interbancaria*</mat-label>
                                 <input  matInput id="clabe" formControlName="clabe" placeholder="18 dígitos" maxlength="18" />
-                                    <mat-error *ngIf="form.get('beneficiario.clabe')?.invalid && (form.get('beneficiario.clabe')?.touched)">La CLABE debe tener exactamente 18 dígitos numéricos.</mat-error>
                     </mat-form-field>
                 </div>
      
@@ -184,7 +184,6 @@
                                 <mat-select id="bancoId" formControlName="bancoId" placeholder="Seleccionar banco">
                                     <mat-option *ngFor="let bank of bancos" [value]="bank.id">{{ bank.banco }}</mat-option>
                                 </mat-select>
-                                    <mat-error *ngIf="form.get('beneficiario.bancoId')?.invalid && (form.get('beneficiario.bancoId')?.touched)">Selecciona un banco.</mat-error>
                     </mat-form-field>
                 </div>
 
@@ -192,7 +191,7 @@
                     <mat-form-field appearance="outline" class="login-field compact-field full-width with-separator" floatLabel="always">
                         <mat-icon matPrefix>tune</mat-icon>
                             <mat-label>Forma de aplicación*</mat-label>
-                                <mat-select formControlName="formaAplicacion" placeholder="Seleccionar">
+                                <mat-select formControlName="formaAplicacion" (selectionChange)="updateFactorDecimal(); updateFactorValidator()" placeholder="Seleccionar">
                                     <mat-option value="P">Factor</mat-option>
                                     <mat-option value="C">Importe fijo</mat-option>
                                 </mat-select>
@@ -212,18 +211,16 @@
                                     [attr.max]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 100 : null"
                                     [attr.step]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 1 : 'any'"
                                     inputmode="decimal"
+                                    (input)="updateFactorDecimal()"
                                     (keydown)="($event.key === '-' || $event.key === 'e' || $event.key === 'E' || $event.key === '+') ? $event.preventDefault() : null"
                                     placeholder="Ingresar cantidad" />
                                 <mat-hint *ngIf="form.get('beneficiario.formaAplicacion')?.value === 'P'"> Equivale a {{ factorDecimal | number:'1.2-2' }} de la base </mat-hint>
 
-                                <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('required') && (form.get('beneficiario.factorImporte')?.touched)">
-                                    Campo obligatorio
-                                </mat-error>
                                 <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('min') && (form.get('beneficiario.factorImporte')?.touched)">
                                     Debe ser un valor positivo
                                 </mat-error>
                                 <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('max') && (form.get('beneficiario.factorImporte')?.touched)">
-                                    El porcentaje no puede ser mayor a 100
+                                    El porcentaje no puede ser mayor al 100%
                                 </mat-error>
                     </mat-form-field>
                 </div>
