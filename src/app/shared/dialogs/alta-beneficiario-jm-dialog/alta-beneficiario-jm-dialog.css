@@ -291,7 +291,7 @@ mat-form-field {
     background-color: rgba(255, 255, 255, .2);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .dialog-shell {
         max-height: 95vh;
         border-radius: 10px;

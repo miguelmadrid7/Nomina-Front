@@ -383,3 +383,7 @@ mat-sidenav-content {
 .dlg-actions button[mat-stroked-button]:hover {
   background: rgba(73, 29, 42, 0.06);
 }
+
+.cdk-overlay-container {
+    z-index: 2000 !important;
+}
