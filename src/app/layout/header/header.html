@@ -67,10 +67,10 @@
       </ul>
     </div> -->
 
-    <header class="navbar sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
+    <header class="app-header sticky-top">
 
       <button
-        class="btn btn-outline-light d-inline-flex d-lg-none ms-2"
+        class="btn btn-outline-light header-menu-btn d-inline-flex d-lg-none"
         type="button"
         data-bs-toggle="offcanvas"
         data-bs-target="#sidebarMobile"
@@ -83,24 +83,24 @@
         </svg>
       </button>
 
-
       <button
-        class="btn btn-outline-light d-none d-lg-inline-flex ms-2"
+        class="btn btn-outline-light header-menu-btn d-none d-lg-inline-flex"
         type="button"
         (click)="onToggleClick()"
         aria-label="Colapsar/expandir sidebar">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
           <rect x="3" y="5" width="18" height="3" rx="1.5" fill="currentColor"/>
           <rect x="3" y="10.5" width="18" height="3" rx="1.5" fill="currentColor"/>
           <rect x="3" y="16" width="18" height="3" rx="1.5" fill="currentColor"/>
         </svg>
       </button>
 
-      <div class="ms-auto me-2 header-actions">
-        <span *ngIf="roleName" class="header-text">Bienvenido: {{ roleName }}</span>
-        <button class="btn btn-outline-light" type="button" (click)="logout()">
-          <i class="fas fa-sign-out-alt"></i>
-          Salir
-        </button>
-      </div>
+      <span *ngIf="roleName" class="header-text"> Bienvenido: {{ roleName }} </span>
+      <button
+        class="btn btn-outline-light logout-btn"
+        type="button"
+        (click)="logout()">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>Salir</span>
+      </button>
     </header>
