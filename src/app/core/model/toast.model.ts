@@ -4,4 +4,5 @@ export interface Toast {
     title: string;
     message: string;
     duration?: number;
+    closing?: boolean;
 }

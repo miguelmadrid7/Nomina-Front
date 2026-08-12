@@ -4,6 +4,7 @@
             [type]="toast.type"
             [title]="toast.title"
             [message]="toast.message"
+            [closing]="toast.closing ?? false"
             (closed)="removeToast(toast.id)">
         </app-toast>
     }

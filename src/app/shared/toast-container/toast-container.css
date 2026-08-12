@@ -9,6 +9,11 @@
   width: auto;
   z-index: 99999;
   pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.toast.closing {
+    animation: slideOut .30s ease forwards;
 }
 
 

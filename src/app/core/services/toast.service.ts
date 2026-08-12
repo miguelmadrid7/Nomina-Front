@@ -42,14 +42,28 @@ export class ToastService {
                 type,
                 title,
                 message, 
-                duration
+                duration,
+                closing: false
             };
             this._toasts.next([
                 ...this._toasts.value, toast
             ]);
 
             setTimeout(() => {
-                this.remove(toast.id);
+                this.startClosing(toast.id);
             }, duration);
+    }
+
+    private startClosing(id: number): void {
+        const updated = this._toasts.value.map(toast =>
+            toast.id === id 
+            ? { ...toast, closing: true } 
+            : toast
+        );
+
+        this._toasts.next(updated);
+        setTimeout(() => {
+            this.remove(id);
+        }, 300);
     }
 }
