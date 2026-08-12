@@ -12,12 +12,12 @@ import { JuiciosMercantilesService } from '../../../core/services/juicios-mercan
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { factorImporteValidator, vigenciaRangoValidator } from '../../validators/juicios.validators';
 import { factorImporteControlValidator, rfcValidator, vigenciaMinimaValidator } from '../../validators/validaciones.validators';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { vigenciaFormatoValidator } from '../../validators/validaciones.validators';
 import { startWith, distinctUntilChanged } from 'rxjs';
-import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { Calendario } from '../../../core/model/calendario.model';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-beneficiario-jm-dialog',
@@ -43,9 +43,9 @@ export class AltaBeneficiarioJmDialog implements OnInit {
   private readonly snackBar = inject(MatSnackBar);
   private readonly zone = inject(NgZone);
   private readonly dialogRef = inject(MatDialogRef<AltaBeneficiarioJmDialog>);
-  private readonly dialog = inject(MatDialog);
   private readonly calendarioService = inject(CalendarioService);
   private readonly cd = inject(ChangeDetectorRef);
+  private readonly toastService = inject(ToastService);
 
   readonly data = inject<{ empleadoId: number; bancos: Banco[], modo?: 'crear' | 'editar', beneficiario? : any }>(MAT_DIALOG_DATA);
   readonly form = this.fb.group({
@@ -109,7 +109,7 @@ export class AltaBeneficiarioJmDialog implements OnInit {
       error: () => {
         setTimeout(() => {
           this.cargandoQna = false;
-          this.showSnack('Error al cargar QNA activa', 'Cerrar', 4000);
+          this.toastService.error('Error', 'No se pudo cargar QNA activa',  6000);
           this.cd.detectChanges();
         }, 0);
       }
@@ -245,7 +245,7 @@ export class AltaBeneficiarioJmDialog implements OnInit {
   guardar(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      this.showSnack('Formulario inválido', 'Cerrar', 4000);
+      this.toastService.warning('Formulario invalido', 'Revisar que los campos a actualizar esten correctos', 6000);
       return;
     }
 
@@ -258,36 +258,20 @@ export class AltaBeneficiarioJmDialog implements OnInit {
         .subscribe({
           next: () => {
             this.cerrar();
-            this.dialog.open(ConfirmDialog, {
-              width: '420px',
-              data: {
-                title: 'Actualización exitosa',
-                message: 'El beneficiario fue actualizado correctamente.',
-                confirmText: 'Aceptar',
-                type: 'info'
-              }
-            });
+            this.toastService.info('Actualización de datos', 'Datos actualizados correctamente', 6000)
           },
             error: () => {
-              this.dialog.open(ConfirmDialog, {
-                width: '420px',
-                data: {
-                  title: 'Error',
-                  message: 'Ocurrió un error al actualizar. Intenta nuevamente.',
-                  confirmText: 'Cerrar',
-                  type: 'danger'
-                }
-              });
+              this.toastService.error('Formulario incorrecto', 'Ocurrió un error al actualizar. Intenta nuevamente', 6000)
             }
           });
       } else {
       this.juiciosMercantilesService.agregarBeneficiario(payload).subscribe({
         next: () => { 
-          this.showSnack('Beneficiario guardado correctamente', 'Cerrar', 4000); 
+          this.toastService.success('Informacion guardada', 'Beneficiario guardado correctamente', 6000); 
           this.cerrar(); 
         },
         error: () => { 
-          this.showSnack('Error al guardar beneficiario', 'Cerrar', 4000); 
+          this.toastService.error('Error', 'Error al guardar beneficiario', 6000); 
         }
       });
     }

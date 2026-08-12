@@ -100,7 +100,7 @@ export class ConsultaJuiciosMercantiles {
     this.dataSource.paginator = this.paginator;
   }
 
-  buscar(): void {
+  searchEmployee(): void {
     const texto = this.searchForm.get('searchText')?.value?.trim().toUpperCase() ?? '';
     if (texto.length < 3) {
       this.toastService.warning('Búsqueda requerida.', 'Captura al menos 3 caracteres para buscar.',  4000);
@@ -228,7 +228,7 @@ export class ConsultaJuiciosMercantiles {
     });
   }
 
-  limpiar(): void {
+  clearFilters(): void {
     this.searchForm.reset({
       searchText: '',
       busqueda: {

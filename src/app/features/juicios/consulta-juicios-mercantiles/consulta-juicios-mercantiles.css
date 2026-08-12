@@ -141,15 +141,12 @@
   flex-direction: row;
   align-items: center;
   gap: 8px;
+  flex-wrap: nowrap;
 }
 
 .qna-filters mat-form-field {
-  width: 125px;
-  min-width: 100px;
-}
-
-:host ::ng-deep .qna-compact{
-  width:130px;
+  width: 130px;
+  min-width: 0;
 }
 
 :host ::ng-deep .qna-compact .mat-mdc-form-field-infix{
@@ -349,6 +346,19 @@
   .global-search {
     flex-direction: column;
     align-items: stretch;
+     width: 100%;
+  }
+
+  .qna-filters {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .qna-filters mat-form-field {
+    width: 130px;
+    min-width: 0;
+    flex: 0 0 130px;
   }
 
   .search-field {

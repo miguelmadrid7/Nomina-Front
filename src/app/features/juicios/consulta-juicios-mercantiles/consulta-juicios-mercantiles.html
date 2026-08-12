@@ -3,13 +3,13 @@
 
     <div class="actions-right">
         <div class="btn-group">
-            <button class="btn btn-primary" (click)="buscar()">
+            <button class="btn btn-primary" (click)="searchEmployee()">
                 <mat-icon>search</mat-icon>
                     <span>Buscar</span>
             </button>
         </div>
 
-        <button class="btn btn-danger"  (click)="limpiar()">
+        <button class="btn btn-danger"  (click)="clearFilters()">
             <mat-icon>delete_outline</mat-icon>
                 <span>Limpiar</span>
         </button>
@@ -24,7 +24,7 @@
                         id="buscarEmpleado" 
                         formControlName="searchText" 
                         appUppercase 
-                        (keydown.enter)="buscar()">
+                        (keydown.enter)="searchEmployee()">
         </mat-form-field>
 
         <div formGroupName="busqueda" class="qna-filters">

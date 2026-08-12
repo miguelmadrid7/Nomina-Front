@@ -43,12 +43,9 @@
                       matInput 
                       formControlName="rfc" 
                       maxlength="13" 
-                      
                       appUppercase/>
-                    <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('required')"> El RFC es obligatorio</mat-error>
+              
                     <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('rfcLongitud')"> Longitud inválida: debe ser de 12 (Moral) o 13 (Física) caracteres </mat-error>
-                    <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('rfcFecha')"> La fecha (AAMMDD) dentro del RFC no es válida </mat-error>
-                    <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('rfcFormato')"> Formato de RFC inválido </mat-error>
               </mat-form-field>
             </div>
 
@@ -60,10 +57,9 @@
                       <input 
                         matInput 
                         formControlName="primerApellido" 
-                        
                         appSoloLetras 
                         appUppercase/>
-                      <mat-error *ngIf="form.get('beneficiario.primerApellido')?.invalid && (form.get('beneficiario.primerApellido')?.touched)">Ingresa el apellido paterno (mín. 2 caracteres).</mat-error>
+        
                 </mat-form-field>
               </div>
 
@@ -73,12 +69,10 @@
                     <mat-label>APELLIDO MATERNO*</mat-label>
                       <input 
                         matInput 
-                        formControlName="segundoApellido" 
-                        
+                        formControlName="segundoApellido"  
                         appSoloLetras 
                         appUppercase/>
-                      <mat-error *ngIf="form.get('beneficiario.segundoApellido')?.invalid && (form.get('beneficiario.segundoApellido')?.touched)"> Ingresa el apellido materno (mín. 2 caracteres).</mat-error>
-                </mat-form-field>
+                  </mat-form-field>
               </div>
 
               <div>
@@ -87,10 +81,8 @@
                     <mat-label>NOMBRES PERSONALES / NOMBRES EMPRESARIALES*</mat-label>
                       <input 
                         matInput 
-                        formControlName="nombre" 
-                        
+                        formControlName="nombre"                      
                         appUppercase/>
-                    <mat-error *ngIf="form.get('beneficiario.nombre')?.invalid && (form.get('beneficiario.nombre')?.touched)">Ingresa el nombre (mín. 2 caracteres).</mat-error>
                 </mat-form-field>
               </div>
 
@@ -111,9 +103,7 @@
                       min="0" 
                       step="any" 
                       inputmode="decimal" 
-                      (keydown)="($event.key === '-' || $event.key === 'e' || $event.key === 'E') ? $event.preventDefault() : null" 
-                       />
-                    <mat-error *ngIf="form.get('beneficiario.importeTotal')?.invalid && (form.get('beneficiario.importeTotal')?.touched)">Captura un importe válido.</mat-error>
+                      (keydown)="($event.key === '-' || $event.key === 'e' || $event.key === 'E') ? $event.preventDefault() : null" />
               </mat-form-field>
             </div>
 
@@ -123,9 +113,7 @@
                   <mat-label>CUENTA BANCARIA*</mat-label>
                     <input 
                       matInput 
-                      formControlName="citaBancaria" 
-                      />
-                    <mat-error *ngIf="form.get('beneficiario.citaBancaria')?.invalid && (form.get('beneficiario.citaBancaria')?.touched)">Captura la cita bancaria.</mat-error>
+                      formControlName="citaBancaria"/>
               </mat-form-field>
             </div>
 
@@ -138,7 +126,6 @@
                         formControlName="clabe" 
                         placeholder="18 dígitos"
                         maxlength="18"/>
-                      <mat-error *ngIf="form.get('beneficiario.clabe')?.invalid && (form.get('beneficiario.clabe')?.touched)">La CLABE debe tener exactamente 18 dígitos numéricos.</mat-error>
                 </mat-form-field>
             </div>
           </div>
@@ -153,7 +140,6 @@
                       formControlName="bancoId">
                       <mat-option *ngFor="let bank of bancos" [value]="bank.id">{{ bank.banco }}</mat-option>
                     </mat-select>
-                    <mat-error *ngIf="form.get('beneficiario.bancoId')?.invalid && (form.get('beneficiario.bancoId')?.touched)">Selecciona un banco.</mat-error>
               </mat-form-field>
             </div>
 
@@ -183,7 +169,6 @@
                       inputmode="decimal"
                       (keydown)="($event.key === '-' || $event.key === 'e' || $event.key === 'E' || $event.key === '+') ? $event.preventDefault() : null"/>
                     <mat-hint *ngIf="form.get('beneficiario.formaAplicacion')?.value === 'P'"> Equivale a {{ factorDecimal | number:'1.2-2' }} de la base </mat-hint>
-                    <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('required') && (form.get('beneficiario.factorImporte')?.touched)"> Campo obligatorio </mat-error>
                     <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('min') && (form.get('beneficiario.factorImporte')?.touched)">  Debe ser un valor positivo </mat-error>
                     <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('max') && (form.get('beneficiario.factorImporte')?.touched)"> El porcentaje no puede ser mayor a 100 </mat-error>
               </mat-form-field>
