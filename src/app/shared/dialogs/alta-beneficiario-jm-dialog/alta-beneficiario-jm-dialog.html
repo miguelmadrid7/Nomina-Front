@@ -7,12 +7,7 @@
   </div>
 
   <div class="header-row">
-    <div class="section-title">
-      <span></span>
-      <h3 class="dialog-title">{{ data.modo === 'editar'? 'Editar Beneficiario': 'Agregar Beneficiario'}} </h3>
-    </div>
-  
-    <div class="qna-summary">
+    <div class="qna-summary-dialog">
       <span class="qna-label">Quincena activa</span>
       @if (cargandoQna) {
         <span class="qna-tag">Cargando...</span>
@@ -31,9 +26,8 @@
       <div formGroupName="beneficiario">
         <div class="form-card">
 
-          <div class="section-divider"></div>
           <div class="form-grid">
-
+          <div class="dlg-bar-title">Detalle de empelado</div> 
             <div class="span-3">
               <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                 <mat-icon matPrefix>badge</mat-icon>
