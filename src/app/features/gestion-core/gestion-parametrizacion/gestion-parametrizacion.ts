@@ -71,7 +71,7 @@ export class GestionParametrizacion implements OnInit, AfterViewInit, OnDestroy 
       error: () => {
         this.totalElements = 0;
         this.loading = false;
-        this.toastService.error('Error', 'No se cargaron correctamente los datos.', 4000);
+        this.toastService.error('Error', 'No se cargaron correctamente los datos.', 6000);
       }
     });
   }
@@ -119,25 +119,10 @@ export class GestionParametrizacion implements OnInit, AfterViewInit, OnDestroy 
         .subscribe({
           next: () => {
             this.getAllParam();
-            this.dialog.open(ConfirmDialog, {
-              width: '360px',
-              data: {
-                title: 'Operación exitosa',
-                message: 'Parámetro eliminado correctamente.',
-                confirmText: 'Aceptar'
-              }
-            });
+            this.toastService.info('Operación exitosa', 'Parámetro eliminado correctamente.', 6000);
           },
           error: () => {
-            this.dialog.open(ConfirmDialog, {
-              width: '360px',
-              data: {
-                title: 'Error',
-                message: 'No se pudo eliminar el parámetro. Intenta de nuevo.',
-                confirmText: 'Aceptar',
-                type: 'error'
-              }
-            });
+            this.toastService.error('Operación invalida', 'No se pudo eliminar el parámetro. Intentalo nuevamente', 6000);
           }
         }).add(() => {
           this.loading = false;

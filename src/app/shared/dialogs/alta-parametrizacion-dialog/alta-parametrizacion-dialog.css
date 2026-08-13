@@ -3,32 +3,17 @@
   display: flex;
   flex-direction: column;
   max-height: 90vh;
+  gap: 0;
 }
 
 .dialog-header {
-  position: relative;
   background: var(--brand);
   color: #fff;
   padding: 25px 50px;
   display: flex;
   align-items: center;
-  justify-content: center; 
-}
-
-/* Titulo modal */
-.dlg-bar-title {
-  justify-content: center;
-  align-items: center;
-}
-
-/* Dialog content - SIN display: grid */
-.dlg-content {
-  padding: 14px 16px;
-  max-height: calc(80vh - 120px);
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  background: var(--bg);
-  flex: 1;
+  justify-content: flex-start; 
+  position: relative;
 }
 
 .dialog-close {
@@ -44,17 +29,35 @@
   box-shadow: none !important;
 }
 
+/* Contenido de dialogo */
+.dlg-conten {
+  padding: 14px 16px;
+  max-height: calc(80vh - 120px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg);
+  flex: 0 1 auto !important;
+}
+
+.dlg-bar-title {
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
 .dlg-actions {
   display: flex;
   justify-content: center;
   gap: 10px;
-  padding: 10px 12px;
+  padding: 14px 12px;
   border-top: 1px solid var(--line);
   background: #fff;
   flex-shrink: 0;
 }
 
-/* ===== Botones ===== */
+/* Botones */
 .btn {
   width: 120px;
   height: 36px;
@@ -105,13 +108,9 @@
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  padding: 8px 0;
+  gap: 12px;
 }
 
-.form-grid .full-width {
-  grid-column: 1 / -1;
-}
 
 :host ::ng-deep .qna-compact .mat-mdc-form-field-infix {
     min-height: 40px !important;
@@ -129,25 +128,42 @@
     padding-bottom: 0 !important;
 }
 
-@media (max-width: 600px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .form-grid .full-width {
-    grid-column: 1;
-  }
-
+@media (max-width: 768px) {
   .dialog-header {
     padding: 16px 40px;
   }
 
+  .dialog-shell {
+    max-height: 95vh;
+  }
+
+  .dlg-conten {
+    padding: 12px;
+    max-height: calc(90vh - 100px);
+  }
+
   .dlg-actions {
-    padding: 10px;
+    padding: 15px 25px 20px;
     gap: 8px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
   }
 
   .btn {
     width: 100%;
+  }
+
+  .btn-group {
+    display: inline-flex;
+    width: auto;
+    flex: 0 0 auto;
+    align-self: flex-start;
+  }
+
+  .btn {
+    width: 120px;
+    flex: 0 0 120px;
   }
 }

@@ -1,15 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ParametrizacionService } from '../../../core/services/parametrizacion.service';
 import { DialogData } from '../../../core/model/dialogdata.model';
 import { ParametrizacionRequest } from '../../../core/model/request/parametrizacion-request.model';
-import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
-import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-alta-parametrizacion-dialog',
@@ -20,7 +19,6 @@ import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDialogModule,
 
   ],
   templateUrl: './alta-parametrizacion-dialog.html',
@@ -32,10 +30,10 @@ export class AltaParametrizacionDialog implements OnInit {
 
   private readonly dialogRef = inject(MatDialogRef<AltaParametrizacionDialog>);
   private readonly parametrizacionService = inject(ParametrizacionService);
-  private readonly dialog = inject(MatDialog);
   private readonly fb = inject(FormBuilder);
-  readonly data = inject<DialogData>(MAT_DIALOG_DATA);
+  private readonly toastService = inject(ToastService);
 
+  readonly data = inject<DialogData>(MAT_DIALOG_DATA);
   readonly form = this.fb.group({
     anio: [null as number | null, Validators.required],
     importeDiario: [null as number | null, Validators.required],
@@ -87,28 +85,12 @@ export class AltaParametrizacionDialog implements OnInit {
     llamada.subscribe({
       next: () => {
         this.isLoading = false;
-        this.dialog.open(ConfirmDialog, {
-          width: '360px',
-          data: {
-            title: 'Operación exitosa',
-            message: this.isEdit
-              ? 'Se actualizó correctamente el registro.'
-              : 'Se guardó correctamente el registro.',
-            confirmText: 'Aceptar'
-          }
-        }).afterClosed().subscribe(() => this.dialogRef.close(true));
+        this.toastService.info('Operación exitosa', this.isEdit ? 'Se actualizó correctamente el registro.' : 'Se guardó correctamente el registro.', 6000);
+        this.dialogRef.close(true);
       },
       error: () => {
         this.isLoading  = false;
-        this.dialog.open(ConfirmDialog, {
-          width: '360px',
-          data: {
-            title: 'Error',
-            message: 'Ocurrió un error al guardar. Intenta de nuevo.',
-            confirmText: 'Aceptar',
-            type: 'error'
-          }
-        });
+        this.toastService.error('Operacion invalida', 'Ocurrió un erro al guardar. Intenta nuevamente', 6000);
       }
     });
   }
