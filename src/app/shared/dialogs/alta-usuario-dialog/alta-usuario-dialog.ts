@@ -33,6 +33,8 @@ export class AltaUsuarioDialog {
   private readonly ref = inject(MatDialogRef<AltaUsuarioDialog>);
   readonly data= inject<any>(MAT_DIALOG_DATA);
 
+  hidePassword = true;
+
   ngOnInit(): void {
     const roles = this.data?.roles ?? [];
     const defaultRoleId = roles.length === 1 ? roles[0]?.id : null;

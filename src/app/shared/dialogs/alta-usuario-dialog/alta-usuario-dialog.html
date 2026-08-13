@@ -1,13 +1,12 @@
 <div class="dialog-shell">
   <div class="dialog-header dlg-bar">
+    <div class="dlg-bar-title">Alta de usuario</div>
     <button mat-icon-button class="dialog-close" (click)="cerrar()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
 
-  <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
-
-    <div class="dlg-bar-title">Alta de usuario</div>
+  <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-conten">
 
     <div class="section-divider"></div>
 
@@ -23,10 +22,18 @@
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
         <mat-label>Contraseña</mat-label>
         <mat-icon matPrefix>lock</mat-icon>
-        <input matInput type="password" formControlName="password"/>
-          <mat-error *ngIf="form.get('password')?.hasError('required')">La contraseña es requerida</mat-error>
-          <mat-error *ngIf="form.get('password')?.hasError('minlength')">Mínimo 6 caracteres</mat-error>
-
+        <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="password"/>
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="hidePassword = !hidePassword"
+          [attr.aria-label]="'Mostrar/ocultar contraseña'"
+          [attr.aria-pressed]="!hidePassword">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="form.get('password')?.hasError('required')">La contraseña es requerida</mat-error>
+        <mat-error *ngIf="form.get('password')?.hasError('minlength')">Mínimo 8 caracteres</mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">

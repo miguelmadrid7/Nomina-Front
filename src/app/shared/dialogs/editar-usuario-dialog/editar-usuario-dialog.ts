@@ -30,8 +30,8 @@ import { MatCardModule } from '@angular/material/card';
 
 
   ],
-  templateUrl: './usuario-dialog.html',
-  styleUrls: ['./usuario-dialog.css']
+  templateUrl: './editar-usuario-dialog.html',
+  styleUrls: ['./editar-usuario-dialog.css']
 })
 export class UsuarioDialog {
 

@@ -1,25 +1,20 @@
-/* Dialog structure */
 .dialog-shell {
   display: flex;
   flex-direction: column;
   max-height: 90vh;
+  gap: 0;
+  overflow: hidden;
 }
 
 .dialog-header {
   position: relative;
+  flex: 0 0 auto;
   background: var(--brand);
   color: #fff;
   padding: 25px 50px;
   display: flex;
   align-items: center;
-  justify-content: center; /* Centra el contenido */
-}
-
-
-/* Titulo modal */
-.dlg-bar-title {
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
 }
 
 .dialog-close {
@@ -35,15 +30,57 @@
   box-shadow: none !important;
 }
 
-.top-info-grid{
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  margin-top: 8px;
+.dlg-bar-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.dlg-conten {
+  padding: 14px 16px;
+  background: var(--bg);
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
+
+.dlg-conten,
+.dlg-actions {
+  background: var(--bg);
+}
+
+.dlg-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 12px;
+  border-top: 1px solid var(--line);
+  flex: 0 0 auto;
+}
+
+.form-card {
   margin-bottom: 8px;
 }
 
-.info-field{
+.top-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
+
+.info-field {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -51,23 +88,25 @@
   border: none;
   border-radius: 0;
   background: transparent;
+  min-width: 0;
 }
 
-.info-field mat-icon{
+.info-field mat-icon {
   color: #111827;
   background: transparent;
   border-radius: 0;
   padding: 0;
+  flex-shrink: 0;
 }
 
-.info-content{
+.info-content {
   display: flex;
   flex-direction: column;
   line-height: 1.2;
   min-width: 0;
 }
 
-.info-label{
+.info-label {
   font-size: 12px;
   color: #6b7280;
 }
@@ -77,22 +116,21 @@ mat-form-field {
   display: block;
 }
 
-.form-grid{
+.form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 8px;
   align-items: start;
   justify-content: start;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-.form-grid mat-form-field.data{ 
-    width: 100% !important; 
+.form-grid mat-form-field.data {
+  width: 100% !important;
 }
 
-
-
-
-/* ===== Botones ===== */
 .btn {
   width: 120px;
   height: 36px;
@@ -140,8 +178,6 @@ mat-form-field {
   transform: translateY(-1px);
 }
 
-
-
 :host ::ng-deep .compact-field mat-icon {
   font-size: 18px;
   width: 24px;
@@ -168,59 +204,41 @@ mat-form-field {
   margin-bottom: 0 !important;
 }
 
-/* Dialog content */
-.dlg-content {
-  padding: 14px 16px;
-  max-height: calc(80vh - 120px);
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  background: var(--bg);
-  flex: 1;
-}
-
-.dlg-actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-top: 1px solid var(--line);
-  background: var(--bg);
-  flex-shrink: 0;
-}
-
-/* Card info superior */
-.form-card {
-  margin-bottom: 8px;
-}
-
-.form-card .form-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-@media (max-width: 600px) {
-  .form-grid {
-    grid-template-columns: 1fr !important;
+@media (max-width: 768px) {
+  .dialog-shell {
+    max-height: 95vh;
   }
 
   .dialog-header {
     padding: 16px 40px;
   }
 
-  .dlg-content {
+  .dlg-conten {
     padding: 12px;
-    max-height: calc(90vh - 100px);
+    max-height: 75vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .top-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px;
+    width: 100%;
   }
 
   .dlg-actions {
-    padding: 10px;
+    flex: 0 0 auto;
+    padding: 15px 25px 20px;
     gap: 8px;
   }
 
   .btn {
     width: 100%;
-  }
-
-  .dialog-shell {
-    max-height: 95vh;
   }
 }

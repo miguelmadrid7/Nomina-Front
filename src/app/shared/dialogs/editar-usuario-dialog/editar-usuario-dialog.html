@@ -1,15 +1,14 @@
 <div class="dialog-shell">
     <div class="dialog-header dlg-bar">
-        <button mat-icon-button class="dialog-close" (click)="cerrar()">
-            <mat-icon>close</mat-icon>
-        </button>
+        <div class="dlg-bar-title">Detalle de usuario</div>
+            <button mat-icon-button class="dialog-close" (click)="cerrar()">
+                <mat-icon>close</mat-icon>
+            </button>
     </div>
 
-    <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
-         <div class="dlg-bar-title">Detalle de usuario</div>
-    
-         <mat-card class="form-card">
-            <mat-card-content class="form-grid">
+    <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-conten">
+        <mat-card class="form-card">
+            <mat-card-content class="form-grid top-info-grid">
                 <div class="info-field">
                     <mat-icon>person</mat-icon>
                         <div class="info-content">
