@@ -202,25 +202,10 @@ export class GestionModulos implements OnInit, OnDestroy {
       this.moduleService.softDeleteModule(moduleId).subscribe({
         next: () => {
           this.getAllModules();
-          this.dialog.open(ConfirmDialog, {
-            width: '360px',
-            data: {
-              title: 'Operación exitosa',
-              message: 'Módulo eliminado correctamente.',
-              confirmText: 'Aceptar'
-            }
-          });
+          this.toastService.info('Operación exitosa', 'Módulo eliminado correctamente', 6000);
         },
         error: () => {
-          this.dialog.open(ConfirmDialog, {
-            width: '360px',
-            data: {
-              title: 'Error',
-              message: 'No se pudo eliminar el módulo.',
-              confirmText: 'Aceptar',
-              type: 'error'
-            }
-          });
+          this.toastService.error('Accion invalida', 'Error al eliminar el módulo. Intente nuevamente', 6000);
         }
       });
     });

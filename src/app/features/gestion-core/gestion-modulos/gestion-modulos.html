@@ -56,13 +56,15 @@
                                 <th mat-header-cell *matHeaderCellDef> ACCIONES </th>
                                 
                                 <td mat-cell *matCellDef="let e">
-                                    <button class="btnn btnn-primary" type="button"  [disabled]="!e.id || detailLoading"  (click)="getModuleById(e.id)">
-                                        <mat-icon>edit</mat-icon>
-                                    </button>
+                                    <div class="actions-cell">
+                                        <button class="btnn btnn-primary" type="button"  [disabled]="!e.id || detailLoading"  (click)="getModuleById(e.id)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
 
-                                    <button class="btnn btnn-dangerr" type="button" [disabled]="!e.id || loadingModuleId === e.id" (click)="softDeleteModule(e.id)">
-                                        <mat-icon>delete</mat-icon>
-                                    </button>
+                                        <button class="btnn btnn-dangerr" type="button" [disabled]="!e.id || loadingModuleId === e.id" (click)="softDeleteModule(e.id)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </div>
                                 </td>
                             </ng-container>
 

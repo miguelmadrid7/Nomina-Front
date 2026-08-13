@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Module } from '../../../core/model/gestion-core/module.model';
 import { DialogData,  } from '../../../core/model/gestion-core/module-dialog-data.model';
 import { ModuleRequest } from '../../../core/model/request/module-request.model';
@@ -17,7 +17,7 @@ import { UserService } from '../../../core/services/user.service';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { UppercaseDirective } from '../../directives/upperCase.directivas';
-import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-module-dialog',
@@ -47,7 +47,7 @@ export class ALtaModuleDialog implements OnInit{
   private readonly fb = inject(FormBuilder);
   private readonly moduleService = inject(ModuleService);
   private readonly userService = inject(UserService);
-  private readonly dialog = inject(MatDialog);
+  private readonly toastService = inject(ToastService);
 
   ngOnInit(): void {
     const module = this.module;
@@ -117,25 +117,10 @@ export class ALtaModuleDialog implements OnInit{
     request$.subscribe({
       next: () => {
         this.dialogRef.close(true);
-        this.dialog.open(ConfirmDialog, {
-          width: '360px',
-          data: {
-            title: 'Operación exitosa',
-            message: this.mode === 'edit' ? 'Módulo actualizado correctamente.' : 'Módulo creado correctamente.',
-            confirmText: 'Aceptar'
-          }
-        });
+        this.toastService.info('Operación exitosa.', this.mode == 'edit' ? 'Módulo actualizado correctamente' : 'Módulo creado con exito', 6000);
       },
       error: () => {
-        this.dialog.open(ConfirmDialog, {
-          width: '360px',
-          data: {
-            title: 'Error',
-            message: 'No se pudo guardar el módulo. Intenta de nuevo.',
-            confirmText: 'Aceptar',
-            type: 'error'
-          }
-        });
+        this.toastService.warning('Accion invalida.', this.mode == 'edit' ? 'No se pudo actualizar el módulo' : 'No se pudo crear el módulo', 6000);
       }
     });
   }

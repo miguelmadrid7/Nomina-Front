@@ -1,78 +1,75 @@
 <div class="dialog-shell">
     <div class="dialog-header dlg-bar">
-         <button mat-icon-button class="dialog-close" (click)="close()">
+        <div class="dlg-bar-title"> {{ mode === 'edit' ? 'Detalle de módulo' : 'Agregar módulo' }} </div>
+        <button mat-icon-button class="dialog-close" (click)="close()">
             <mat-icon>close</mat-icon>
         </button>
     </div>
 
-    <div class="dlg-content">
-
-        <div class="dlg-bar-title"> {{ mode === 'edit' ? 'Detalle de módulo' : 'Agregar módulo' }}</div>
+    <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-conten">
 
         <div class="section-divider"></div>
 
-        <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
-            <div class="form-grid">
-                <mat-form-field *ngIf="mode === 'edit'" appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                    <mat-label>ID</mat-label>
-                        <mat-icon matPrefix>email</mat-icon>
-                            <input matInput formControlName="id" appUppercase/>
-                </mat-form-field>
+        <div class="form-grid">
+            <mat-form-field *ngIf="mode === 'edit'" appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>ID</mat-label>
+                <mat-icon matPrefix>email</mat-icon>
+                <input matInput formControlName="id" appUppercase/>
+            </mat-form-field>
 
-                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                    <mat-label>NOMBRE</mat-label>
-                        <mat-icon matPrefix>email</mat-icon>
-                            <input matInput formControlName="name"/>
-                                <mat-error *ngIf="form.get('name')?.hasError('required')">El nombre es requerido</mat-error>
-                </mat-form-field>
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>NOMBRE</mat-label>
+                <mat-icon matPrefix>email</mat-icon>
+                <input matInput formControlName="name"/>
+                <mat-error *ngIf="form.get('name')?.hasError('required')"> El nombre es requerido </mat-error>
+            </mat-form-field>
 
-                <mat-form-field  appearance="outline" class="qna-compact search-field with-separator description-field" floatLabel="always">
-                    <mat-label>DESCRIPCIÓN</mat-label>
-                        <textarea matInput formControlName="description" rows="4"></textarea>
-                            <mat-error *ngIf="form.get('description')?.hasError('required')">La descripción es requerida</mat-error>
-                </mat-form-field>
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator description-field" floatLabel="always">
+                <mat-label>DESCRIPCIÓN</mat-label>
+                <textarea matInput formControlName="description" rows="4"> </textarea>
+                <mat-error *ngIf="form.get('description')?.hasError('required')"> La descripción es requerida </mat-error>
+            </mat-form-field>
 
-                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                    <mat-label>ROLES</mat-label>
-                        <mat-icon matPrefix>admin_panel_settings</mat-icon>
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>ROLES</mat-label>
+                <mat-icon matPrefix>admin_panel_settings</mat-icon>
+                <mat-select formControlName="rolesId" multiple>
+                    <mat-option *ngFor="let role of roles$ | async" [value]="role.id">
+                        {{ role.name }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.get('rolesId')?.hasError('required')"> Selecciona al menos un rol </mat-error>
+            </mat-form-field>
 
-                    <mat-select formControlName="rolesId" multiple>
-                        <mat-option *ngFor="let role of roles$ | async" [value]="role.id">  {{ role.name }} </mat-option>
-                    </mat-select>
-                        <mat-error *ngIf="form.get('rolesId')?.hasError('required')">Selecciona al menos un rol</mat-error>
-                </mat-form-field>
-
-                <div class="checkbox-field qna-compact with-separator">
-                     Visible 
-                    <mat-checkbox formControlName="visible"> </mat-checkbox>
-                </div>
-
-                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                    <mat-label>PADRE</mat-label>
-                        <mat-icon matPrefix>email</mat-icon>
-                            <input matInput formControlName="parentId"/>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                    <mat-label>PATH</mat-label>
-                        <mat-icon matPrefix>route</mat-icon>
-                            <input matInput formControlName="path"/>
-                                <mat-error *ngIf="form.get('path')?.hasError('required')">El path es requerido</mat-error>
-                </mat-form-field>
-
-                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
-                    <mat-label>ÍCONO</mat-label>
-                        <mat-icon matPrefix>email</mat-icon>
-                            <input matInput formControlName="iconId"/>
-                                <mat-error *ngIf="form.get('iconId')?.hasError('required')">El ícono es requerido</mat-error>
-                </mat-form-field>
+            <div class="checkbox-field qna-compact with-separator">
+                Visible
+                <mat-checkbox formControlName="visible"></mat-checkbox>
             </div>
-        </mat-dialog-content>
 
-        <div class="dlg-actions">
-            <button class="btn btn-danger" (click)="close()">Cancelar</button>
-            <button class="btn btn-primary" (click)="submit()"> {{ mode === 'edit' ? 'Actualizar' : 'Guardar' }}</button>
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>PADRE</mat-label>
+                <mat-icon matPrefix>email</mat-icon>
+                <input matInput formControlName="parentId"/>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>PATH</mat-label>
+                <mat-icon matPrefix>route</mat-icon>
+                <input matInput formControlName="path"/>
+                <mat-error *ngIf="form.get('path')?.hasError('required')"> El path es requerido </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>ÍCONO</mat-label>
+                <mat-icon matPrefix>email</mat-icon>
+                <input matInput formControlName="iconId"/>
+                <mat-error *ngIf="form.get('iconId')?.hasError('required')">El ícono es requerido</mat-error>
+            </mat-form-field>
         </div>
-    </div>
+    </mat-dialog-content>
 
+    <div class="dlg-actions">
+        <button class="btn btn-danger" type="button"(click)="close()">Cancelar</button>
+        <button class="btn btn-primary"type="button" (click)="submit()"> {{ mode === 'edit' ? 'Aceptar' : 'Guardar' }} </button>
+    </div>
 </div>
