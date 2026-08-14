@@ -19,10 +19,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { UserService } from '../../../core/services/user.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UsuarioDialog } from '../../../shared/dialogs/editar-usuario-dialog/editar-usuario-dialog';
-import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { AltaUsuarioDialog } from '../../../shared/dialogs/alta-usuario-dialog/alta-usuario-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
-import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
@@ -40,7 +38,6 @@ import { ToastService } from '../../../core/services/toast.service';
     MatCheckboxModule,
     MatSelectModule,
     MatDialogModule,
-    MatSortModule,
     UppercaseDirective
   ],
   templateUrl: './gestion-usuarios.html',
@@ -79,7 +76,6 @@ export class GestionUsuarios implements OnDestroy {
   totalUsers = 0;
   pageSize = 10;
   pageIndex = 0;
-  activeSort: Sort = { active: 'id', direction: 'asc' };
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -95,12 +91,6 @@ export class GestionUsuarios implements OnDestroy {
     this.dialog.closeAll();
   }
 
-  onSortChange(sort: Sort): void {
-    this.activeSort = sort.direction ? sort : { active: 'id', direction: 'desc' };
-    this.pageIndex = 0;
-    this.applyTableState();
-  }
-
   onPageChange(event: PageEvent): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
@@ -108,29 +98,22 @@ export class GestionUsuarios implements OnDestroy {
   }
 
   private applyTableState(): void {
-    const sorted = [...this.allUsers].sort((a, b) => {
-      const dir = this.activeSort.direction === 'asc' ? 1 : -1;
-      const va = this.getSortValue(a, this.activeSort.active);
-      const vb = this.getSortValue(b, this.activeSort.active);
-      if (va < vb) return -1 * dir;
-      if (va > vb) return 1 * dir;
-      return 0;
-    });
     const start = this.pageIndex * this.pageSize;
     const end = start + this.pageSize;
-    this.usersDataSource.data = sorted.slice(start, end);
+    this.usersDataSource.data = this.allUsers.slice(start, end);
   }
 
-  private getSortValue(row: EmpleadoItem, column: string): string | number {
-    switch (column) {
-      case 'id': return row.id ?? 0;
-      case 'nombreCompleto': return (row.nombreCompleto ?? '').toLowerCase();
-      case 'empleado': return (row.empleado ?? '').toLowerCase();
-      case 'rolesName': return (row.rolesName ?? row.rolesname ?? '').toLowerCase();
-      case 'parentModulesName': return (row.parentModulesName ?? row.parentmodulesname ?? '').toLowerCase();
-      case 'childModulesName': return (row.childModulesName ?? row.childmodulesname ?? '').toLowerCase();
-      default: return '';
-    }
+  displayUsuario(emp: EmpleadoItem | string | null): string {
+    if (!emp) return '';
+    if (typeof emp === 'string') return emp;
+    const rfc = (emp.rfc ?? emp.RFC ?? '').trim();
+    const fullName = [
+      emp.primerApellido ?? emp.primer_apellido ?? '',
+      emp.segundoApellido ?? emp.segundo_apellido ?? '',
+      emp.nombre ?? ''
+    ].map(x => x.trim()).filter(Boolean).join(' ');
+    const etiqueta = (emp.nombreCompleto ?? '').trim() || fullName || (emp.empleado ?? '').trim();
+    return [rfc, etiqueta].filter(Boolean).join(' - ');
   }
 
   openAltaUsuarioDialog(): void {
@@ -153,17 +136,9 @@ export class GestionUsuarios implements OnDestroy {
           this.loadEmpleados();
           this.toastService.info('Éxito', 'Usuario creado correctamente', 6000);
         },
-        error: (err) => {
+        error: () => {
           this.loading = false;
           this.toastService.info('Error', 'Ocurrió un error al crear el usuario.', 6000);
-          this.dialog.open(PensionAlimenDialog, {
-            width: '420px',
-            data: {
-              type: 'error',
-              message: 'Ocurrió un error al crear el usuario.'
-            }
-          });
-          console.error(err);
         }
       });
     });
@@ -205,16 +180,14 @@ export class GestionUsuarios implements OnDestroy {
             raw: u,
           } as EmpleadoItem;
         });
-
-        // Llenar allUsers para paginación manual
         this.allUsers = this.empleados;
         this.totalUsers = this.allUsers.length;
         this.pageIndex = 0;
         this.applyTableState();
         this.cd.markForCheck();
       },
-      error: (err) => {
-        console.error('Error cargando usuarios', err);
+      error: () => {
+        this.toastService.error('Operación invalida', 'Error no se cargaron los usuarios', 6000);
       }
     });
   }
@@ -283,8 +256,6 @@ export class GestionUsuarios implements OnDestroy {
     setTimeout(() => {
       this.resultado = filtrados;
       this.cargandoBusqueda = false;
-
-      // Llenar allUsers con filtrados para paginación manual
       this.allUsers = filtrados;
       this.totalUsers = this.allUsers.length;
       this.pageIndex = 0;
@@ -338,24 +309,11 @@ export class GestionUsuarios implements OnDestroy {
         next: () => {
           this.loading = false;
           this.loadEmpleados();
-          this.dialog.open(PensionAlimenDialog, {
-            width: '420px',
-            data: {
-              type: 'success',
-              message: 'Se actualizó correctamente el usuario.'
-            }
-          });
+          this.toastService.info('Operación exitosa', 'Se actualizó correctamente el usuario.', 6000);
         },
-        error: (err) => {
+        error: () => {
           this.loading = false;
-          this.dialog.open(PensionAlimenDialog, {
-            width: '420px',
-            data: {
-              type: 'error',
-              message: 'Ocurrió un error al actualizar el usuario.'
-            }
-          });
-          console.error(err);
+          this.toastService.error('Operación invalida', 'Ocurrió un error al actualizar el usuario. Intente nuevamente.', 6000);
         }
       });
     });
@@ -364,18 +322,11 @@ export class GestionUsuarios implements OnDestroy {
   deleteUser(row: EmpleadoItem): void {
     const userId = row?.id;
     if (userId == null) {
-      this.dialog.open(PensionAlimenDialog, {
-        width: '420px',
-        data: {
-          type: 'error',
-          message: 'No se encontró el id del usuario.'
-        }
-      });
+      this.toastService.error('Operación invalida', 'No se encontro el id del usuario', 6000);
       return;
     }
 
     const etiqueta = (row?.nombreCompleto ?? row?.empleado ?? '').toString().trim();
-
     const confirmRef = this.dialog.open(ConfirmDialog, {
       width: '500px',
       autoFocus: false,
@@ -396,42 +347,15 @@ export class GestionUsuarios implements OnDestroy {
         next: () => {
           this.loading = false;
           this.loadEmpleados();
-          this.dialog.open(PensionAlimenDialog, {
-            width: '500px',
-            data: {
-              type: 'success',
-              message: 'Se eliminó correctamente el usuario.'
-            }
-          });
+          this.toastService.info('Operación correcta', 'Se eliminó correctamente el usuario.', 6000);
         },
         error: (err) => {
           this.loading = false;
-          this.dialog.open(PensionAlimenDialog, {
-            width: '500px',
-            data: {
-              type: 'error',
-              message: 'Ocurrió un error al eliminar el usuario.'
-            }
-          });
-          console.error(err);
+          this.toastService.error('Operación invalida', 'Ocurrió un error al eliminar el usuario.', 6000);
         }
       });
     });
   }
-
-  displayUsuario(emp: EmpleadoItem | string | null): string {
-    if (!emp) return '';
-    if (typeof emp === 'string') return emp;
-    const rfc = (emp.rfc ?? emp.RFC ?? '').trim();
-    const fullName = [
-      emp.primerApellido ?? emp.primer_apellido ?? '',
-      emp.segundoApellido ?? emp.segundo_apellido ?? '',
-      emp.nombre ?? ''
-    ].map(x => x.trim()).filter(Boolean).join(' ');
-    const etiqueta = (emp.nombreCompleto ?? '').trim() || fullName || (emp.empleado ?? '').trim();
-    return [rfc, etiqueta].filter(Boolean).join(' - ');
-  }
-
 
   asignarRoles(userId: number, roleIds: number[]): void {
     const request: AssignRoleRequest = { userId, roleIds };
@@ -440,27 +364,11 @@ export class GestionUsuarios implements OnDestroy {
     this.userService.assignRoles(request.userId, request.roleIds).subscribe({
       next: () => {
         this.loading = false;
-
-        this.dialog.open(PensionAlimenDialog, {
-          width: '420px',
-          data: {
-            type: 'success',
-            message: 'Se guardó correctamente tus datos.'
-          }
-        });
+        this.toastService.info('Operación exitosa', 'Se guardó correctamente tus datos.', 6000);
       },
-      error: (err) => {
+      error: () => {
         this.loading = false;
-
-        this.dialog.open(PensionAlimenDialog, {
-          width: '420px',
-          data: {
-            type: 'error',
-            message: 'Ocurrió un error al guardar.'
-          }
-        });
-
-        console.error(err);
+        this.toastService.error('Operación invalida', 'Ocurrió un error al guardar.', 6000);
       }
     });
   }
