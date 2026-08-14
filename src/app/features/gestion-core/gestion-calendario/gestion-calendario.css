@@ -157,6 +157,29 @@
     width: 100%;
 }
 
+.table-container {
+    width: 100%;
+    max-width: 100%;
+}
+
+.table-card {
+    width: 100%;
+    max-width: 100%;
+}
+
+.table-content {
+    width: 100%;
+    max-width: 100%;
+}
+
+.table-scroll {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
 .table-global .row-closed {
   background: #f8fafc;
   color: #94a3b8;
@@ -191,78 +214,74 @@
 }
 
 .table-global .mat-column-ejercicio {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
+    width: 80px;
+    min-width: 80px;
+    text-align: center;
 }
 
 .table-global .mat-column-qna {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
+    width: 80px;
+    min-width: 80px;
+    text-align: center;
 }
 
 .table-global .mat-column-tipo {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
+    width: 90px;
+    min-width: 90px;
+    text-align: center;
 }
 
 .table-global .mat-column-fechaCierre {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
+    width: 120px;
+    min-width: 120px;
+    text-align: center;
 }
 
 .table-global .mat-column-fechaPago {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
+    width: 120px;
+    min-width: 120px;
+    text-align: center;
 }
 
-.table-global .mat-column-movimientos {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
-}
-
-.table-global .mat-column-pension {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
-}
-
-.table-global .mat-column-juicios {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
-}
-
-.table-global .mat-column-terceros {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
-}
-
+.table-global .mat-column-movimientos,
+.table-global .mat-column-pension,
+.table-global .mat-column-juicios,
+.table-global .mat-column-terceros,
 .table-global .mat-column-activa {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
+    width: 90px;
+    min-width: 90px;
+    text-align: center;
 }
 
 .table-global .mat-column-acciones {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
+    width: 100px;
+    min-width: 100px;
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  .table-global {
+    min-width: 950px;
+  }
+
+  .btn-group {
+    display: inline-flex;
+    width: auto;
+    flex: 0 0 auto;
+    align-self: flex-start;
+  }
+
+  .btn {
+    width: 120px;
+    flex: 0 0 120px;
+  }
+
+  .table-global .mat-mdc-header-cell,
+  .table-global .mat-mdc-cell {
+    padding: 8px 6px !important;
+  }
 }

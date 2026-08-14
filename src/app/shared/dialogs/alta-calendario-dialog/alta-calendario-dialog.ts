@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Calendario } from '../../../core/model/calendario.model';
+import { DialogData } from '../../../core/model/dialogdata.model';
 
 @Component({
   selector: 'app-alta-calendario-dialog',
@@ -35,7 +36,10 @@ export class AltaCalendarioDialog {
 
   private readonly fb = inject(FormBuilder);
   private readonly dialogRef = inject(MatDialogRef<AltaCalendarioDialog>);
-  private readonly calendario = inject<Calendario | null>(MAT_DIALOG_DATA);
+  private readonly data = inject<DialogData>(MAT_DIALOG_DATA);
+
+   mode = this.data.mode;
+   private readonly calendario = this.data.calendario ?? null;
 
   form = this.fb.group({
     ejercicio: [this.calendario?.ejercicio ?? null, Validators.required],

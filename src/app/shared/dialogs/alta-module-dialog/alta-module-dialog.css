@@ -33,13 +33,10 @@
 .dlg-conten {
   padding: 14px 16px;
   background: var(--bg);
-
   flex: 1 1 auto;
   min-height: 0;
-
   overflow-y: auto;
   overflow-x: hidden;
-
   -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
 }
