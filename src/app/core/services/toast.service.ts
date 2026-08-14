@@ -8,6 +8,7 @@ import { Toast } from "../model/toast.model";
 export class ToastService {
 
     private readonly _toasts = new BehaviorSubject<Toast[]>([]);
+    private readonly activeToast = new Set<string>;
     readonly toasts = this._toasts.asObservable();
 
     success(title: string, message: string,  duration = 4000) {
@@ -36,7 +37,12 @@ export class ToastService {
         type: Toast['type'],
         title: string,
         message: string,
-        duration: number) {
+        duration: number): void {
+            const key = `${type}|${title}|${message}`;
+            if(this.activeToast.has(key)) {
+                return;
+            }
+            this.activeToast.add(key);
             const toast: Toast = {
                 id: Date.now(),
                 type,
@@ -50,11 +56,11 @@ export class ToastService {
             ]);
 
             setTimeout(() => {
-                this.startClosing(toast.id);
+                this.startClosing(toast.id, key);
             }, duration);
     }
 
-    private startClosing(id: number): void {
+    private startClosing(id: number, key: string): void {
         const updated = this._toasts.value.map(toast =>
             toast.id === id 
             ? { ...toast, closing: true } 
@@ -64,6 +70,7 @@ export class ToastService {
         this._toasts.next(updated);
         setTimeout(() => {
             this.remove(id);
+            this.activeToast.delete(key);
         }, 300);
     }
 }
