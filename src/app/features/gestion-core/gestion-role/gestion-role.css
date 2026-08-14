@@ -1,10 +1,9 @@
-/* CONTENEDORES Y BOTONES */
 .actions-right {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-start;
-    align-items: center;
-    margin: 0 0 14px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0 0 14px;
 }
 
 .actions-bar {
@@ -15,38 +14,39 @@
 }
 
 .btn-group {
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 5px;
 }
 
 .btn {
-    width: 120px;
-    height: 36px;
-    padding: 0 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    text-transform: none;
-    letter-spacing: .2px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: none !important;
-    transition: all .18s ease;
-    cursor: pointer;
-    position: relative;
-    background: transparent;
-    border: 2px solid;
+  width: 120px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: .2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: none !important;
+  transition: all .18s ease;
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+  border: 2px solid;
 }
 
 .btn mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    transition: transform 0.2s ease;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  transition: transform 0.2s ease;
 }
 
 .btn-primary {
@@ -61,25 +61,25 @@
 }
 
 .btnn {
-    width: 40px;
-    height: 36px;
-    padding: 0 4px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    text-transform: none;
-    letter-spacing: .2px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: none !important;
-    transition: all .18s ease;
-    cursor: pointer;
-    position: relative;
-    background: transparent;
-    border: 2px solid;
-    margin-left: 8px;
+  width: 40px;
+  height: 36px;
+  padding: 0 4px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: .2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: none !important;
+  transition: all .18s ease;
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+  border: 2px solid;
+  margin-left: 0;
 }
 
 .btn-succes {
@@ -96,31 +96,31 @@
 }
 
 .btn-dangerr {
-    background: transparent;
-    color: #dc2626;
-    border-color: #dc2626;
+  background: transparent;
+  color: #dc2626;
+  border-color: #dc2626;
 }
 
 .btn-dangerr:hover {
-    background: #dc2626;
-    color: #ffffff;
-    border-color: #dc2626;
-    transform: translateY(-1px);
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  transform: translateY(-1px);
 }
 
-/* TABLA GLOBAL */
 .table-global {
-    width: 100%;
-    table-layout:fixed;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .table-scroll {
-    width: 100%;
-    overflow-x: auto;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.table-container { 
-  margin-top: 4px; 
+.table-container {
+  margin-top: 4px;
 }
 
 .table-card {
@@ -128,12 +128,22 @@
   border-radius: 12px;
   border: 1px solid #e2e8f0;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+  box-shadow:
+    0 1px 3px rgba(0,0,0,0.04),
+    0 4px 12px rgba(0,0,0,0.04);
 }
 
+
 .table-global .mat-mdc-header-cell {
-    vertical-align: middle !important;
-    padding: 10px 8px !important;
+  vertical-align: middle !important;
+  padding: 10px 8px !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  word-break: normal;
+  overflow-wrap: normal;
+  line-height: 1.2;
+  text-align: center !important;
 }
 
 .table-global .mat-mdc-header-row {
@@ -146,7 +156,7 @@
   font-size: 13.5px;
   color: #334155;
   border-bottom: 1px solid #f1f5f9 !important;
-  text-align: center !important;         
+  text-align: center !important;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -154,58 +164,67 @@
 
 .rol-cell {
   white-space: normal;
-  word-break: break-word;  
+  word-break: break-word;
   overflow: visible;
   text-overflow: unset;
   line-height: 1.3;
-  max-width: 520px;         
+  max-width: 520px;
+}
+
+.table-global .mat-column-rol {
+  width: 40%;
+  min-width: 180px;
+  text-align: center;
+}
+
+.table-global .mat-column-padre {
+  width: 40%;
+  min-width: 250px;
+  text-align: center;
+}
+
+.table-global .mat-column-acciones {
+  width: 20%;
+  min-width: 260px;
+  text-align: center;
+}
+
+.actions-cell {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.actions-cell .btnn {
+  margin-left: 0;
+  flex: 0 0 40px;
 }
 
 .table-global .mat-mdc-row:hover {
   background: #f8fafc;
 }
 
-.table-global .mat-column-rol {
-  width: 25%;
-  min-width: 120px;
-  text-align: center;
+.table-global .mat-mdc-cell.mat-column-acciones {
+  vertical-align: middle !important;
+  padding-top: 13px !important;
+  padding-bottom: 13px !important;
 }
 
-.table-global .mat-column-padre {
-  width: 40%;
-  min-width: 180px;
-  text-align: center;
-}
-
-.table-global 
-.mat-column-acciones {
-  width: 12%;
-  min-width: 100px;  /* ← suficiente para 2 botones de 40px + gap */
-  text-align: center;
-}
-
-/* Centrar cabeceras ID y ROL */
-::ng-deep .table-global .mat-column-id.mat-mdc-header-cell,
 ::ng-deep .table-global .mat-column-rol.mat-mdc-header-cell,
-::ng-deep .table-global .mat-column-padre.mat-mdc-header-cell {
-    text-align: center;
+::ng-deep .table-global .mat-column-padre.mat-mdc-header-cell,
+::ng-deep .table-global .mat-column-acciones.mat-mdc-header-cell {
+    text-align: center !important;
 }
 
-/* Centrar el contenido del sort header (texto + flecha) */
-::ng-deep .table-global .mat-column-id .mat-sort-header-container,
 ::ng-deep .table-global .mat-column-rol .mat-sort-header-container,
 ::ng-deep .table-global .mat-column-padre .mat-sort-header-container {
     justify-content: center;
 }
 
-/* Centrar celdas de datos */
-::ng-deep .table-global .mat-column-id .mat-mdc-cell,
-::ng-deep .table-global .mat-column-rol .mat-mdc-cell
-::ng-deep .table-global .mat-column-padre .mat-mdc-cell {
-    text-align: center;
-}
-
-/* --- BADGES Y ESTILOS DE CELDA --- */
 .badge-year {
   display: inline-flex;
   align-items: center;
@@ -219,36 +238,32 @@
   letter-spacing: 0.3px;
 }
 
-/* Responsive  */
 @media (max-width: 768px) {
-
-  /* Botón full width */
-  .actions-bar {
-    flex-direction: column;
-    align-items: stretch;
+  .actions-cell {
+    white-space: nowrap;
   }
 
-  .btn-group {
-    width: 100%;
+  .actions-cell .btnn {
+    width: 40px;
+    min-width: 40px;
+    max-width: 40px;
+    height: 36px;
+    flex: 0 0 40px;
+    margin-left: 0;
   }
-
-  .btn {
-    width: 100%;
-    justify-content: center;
-  }
-
 
   .table-scroll {
+    width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
   .table-global {
-    min-width: 550px; 
+    min-width: 750px;
   }
 
-
-  .table-footer {
-    overflow-x: auto;
+  .table-global .mat-column-acciones {
+    min-width: 120px;
+    width: 120px;
   }
 }

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,6 +12,7 @@ import { ModuleService } from '../../../core/services/module.service';
 import { Module } from '../../../core/model/gestion-core/module.model';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-alta-rol-dialog',
@@ -38,6 +39,7 @@ export class AltaRolDialog {
   private readonly ref = inject(MatDialogRef<AltaRolDialog>);
   readonly data = inject<Role | null>(MAT_DIALOG_DATA);
   private readonly moduleService = inject(ModuleService);
+  private readonly toastService = inject(ToastService);
 
   ngOnInit() {
     this.form = this.fb.group({

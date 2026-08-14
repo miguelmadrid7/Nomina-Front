@@ -1,13 +1,12 @@
 <div class="dialog-shell">
   <div class="dialog-header dlg-bar">
+    <div class="dlg-bar-title"> {{ data ? 'Editar rol' : 'Alta de rol' }}</div>
     <button mat-icon-button class="dialog-close" (click)="cerrar()">
       <mat-icon>close</mat-icon>
     </button>
   </div>
 
-  <div mat-dialog-content [formGroup]="form" class="dlg-content">
-
-    <div class="dlg-bar-title"> {{ data ? 'Editar rol' : 'Alta de rol' }}</div>
+  <div mat-dialog-content [formGroup]="form" class="dlg-conten">
 
     <div class="section-divider"></div>
 
@@ -41,6 +40,6 @@
 
   <div class="dlg-actions">
     <button class="btn btn-danger" (click)="cerrar()">Cancelar</button>
-    <button class="btn btn-primary" (click)="guardar()"> {{ data ? 'Actualizar' : 'Guardar' }}</button>
+    <button class="btn btn-primary" (click)="guardar()"> {{ data ? 'Aceptar' : 'Guardar' }}</button>
   </div>
 </div>

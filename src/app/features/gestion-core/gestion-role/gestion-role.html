@@ -1,6 +1,6 @@
 <div class="page-container">
     <div class="page-header">
-        <h2 class="page-title">Gestion de roles</h2>
+        <h2 class="page-title">Gestión de roles</h2>
     </div>
 
     <div class="section-divider"></div>
@@ -37,12 +37,15 @@
                             <ng-container matColumnDef="acciones">
                                 <th mat-header-cell *matHeaderCellDef> ACCIONES </th>
                                 <td mat-cell *matCellDef="let row"> 
-                                    <button class="btnn btn-succes" type="button" (click)="openEditRoleDialog(row)">
-                                        <mat-icon>edit</mat-icon>
-                                    </button>
-                                    <button class="btnn btn-dangerr" type="button" (click)="softDeleteRole(row)">
-                                        <mat-icon>delete_outline</mat-icon>
-                                    </button> </td>
+                                    <div class="actions-cell">
+                                        <button class="btnn btn-succes" type="button" (click)="openEditRoleDialog(row)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <button class="btnn btn-dangerr" type="button" (click)="softDeleteRole(row)">
+                                            <mat-icon>delete_outline</mat-icon>
+                                        </button> 
+                                    </div>
+                                </td>
                             </ng-container>
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>

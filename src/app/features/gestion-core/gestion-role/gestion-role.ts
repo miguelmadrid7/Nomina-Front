@@ -8,7 +8,6 @@ import { RolService } from '../../../core/services/rol.service';
 import { MatIconModule } from '@angular/material/icon';
 import { AltaRolDialog } from '../../../shared/dialogs/alta-rol-dialog/alta-rol-dialog';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { ToastService } from '../../../core/services/toast.service';
 
@@ -69,8 +68,6 @@ export class GestionRole implements OnDestroy {
     });
   }
 
- 
-
   onPageChange(event: { pageIndex: number; pageSize: number }): void {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
@@ -83,20 +80,6 @@ export class GestionRole implements OnDestroy {
     this.dataSource.data = this.roles.slice(start, end);   
   }
 
- 
-  private getSortValue(role: Role, column: string): string | number {
-    switch (column) {
-      case 'id':
-        return role.id ?? 0;
-      case 'name':
-        return role.name ?? '';
-      case 'modulesName':
-        return role.modulesName ?? role.modulesname ?? '';
-      default:
-        return '';
-    }
-  }
-
   getRoleModules(row: Role): string[] {
     const modules = row.modulesName ?? row.modulesname ?? '';
     return modules
@@ -106,11 +89,11 @@ export class GestionRole implements OnDestroy {
   }
 
   openAltaRoleDialog(): void {
-  const ref = this.dialog.open(AltaRolDialog, {
-    width: '750px',
-    maxWidth: '95vw',
-    autoFocus: false,
-  });
+    const ref = this.dialog.open(AltaRolDialog, {
+      width: '750px',
+      maxWidth: '95vw',
+      autoFocus: false,
+    });
 
     ref.afterClosed().subscribe((payload) => {
       if (!payload) return;
@@ -118,29 +101,12 @@ export class GestionRole implements OnDestroy {
       this.rolService.createRole(payload).subscribe({
         next: () => {
           this.loading = false;
-          this.dialog.open(PensionAlimenDialog, {
-            width: '400px',
-            disableClose: true,
-            data: {
-              type: 'success',
-              title: 'Alta correcta',
-              message: 'El rol se agregó correctamente.'
-            }
-          });
-
+          this.toastService.info('Operación exitosa', 'Rol creado correctamente.', 6000);
           this.loadRoles();
         },
-        error: (err) => {
+        error: () => {
           this.loading = false;
-          console.error('Error creando rol', err);
-          this.dialog.open(PensionAlimenDialog, {
-            width: '400px',
-            data: {
-              type: 'error',
-              title: 'Error',
-              message: 'No se pudo agregar el rol.'
-            }
-          });
+          this.toastService.error('Error', 'No se pudo crear el rol. Intenta nuevamente.', 6000);
         },
       });
     });
@@ -166,15 +132,7 @@ export class GestionRole implements OnDestroy {
           this.rolService.updateRole(role.id, payload).subscribe({
             next: () => {
               this.loading = false;
-              this.dialog.open(PensionAlimenDialog, {
-                width: '400px',
-                disableClose: true,
-                data: {
-                  type: 'success',
-                  title: 'Actualización correcta',
-                  message: 'El rol se actualizó correctamente.'
-                }
-              });
+              this.toastService.info('Operación exitosa', 'Rol actualizado correctamente.', 6000);
               this.loadRoles();
             },
             error: () => {
@@ -186,7 +144,7 @@ export class GestionRole implements OnDestroy {
       },
       error: () => {
         this.loading = false;
-        this.toastService.error('Error', 'No se pudo cargar correctamente el detalle del rol', 6000);
+        this.toastService.error('Error', 'No se pudo cargar el detalle del rol', 6000);
       }
     });
   }
@@ -198,7 +156,7 @@ export class GestionRole implements OnDestroy {
       disableClose: true,
       data: {
         type: 'danger',
-        title: 'Eliminar rol',
+        title: 'Confirmación',
         message: `¿Seguro que deseas eliminar el rol "${role.name}"?`,
         cancelText: 'Cancelar',
         confirmText: 'Eliminar'
@@ -214,27 +172,12 @@ export class GestionRole implements OnDestroy {
       this.rolService.softDeleteRole(role.id).subscribe({
         next: () => {
           this.loading = false;
-          this.dialog.open(PensionAlimenDialog, {
-            width: '420px',
-            data: {
-              type: 'success',
-              title: 'Eliminación correcta',
-              message: 'El rol se eliminó correctamente.'
-            }
-          });
+          this.toastService.info('Operacón exitosa', `Se elimino correctamente el rol "${role.name}.`, 6000);
           this.loadRoles();
         },
-        error: (err) => {
+        error: () => {
           this.loading = false;
-          console.error('Error eliminando rol', err);
-          this.dialog.open(PensionAlimenDialog, {
-            width: '420px',
-            data: {
-              type: 'error',
-              title: 'Error',
-              message: 'No se pudo eliminar el rol.'
-            }
-          });
+          this.toastService.info('Error', "No se pudo eliminar rol correctamente. Intenta nuevamente.", 6000);
         }
       });
     });
