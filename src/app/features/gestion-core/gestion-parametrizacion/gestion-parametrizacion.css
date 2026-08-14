@@ -30,7 +30,6 @@
   white-space: nowrap;
 }
 
-/* --- BOTONES PRINCIPALES --- */
 .btn-group {
   display: inline-flex;
   align-items: center;
@@ -72,7 +71,6 @@
   line-height: 18px;
 }
 
-/* --- TABLA GLOBAL --- */
 .table-global {
     width: 100%;
     table-layout:fixed;
@@ -106,8 +104,8 @@
 }
 
 .table-global .mat-mdc-header-cell {
-    vertical-align: middle !important;
-    padding: 10px 8px !important;
+  vertical-align: middle !important;
+  padding: 10px 8px !important;
 }
 
 .table-global .mat-mdc-cell {
@@ -159,29 +157,6 @@
   min-width: 100px; 
 }
 
-/* --- BADGES Y ESTILOS DE CELDA --- */
-.amount {
-  font-weight: 500;
-  color: #0f172a;
-  font-variant-numeric: tabular-nums;
-}
-
-.amount-label {
-  font-size: 11px;
-  color: #94a3b8;
-  margin-left: 4px;
-}
-
-.qna-badge {
-  font-size: 12px;
-  color: #475569;
-  background: #f1f5f9;
-  border-radius: 5px;
-  padding: 2px 8px;
-  font-variant-numeric: tabular-nums;
-}
-
-/* --- BOTONES DE ACCIÓN --- */
 .actions-cell {
   display: flex;
   gap: 6px;
@@ -238,6 +213,22 @@
     flex-direction: column;
     align-items: stretch;
     gap: 8px;
+  }
+
+  .actions-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .table-global {
+    min-width: 650px;
+  }
+
+  .table-global .mat-column-actions {
+    width: 100px;
+    min-width: 100px;
   }
 
   .btn-group {
