@@ -450,6 +450,18 @@ button[disabled] {
 }
 
 @media (max-width: 768px) {
+  .actions-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .actions-right {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
 
   .form-layout {
     grid-template-columns: 1fr;
