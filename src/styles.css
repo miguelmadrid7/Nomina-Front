@@ -396,4 +396,29 @@ mat-sidenav-content {
     overflow: visible !important;
     padding-bottom: 30px !important;
   }
+
+  .table-containe {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .table-content {
+    width: 100%;
+    overflow: visible;
+  }
+
+  .table-scroll {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-foote {
+    width: 100%;
+    min-height: auto;
+    padding-top: 8px;
+    box-sizing: border-box;
+    overflow: visible;
+  }
 }
