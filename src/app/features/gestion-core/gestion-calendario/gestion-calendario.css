@@ -311,8 +311,8 @@
 
   .table-foote ::ng-deep .mat-mdc-paginator-page-size-select {
     width: 75px;
-    margin: 5px 2px !important;
-    padding: 5px;
+    margin: 0  10px 5px 0 !important;
+    padding: 0 !important;
     flex-shrink: 0;
   }
 

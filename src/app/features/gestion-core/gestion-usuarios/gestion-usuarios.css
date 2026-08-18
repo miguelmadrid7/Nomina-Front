@@ -194,10 +194,24 @@
   table-layout:fixed;
 }
 
+.table-container {
+  width: 100%;
+  max-width: 100%;
+}
+
+.table-content {
+  width: 100%;
+  max-width: 100%;
+}
+
 .table-scroll {
     width: 100%;
+    max-width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
 }
+
 
 .table-global .mat-mdc-header-row {
   background: #f8fafc;
@@ -270,7 +284,24 @@
     text-align: center;
 }
 
+.table-footer {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrollling: touch;
+}
+
 @media (max-width: 768px) {
+  .table-containe {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .table-content {
+    width: 100%;
+    overflow: visible;
+  }
+
   .actions-bar {
     flex-direction: column;
     align-items: flex-start;
@@ -311,12 +342,14 @@
     width: 100% !important;
   }
 
+  /* Tabla */
   .table-global {
     min-width: 810px;
   }
 
   .table-scroll {
     width: 100%;
+    max-width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
