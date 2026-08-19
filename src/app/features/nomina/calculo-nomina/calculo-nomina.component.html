@@ -219,28 +219,36 @@
           </div>
 
           <!-- Información técnica -->
-          <div class="error-section technical-error">
+          @if (errorType || errorMessage || failedStepName) {
+            <div class="error-section technical-error">
 
-            <div class="error-title">
-              <mat-icon>code</mat-icon>
-              <span>Detalle técnico</span>
-            </div>
+              <div class="error-title">
+                <mat-icon>code</mat-icon>
+                <span>Detalle técnico</span>
+              </div>
 
-            <div class="error-row">
-              <strong>Paso:</strong>
-              <span>{{ failedStepName }}</span>
-            </div>
+              @if (failedStepName) {
+                <div class="error-row">
+                  <strong>Paso:</strong>
+                  <span>{{ failedStepName }}</span>
+                </div>
+              }
 
-            <div class="error-row">
-              <strong>Tipo:</strong>
-              <span>{{ errorType }}</span>
-            </div>
+              @if (errorType) {
+                <div class="error-row">
+                  <strong>Tipo:</strong>
+                  <span>{{ errorType }}</span>
+                </div>
+              }
 
-            <div class="error-row">
-              <strong>Error:</strong>
-              <span>{{ errorMessage }}</span>
+              @if (errorMessage) {
+                <div class="error-row">
+                  <strong>Error:</strong>
+                  <span>{{ errorMessage }}</span>
+                </div>
+              }
             </div>
-          </div>
+          }
         </div>
       }
 

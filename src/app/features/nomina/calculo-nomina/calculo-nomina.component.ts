@@ -262,10 +262,9 @@ export class CalculoNominaComponent implements OnInit {
     if (data.status === 'ERROR') {
       this.failedStepIndex = data.failedStepIndex ?? null;
       this.failedStepName = data.failedStepName ?? null;
-
-      this.errorMessage = data.errorMsg ?? 'Error sin detalle';
-      this.userMessage = data.userMessage ?? 'Ocurrió un error durante el cálculo de nómina.'
-      this.errorType = data.errorType ?? 'Exception';
+      this.errorMessage = data.errorMsg ?? null; 
+      this.errorType = data.errorType ?? null; 
+      this.userMessage = data.userMessage ?? 'Ocurrió un error durante el cálculo de nómina.';
 
 
       if (this.failedStepIndex !== null) {
