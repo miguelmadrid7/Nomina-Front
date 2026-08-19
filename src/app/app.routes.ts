@@ -46,7 +46,7 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/gestion-core/gestion-role/gestion-role')
                 .then(m => m.GestionRole),
-            data: { breadcrumb: 'Roles usuarios' }
+            data: { breadcrumb: 'Roles' }
           },
           {    
             path: 'modulos',

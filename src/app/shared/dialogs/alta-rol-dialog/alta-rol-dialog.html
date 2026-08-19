@@ -35,6 +35,18 @@
         </mat-select>
         <mat-error *ngIf="form.get('modulesId')?.hasError('required')">Selecciona al menos un módulo</mat-error>
       </mat-form-field>
+
+      <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+        <mat-label>PERMISO</mat-label>
+        <mat-icon matPrefix>security</mat-icon>
+        <mat-select formControlName="permissionId">
+          <mat-option *ngFor="let permiso of permissions$ | async" [value]="permiso.id">
+            {{ permiso.id }}
+            <span *ngIf="permiso.verDetalleTecnico"> - Ver detalle técnico</span>
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('permissionId')?.hasError('required')">Selecciona un permiso</mat-error>
+      </mat-form-field>
     </div>
   </div>
 

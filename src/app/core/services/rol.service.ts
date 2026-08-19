@@ -19,6 +19,10 @@ export class RolService {
         return this.http.get<ApiResponse<Role>>(`${this.base}/roles/role`, { headers: { roleId: roleId.toString() } }).pipe(map(res => res.data));
     }
 
+    getPermissions(): Observable<any[]> {
+        return this.http.get<ApiResponse<any[]>>(`${this.base}/roles/permisos`).pipe(map(res => res.data ?? []));
+    }
+
     createRole(payload: CreateRoleRequest): Observable<ApiResponse<any>> {
         return this.http.post<ApiResponse<any>>(`${this.base}/roles`, payload);
     }
