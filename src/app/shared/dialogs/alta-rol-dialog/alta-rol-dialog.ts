@@ -44,8 +44,6 @@ export class AltaRolDialog {
   permissions$!: Observable<any[]>;
 
   ngOnInit() {
-     console.log('DATA DEL ROL:', this.data);
-  console.log('PERMISSION ID:', this.data?.permissionId);
     this.form = this.fb.group({
       name: [this.data?.name ?? '', [Validators.required]],
       description: [this.data?.description ?? '', [Validators.required]],

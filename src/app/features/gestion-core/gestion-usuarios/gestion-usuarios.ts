@@ -119,7 +119,6 @@ export class GestionUsuarios implements OnDestroy {
   loadEmpleados(): void {
     this.userService.getAllUsers().subscribe({
       next: (data: User[]) => {
-        console.log('Dta rcibida', data);
         this.empleados = data;
         this.allUsers = data;
         this.totalUsers = this.allUsers.length;
