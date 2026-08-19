@@ -40,12 +40,11 @@
         <mat-label>PERMISO</mat-label>
         <mat-icon matPrefix>security</mat-icon>
         <mat-select formControlName="permissionId">
-          <mat-option *ngFor="let permiso of permissions$ | async" [value]="permiso.id">
-            {{ permiso.id }}
-            <span *ngIf="permiso.verDetalleTecnico"> - Ver detalle técnico</span>
+          <mat-option [value]="null"> Sin permiso </mat-option>
+          <mat-option *ngFor="let permiso of permissions$ | async" [value]="permiso.id"> {{ permiso.id }}
+            <span *ngIf="permiso.verDetalleTecnico"> - Ver detalle técnico </span>
           </mat-option>
         </mat-select>
-        <mat-error *ngIf="form.get('permissionId')?.hasError('required')">Selecciona un permiso</mat-error>
       </mat-form-field>
     </div>
   </div>
