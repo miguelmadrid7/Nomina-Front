@@ -53,7 +53,7 @@ export class UsuarioDialog {
 
     this.form = this.fb.group({
       id: [{ value: user?.id ?? '', disabled: true }],
-      catEmpleadoId: [user?.catEmpleadoId ?? ''],
+      catEmpleadoId: [user?.catempleadoid ?? ''],
       username: [user?.username ?? ''],
       email: [user?.email ?? ''],
       area: [user?.area ?? ''],
