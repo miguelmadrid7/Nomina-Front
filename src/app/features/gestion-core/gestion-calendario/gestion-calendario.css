@@ -1,3 +1,4 @@
+/* Botones */
 .actions-right {
   display: flex;
   gap: 12px;
@@ -153,8 +154,8 @@
 
 /* TABLA GLOBAL */
 .table-global {
-  width: 100%;
-  table-layout:fixed;
+    width: 100%;
+    table-layout:fixed;
 }
 
 .table-container {
@@ -261,6 +262,10 @@
   -webkit-overflow-scrollling: touch;
 }
 
+.page-container {
+  padding-bottom: 0;
+}
+
 @media (max-width: 768px) {
   .table-global {
     min-width: 680px;
@@ -362,4 +367,9 @@
     width: 120px;
     flex: 0 0 120px;
   }
+
+  .page-container {
+    padding-bottom: 35px;
+  }
+
 }

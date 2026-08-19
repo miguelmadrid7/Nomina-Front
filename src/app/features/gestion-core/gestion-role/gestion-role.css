@@ -266,4 +266,8 @@
     min-width: 120px;
     width: 120px;
   }
+
+  .page-container {
+    padding-bottom: 35px;
+  }
 }

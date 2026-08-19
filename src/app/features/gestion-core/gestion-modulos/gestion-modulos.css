@@ -248,6 +248,10 @@
   background: #f8fafc;
 }
 
+.page-container {
+  padding-bottom: 0;
+}
+
 @media (max-width: 768px) {
   .actions-bar {
     flex-direction: column;
@@ -374,6 +378,10 @@
   .table-foote ::ng-deep .mat-mdc-paginator-navigation-last .mat-mdc-paginator-icon {
     width: 16px;
     height: 16px;
+  }
+
+  .page-container {
+    padding-bottom: 35px;
   }
 
 }

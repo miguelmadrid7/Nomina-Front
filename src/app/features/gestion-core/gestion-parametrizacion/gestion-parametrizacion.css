@@ -246,6 +246,10 @@
   transform: translateY(-1px);
 }
 
+.page-container {
+  padding-bottom: 0;
+}
+
 @media (max-width: 768px) {
   .actions-bar {
     flex-direction: column;
@@ -298,5 +302,9 @@
 
   .amount-label {
     display: none;
+  }
+
+  .page-container {
+    padding-bottom: 35px;
   }
 }
