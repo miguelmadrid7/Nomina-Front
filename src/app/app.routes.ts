@@ -31,6 +31,20 @@ export const routes: Routes = [
       },
 
       {
+        path: 'auditacion',
+        data: { breadcrumb: 'Gestion' },
+        children: [
+          {    
+            path: 'auditacion',
+            loadComponent: () =>
+              import('./features/auditacion/auditacion-logs/auditacion-logs')
+                .then(m => m.AuditacionLogs),
+            data: { breadcrumb: 'Auditación Logs' }
+          },
+        ]
+      },
+
+      {
         path: 'usuarios',
         data: { breadcrumb: 'Gestion' },
         children: [

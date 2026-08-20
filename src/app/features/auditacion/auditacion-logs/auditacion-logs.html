@@ -1,0 +1,103 @@
+<div class="page-container">
+    <div class="page-header">
+        <h2 class="page-title">Visor de Logs</h2>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="subtitle-row">
+        <p class="page-subtitle"> Consulta y analiza los registros generados por el sistema. </p>
+    </div>
+
+    <div class="actions-bar">
+        <div class="actions-right">
+            <div class="btn-group">
+                <button class="btn btn-primary" (click)="searchLog()">
+                    <mat-icon>search</mat-icon>
+                    <span>Buscar</span>
+                </button>
+            </div>
+
+            <button class="btn btn-danger" (click)="clearFilters()">
+                <mat-icon>delete_outline</mat-icon>
+                <span>Limpiar</span>
+            </button>
+
+            <button class="btn btn-success"  (click)="loadLog()">
+                <mat-icon>add</mat-icon>
+                <span>Cargar log</span>
+            </button>
+
+            <button class="btn btn-secondary" (click)="tailLog()">
+                Últimas {{ tailLines }} líneas
+            </button>
+
+        </div>
+    </div>
+
+    <div class="global-search">
+        <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+            <mat-icon matPrefix>search</mat-icon>
+                <mat-label>Buscar dentro del log...</mat-label>
+                    <input 
+                        matInput 
+                        type="text" 
+                        [(ngModel)]="searchText"  
+                        placeholder="Buscar dentro del log..." />
+        </mat-form-field>
+        <div class="qna-filters">
+            <mat-form-field appearance="outline" class="compact-field" floatLabel="always">
+                <mat-label>Fecha</mat-label>
+                    <mat-select [(ngModel)]="selectedDate" (selectionChange)="loadLog()">
+                        @for (date of availableDates; track date) {
+                            <mat-option [value]="date"> {{ date }} </mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
+                    <mat-label>Tipo de log</mat-label>
+                        <mat-select [(ngModel)]="selectedType" (selectionChange)="loadLog()">
+                            <mat-option value="application"> Application </mat-option>
+                            <mat-option value="error"> Error </mat-option>
+                            <mat-option value="login"> Login </mat-option>
+                        </mat-select>
+                </mat-form-field>
+        </div>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+        <div class="loading-spinner"></div>
+            <span>Cargando información...</span>
+    </div>
+
+    <div class="log-content"  *ngIf="logLines.length > 0">
+        <div class="log-info">
+            <div class="log-stat">
+                <span class="log-stat-label">Fecha</span>
+                <strong> {{ selectedDate }} </strong>
+            </div>
+
+            <div class="log-stat">
+                <span class="log-stat-label"> Tipo</span>
+                <strong class="log-type"> {{ selectedType }} </strong>
+            </div>
+
+            <div class="log-stat">
+                <span class="log-stat-label"> Líneas </span>
+                <strong> {{ logLines.length }} </strong>
+            </div>
+        </div>
+
+        <div class="log-lines">
+            <div *ngFor="let line of logLines; let i = index" class="log-line">
+                <span class="line-number">{{ i + 1 }} </span>
+                <span class="line-content"> {{ line }} </span>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && logLines.length === 0" class="empty-state">
+        <div class="empty-icon">📄</div>
+            <h3>No hay logs para mostrar</h3>
+                <p>Selecciona una fecha y un tipo de log para comenzar la consulta.</p>
+    </div>
