@@ -68,7 +68,6 @@ export class AuditacionLogs {
     this.loading = true;
     this.logLines = [];
     this.cdr.detectChanges(); 
-
     const method = this.getMethodByType(this.selectedType);
       method(this.selectedDate).subscribe({
         next: (response: LogFileResponse) => {
@@ -107,22 +106,15 @@ export class AuditacionLogs {
     if (!this.selectedDate || !this.searchText) return;
     this.loading = true;
     this.logLines = [];
-    this.cdr.detectChanges(); 
-    
-    console.log('Iniciando búsqueda:', this.selectedDate, this.selectedType, this.searchText);
-    
+    this.cdr.detectChanges();   
     this.logService.searchLog(this.selectedDate, this.selectedType, this.searchText).subscribe({
       next: (response: LogFileResponse) => {
         console.log('Respuesta recibida:', response);
         this.logLines = response.lines || []; 
         this.loading = false;
         this.cdr.detectChanges(); 
-        
-        console.log('logLines después de asignar:', this.logLines);
-        console.log('loading después de asignar:', this.loading);
       },
-      error: (error) => {
-        console.error('Error en búsqueda:', error);
+      error: () => {
         this.toastService.error('Operacion invalida', 'Error al buscar en el log', 6000);
         this.loading = false;
         this.cdr.detectChanges(); 

@@ -178,12 +178,27 @@
   background: transparent;
   color: #2e7d32;
   border-color: #2e7d32;
+  width: 140px;
 }
 
 .btn-success:hover {
   background: #2e7d32;
   color: #ffffff;
   border-color: #2e7d32;
+  transform: translateY(-1px);
+}
+
+.btn-tree {
+  background: transparent;
+  color: #491D2A;
+  border-color: #491D2A;
+   width: 200px;
+}
+
+.btn-tree:hover {
+  background: #491D2A;
+  color: #ffffff;
+  border-color: #491D2A;
   transform: translateY(-1px);
 }
 
@@ -217,7 +232,6 @@
 
 }
 
-
 /* ERROR */
 .error {
   padding: 14px 16px;
@@ -228,7 +242,6 @@
   border-radius: 8px;
   font-size: 14px;
 }
-
 
 /* VISOR DE LOGS */
 .log-content {
@@ -263,9 +276,7 @@
   text-transform: capitalize;
 }
 
-
 /* CONSOLA */
-
 .log-lines {
   max-height: 550px;
   overflow: auto;
@@ -290,7 +301,6 @@
 .log-line:hover {
   background: rgba(255, 255, 255, 0.05);
 }
-
 
 /* NUMERO DE LINEA */
 .line-number {

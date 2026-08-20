@@ -18,7 +18,6 @@ export class LogService {
     } 
 
     searchLog(fecha: string, tipo: string, searchText: string): Observable<LogFileResponse> {
-        console.log('Llamando a búsqueda:', `${this.base}/logs/${fecha}/${tipo}/search`, searchText);
         return this.http.get<LogFileResponse>(`${this.base}/logs/${fecha}/${tipo}/search`, { headers: this.getHeaders(), params: { searchText } }); // Agregar /logs
     }
 
