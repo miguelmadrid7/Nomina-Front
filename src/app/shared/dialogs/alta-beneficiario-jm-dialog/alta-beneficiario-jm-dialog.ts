@@ -12,9 +12,10 @@ import { JuiciosMercantilesService } from '../../../core/services/juicios-mercan
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { factorImporteValidator, vigenciaRangoValidator } from '../../validators/juicios.validators';
 import { factorImporteControlValidator, rfcValidator, vigenciaMinimaValidator } from '../../validators/validaciones.validators';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { vigenciaFormatoValidator } from '../../validators/validaciones.validators';
 import { startWith, distinctUntilChanged } from 'rxjs';
+import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { Calendario } from '../../../core/model/calendario.model';
 import { ToastService } from '../../../core/services/toast.service';
@@ -43,6 +44,7 @@ export class AltaBeneficiarioJmDialog implements OnInit {
   private readonly snackBar = inject(MatSnackBar);
   private readonly zone = inject(NgZone);
   private readonly dialogRef = inject(MatDialogRef<AltaBeneficiarioJmDialog>);
+  private readonly dialog = inject(MatDialog);
   private readonly calendarioService = inject(CalendarioService);
   private readonly cd = inject(ChangeDetectorRef);
   private readonly toastService = inject(ToastService);
@@ -64,6 +66,8 @@ export class AltaBeneficiarioJmDialog implements OnInit {
       nombre: [null as string | null, [Validators.minLength(2)]],
       formaAplicacion: [null as string | null],
       factorImporte: [null as number | null, [factorImporteControlValidator()]],
+      tipoPorcentaje: [null as number | null],
+      tipoBase: [null as string | null],
       bancoId: [null as number | null],
       clabe: [null as string | null, [Validators.pattern(/^\d{18}$/)]],
       importeTotal: [null as number | null, [Validators.min(0)]],
@@ -167,6 +171,8 @@ export class AltaBeneficiarioJmDialog implements OnInit {
           formaAplicacion: (ben.formaAplicacion ?? '').toString().toUpperCase().trim(),
           citaBancaria: (ben.numeroDocumento ?? '').toString().toUpperCase().trim(),
           factorImporte: ben.factorImporte,
+          tipoPorcentaje: ben.tipoPorcentaje,
+          tipoBase: ben.tipoBase ? (typeof ben.tipoBase === 'string' ? ben.tipoBase.toUpperCase() : ben.tipoBase) : null,
           importeTotal: ben.importeTotal,
           inicio: ben.qnaini,
           fin: ben.qnafin,
@@ -231,6 +237,8 @@ export class AltaBeneficiarioJmDialog implements OnInit {
         nombre: S(v.nombre),
         formaAplicacion: S(v.formaAplicacion),
         factorImporte: v.factorImporte != null ? Number(v.factorImporte) : null,
+        tipoPorcentaje: v.tipoPorcentaje != null ? Number(v.tipoPorcentaje) : null,
+        tipoBase: v.tipoBase != null ? (typeof v.tipoBase === 'string' ? v.tipoBase.toUpperCase() : v.tipoBase) : null,
         importeTotal: v.importeTotal != null ? Number(v.importeTotal) : null,
         numeroDocumento: S(v.citaBancaria),
         qnaini: this.calendarioActual ?   Number(`${this.calendarioActual.ejercicio}${this.calendarioActual.qna.toString().padStart(2, '0')}`) :  (v.inicio != null ? Number(v.inicio) : null),
@@ -241,41 +249,70 @@ export class AltaBeneficiarioJmDialog implements OnInit {
         institucionBancaria: S(bancoNombreSel || bancoNombreOrig || null)
       };
   }
+  private buildTabPayload() {
+  const v = this.form.value.beneficiario ?? {};
+  const S = (x:any)=> typeof x === 'string' ? x.toUpperCase().trim() : (x ?? null);
 
-  guardar(): void {
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
-      this.toastService.warning('Formulario invalido', 'Revisar que los campos a actualizar esten correctos', 6000);
-      return;
-    }
+  return {
+    rfc: S(v.rfc),
+    primerApellido: S(v.primerApellido),
+    segundoApellido: S(v.segundoApellido),
+    nombre: S(v.nombre),
+    clabeInterbancaria: S(v.clabe),
+    ctaBancaria: v.ctaBancaria != null ? Number(v.ctaBancaria) : null,
+    catBancoId: v.bancoId != null ? Number(v.bancoId) : null
+  };
+}
 
-    const payload = this.buildPayload();
-    if (!payload) return;
-    const nomId = this.form.get('beneficiario.nomId')?.value ?? this.data?.beneficiario?.id ?? null;
+guardar(): void {
+  if (this.form.invalid) {
+    this.form.markAllAsTouched();
+    this.toastService.warning('Formulario invalido', 'Revisar que los campos a actualizar esten correctos', 6000);
+    return;
+  }
 
-    if (this.data?.modo === 'editar' && nomId) {
-      this.juiciosMercantilesService.actualizarBeneficiario(nomId, payload)
-        .subscribe({
-          next: () => {
+  const payload = this.buildPayload();
+  if (!payload) return;
+  const nomId = this.form.get('beneficiario.nomId')?.value ?? this.data?.beneficiario?.id ?? null;
+  const tabId = this.form.get('beneficiario.tabBeneficiariosJmId')?.value ?? this.data?.beneficiario?.tabBeneficiariosJmId ?? null;
+
+  if (this.data?.modo === 'editar' && nomId) {
+    this.juiciosMercantilesService.actualizarBeneficiario(nomId, payload)
+      .subscribe({
+        next: () => {
+          if (!tabId) {
             this.cerrar();
-            this.toastService.info('Actualización de datos', 'Datos actualizados correctamente', 6000)
-          },
-            error: () => {
-              this.toastService.error('Formulario incorrecto', 'Ocurrió un error al actualizar. Intenta nuevamente', 6000)
-            }
-          });
-      } else {
-      this.juiciosMercantilesService.agregarBeneficiario(payload).subscribe({
-        next: () => { 
-          this.toastService.success('Informacion guardada', 'Beneficiario guardado correctamente', 6000); 
-          this.cerrar(); 
+            this.toastService.info('Actualización de datos', 'Datos actualizados correctamente', 6000);
+            return;
+          }
+          const tabPayload = this.buildTabPayload();
+          this.juiciosMercantilesService.actualizarTab(tabId, tabPayload)
+            .subscribe({
+              next: () => {
+                this.cerrar();
+                this.toastService.info('Actualización de datos', 'Datos actualizados correctamente', 6000);
+              },
+              error: () => {
+                this.toastService.error('Datos bancarios', 'El beneficiario se actualizó, pero los datos bancarios no pudieron guardarse', 6000);
+              }
+            });
         },
-        error: () => { 
-          this.toastService.error('Error', 'Error al guardar beneficiario', 6000); 
+        error: () => {
+          this.toastService.error('Formulario incorrecto', 'Ocurrió un error al actualizar. Intenta nuevamente', 6000);
         }
       });
-    }
+  } else {
+    this.juiciosMercantilesService.saveBeneficiary(payload).subscribe({
+      next: () => {
+        this.toastService.success('Informacion guardada', 'Beneficiario guardado correctamente', 6000);
+        this.cerrar();
+      },
+      error: () => {
+        this.toastService.error('Error', 'Error al guardar beneficiario', 6000);
+      }
+    });
   }
+}
 
   getCurrentQna(): { anio: number; qna: number; aaaaqq: number } {
     const now = new Date();

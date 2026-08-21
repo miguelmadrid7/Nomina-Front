@@ -174,40 +174,30 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
       this.toastService.warning('Acción invalida', 'Selecciona un empleado primero.', 4000);
       return;
     }
-
     const beneficiarioGroup = this.form.get('beneficiario');
     if (!beneficiarioGroup) {
       this.toastService.error('Error', 'No se pudo leer el formulario.', 4000);
       return;
     }
-
     if (beneficiarioGroup.invalid) {
       beneficiarioGroup.markAllAsTouched();
       this.toastService.warning('Formulario incompleto', 'Por favor completa los campos requeridos.', 4000);
       return;
     }
-
     const formValue = beneficiarioGroup.value;
-
-    // Validación adicional para formaAplicacion
     if (!formValue.formaAplicacion) {
       this.toastService.warning('Campo requerido', 'Debes seleccionar una forma de aplicación (Factor o Importe fijo).', 4000);
       return;
     }
-
-    // Preparar datos según formaAplicacion
     const formaAplicacion = formValue.formaAplicacion;
     let tipoPorcentaje: number | null = null;
     let tipoBase: string | null = null;
-
     if (formaAplicacion === 'P') {
       tipoPorcentaje = formValue.tipoPorcentaje ? Number(formValue.tipoPorcentaje) : 1;
       if (tipoPorcentaje === 1) {
         tipoBase = formValue.tipoBase || 'A';
       }
     }
-
-    // Enviar directamente al endpoint /beneficiarios/jm con todos los datos
     const payload = {
       tabEmpleadosId: this.empleadoIdActual,
       rfc: formValue.rfc,
@@ -226,17 +216,13 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
       ctaBancaria: formValue.citaBancaria,
       catBancoId: formValue.bancoId
     };
-
-    console.log('Payload enviado al backend:', payload);
-
-    this.juiciosMercantilesService.agregarBeneficiario(payload).subscribe({
+    this.juiciosMercantilesService.saveBeneficiary(payload).subscribe({
       next: () => {
         this.form.get('beneficiario')?.reset();
         this.clearFilters();
         this.toastService.info('Información guardada', 'Juicio guardado correctamente.', 6000);
       },
-      error: (error) => {
-        console.error('Error al guardar:', error);
+      error: () => {
         this.toastService.error('Error', 'No se pudo guardar el juicio. Revisa los datos.', 6000);
       }
     });

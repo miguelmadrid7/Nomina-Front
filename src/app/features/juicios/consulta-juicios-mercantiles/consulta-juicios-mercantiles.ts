@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, NgZone, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -41,6 +41,7 @@ export class ConsultaJuiciosMercantiles {
 
   private readonly juiciosMercantilesService = inject(JuiciosMercantilesService);
   private readonly cd = inject(ChangeDetectorRef);
+  private readonly zone = inject(NgZone);
   private readonly dialog = inject(MatDialog); 
   private readonly loaderService = inject(LoaderService);
   private readonly toastService = inject(ToastService);
@@ -55,9 +56,9 @@ export class ConsultaJuiciosMercantiles {
     'nombreEmpleado',
     'rfc', 
     'nombreCompleto', 
-    'qnaProceso', 
+    'qnaProceso',
     'formaAplicacion',
-    'status', 
+    'status',
     'acciones'
   ];
 
@@ -82,17 +83,17 @@ export class ConsultaJuiciosMercantiles {
     })
   });
 
-   ngOnInit(): void {
+  ngOnInit(): void {
     this.anios = DateYearsHelper.getYears(1,1);
     this.quincenas = DateYearsHelper.getQna();
     this.loadBanks();
     this.loadBeneficiaries();
     this.searchForm.get('busqueda')?.valueChanges.subscribe(() => {
       this.loaderService.show();
-      setTimeout(() => {
+        setTimeout(() => {
           this.applyFilters(this.todosLosRegistros);
-        this.loaderService.hide();
-      }, 200);
+          this.loaderService.hide();
+        }, 200);
     });
   }
 
@@ -107,11 +108,11 @@ export class ConsultaJuiciosMercantiles {
       return;
     }
     let filtrados = this.todosLosRegistros;
-    filtrados = filtrados.filter(r =>
-      r.nombreEmpleado?.toUpperCase().includes(texto) ||
+      filtrados = filtrados.filter(r => 
+        r.nombreEmpleado?.toUpperCase().includes(texto) ||
       r.rfcEmpleado?.toUpperCase().includes(texto) ||
-      r.nombreCompleto?.toUpperCase().includes(texto)
-    );
+        r.nombreCompleto?.toUpperCase().includes(texto)
+      );
     this.applyFilters(filtrados);
   }
 
@@ -163,35 +164,25 @@ export class ConsultaJuiciosMercantiles {
 
   loadBeneficiaries(): void {
     this.loaderService.show();
-    this.juiciosMercantilesService.getTodosBeneficiarios()
+    this.juiciosMercantilesService.getBeneficiaryEmployee()
       .pipe(finalize(() => this.loaderService.hide()))
       .subscribe({
         next: (resp: any) => {
-          const grupos: any[] = resp?.data ?? [];
+          const registros: any[] = resp?.data ?? [];
 
-          const sorted = grupos.flatMap((grupo: any) => {
-            return (grupo.beneficiarios ?? []).map((b: any) => ({
-              showEmpleado: false,
-              nombreEmpleado: grupo.nombreCompleto,
-              rfcEmpleado: b?.rfc ?? '',
-              nombreCompleto: `${b?.primerApellido ?? ''} ${b?.segundoApellido ?? ''} ${b?.nombre ?? ''}`.trim(),
-              primerApellido: b?.primerApellido ?? '',
-              segundoApellido: b?.segundoApellido ?? '',
-              nombre: b?.nombre ?? '',
-              rfc: b?.rfc ?? '',
-              importeTotal: Number(b?.importeTotal ?? 0),
-              factorImporte: Number(b?.factorImporte ?? 0),
-              qnaini: Number(b?.qnaini ?? 0),
-              qnafin: b?.qnafin ? Number(b.qnafin) : null,
-              status: b?.estatus ?? b?.status ?? 'ACTIVO',
-              numeroDocumento: b?.numeroDocumento ?? '',
-              formaAplicacion: b?.formaAplicacion ?? '',
-              tabEmpleadosId: grupo.empleadoId,
-              id: b?.id,
-              tabBeneficiariosJmId: b?.tabBeneficiariosJmId ?? null,
-              tabBeneficiario: b?.tabBeneficiario ?? null
-            }));
-          })
+          const sorted = registros.map((r: any) => ({
+            ...r,
+            showEmpleado: false,
+            numeroDocumento: r.clabe_interbancaria ?? '',
+            restoPagar: r.importe_total ?? 0,
+            // Mapeo de campos snake_case a camelCase
+            nombreEmpleado: `${r.empleado_nombre || ''} ${r.empleado_primer_apellido || ''} ${r.empleado_segundo_apellido || ''}`.trim(),
+            rfcEmpleado: r.empleado_rfc || '',
+            nombreCompleto: `${r.beneficiario_primer_apellido || ''} ${r.beneficiario_segundo_apellido || ''} ${r.beneficiario_nombre || ''}`.trim(),
+            formaAplicacion: r.forma_aplicacion || '',
+            status: r.estatus === 'VIGENTE' ? 'ACTIVO' : 'INACTIVO',
+            tabEmpleadosId: r.tab_empleado_id
+          }))
           .sort((a: any, b: any) => {
             if (a.tabEmpleadosId !== b.tabEmpleadosId) return a.tabEmpleadosId - b.tabEmpleadosId;
             return a.id - b.id;
@@ -209,6 +200,9 @@ export class ConsultaJuiciosMercantiles {
   }
   
   openEditDialog(row: any): void {
+    console.log('Row seleccionada:', row);
+    console.log('ID de la row:', row.id);
+    
     const dialogRef = this.dialog.open(AltaBeneficiarioJmDialog, {
       width: '1200px',
       maxWidth: '92vw',
@@ -218,12 +212,35 @@ export class ConsultaJuiciosMercantiles {
         empleadoId: row.tabEmpleadosId,
         bancos: this.banco,
         modo: 'editar',
-        beneficiario: row
+        beneficiario: {
+          id: row.id,
+          tabBeneficiariosJmId: row.tab_beneficiario_jm_id,
+          rfc: row.beneficiario_rfc,
+          primerApellido: row.beneficiario_primer_apellido,
+          segundoApellido: row.beneficiario_segundo_apellido,
+          nombre: row.beneficiario_nombre,
+          formaAplicacion: row.forma_aplicacion,
+          factorImporte: row.factor_importe,
+          tipoPorcentaje: row.tipo_porcentaje,
+          tipoBase: row.tipo_base,
+          importeTotal: row.importe_total,
+          numeroDocumento: row.clabe_interbancaria,
+          qnaini: row.qnaini,
+          qnafin: row.qnafin,
+          status: row.status,
+          tabBeneficiario: {
+            clabeInterbancaria: row.clabe_interbancaria,
+            ctaBancaria: row.cta_bancaria,
+            institucionBancaria: row.nombre_banco
+          }
+        }
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
+       console.log('Diálogo cerrado con resultado:', result);
       if (!result) return;
+      console.log('Recargando beneficiarios...');
       this.loadBeneficiaries();
     });
   }

@@ -4,7 +4,7 @@ import { HttpClient } from "@angular/common/http";
 import { BeneficiarioJMRequest } from "../../core/model/request/beneficiariojm-request.model";
 import { ApiResponse } from "../../core/model/response/api-Response.model";
 import { Banco } from "../model/banco.model";
-import { map } from "rxjs";
+import { map, Observable } from "rxjs";
 
 type AnyRow = Record<string, any>;
 
@@ -76,21 +76,12 @@ export class JuiciosMercantilesService {
     return this.http.get<ApiResponse<any[]>>(`${this.base}/beneficiarios/jm/tab`);
   }
 
-  saveBeneficiary(formValue: any, employeeId: number) {
-    const payload = {
-      rfc: formValue.rfc,
-      primerApellido: formValue.primerApellido,
-      segundoApellido: formValue.segundoApellido,
-      nombre: formValue.nombre,
-      clabeInterbancaria: formValue.clabe,
-      ctaBancaria: formValue.citaBancaria,
-      catBancoId: formValue.bancoId
-    };
-    return this.http.post<ApiResponse<any>>(`${this.base}/beneficiarios/jm/tab`, payload);
+  getBeneficiaryEmployee(): Observable<any> {
+    return this.http.get<any>(`${this.base}/beneficiarios/jm/tabla`);
   }
 
   //Se hace post en el modal de dar de alta un beneficiario
-  agregarBeneficiario(data: any) {
+  saveBeneficiary(data: any) {
     return this.http.post<ApiResponse<any>>(`${this.base}/beneficiarios/jm`, data, {headers: { 'Content-Type': 'application/json' }});
   }
 
