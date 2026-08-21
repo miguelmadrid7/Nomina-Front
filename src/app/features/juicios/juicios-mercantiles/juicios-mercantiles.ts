@@ -50,7 +50,7 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
   private readonly toastService = inject(ToastService);
 
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
-  @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>; 
+  @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
 
   empleadoIdActual: number | null = null;
   hasCheck = false;
@@ -61,8 +61,8 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
   factorDecimal = 0;
   calendarioActual: Calendario | null = null;
   cargandoQna = false;
-  
- 
+
+
   readonly form = this.fb.group({
       busqueda: this.fb.group({
         searchText: [null as BeneficiarioJMRequest | string |null],
@@ -87,8 +87,10 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
         citaBancaria: [''],
         clabe: [''],
         bancoId: [''],
-        formaAplicacion: [''],
+        formaAplicacion: ['', Validators.required],
         factorImporte: ['', Validators.max(100)],
+        tipoPorcentaje: [''],
+        tipoBase: [''],
         estatus: [''],
         descripcion: [''],
       }),
@@ -133,8 +135,8 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
         this.cargandoBusqueda = false;
        if (this.resultado.length > 0) {
         setTimeout(() => {
-          this.searchInput?.nativeElement.focus(); 
-          this.autocompleteTrigger?.openPanel(); 
+          this.searchInput?.nativeElement.focus();
+          this.autocompleteTrigger?.openPanel();
         });
       } else {
         this.autocompleteTrigger?.closePanel();
@@ -152,9 +154,9 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
     this.empleadoIdActual = Number(emp.id);
     const partes = repartirNombre(emp);
     this.form.patchValue({
-      busqueda: { 
-        empleadoId: Number(emp.id), 
-        searchText: emp 
+      busqueda: {
+        empleadoId: Number(emp.id),
+        searchText: emp
       },
       empleado: {
         rfc: emp.rfc ?? '',
@@ -173,41 +175,100 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
       return;
     }
 
-    const formValue = this.form.get('beneficiario')?.value;
+    const beneficiarioGroup = this.form.get('beneficiario');
+    if (!beneficiarioGroup) {
+      this.toastService.error('Error', 'No se pudo leer el formulario.', 4000);
+      return;
+    }
+
+    if (beneficiarioGroup.invalid) {
+      beneficiarioGroup.markAllAsTouched();
+      this.toastService.warning('Formulario incompleto', 'Por favor completa los campos requeridos.', 4000);
+      return;
+    }
+
+    const formValue = beneficiarioGroup.value;
+
+    // Validación adicional para formaAplicacion
+    if (!formValue.formaAplicacion) {
+      this.toastService.warning('Campo requerido', 'Debes seleccionar una forma de aplicación (Factor o Importe fijo).', 4000);
+      return;
+    }
+
+    // Preparar datos según formaAplicacion
+    const formaAplicacion = formValue.formaAplicacion;
+    let tipoPorcentaje: number | null = null;
+    let tipoBase: string | null = null;
+
+    if (formaAplicacion === 'P') {
+      tipoPorcentaje = formValue.tipoPorcentaje ? Number(formValue.tipoPorcentaje) : 1;
+      if (tipoPorcentaje === 1) {
+        tipoBase = formValue.tipoBase || 'A';
+      }
+    }
+
+    // Enviar directamente al endpoint /beneficiarios/jm con todos los datos
     const payload = {
-      ...formValue,
+      tabEmpleadosId: this.empleadoIdActual,
+      rfc: formValue.rfc,
+      primerApellido: formValue.primerApellido,
+      segundoApellido: formValue.segundoApellido,
+      nombre: formValue.nombre,
+      importeTotal: formValue.importeTotal,
+      formaAplicacion: formaAplicacion,
+      factorImporte: formValue.factorImporte,
+      tipoPorcentaje: tipoPorcentaje,
+      tipoBase: tipoBase,
+      numeroBenef: 1,
       qnaini: this.calendarioActual ? `${this.calendarioActual.ejercicio}${this.calendarioActual.qna.toString().padStart(2, '0')}` : '',
-      qnafin: '999999'
+      qnafin: '999999',
+      clabeInterbancaria: formValue.clabe,
+      ctaBancaria: formValue.citaBancaria,
+      catBancoId: formValue.bancoId
     };
 
-    this.juiciosMercantilesService.saveBeneficiary(payload, this.empleadoIdActual)
-      .subscribe({
-        next: () => {
-          this.form.get('beneficiario')?.reset();
-          this.clearFilters();
-          this.toastService.info('Información guardada', 'Juicio guardado correctamente.', 6000);
-        },
-        error: () => {
-          this.toastService.error('Error', 'Juicio no se guardo correctamente. Intenta nuevamente', 6000);
-        }
-      });
+    console.log('Payload enviado al backend:', payload);
+
+    this.juiciosMercantilesService.agregarBeneficiario(payload).subscribe({
+      next: () => {
+        this.form.get('beneficiario')?.reset();
+        this.clearFilters();
+        this.toastService.info('Información guardada', 'Juicio guardado correctamente.', 6000);
+      },
+      error: (error) => {
+        console.error('Error al guardar:', error);
+        this.toastService.error('Error', 'No se pudo guardar el juicio. Revisa los datos.', 6000);
+      }
+    });
   }
 
   updateFactorValidator(): void {
     const forma = this.form.get('beneficiario.formaAplicacion');
     const factor = this.form.get('beneficiario.factorImporte');
-    
+    const tipoPorcentaje = this.form.get('beneficiario.tipoPorcentaje');
+    const tipoBase = this.form.get('beneficiario.tipoBase');
+
     if(forma?.value === 'P') {
       factor?.setValidators([
         Validators.min(0),
         Validators.max(100)
       ]);
+      tipoPorcentaje?.setValidators([Validators.required]);
+      if(tipoPorcentaje?.value === '1') {
+        tipoBase?.setValidators([Validators.required]);
+      } else {
+        tipoBase?.clearValidators();
+      }
     } else {
       factor?.setValidators([
         Validators.min(0)
       ]);
+      tipoPorcentaje?.clearValidators();
+      tipoBase?.clearValidators();
     }
     factor?.updateValueAndValidity();
+    tipoPorcentaje?.updateValueAndValidity();
+    tipoBase?.updateValueAndValidity();
   }
 
   updateFactorDecimal(): void {
@@ -249,19 +310,19 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
 
   clearFilters(): void {
     this.form.patchValue({
-      busqueda: { 
-        searchText: '', 
-        empleadoId: null, 
-        rfc: '', 
-        primerApellido: '', 
-        segundoApellido: '', 
-        nombre: '' 
+      busqueda: {
+        searchText: '',
+        empleadoId: null,
+        rfc: '',
+        primerApellido: '',
+        segundoApellido: '',
+        nombre: ''
       },
-      empleado: { 
-        rfc: '', 
-        primerApellido: '', 
-        segundoApellido: '', 
-        nombre: '' 
+      empleado: {
+        rfc: '',
+        primerApellido: '',
+        segundoApellido: '',
+        nombre: ''
       }
     }, { emitEvent: false });
     this.resultado = [];

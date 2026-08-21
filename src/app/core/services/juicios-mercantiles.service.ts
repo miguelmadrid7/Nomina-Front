@@ -67,13 +67,13 @@ export class JuiciosMercantilesService {
       );
   }
 
-   //Se obtiene la lista de los banco que hay en la bd y los muestra el combobox
+  // Catalogo de bancos
   getBancos() {
     return this.http.get<ApiResponse<Banco[]>>(`${this.base}/catalogo/bancos`);
   }
-
+  //Lista de benficiarios
   getTodosBeneficiarios() {
-    return this.http.get<ApiResponse<any[]>>(`${this.base}/beneficiarios/nom`);
+    return this.http.get<ApiResponse<any[]>>(`${this.base}/beneficiarios/jm/tab`);
   }
 
   saveBeneficiary(formValue: any, employeeId: number) {
@@ -84,30 +84,37 @@ export class JuiciosMercantilesService {
       nombre: formValue.nombre,
       clabeInterbancaria: formValue.clabe,
       ctaBancaria: formValue.citaBancaria,
-      institucionBancaria: formValue.bancoId,
-      formaAplicacion: formValue.formaAplicacion,
-      factorImporte: formValue.factorImporte,
-      importeTotal: formValue.importeTotal, 
-      qnaini: formValue.qnaini,
-      qnafin: formValue.qnafin,
-      numeroDocumento: formValue.descripcion,
-      tabEmpleadosId: employeeId
+      catBancoId: formValue.bancoId
     };
-    return this.http.post<ApiResponse<any>>(`${this.base}/beneficiarios/tab`, payload);
+    return this.http.post<ApiResponse<any>>(`${this.base}/beneficiarios/jm/tab`, payload);
   }
 
   //Se hace post en el modal de dar de alta un beneficiario
   agregarBeneficiario(data: any) {
-    return this.http.post<ApiResponse<any>>(`${this.base}/beneficiarios/nom`, data, {
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return this.http.post<ApiResponse<any>>(`${this.base}/beneficiarios/jm`, data, {headers: { 'Content-Type': 'application/json' }});
   }
 
   //Se actualiza los datos de un beneficiario seleccionado
   actualizarBeneficiario(id: number, data: any) {
-    return this.http.put<ApiResponse<any>>(`${this.base}/beneficiarios/nom/${id}`, data, {
-      headers: { 'Content-Type': 'application/json' }
-    });
+    return this.http.patch<ApiResponse<any>>(`${this.base}/beneficiarios/jm/${id}`, data, { headers: { 'Content-Type': 'application/json' } });
   }
 
+  //Beneficiarios NOM vigentes de un empleado
+  getBeneficiariosPorEmpleado(empleadoId: number) {
+    return this.http.get<ApiResponse<any>>(`${this.base}/beneficiarios/jm/empleado/${empleadoId}`);
+  }
+
+  //Histórico (vigentes + cancelados + finalizados) con estatus calculado; qnaActual es opcional
+  getHistoricoPorEmpleado(empleadoId: number, qnaActual?: number) {
+    const params: Record<string, string> = {};
+    if (qnaActual != null) {
+      params['qnaActual'] = qnaActual.toString();
+    }
+    return this.http.get<ApiResponse<any>>(`${this.base}/beneficiarios/jm/empleado/${empleadoId}/historico`, { params });
+  }
+
+  //Actualiza los datos bancarios (TAB) de un beneficiario
+  actualizarTab(id: number, data: any) {
+    return this.http.patch<ApiResponse<any>>(`${this.base}/beneficiarios/jm/tab/${id}`, data, { headers: { 'Content-Type': 'application/json' } });
+  }
 }

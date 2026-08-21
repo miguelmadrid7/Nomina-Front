@@ -190,6 +190,29 @@
                     </mat-form-field>
                 </div>
 
+                <div class="field-group" *ngIf="form.get('beneficiario.formaAplicacion')?.value === 'P'">
+                    <mat-form-field appearance="outline" class="login-field compact-field full-width with-separator" floatLabel="always">
+                        <mat-icon matPrefix>tune</mat-icon>
+                            <mat-label>Tipo porcentaje*</mat-label>
+                                <mat-select formControlName="tipoPorcentaje" placeholder="Seleccionar">
+                                    <mat-option value="1">Tipo 1</mat-option>
+                                    <mat-option value="2">Tipo 2</mat-option>
+                                    <mat-option value="3">Tipo 3</mat-option>
+                                </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group" *ngIf="form.get('beneficiario.formaAplicacion')?.value === 'P' && form.get('beneficiario.tipoPorcentaje')?.value === '1'">
+                    <mat-form-field appearance="outline" class="login-field compact-field full-width with-separator" floatLabel="always">
+                        <mat-icon matPrefix>tune</mat-icon>
+                            <mat-label>Tipo base*</mat-label>
+                                <mat-select formControlName="tipoBase" placeholder="Seleccionar">
+                                    <mat-option value="A">Base A</mat-option>
+                                    <mat-option value="B">Base B</mat-option>
+                                </mat-select>
+                    </mat-form-field>
+                </div>
+
                 <div class="field-group">
                     <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
                         <mat-icon matPrefix> {{ form.get('beneficiario.formaAplicacion')?.value === 'P' ? 'percent' : 'attach_money' }} </mat-icon>
