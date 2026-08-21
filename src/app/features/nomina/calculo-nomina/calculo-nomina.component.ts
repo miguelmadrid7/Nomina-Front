@@ -58,7 +58,7 @@ export class CalculoNominaComponent implements OnInit {
     anio: [null, Validators.required],
     quincena: [null, Validators.required]
   });
-  
+
   readonly fechaCaptura: string = new Date().toLocaleDateString('es-MX', {
     day: '2-digit',
     month: '2-digit',
@@ -124,6 +124,8 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Actualizando importes' },               // bono_RM
     { label: 'Preparando descuentos de pensiones alimenticias' }, // cpto_62
     { label: 'Consolidando pensiones alimenticias' }, // cpto_62
+    { label: 'Preparando descuentos de juicios mercantiles' }, // cpto_JM
+    { label: 'Consolidando juicios mercantiles' }, // cpto_JM
     { label: 'Actualizando importes finales' },      // updateImportes
   ];
 
@@ -156,7 +158,7 @@ export class CalculoNominaComponent implements OnInit {
         error: () => {
           this.cargandoCalendario = false;
           this.toastService.error(
-            'Calendario', 
+            'Calendario',
             'Error al cargar el calendario'
           );
           this.cdr.markForCheck();
@@ -175,7 +177,7 @@ export class CalculoNominaComponent implements OnInit {
       },
       error: () => {
         this.toastService.error(
-          'Conceptos extra', 
+          'Conceptos extra',
           'Error al cargar conceptos extra'
         );
       this.cdr.markForCheck();
@@ -262,8 +264,8 @@ export class CalculoNominaComponent implements OnInit {
     if (data.status === 'ERROR') {
       this.failedStepIndex = data.failedStepIndex ?? null;
       this.failedStepName = data.failedStepName ?? null;
-      this.errorMessage = data.errorMsg ?? null; 
-      this.errorType = data.errorType ?? null; 
+      this.errorMessage = data.errorMsg ?? null;
+      this.errorType = data.errorType ?? null;
       this.userMessage = data.userMessage ?? 'Ocurrió un error durante el cálculo de nómina.';
 
 
@@ -285,8 +287,8 @@ export class CalculoNominaComponent implements OnInit {
     if (!this.deliverableReady &&  (data.progress === 100 || data.status === 'COMPLETED')) {
       this.deliverableReady = true;
       this.processing = false;
-      this.toastService.success( 
-        'Proceso finalizado', 
+      this.toastService.success(
+        'Proceso finalizado',
         'El cálculo de nómina terminó correctamente.'
       );
         if (this.stompClient) {
@@ -338,7 +340,7 @@ export class CalculoNominaComponent implements OnInit {
             error: () => {
               this.processing = false;
               this.toastService.error(
-                'Proceso', 
+                'Proceso',
                 'No se pudo iniciar el proceso. Verifica que el servidor esté disponible.'
               );
               this.cdr.markForCheck();
@@ -349,7 +351,7 @@ export class CalculoNominaComponent implements OnInit {
         this.zone.run(() => {
           this.processing = false;
           this.toastService.warning(
-            'WebSocket', 
+            'WebSocket',
             'No se pudo conectar con el servidor. Verifica tu conexión o que el backend esté activo.'
           );
           this.cdr.markForCheck();
