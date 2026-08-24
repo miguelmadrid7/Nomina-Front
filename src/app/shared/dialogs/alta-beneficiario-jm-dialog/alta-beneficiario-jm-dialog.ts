@@ -250,96 +250,69 @@ export class AltaBeneficiarioJmDialog implements OnInit {
       };
   }
   private buildTabPayload() {
-  const v = this.form.value.beneficiario ?? {};
-  const S = (x:any)=> typeof x === 'string' ? x.toUpperCase().trim() : (x ?? null);
+    const v = this.form.value.beneficiario ?? {};
+    const S = (x:any)=> typeof x === 'string' ? x.toUpperCase().trim() : (x ?? null);
 
-  return {
-    rfc: S(v.rfc),
-    primerApellido: S(v.primerApellido),
-    segundoApellido: S(v.segundoApellido),
-    nombre: S(v.nombre),
-    clabeInterbancaria: S(v.clabe),
-    ctaBancaria: v.ctaBancaria != null ? Number(v.ctaBancaria) : null,
-    catBancoId: v.bancoId != null ? Number(v.bancoId) : null
-  };
-}
-
-guardar(): void {
-  if (this.form.invalid) {
-    this.form.markAllAsTouched();
-    this.toastService.warning('Formulario invalido', 'Revisar que los campos a actualizar esten correctos', 6000);
-    return;
+    return {
+      rfc: S(v.rfc),
+      primerApellido: S(v.primerApellido),
+      segundoApellido: S(v.segundoApellido),
+      nombre: S(v.nombre),
+      clabeInterbancaria: S(v.clabe),
+      ctaBancaria: v.ctaBancaria != null ? Number(v.ctaBancaria) : null,
+      catBancoId: v.bancoId != null ? Number(v.bancoId) : null
+    };
   }
 
-  const payload = this.buildPayload();
-  if (!payload) return;
-  const nomId = this.form.get('beneficiario.nomId')?.value ?? this.data?.beneficiario?.id ?? null;
-  const tabId = this.form.get('beneficiario.tabBeneficiariosJmId')?.value ?? this.data?.beneficiario?.tabBeneficiariosJmId ?? null;
+  guardar(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.toastService.warning('Formulario invalido', 'Revisar que los campos a actualizar esten correctos', 6000);
+      return;
+    }
 
-  if (this.data?.modo === 'editar' && nomId) {
-    this.juiciosMercantilesService.actualizarBeneficiario(nomId, payload)
-      .subscribe({
-        next: () => {
-          if (!tabId) {
-            this.cerrar();
-            this.toastService.info('Actualización de datos', 'Datos actualizados correctamente', 6000);
-            return;
+    const payload = this.buildPayload();
+    if (!payload) return;
+    const nomId = this.form.get('beneficiario.nomId')?.value ?? this.data?.beneficiario?.id ?? null;
+    const tabId = this.form.get('beneficiario.tabBeneficiariosJmId')?.value ?? this.data?.beneficiario?.tabBeneficiariosJmId ?? null;
+
+    if (this.data?.modo === 'editar' && nomId) {
+      this.juiciosMercantilesService.actualizarBeneficiario(nomId, payload)
+        .subscribe({
+          next: () => {
+            if (!tabId) {
+              this.cerrar();
+              this.toastService.info('Actualización de datos', 'Datos actualizados correctamente', 6000);
+              return;
+            }
+            const tabPayload = this.buildTabPayload();
+            this.juiciosMercantilesService.actualizarTab(tabId, tabPayload)
+              .subscribe({
+                next: () => {
+                  this.cerrar();
+                  this.toastService.info('Actualización de datos', 'Datos actualizados correctamente', 6000);
+                },
+                error: () => {
+                  this.toastService.error('Datos bancarios', 'El beneficiario se actualizó, pero los datos bancarios no pudieron guardarse', 6000);
+                }
+              });
+          },
+          error: () => {
+            this.toastService.error('Formulario incorrecto', 'Ocurrió un error al actualizar. Intenta nuevamente', 6000);
           }
-          const tabPayload = this.buildTabPayload();
-          this.juiciosMercantilesService.actualizarTab(tabId, tabPayload)
-            .subscribe({
-              next: () => {
-                this.cerrar();
-                this.toastService.info('Actualización de datos', 'Datos actualizados correctamente', 6000);
-              },
-              error: () => {
-                this.toastService.error('Datos bancarios', 'El beneficiario se actualizó, pero los datos bancarios no pudieron guardarse', 6000);
-              }
-            });
+        });
+    } else {
+      this.juiciosMercantilesService.saveBeneficiary(payload).subscribe({
+        next: () => {
+          this.toastService.success('Informacion guardada', 'Beneficiario guardado correctamente', 6000);
+          this.cerrar();
         },
         error: () => {
-          this.toastService.error('Formulario incorrecto', 'Ocurrió un error al actualizar. Intenta nuevamente', 6000);
+          this.toastService.error('Error', 'Error al guardar beneficiario', 6000);
         }
       });
-  } else {
-    this.juiciosMercantilesService.saveBeneficiary(payload).subscribe({
-      next: () => {
-        this.toastService.success('Informacion guardada', 'Beneficiario guardado correctamente', 6000);
-        this.cerrar();
-      },
-      error: () => {
-        this.toastService.error('Error', 'Error al guardar beneficiario', 6000);
-      }
-    });
-  }
-}
-
-  getCurrentQna(): { anio: number; qna: number; aaaaqq: number } {
-    const now = new Date();
-    const anio = now.getFullYear();
-    const mes = now.getMonth() + 1; 
-    const qnaDelMes = (now.getDate() <= 15) ? 1 : 2;  
-    const qna = (mes - 1) * 2 + qnaDelMes;           
-    return { 
-      anio, 
-      qna,
-      aaaaqq: anio * 100 + qna 
-    };
-  }
-
-  nextQna(aaaaqq: number): { anio: number; qna: number; aaaaqq: number } {
-    let anio = Math.floor(aaaaqq / 100);
-    let qna = aaaaqq % 100; 
-    qna += 1;
-    if (qna > 24) { 
-      qna = 1; anio += 1; 
     }
-    return { 
-      anio, 
-      qna, 
-      aaaaqq: anio * 100 + qna 
-    };
-  } 
+  }
 
   cerrar(): void {
     this.dialogRef.close(true);

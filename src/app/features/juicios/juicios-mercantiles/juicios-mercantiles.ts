@@ -79,6 +79,7 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
         nombre: [''],
       }),
       beneficiario: this.fb.group({
+        numeroOficio: [null as string | null],
         rfc: ['', Validators.required],
         primerApellido: [''],
         segundoApellido: [''],
@@ -199,6 +200,7 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
       }
     }
     const payload = {
+      numeroOficio: formValue.numeroOficio,
       tabEmpleadosId: this.empleadoIdActual,
       rfc: formValue.rfc,
       primerApellido: formValue.primerApellido,

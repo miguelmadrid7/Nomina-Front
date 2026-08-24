@@ -103,6 +103,14 @@
          <mat-card class="form-card">
             <mat-card-content class="form-layout" formGroupName="beneficiario">
 
+                <div class="row-nuOficio">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>description</mat-icon>
+                            <mat-label>NÚMERO DE OFICIO</mat-label>
+                            <input matInput formControlName="numeroOficio" appUppercase />
+                    </mat-form-field>
+                </div>
+                
                 <div class="field-group">
                     <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
                         <mat-icon matPrefix>badge</mat-icon>
@@ -195,9 +203,9 @@
                         <mat-icon matPrefix>tune</mat-icon>
                             <mat-label>Tipo porcentaje*</mat-label>
                                 <mat-select formControlName="tipoPorcentaje" placeholder="Seleccionar">
-                                    <mat-option value="1">Tipo 1</mat-option>
-                                    <mat-option value="2">Tipo 2</mat-option>
-                                    <mat-option value="3">Tipo 3</mat-option>
+                                    <mat-option value="1">% sobre líquido</mat-option>
+                                    <mat-option value="2">% sobre concepto 07</mat-option>
+                                    <mat-option value="3">30% excedente salario mínimo</mat-option>
                                 </mat-select>
                     </mat-form-field>
                 </div>
@@ -207,8 +215,8 @@
                         <mat-icon matPrefix>tune</mat-icon>
                             <mat-label>Tipo base*</mat-label>
                                 <mat-select formControlName="tipoBase" placeholder="Seleccionar">
-                                    <mat-option value="A">Base A</mat-option>
-                                    <mat-option value="B">Base B</mat-option>
+                                    <mat-option value="A">Omite conceptos 01, 02, 04, 62</mat-option>
+                                    <mat-option value="B">Omite conceptos 01, 02, 04, 58, 77, 62</mat-option>
                                 </mat-select>
                     </mat-form-field>
                 </div>
