@@ -121,11 +121,11 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando bonos IH' },               // bono_IH
     { label: 'Calculando bonos OF' },               // bono_OF
     { label: 'Calculando bonos RM' },               // bono_RM
-    { label: 'Actualizando importes' },               // bono_RM
     { label: 'Preparando descuentos de pensiones alimenticias' }, // cpto_62
     { label: 'Consolidando pensiones alimenticias' }, // cpto_62
     { label: 'Preparando descuentos de juicios mercantiles' }, // cpto_JM
     { label: 'Consolidando juicios mercantiles' }, // cpto_JM
+    { label: 'Actualizando importes' },              // updateImportes
     { label: 'Actualizando importes finales' },      // updateImportes
   ];
 
@@ -157,10 +157,7 @@ export class CalculoNominaComponent implements OnInit {
         },
         error: () => {
           this.cargandoCalendario = false;
-          this.toastService.error(
-            'Calendario',
-            'Error al cargar el calendario'
-          );
+          this.toastService.error('Calendario', 'Error al cargar el calendario', 6000);
           this.cdr.markForCheck();
         }
       });
@@ -176,10 +173,7 @@ export class CalculoNominaComponent implements OnInit {
         this.cdr.markForCheck();
       },
       error: () => {
-        this.toastService.error(
-          'Conceptos extra',
-          'Error al cargar conceptos extra'
-        );
+        this.toastService.error('Conceptos extra', 'Error al cargar conceptos extra', 6000);
       this.cdr.markForCheck();
       }
     })
@@ -287,10 +281,7 @@ export class CalculoNominaComponent implements OnInit {
     if (!this.deliverableReady &&  (data.progress === 100 || data.status === 'COMPLETED')) {
       this.deliverableReady = true;
       this.processing = false;
-      this.toastService.success(
-        'Proceso finalizado',
-        'El cálculo de nómina terminó correctamente.'
-      );
+      this.toastService.success('Proceso finalizado', 'El cálculo de nómina terminó correctamente.', 6000);
         if (this.stompClient) {
           this.stompClient.disconnect(() => {});
         }
@@ -328,10 +319,7 @@ export class CalculoNominaComponent implements OnInit {
               const jobId = resp?.data;
               if (!jobId) {
                 this.processing = false;
-                this.toastService.warning(
-                  'Proceso',
-                  'No se recibió el identificador del proceso.'
-                );
+                this.toastService.warning( 'Proceso','No se recibió el identificador del proceso.', 6000 );
                 this.cdr.markForCheck();
                 return;
               }
@@ -339,10 +327,7 @@ export class CalculoNominaComponent implements OnInit {
             },
             error: () => {
               this.processing = false;
-              this.toastService.error(
-                'Proceso',
-                'No se pudo iniciar el proceso. Verifica que el servidor esté disponible.'
-              );
+              this.toastService.error('Proceso', 'No se pudo iniciar el proceso. Verifica que el servidor esté disponible.', 6000);
               this.cdr.markForCheck();
             }
           });
@@ -350,10 +335,7 @@ export class CalculoNominaComponent implements OnInit {
       (error: any) => {
         this.zone.run(() => {
           this.processing = false;
-          this.toastService.warning(
-            'WebSocket',
-            'No se pudo conectar con el servidor. Verifica tu conexión o que el backend esté activo.'
-          );
+          this.toastService.warning('WebSocket','No se pudo conectar con el servidor. Verifica tu conexión o que el backend esté activo.', 6000);
           this.cdr.markForCheck();
         });
       }
