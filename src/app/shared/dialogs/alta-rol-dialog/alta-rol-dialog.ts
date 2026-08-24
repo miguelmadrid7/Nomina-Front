@@ -11,8 +11,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { ModuleService } from '../../../core/services/module.service';
 import { Module } from '../../../core/model/gestion-core/module.model';
 import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { RolService } from '../../../core/services/rol.service';
+import { Permission } from '../../../core/model/permission.model';
 
 @Component({
   selector: 'app-alta-rol-dialog',
@@ -41,7 +42,8 @@ export class AltaRolDialog {
   private readonly moduleService = inject(ModuleService);
   private readonly rolService = inject(RolService);
 
-  permissions$!: Observable<any[]>;
+  permissions$!: Observable<Permission[]>;
+  private permisosCache: Permission[] = [];
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -52,7 +54,9 @@ export class AltaRolDialog {
       modulesId: [(this.data as any)?.modulesId ?? (this.data as any)?.modules?.map((module: Module) => module.id) ?? [], [Validators.required]],
     });
     this.modules$ = this.moduleService.getAllModules().pipe(catchError(() => of([])));
-    this.permissions$ = this.rolService.getPermissions().pipe(catchError(() => of([])));
+    this.permissions$ = this.rolService.getPermissions().pipe(catchError(() => of([])),
+      tap(permisos => this.permisosCache = permisos)
+    );
   }
 
   guardar(): void {

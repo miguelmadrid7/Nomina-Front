@@ -5,6 +5,7 @@ import { Role } from "../model/rol.model";
 import { CreateRoleRequest } from "../../core/model/request/createrole-request.model";
 import { Observable, map } from "rxjs";
 import { HttpClient } from "@angular/common/http";
+import { Permission } from "../model/permission.model";
 
 @Injectable({ providedIn: 'root' })
 export class RolService {
@@ -19,8 +20,8 @@ export class RolService {
         return this.http.get<ApiResponse<Role>>(`${this.base}/roles/role`, { headers: { roleId: roleId.toString() } }).pipe(map(res => res.data));
     }
 
-    getPermissions(): Observable<any[]> {
-        return this.http.get<ApiResponse<any[]>>(`${this.base}/roles/permisos`).pipe(map(res => res.data ?? []));
+    getPermissions(): Observable<Permission[]> {
+        return this.http.get<ApiResponse<Permission[]>>(`${this.base}/roles/permisos`).pipe(map(res => res.data ?? []));
     }
 
     createRole(payload: CreateRoleRequest): Observable<ApiResponse<any>> {

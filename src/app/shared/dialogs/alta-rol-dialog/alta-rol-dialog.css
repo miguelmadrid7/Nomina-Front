@@ -133,6 +133,38 @@
   padding-top: 10px !important;
 }
 
+.permiso-option {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 8px 0;
+}
+
+.permiso-id {
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.permiso-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--text-muted, #9a9990);
+}
+
+.permiso-check mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.permiso-check--on {
+  color: var(--text-accent, #0c447c);
+}
+
 :host ::ng-deep .qna-compact:not(.description-field) .mat-mdc-form-field-infix {
     min-height: 40px !important;
     display: flex;
