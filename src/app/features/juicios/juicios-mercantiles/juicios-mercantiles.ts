@@ -211,7 +211,6 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
       factorImporte: formValue.factorImporte,
       tipoPorcentaje: tipoPorcentaje,
       tipoBase: tipoBase,
-      numeroBenef: 1,
       qnaini: this.calendarioActual ? `${this.calendarioActual.ejercicio}${this.calendarioActual.qna.toString().padStart(2, '0')}` : '',
       qnafin: '999999',
       clabeInterbancaria: formValue.clabe,

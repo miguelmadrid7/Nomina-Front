@@ -49,6 +49,17 @@ export class AltaBeneficiarioJmDialog implements OnInit {
   private readonly cd = inject(ChangeDetectorRef);
   private readonly toastService = inject(ToastService);
 
+  readonly TIPO_PORCENTAJE_OPTIONS = [
+    { value: '1', label: '% sobre líquido' },
+    { value: '2', label: '% sobre concepto 07' },
+    { value: '3', label: '30% excedente salario mínimo' },
+  ];
+
+  readonly  TIPO_BASE_OPTIONS = [
+    { value: 'A', label: 'Omite conceptos 01, 02, 04, 62' },
+    { value: 'B', label: 'Omite conceptos 01, 02, 04, 58, 77, 62' },
+  ];
+
   readonly data = inject<{ empleadoId: number; bancos: Banco[], modo?: 'crear' | 'editar', beneficiario? : any }>(MAT_DIALOG_DATA);
   readonly form = this.fb.group({
     empleado: this.fb.group({
@@ -65,14 +76,16 @@ export class AltaBeneficiarioJmDialog implements OnInit {
       segundoApellido: [null as string | null, [Validators.minLength(2)]],
       nombre: [null as string | null, [Validators.minLength(2)]],
       formaAplicacion: [null as string | null],
-      factorImporte: [null as number | null, [factorImporteControlValidator()]],
-      tipoPorcentaje: [null as number | null],
+      factorImporte: [null as number | null],
+      //tipoPorcentaje: [null as number | null],
+      tipoPorcentaje: [null as string | null],
       tipoBase: [null as string | null],
       bancoId: [null as number | null],
       clabe: [null as string | null, [Validators.pattern(/^\d{18}$/)]],
       importeTotal: [null as number | null, [Validators.min(0)]],
       citaBancaria: [null as string | null],
       ctaBancaria: [null as number | null, [Validators.pattern(/^\d{1,10}$/)]],
+      numeroOficio: [null as string | null],
       estatus: [null as string | null],
       descripcion: [null as string | null],
       inicio: [null as string | null],
@@ -132,7 +145,6 @@ export class AltaBeneficiarioJmDialog implements OnInit {
         factorCtrl.updateValueAndValidity({ emitEvent: false });
       } else if (m === 'P') {
         factorCtrl.setValidators([
-          Validators.required,
           Validators.min(0),
           Validators.max(100),
           Validators.pattern(/^\d{1,3}$/)
@@ -153,36 +165,38 @@ export class AltaBeneficiarioJmDialog implements OnInit {
         this.factorDecimal = Number.isFinite(n) ? n / 100 : 0;
       });
 
-      if (this.data?.beneficiario) {
-        const ben = this.data.beneficiario;
-        const tab = ben.tabBeneficiario ?? {};
-        const bancoMatch = this.bancos.find(
-          bk => (bk.banco ?? '').toString().trim().toUpperCase() === (tab.institucionBancaria ?? '').toString().trim().toUpperCase()
-      );
-      const bancoId = bancoMatch?.id ?? null;
-      this.form.patchValue({
-        beneficiario: {
-          nomId: ben.id,
-          tabBeneficiariosJmId: ben.tabBeneficiariosJmId ?? null,
-          rfc: (ben.rfc ?? '').toString().toUpperCase().trim(),
-          primerApellido: (ben.primerApellido ?? '').toString().toUpperCase().trim(),
-          segundoApellido: (ben.segundoApellido ?? '').toString().toUpperCase().trim(),
-          nombre: (ben.nombre ?? '').toString().toUpperCase().trim(),
-          formaAplicacion: (ben.formaAplicacion ?? '').toString().toUpperCase().trim(),
-          citaBancaria: (ben.numeroDocumento ?? '').toString().toUpperCase().trim(),
-          factorImporte: ben.factorImporte,
-          tipoPorcentaje: ben.tipoPorcentaje,
-          tipoBase: ben.tipoBase ? (typeof ben.tipoBase === 'string' ? ben.tipoBase.toUpperCase() : ben.tipoBase) : null,
-          importeTotal: ben.importeTotal,
-          inicio: ben.qnaini,
-          fin: ben.qnafin,
-          clabe: (tab.clabeInterbancaria ?? '').toString().trim() || null,
-          ctaBancaria: tab.ctaBancaria ?? null,
-          bancoId,
-          estatus: (ben.status ?? ben.estatus ?? '').toString().toUpperCase().trim()
+        if (this.data?.beneficiario) {
+          const ben: any = this.data.beneficiario;
+          const tab = ben.tabBeneficiario ?? {};
+          const bancoMatch = this.bancos.find(
+            bk => (bk.banco ?? '').toString().trim().toUpperCase() === (tab.institucionBancaria ?? '').toString().trim().toUpperCase()
+          );
+          const bancoId = bancoMatch?.id ?? null;
+
+          this.form.patchValue({
+            beneficiario: {
+              nomId: ben.id,
+              tabBeneficiariosJmId: ben.tabBeneficiariosJmId ?? null,
+              rfc: (ben.rfc ?? '').toString().toUpperCase().trim(),
+              primerApellido: (ben.primerApellido ?? '').toString().toUpperCase().trim(),
+              segundoApellido: (ben.segundoApellido ?? '').toString().toUpperCase().trim(),
+              nombre: (ben.nombre ?? '').toString().toUpperCase().trim(),
+              formaAplicacion: (ben.formaAplicacion ?? '').toString().toUpperCase().trim(),
+              citaBancaria: (ben.numeroDocumento ?? '').toString().toUpperCase().trim(),
+              factorImporte: ben.factorImporte,
+              tipoPorcentaje: ben.tipoPorcentaje != null ? ben.tipoPorcentaje.toString() : null, 
+              tipoBase: ben.tipoBase != null ? ben.tipoBase.toString().toUpperCase() : null,
+              importeTotal: ben.importeTotal,
+              inicio: ben.qnaini,
+              fin: ben.qnafin,
+              clabe: (tab.clabeInterbancaria ?? '').toString().trim() || null,
+              ctaBancaria: tab.ctaBancaria ?? null,
+              bancoId,
+              numeroOficio: (ben.numeroOficio ?? '').toString().toUpperCase().trim(), 
+              estatus: (ben.status ?? ben.estatus ?? '').toString().toUpperCase().trim()
+            }
+          });
         }
-      });
-    }
 
     this.form.get('beneficiario.rfc')?.valueChanges.subscribe(val => {
       if (typeof val === 'string') {
@@ -243,7 +257,6 @@ export class AltaBeneficiarioJmDialog implements OnInit {
         numeroDocumento: S(v.citaBancaria),
         qnaini: this.calendarioActual ?   Number(`${this.calendarioActual.ejercicio}${this.calendarioActual.qna.toString().padStart(2, '0')}`) :  (v.inicio != null ? Number(v.inicio) : null),
         qnafin: v.fin != null ? Number(v.fin) : null,
-        numeroBenef: 1,
         clabeInterbancaria: S(v.clabe),
         ctaBancaria: v.ctaBancaria != null ? Number(v.ctaBancaria) : null,
         institucionBancaria: S(bancoNombreSel || bancoNombreOrig || null)
@@ -312,6 +325,10 @@ export class AltaBeneficiarioJmDialog implements OnInit {
         }
       });
     }
+  }
+
+  compareNumeroConString(a: any, b: any): boolean {
+    return a != null && b != null && a.toString() === b.toString();
   }
 
   cerrar(): void {

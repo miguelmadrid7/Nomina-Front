@@ -225,6 +225,7 @@ export class ConsultaJuiciosMercantiles {
           tipoBase: row.tipo_base,
           importeTotal: row.importe_total,
           numeroDocumento: row.clabe_interbancaria,
+          numeroOficio: row.numero_oficio,
           qnaini: row.qnaini,
           qnafin: row.qnafin,
           status: row.status,
