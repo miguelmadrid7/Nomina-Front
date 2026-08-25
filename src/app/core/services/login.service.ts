@@ -5,12 +5,14 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { LoginPayload } from '../model/login.model';
 import { isPlatformBrowser } from '@angular/common';
 import { SidebarModule } from '../model/sidebar.model';
+import { PayrollJobService } from './payroll.service';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
   private base = environment.apiUrl;
   private platformId = inject(PLATFORM_ID);
   private roleChanged = new BehaviorSubject<number | null>(null);
+  private readonly payrollJobService = inject(PayrollJobService);
 
   constructor(private http: HttpClient) {}
 
@@ -142,6 +144,7 @@ export class LoginService {
   }
 
   logout() {
+     this.payrollJobService.reset();
      this.clearSession();
   }
 }

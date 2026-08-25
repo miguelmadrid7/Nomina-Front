@@ -2,7 +2,7 @@
 :host {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100dvh;
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -200,17 +200,17 @@
 
   /* Borde del input se vuelve rojo cuando tiene error */
   .mat-mdc-form-field.ng-invalid.ng-touched
-    .mdc-notched-outline__leading,
+  .mdc-notched-outline__leading,
   .mat-mdc-form-field.ng-invalid.ng-touched
-    .mdc-notched-outline__notch,
+  .mdc-notched-outline__notch,
   .mat-mdc-form-field.ng-invalid.ng-touched
-    .mdc-notched-outline__trailing {
+  .mdc-notched-outline__trailing {
     border-color: #b00020 !important;
   }
 }
 
-/* Responsive breakpoint */
-@media (max-width: 600px) {
+
+@media (max-width: 768px) {
   .header-top-gold {
     padding-left: clamp(70px, 20vw, 100px);
     min-height: 64px;
@@ -222,7 +222,11 @@
   }
 
   .header-sub-maroon {
-    padding: 45px 24px;
+    padding: 20px 24px;
+  }
+
+  .footer-maroon {
+    padding: 16px; 
   }
 
   .card {

@@ -114,6 +114,18 @@ export class PayrollJobService implements OnDestroy {
         this.connectAndExecute(qnaProceso);
     }
 
+    /**
+     * Resetea el servicio por completo: desconecta WS/polling, limpia el estado,
+     * descarta el toast persistente y borra el jobId guardado. Se debe llamar
+     * explícitamente al cerrar sesión, para no arrastrar estado entre usuarios.
+     */
+    reset(): void {
+        this.disconnect();
+        this.clearSavedJobId();
+        this.toastService.dismissPersistent(PROGRESS_TOAST_ID);
+        this.state$$.next(INITIAL_PAYROLL_JOB_STATE);
+    }
+
     /** Guarda el jobId activo en sessionStorage, para poder reconectar tras un refresh. */
     private saveJobId(jobId: number): void {
         if (!this.isBrowser) return;

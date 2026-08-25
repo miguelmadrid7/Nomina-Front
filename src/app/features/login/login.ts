@@ -9,6 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { LoginService } from '../../core/services/login.service';
 import { SidebarService } from '../../core/services/sidebar.service';
+import { ToastService } from '../../core/services/toast.service';
 
 @Component({
   selector: 'app-login',
@@ -31,6 +32,10 @@ export class Login {
   private readonly loginService = inject(LoginService);
   private readonly sidebarService = inject(SidebarService);
   private readonly fb = inject(FormBuilder);
+  private readonly toastService = inject(ToastService);
+
+  loading = false;
+  hide = true;
 
   readonly loginForm = this.fb.nonNullable.group({
     user: ['', Validators.required],
@@ -46,23 +51,18 @@ export class Login {
     return this.loginForm.controls.password; 
   }
 
-  loading = false;
-  error = '';
-  hide = true;
-
   login(): void {
-    this.error = '';
-      if (this.loginForm.invalid) {
-        this.loginForm.markAllAsTouched();
-        return;
-      }
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
     this.loading = true;
     const credentials = this.loginForm.getRawValue();
     this.loginService.login(credentials).subscribe({
       next: (resp) => {
         const authHeader = resp.headers.get('Authorization');
           if (!authHeader) {
-            this.error   = 'No se recibió token de autenticación';
+            this.toastService.error('Autenticación', 'No se recibió token de autenticación.', 6000);
             this.loading = false;
             return;
           }
@@ -79,14 +79,14 @@ export class Login {
             this.loading = false;
           },
           error: () => {
-            this.error   = 'No se pudieron cargar los módulos del usuario';
+            this.toastService.error('Módulos', 'No se pudieron cargar los módulos del usuario.', 6000);
             this.loading = false;
             this.router.navigate([this.loginService.getPrincipalRoute()]);
           }
         });
       },
       error: () => {
-        this.error   = 'Acceso denegado, verifique su usuario y contraseña';
+        this.toastService.error('Acceso denegado', 'Verifique su usuario y contraseña.', 6000);
         this.loading = false;
       }
     });
