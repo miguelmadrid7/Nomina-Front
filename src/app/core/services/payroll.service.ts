@@ -1,4 +1,4 @@
-import { Injectable, NgZone, OnDestroy, inject } from '@angular/core';
+import { Injectable, NgZone, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import SockJS from 'sockjs-client';
 import * as Stomp from 'stompjs';
@@ -8,6 +8,7 @@ import { ToastService } from './toast.service';
 import { ProgressMessage } from '../model/progress-message.model';
 import { StepExecution } from '../model/step-execution.model';
 import { PayRollJobState, INITIAL_PAYROLL_JOB_STATE } from '../model/payrolljobstate.model';
+import { isPlatformBrowser } from '@angular/common';
 
 const MAX_POLL_ATTEMPTS = 240;
 const POLL_INTERVAL_MS = 500;
@@ -20,6 +21,8 @@ export class PayrollJobService implements OnDestroy {
     private readonly nominaService = inject(NominaService);
     private readonly toastService = inject(ToastService);
     private readonly zone = inject(NgZone);
+    private readonly platformId = inject(PLATFORM_ID); // ⬅️ nuevo
+    private readonly isBrowser = isPlatformBrowser(this.platformId); 
 
     private readonly state$$ = new BehaviorSubject<PayRollJobState>(INITIAL_PAYROLL_JOB_STATE);
     readonly state: Observable<PayRollJobState> = this.state$$.asObservable();
@@ -40,6 +43,9 @@ export class PayrollJobService implements OnDestroy {
      * Si sigue corriendo, reconstruye el estado local y reconecta el WebSocket.
      */
     private tryReconnect(): void {
+        if (!this.isBrowser) {
+            return; // ⬅️ en SSR no hay nada que reconectar
+        }
         const savedJobId = this.getSavedJobId();
         if (!savedJobId) {
             return;
@@ -110,17 +116,20 @@ export class PayrollJobService implements OnDestroy {
 
     /** Guarda el jobId activo en sessionStorage, para poder reconectar tras un refresh. */
     private saveJobId(jobId: number): void {
+        if (!this.isBrowser) return;
         sessionStorage.setItem(JOB_ID_STORAGE_KEY, String(jobId));
     }
 
 
     /** Elimina el jobId guardado (se llama al completar, fallar, o si ya no es válido). */
     private clearSavedJobId(): void {
+        if (!this.isBrowser) return;
         sessionStorage.removeItem(JOB_ID_STORAGE_KEY);
     }
 
     /** Lee el jobId guardado en sessionStorage, si existe. */
     private getSavedJobId(): number | null {
+        if (!this.isBrowser) return null;
         const raw = sessionStorage.getItem(JOB_ID_STORAGE_KEY);
         return raw ? Number(raw) : null;
     }
