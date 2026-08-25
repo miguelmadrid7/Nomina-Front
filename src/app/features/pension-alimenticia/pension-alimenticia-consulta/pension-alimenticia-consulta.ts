@@ -15,11 +15,11 @@ import { ConsultaPensionesDialog } from '../../../shared/dialogs/consulta-pensio
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { LoaderService } from '../../../core/services/loader.service';
 import { finalize } from 'rxjs';
 import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-pension-alimenticia-consulta',
@@ -34,7 +34,6 @@ import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatSnackBarModule,
     MatTooltipModule,
     UppercaseDirective
   ],
@@ -45,9 +44,9 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
 
   private readonly fb = inject(FormBuilder);
   private readonly dialog = inject(MatDialog);
-  private readonly snackBar = inject(MatSnackBar);
   private readonly pensionAlimenticiaService = inject(PensionAlimenticiaService);
   private readonly loaderService = inject(LoaderService);
+  private toastService = inject(ToastService);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -174,7 +173,7 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
           this.buscar();
         },
         error: () => {
-          this.snackBar.open('Error al cargar beneficiarios', 'Cerrar', { duration: 4000 });
+          this.toastService.error('Operación invalida', 'Error al cargar beneficiarios.', 6000);
         }
       });
   }
@@ -211,11 +210,11 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
       if (!confirmed) return;
       this.pensionAlimenticiaService.deleteBeneficiario(fila.id).subscribe({
         next: () => {
-          this.snackBar.open('Beneficiario eliminado correctamente', 'Cerrar', { duration: 4000 });
+          this.toastService.info('Operación exitosa', 'Beneficiario eliminado correctamente.', 6000);
           this.cargarBeneficiarios();
         },
         error: () => {
-          this.snackBar.open('Error al eliminar el beneficiario', 'Cerrar', { duration: 4000 });
+          this.toastService.error('Operación invalida', 'Error al eliminar el beneficiario.', 6000);
         }
       });
     });
