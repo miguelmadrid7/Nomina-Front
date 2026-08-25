@@ -1,27 +1,24 @@
-import { ChangeDetectorRef, ChangeDetectionStrategy, Component, NgZone, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatStepperModule } from '@angular/material/stepper';
-import { NominaService } from '../../../core/services/nomina-ordinaria.service';
-import { environment } from '../../../../environments/environment';
-import SockJS from 'sockjs-client';
-import * as Stomp from 'stompjs';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { buildQnaCode } from '../../../shared/helpers/nomina.helper';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { getCurrentQna } from '../../../shared/validators/validaciones.validators';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { buildQnaCode } from '../../../shared/helpers/nomina.helper';
+import { getCurrentQna } from '../../../shared/validators/validaciones.validators';
 import { Calendario } from '../../../core/model/calendario.model';
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { ConceptoExtra } from '../../../core/model/concepto-extra.model';
-import { ProgressMessage } from '../../../core/model/progress-message.model';
 import { StepExecution } from '../../../core/model/step-execution.model';
 import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
 import { ToastService } from '../../../core/services/toast.service';
+import { PayrollJobService } from '../../../core/services/payroll.service';
 
 @Component({
   selector: 'app-calculo-nomina',
@@ -37,21 +34,20 @@ import { ToastService } from '../../../core/services/toast.service';
     MatIconModule,
     MatProgressBarModule,
     MatCheckboxModule,
-],
+  ],
   templateUrl: './calculo-nomina.component.html',
-  styleUrls:[ './calculo-nomina.component.css'],
+  styleUrls: ['./calculo-nomina.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { 'ngSkipHydration': 'true' }
 })
 export class CalculoNominaComponent implements OnInit {
 
-  private readonly nominaService = inject(NominaService);
-  private readonly calendarioService = inject(CalendarioService)
-  private readonly zone = inject(NgZone);
+  private readonly calendarioService = inject(CalendarioService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly fb = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly payrollJobService = inject(PayrollJobService);
   readonly toastService = inject(ToastService);
-
 
   readonly buildQnaCode = buildQnaCode;
   readonly form: FormGroup = this.fb.group({
@@ -72,17 +68,19 @@ export class CalculoNominaComponent implements OnInit {
 
   readonly stepsWithProgress: { label: string; progress: number }[];
   readonly DateYearsHelper = DateYearsHelper;
-  executionHistory = new Map<number, StepExecution>();
 
-  progress = 0;
-  processing = false;
-  deliverableReady = false;
-  currentStepIdx = 0;
+  // --- Estado local (UI del formulario/calendario, no del job) ---
   calendarioActual: Calendario | null = null;
   cargandoCalendario = false;
   conceptosExtra: ConceptoExtra[] = [];
   conceptoSeleccionado = new Set<string>();
   showSteps = false;
+
+  // --- Estado sincronizado desde PayrollJobService.state$ ---
+  progress = 0;
+  processing = false;
+  deliverableReady = false;
+  executionHistory = new Map<number, StepExecution>();
   failedStepIndex: number | null = null;
   failedStepName: string | null = null;
   errorMessage: string | null = null;
@@ -90,48 +88,84 @@ export class CalculoNominaComponent implements OnInit {
   userMessage: string | null = null;
   totalDurationMs = 0;
 
-  private stompClient: any;
+  // --- Derivado localmente del progress recibido ---
+  currentStepIdx = 0;
+
   private readonly steps = [
-    { label: 'Inicializando proceso' },             // truncate
-    { label: 'Insertando nómina cheque plaza' },    // insertNomChequePza
-    { label: 'Insertando nómina cheque concepto' }, // insertNomChequeCptoTab
-    { label: 'Calculando concepto H0' },            // cpto_ho
-    { label: 'Calculando nómina cheque concepto 38' }, // nom_cheque_cpto_38
-    { label: 'Calculando concepto E2' },            // cpto_E2
-    { label: 'Calculando concepto informados' },    // cpto_informados
-    { label: 'Calculando concepto quinquenios' },   // cpto_quinquenios
-    { label: 'Calculando nómina cheque concepto 14 sustítuto gravidez' }, // nom_cheque_cpto_14
-    { label: 'Calculando nómina cheque concepto 15 sustítuto pre-pensionaria' }, // nom_cheque_cpto_15
-    { label: 'Calculando nómina cheque concepto primas' }, // nom_cheque_cpto_primas
-    { label: 'Calculando concepto 01' },            // cpto_01
-    { label: 'Calculando concepto 02' },            // cpto_02
-    { label: 'Calculando concepto 04' },            // cpto_04
-    { label: 'Calculando concepto 58' },            // cpto_58
-    { label: 'Calculando concepto 77' },            // cpto_77
-    { label: 'Calculando concepto 62' },            // cpto_62
-    { label: 'Calculando deducciones informadas' }, // deducciones informadas
-    { label: 'Calculando bonos BA' },               // bono_BA
-    { label: 'Calculando bonos BE' },               // bono_BE
-    { label: 'Calculando bonos BI' },               // bono_BI
-    { label: 'Calculando bonos CU' },               // bono_CU
-    { label: 'Calculando bonos DM' },               // bono_DM
-    { label: 'Calculando bonos FA' },               // bono_FA
-    { label: 'Calculando bonos GT' },               // bono_GT
-    { label: 'Calculando bonos IC' },               // bono_IC
-    { label: 'Calculando bonos IH' },               // bono_IH
-    { label: 'Calculando bonos OF' },               // bono_OF
-    { label: 'Calculando bonos RM' },               // bono_RM
-    { label: 'Preparando descuentos de pensiones alimenticias' }, // cpto_62
-    { label: 'Consolidando pensiones alimenticias' }, // cpto_62
-    { label: 'Preparando descuentos de juicios mercantiles' }, // cpto_JM
-    { label: 'Consolidando juicios mercantiles' }, // cpto_JM
-    { label: 'Actualizando importes' },              // updateImportes
-    { label: 'Actualizando importes finales' },      // updateImportes
+    { label: 'Inicializando proceso' },
+    { label: 'Insertando nómina cheque plaza' },
+    { label: 'Insertando nómina cheque concepto' },
+    { label: 'Calculando concepto H0' },
+    { label: 'Calculando nómina cheque concepto 38' },
+    { label: 'Calculando concepto E2' },
+    { label: 'Calculando concepto informados' },
+    { label: 'Calculando concepto quinquenios' },
+    { label: 'Calculando nómina cheque concepto 14 sustítuto gravidez' },
+    { label: 'Calculando nómina cheque concepto 15 sustítuto pre-pensionaria' },
+    { label: 'Calculando nómina cheque concepto primas' },
+    { label: 'Calculando concepto 01' },
+    { label: 'Calculando concepto 02' },
+    { label: 'Calculando concepto 04' },
+    { label: 'Calculando concepto 58' },
+    { label: 'Calculando concepto 77' },
+    { label: 'Calculando concepto 62' },
+    { label: 'Calculando deducciones informadas' },
+    { label: 'Calculando bonos BA' },
+    { label: 'Calculando bonos BE' },
+    { label: 'Calculando bonos BI' },
+    { label: 'Calculando bonos CU' },
+    { label: 'Calculando bonos DM' },
+    { label: 'Calculando bonos FA' },
+    { label: 'Calculando bonos GT' },
+    { label: 'Calculando bonos IC' },
+    { label: 'Calculando bonos IH' },
+    { label: 'Calculando bonos OF' },
+    { label: 'Calculando bonos RM' },
+    { label: 'Preparando descuentos de pensiones alimenticias' },
+    { label: 'Consolidando pensiones alimenticias' },
+    { label: 'Preparando descuentos de juicios mercantiles' },
+    { label: 'Consolidando juicios mercantiles' },
+    { label: 'Actualizando importes' },
+    { label: 'Actualizando importes finales' },
   ];
+
+  constructor() {
+    const total = this.steps.length;
+    this.stepsWithProgress = this.steps.map((step, i) => ({
+      ...step,
+      progress: Math.round(((i + 1) / total) * 99)
+    }));
+  }
 
   ngOnInit(): void {
     this.cargarCalendarioActual();
     this.cargarConceptosExtra();
+    this.subscribeToJobState();
+  }
+
+  private subscribeToJobState(): void {
+    this.payrollJobService.state
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(state => {
+        this.progress = state.progress;
+        this.processing = state.processing;
+        this.deliverableReady = state.deliverableReady;
+        this.executionHistory = new Map(state.executionHistory);
+        this.failedStepIndex = state.failedStepIndex;
+        this.failedStepName = state.failedStepName;
+        this.errorMessage = state.errorMessage;
+        this.errorType = state.errorType;
+        this.userMessage = state.userMessage;
+        this.totalDurationMs = state.totalDurationMs;
+
+        if (state.failedStepIndex !== null) {
+          this.currentStepIdx = state.failedStepIndex;
+        } else {
+          this.recomputeStepIndex();
+        }
+
+        this.cdr.markForCheck();
+      });
   }
 
   get qnaDisplay(): string {
@@ -142,6 +176,7 @@ export class CalculoNominaComponent implements OnInit {
   private cargarCalendarioActual(): void {
     this.cargandoCalendario = true;
     this.calendarioService.getQnaActiva()
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (resp: any) => {
           this.calendarioActual = resp?.data ?? null;
@@ -150,8 +185,7 @@ export class CalculoNominaComponent implements OnInit {
             this.form.patchValue({
               anio: this.calendarioActual.ejercicio,
               quincena: this.calendarioActual.qna
-            })
-
+            });
           }
           this.cdr.markForCheck();
         },
@@ -164,19 +198,21 @@ export class CalculoNominaComponent implements OnInit {
   }
 
   private cargarConceptosExtra(): void {
-    this.calendarioService.getConceptosExtra().subscribe({
-      next: (res: any) => {
-        this.conceptosExtra = res.data ?? [];
-        this.conceptoSeleccionado = new Set(
-          this.conceptosExtra.map(c => c.catConceptoCve + c.catModeloId)
-        );
-        this.cdr.markForCheck();
-      },
-      error: () => {
-        this.toastService.error('Conceptos extra', 'Error al cargar conceptos extra', 6000);
-      this.cdr.markForCheck();
-      }
-    })
+    this.calendarioService.getConceptosExtra()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (res: any) => {
+          this.conceptosExtra = res.data ?? [];
+          this.conceptoSeleccionado = new Set(
+            this.conceptosExtra.map(c => c.catConceptoCve + c.catModeloId)
+          );
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          this.toastService.error('Conceptos extra', 'Error al cargar conceptos extra', 6000);
+          this.cdr.markForCheck();
+        }
+      });
   }
 
   toggleConcepto(key: string): void {
@@ -192,101 +228,15 @@ export class CalculoNominaComponent implements OnInit {
     return this.conceptoSeleccionado.has(key);
   }
 
-  constructor() {
-    const total = this.steps.length;
-    this.stepsWithProgress = this.steps.map((step, i) => ({
-      ...step,
-      progress: Math.round(((i + 1) / total) * 99)
-    }));
-  }
-
-  private subscribeToJob(jobId: number): void {
-    this.stompClient.subscribe(`/topic/payroll/${jobId}`, (message: any) => {
-      const data = JSON.parse(message.body);
-      this.zone.run(() => this.handleProgressUpdate(data));
-    });
-
-    let intentos = 0;
-    const maxIntentos = 240;
-    const polling = setInterval(() => {
-      intentos++;
-        this.nominaService.getJobStatus(jobId).subscribe({
-          next: (resp: any) => {
-            const serverProgress = resp?.data?.progress ?? 0;
-            const serverStatus   = resp?.data?.status   ?? '';
-              this.zone.run(() => {
-                if (serverProgress > this.progress) {
-                  this.progress = serverProgress;
-                  this.recomputeStepIndex();
-                  this.cdr.detectChanges();
-                }
-                if (intentos >= maxIntentos || serverStatus === 'COMPLETED' || serverStatus === 'ERROR') {
-                  clearInterval(polling);
-                }
-              });
-            },
-          error: () => this.zone.run(() => clearInterval(polling))
-        });
-      }, 500);
-  }
-
   getExecution(stepIndex: number) {
     return this.executionHistory.get(stepIndex);
   }
 
   get totalDurationFormatted(): string {
-    if(!this.totalDurationMs){
+    if (!this.totalDurationMs) {
       return '';
     }
     return DateYearsHelper.formatDuration(this.totalDurationMs);
-  }
-
-  private handleProgressUpdate(data: ProgressMessage): void {
-   this.progress = Math.max(this.progress, data.progress);
-    if(data.totalDurationMs){
-        this.totalDurationMs = data.totalDurationMs;
-    }
-
-    if (data.stepIndex != null && data.stepName != null && data.durationMs != null) {
-      this.executionHistory.set(data.stepIndex, {
-        stepName: data.stepName,
-        endTime: data.endTime ?? '',
-        durationMs: data.durationMs
-      });
-    }
-
-    if (data.status === 'ERROR') {
-      this.failedStepIndex = data.failedStepIndex ?? null;
-      this.failedStepName = data.failedStepName ?? null;
-      this.errorMessage = data.errorMsg ?? null;
-      this.errorType = data.errorType ?? null;
-      this.userMessage = data.userMessage ?? 'Ocurrió un error durante el cálculo de nómina.';
-
-
-      if (this.failedStepIndex !== null) {
-        this.currentStepIdx = this.failedStepIndex;
-      }
-      this.toastService.error(
-        'Proceso detenido',
-        this.userMessage
-      );
-      this.processing = false;
-      if (this.stompClient) {
-        this.stompClient.disconnect(() => {});
-      }
-    } else {
-      this.recomputeStepIndex();
-    }
-
-    if (!this.deliverableReady &&  (data.progress === 100 || data.status === 'COMPLETED')) {
-      this.deliverableReady = true;
-      this.processing = false;
-      this.toastService.success('Proceso finalizado', 'El cálculo de nómina terminó correctamente.', 6000);
-        if (this.stompClient) {
-          this.stompClient.disconnect(() => {});
-        }
-    }
-    this.cdr.detectChanges();
   }
 
   get currentStepIndex(): number {
@@ -296,61 +246,18 @@ export class CalculoNominaComponent implements OnInit {
   executePayrollProcess(): void {
     const { anio, quincena } = this.form.value;
     const qnaProceso = buildQnaCode(anio, quincena);
-    this.processing = true;
-    this.progress = 0;
-    this.deliverableReady = false;
-    this.failedStepIndex = null;
-    this.failedStepName = null;
-
-    this.errorMessage = null;
-    this.userMessage = null;
-    this.errorType = null;
-
-    this.cdr.markForCheck();
-    const ws = new SockJS(`${environment.apiUrl}/ws`);
-    this.stompClient = Stomp.over(ws);
-    this.executionHistory.clear();
-    this.stompClient.connect(
-      {},
-      () => {
-        this.nominaService.executePayrollProcess(qnaProceso)
-          .subscribe({
-            next: (resp: any) => {
-              const jobId = resp?.data;
-              if (!jobId) {
-                this.processing = false;
-                this.toastService.warning( 'Proceso','No se recibió el identificador del proceso.', 6000 );
-                this.cdr.markForCheck();
-                return;
-              }
-              this.subscribeToJob(jobId);
-            },
-            error: () => {
-              this.processing = false;
-              this.toastService.error('Proceso', 'No se pudo iniciar el proceso. Verifica que el servidor esté disponible.', 6000);
-              this.cdr.markForCheck();
-            }
-          });
-      },
-      (error: any) => {
-        this.zone.run(() => {
-          this.processing = false;
-          this.toastService.warning('WebSocket','No se pudo conectar con el servidor. Verifica tu conexión o que el backend esté activo.', 6000);
-          this.cdr.markForCheck();
-        });
-      }
-    );
+    this.payrollJobService.start(qnaProceso);
   }
 
   private recomputeStepIndex(): void {
     const steps = this.stepsWithProgress;
     const nextIncomplete = steps.findIndex((s) => this.progress < s.progress);
-      if (nextIncomplete === -1) {
-        this.currentStepIdx = steps.length - 1;
-      } else if (nextIncomplete === 0) {
-        this.currentStepIdx = 0;
-      } else {
-        this.currentStepIdx = nextIncomplete;
-      }
+    if (nextIncomplete === -1) {
+      this.currentStepIdx = steps.length - 1;
+    } else if (nextIncomplete === 0) {
+      this.currentStepIdx = 0;
+    } else {
+      this.currentStepIdx = nextIncomplete;
+    }
   }
 }
