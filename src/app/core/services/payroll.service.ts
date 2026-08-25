@@ -21,7 +21,7 @@ export class PayrollJobService implements OnDestroy {
     private readonly nominaService = inject(NominaService);
     private readonly toastService = inject(ToastService);
     private readonly zone = inject(NgZone);
-    private readonly platformId = inject(PLATFORM_ID); // ⬅️ nuevo
+    private readonly platformId = inject(PLATFORM_ID); 
     private readonly isBrowser = isPlatformBrowser(this.platformId); 
 
     private readonly state$$ = new BehaviorSubject<PayRollJobState>(INITIAL_PAYROLL_JOB_STATE);
@@ -44,7 +44,7 @@ export class PayrollJobService implements OnDestroy {
      */
     private tryReconnect(): void {
         if (!this.isBrowser) {
-            return; // ⬅️ en SSR no hay nada que reconectar
+            return;
         }
         const savedJobId = this.getSavedJobId();
         if (!savedJobId) {

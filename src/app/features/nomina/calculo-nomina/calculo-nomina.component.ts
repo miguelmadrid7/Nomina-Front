@@ -69,14 +69,11 @@ export class CalculoNominaComponent implements OnInit {
   readonly stepsWithProgress: { label: string; progress: number }[];
   readonly DateYearsHelper = DateYearsHelper;
 
-  // --- Estado local (UI del formulario/calendario, no del job) ---
   calendarioActual: Calendario | null = null;
   cargandoCalendario = false;
   conceptosExtra: ConceptoExtra[] = [];
   conceptoSeleccionado = new Set<string>();
   showSteps = false;
-
-  // --- Estado sincronizado desde PayrollJobService.state$ ---
   progress = 0;
   processing = false;
   deliverableReady = false;
@@ -87,46 +84,44 @@ export class CalculoNominaComponent implements OnInit {
   errorType: string | null = null;
   userMessage: string | null = null;
   totalDurationMs = 0;
-
-  // --- Derivado localmente del progress recibido ---
   currentStepIdx = 0;
 
   private readonly steps = [
-    { label: 'Inicializando proceso' },
-    { label: 'Insertando nómina cheque plaza' },
-    { label: 'Insertando nómina cheque concepto' },
-    { label: 'Calculando concepto H0' },
-    { label: 'Calculando nómina cheque concepto 38' },
-    { label: 'Calculando concepto E2' },
-    { label: 'Calculando concepto informados' },
-    { label: 'Calculando concepto quinquenios' },
-    { label: 'Calculando nómina cheque concepto 14 sustítuto gravidez' },
-    { label: 'Calculando nómina cheque concepto 15 sustítuto pre-pensionaria' },
-    { label: 'Calculando nómina cheque concepto primas' },
-    { label: 'Calculando concepto 01' },
-    { label: 'Calculando concepto 02' },
-    { label: 'Calculando concepto 04' },
-    { label: 'Calculando concepto 58' },
-    { label: 'Calculando concepto 77' },
-    { label: 'Calculando concepto 62' },
-    { label: 'Calculando deducciones informadas' },
-    { label: 'Calculando bonos BA' },
-    { label: 'Calculando bonos BE' },
-    { label: 'Calculando bonos BI' },
-    { label: 'Calculando bonos CU' },
-    { label: 'Calculando bonos DM' },
-    { label: 'Calculando bonos FA' },
-    { label: 'Calculando bonos GT' },
-    { label: 'Calculando bonos IC' },
-    { label: 'Calculando bonos IH' },
-    { label: 'Calculando bonos OF' },
-    { label: 'Calculando bonos RM' },
-    { label: 'Preparando descuentos de pensiones alimenticias' },
-    { label: 'Consolidando pensiones alimenticias' },
-    { label: 'Preparando descuentos de juicios mercantiles' },
-    { label: 'Consolidando juicios mercantiles' },
-    { label: 'Actualizando importes' },
-    { label: 'Actualizando importes finales' },
+    { label: 'Inicializando proceso' },             // truncate
+    { label: 'Insertando nómina cheque plaza' },    // insertNomChequePza
+    { label: 'Insertando nómina cheque concepto' }, // insertNomChequeCptoTab
+    { label: 'Calculando concepto H0' },            // cpto_ho
+    { label: 'Calculando nómina cheque concepto 38' }, // nom_cheque_cpto_38
+    { label: 'Calculando concepto E2' },            // cpto_E2
+    { label: 'Calculando concepto informados' },    // cpto_informados
+    { label: 'Calculando concepto quinquenios' },   // cpto_quinquenios
+    { label: 'Calculando nómina cheque concepto 14 sustítuto gravidez' }, // nom_cheque_cpto_14
+    { label: 'Calculando nómina cheque concepto 15 sustítuto pre-pensionaria' }, // nom_cheque_cpto_15
+    { label: 'Calculando nómina cheque concepto primas' }, // nom_cheque_cpto_primas
+    { label: 'Calculando concepto 01' },            // cpto_01
+    { label: 'Calculando concepto 02' },            // cpto_02
+    { label: 'Calculando concepto 04' },            // cpto_04
+    { label: 'Calculando concepto 58' },            // cpto_58
+    { label: 'Calculando concepto 77' },            // cpto_77
+    { label: 'Calculando concepto 62' },            // cpto_62
+    { label: 'Calculando deducciones informadas' }, // deducciones informadas
+    { label: 'Calculando bonos BA' },               // bono_BA
+    { label: 'Calculando bonos BE' },               // bono_BE
+    { label: 'Calculando bonos BI' },               // bono_BI
+    { label: 'Calculando bonos CU' },               // bono_CU
+    { label: 'Calculando bonos DM' },               // bono_DM
+    { label: 'Calculando bonos FA' },               // bono_FA
+    { label: 'Calculando bonos GT' },               // bono_GT
+    { label: 'Calculando bonos IC' },               // bono_IC
+    { label: 'Calculando bonos IH' },               // bono_IH
+    { label: 'Calculando bonos OF' },               // bono_OF
+    { label: 'Calculando bonos RM' },               // bono_RM
+    { label: 'Preparando descuentos de pensiones alimenticias' }, // cpto_62
+    { label: 'Consolidando pensiones alimenticias' }, // cpto_62
+    { label: 'Preparando descuentos de juicios mercantiles' }, // cpto_JM
+    { label: 'Consolidando juicios mercantiles' }, // cpto_JM
+    { label: 'Actualizando importes' },              // updateImportes
+    { label: 'Actualizando importes finales' },      // updateImportes
   ];
 
   constructor() {
