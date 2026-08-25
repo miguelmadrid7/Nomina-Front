@@ -21,7 +21,7 @@
   .toast-container {
     top: 12px;
     right: 12px;
-    left: 12px;
-    align-items: stretch;
+    left: auto;  
+    align-items: flex-end;
   }
 }

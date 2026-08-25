@@ -777,10 +777,8 @@
   cursor: pointer;
 }
 
-/* Responsive */
-@media (max-width: 640px) {
-
-    .actions-row {
+@media (max-width: 768px) {
+  .actions-row {
         flex-direction: column;
         align-items: stretch;
         gap: 10px;
@@ -830,38 +828,29 @@
     :host ::ng-deep .mat-vertical-stepper-header {
         width: 100% !important;
         max-width: 100% !important;
-
         padding: 4px 6px;
-
         min-height: 36px;
-
         box-sizing: border-box;
     }
 
     :host ::ng-deep .mat-step-header {
         width: 100% !important;
         max-width: 100% !important;
-
         min-width: 0 !important;
-
         box-sizing: border-box;
     }
 
     :host ::ng-deep .mat-step-label {
         width: 100% !important;
         min-width: 0 !important;
-
         white-space: normal !important;
     }
 
     :host ::ng-deep .mat-step-text-label {
         display: block !important;
-
         width: 100% !important;
         min-width: 0 !important;
-
         white-space: normal !important;
-
         overflow-wrap: anywhere !important;
         word-break: break-word !important;
     }
@@ -875,25 +864,20 @@
         width: 100%;
         max-width: 100%;
         min-width: 0;
-
         padding: 6px 0 6px 8px;
-
         box-sizing: border-box;
     }
 
     .step-label {
         width: 100%;
         min-width: 0;
-
         gap: 6px;
-
         font-size: 12px;
         line-height: 1.4;
     }
 
     .step-icon {
         flex-shrink: 0;
-
         font-size: 16px;
         width: 16px;
         height: 16px;
@@ -902,7 +886,6 @@
     .step-content {
         width: 100%;
         min-width: 0;
-
         flex-wrap: wrap;
     }
 
@@ -910,9 +893,7 @@
         width: 100%;
         max-width: 100%;
         min-width: 0;
-
         margin-left: 0;
-
         box-sizing: border-box;
     }
 

@@ -139,23 +139,22 @@
 }
 
 @media (max-width: 768px) {
-  /* Botones en columna */
   .actions-right {
-    flex-direction: column;
     align-items: stretch;
+    gap: 8px;
   }
 
   .btn-group,
   .actions-right > button {
-    width: 100%;
+    width: auto;
   }
 
   .btn {
     width: 100%;
     justify-content: center;
+    padding: 0 14px;
   }
 
-  /* Filtros en columna */
   .global-search {
     flex-direction: column;
     align-items: stretch;
@@ -167,7 +166,7 @@
   }
 
   .qna-filters {
-    flex-direction: row; /* ← año y quincena siguen en fila */
+    flex-direction: row;
     width: 100%;
   }
 
@@ -177,7 +176,6 @@
     width: auto;
   }
 
-  /* Tabla con scroll horizontal */
   .table-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -187,13 +185,11 @@
     min-width: 600px;
   }
 
-  /* Ocultar columnas menos prioritarias */
   .table-global .mat-column-curp,
   .table-global .mat-column-baseCalculoIsr {
     display: none !important;
   }
 
-  /* Ajustar anchos de columnas en móvil */
   .table-global .mat-column-nombreEmpleado {
     width: 25%;
     min-width: 120px;

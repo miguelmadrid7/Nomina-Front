@@ -162,34 +162,39 @@
     }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     .toast-container {
         top: 12px;
         right: 12px;
-        left: 12px;
-        align-items: stretch;
+        left: auto;
+        align-items: flex-end;
     }
 
     .toast {
-        width: 100%;
-        max-width: none;
-        gap: 12px;
-        padding: 16px;
+        width: min(300px, calc(100vw - 24px));
+        max-width: 300px;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: 10px;
     }
 
     .toast-icon {
-        width: 42px;
-        height: 42px;
+        width: 34px;
+        height: 34px;
     }
 
     .toast-icon mat-icon {
-        font-size: 24px;
-        width: 24px;
-        height: 24px;
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+
+    .toast-content {
+        gap: 2px; 
     }
 
     .toast-title {
-        font-size: 16px;
+        font-size: 13px;
     }
 
     .toast-message {
@@ -198,7 +203,13 @@
     }
 
     .toast-close {
-        width: 30px;
-        height: 30px;
+        width: 24px;
+        height: 24px;
+    }
+
+    .toast-close mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
     }
 }

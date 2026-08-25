@@ -390,14 +390,14 @@ mat-sidenav-content {
 
 
 @media (max-width: 768px) {
-  .page-containe {
+  .page-container {
     min-height: auto !important;
     height: auto !important;
     overflow: visible !important;
     padding-bottom: 30px !important;
   }
 
-  .table-containe {
+  .table-container {
     width: 100%;
     max-width: 100%;
   }

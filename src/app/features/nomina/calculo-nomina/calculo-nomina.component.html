@@ -1,306 +1,309 @@
-<div class="page-header">
-  <h2 class="page-title">Cálculo de nómina</h2>
-</div>
-
-<div class="section-divider"></div>
-
-<div class="page-header">
-
-  <div class="subtitle-row">
-    <p class="page-subtitle">Valida primero que se haya recibido toda la informacion y despues ejecuta y da seguimiento al proceso de cálculo.</p>
-    <div class="qna-summary">
-      <span class="qna-label">Quincena activa</span>
-      @if (cargandoCalendario) {
-        <span class="qna-tag">Cargando...</span>
-      } @else if (calendarioActual) {
-        <span class="qna-tag">
-          {{ calendarioActual.qna.toString().padStart(2, '0') }} / {{ calendarioActual.ejercicio }}
-        </span>
-      } @else {
-        <span class="qna-tag">{{ qnaActual }}</span>
-      }
-    </div>
-  </div>
-
-  <div class="meta-tags">
-    <div class="meta-tag-row">
-      <span class="field-label">Fecha de captura</span>
-      <div class="bottom-row">
-        <span class="meta-value">{{ fechaCaptura }}</span>
-        <mat-checkbox class="meta-check">Aceptado</mat-checkbox>
-      </div>
-    </div>
-    <div class="meta-tag-row">
-      <span class="field-label">Movimientos de personal</span>
-      <div class="bottom-row">
-        <span class="meta-value">{{ qnaActual }}</span>
-        <mat-checkbox class="meta-check">Recibido</mat-checkbox>
-      </div>
-    </div>
-    <div class="meta-tag-row">
-      <span class="field-label">Pensión alimenticia</span>
-      <div class="bottom-row">
-        <span class="meta-value">
-          {{ calendarioActual ? (calendarioActual.qna.toString().padStart(2,'0') + ' / ' + calendarioActual.ejercicio) : qnaActual }}
-        </span>
-        <mat-checkbox class="meta-check" [checked]="calendarioActual?.pension ?? false" [disabled]="true">
-          {{ calendarioActual?.pension ? 'Recibido' : 'Pendiente' }}
-        </mat-checkbox>
-      </div>
-    </div>
-    <div class="meta-tag-row">
-      <span class="field-label">Juicios mercantiles</span>
-      <div class="bottom-row">
-        <span class="meta-value">
-          {{ calendarioActual ? (calendarioActual.qna.toString().padStart(2,'0') + ' / ' + calendarioActual.ejercicio) : qnaActual }}
-        </span>
-        <mat-checkbox class="meta-check" [checked]="calendarioActual?.juicios ?? false" [disabled]="true">
-          {{ calendarioActual?.juicios ? 'Recibido' : 'Pendiente' }}
-        </mat-checkbox>
-      </div>
-    </div>
-    <div class="meta-tag-row">
-      <span class="field-label">Terceros</span>
-      <div class="bottom-row">
-        <span class="meta-value">
-          {{ calendarioActual ? (calendarioActual.qna.toString().padStart(2,'0') + ' / ' + calendarioActual.ejercicio) : qnaActual }}
-        </span>
-        <mat-checkbox class="meta-check" [checked]="calendarioActual?.terceros ?? false" [disabled]="true">
-          {{ calendarioActual?.terceros ? 'Recibido' : 'Pendiente' }}
-        </mat-checkbox>
-      </div>
-    </div>
+<div class="page-container">
+  <div class="page-header">
+    <h2 class="page-title">Cálculo de nómina</h2>
   </div>
 
   <div class="section-divider"></div>
 
-  <div class="subtitle-row">
-    <p class="page-subtitle">Conceptos extra de la QNA</p>
-    <div class="qna-summary">
-      <span class="qna-label">Quincena activa</span>
-      @if (calendarioActual) {
-        <span class="qna-tag">
-          {{ calendarioActual.qna.toString().padStart(2, '0') }} / {{ calendarioActual.ejercicio }}
-        </span>
-      }
-    </div>
-  </div>
+  
+    <div class="page-header">
 
-  @if (conceptosExtra.length > 0) {
-    <button class="btn-toggle-pasos" (click)="showSteps = !showSteps">
-      <mat-icon>
-        {{ showSteps ? 'expand_less' : 'expand_more' }}
-      </mat-icon>
-        {{ showSteps ? 'Ocultar conceptos' : 'Ver conceptos' }}
-    </button>
-
-    @if (showSteps) {
-      <div class="conceptos-section">
-        <div class="concepto-header">
-            <span class="concepto-check">Validar</span>
-            <span class="concepto-cve">CVE</span>
-            <span class="concepto-modelo">Modelo</span>
-            <span class="concepto-desc">Descripción</span>
-            <span class="concepto-status">Estado</span>
-        </div>
-        @for (concepto of conceptosExtra; track concepto.catModeloId) {
-            <div class="concepto-row" [class.concepto-excluido]="!isConceptoSeleccionado(concepto.catConceptoCve + concepto.catModeloId)">
-                <span class="concepto-check">
-                    <mat-checkbox class="meta-check"
-                        [checked]="isConceptoSeleccionado(concepto.catConceptoCve + concepto.catModeloId)"
-                        (change)="toggleConcepto(concepto.catConceptoCve + concepto.catModeloId)">
-                    </mat-checkbox>
-                </span>
-                <span class="concepto-cve">{{ concepto.catConceptoCve }}</span>
-                <span class="concepto-modelo">Modelo {{ concepto.catModeloId }}</span>
-                <span class="concepto-desc">{{ concepto.descripcion }}</span>
-                <span class="concepto-status">
-                    @if (isConceptoSeleccionado(concepto.catConceptoCve + concepto.catModeloId)) {
-                        Incluido
-                    } @else {
-                        Excluido
-                    }
-                </span>
-            </div>
-        }
-    </div>
-  }
-}
-
-  <div class="section-divider"></div>
-
-  <mat-card class="actions-card" appearance="outlined">
-    <div class="actions-row" [formGroup]="form">
-      <button class="btn-exec" (click)="executePayrollProcess()" [disabled]="processing || form.invalid">
-        <ng-container *ngIf="!processing">
-          <mat-icon>play_circle</mat-icon>
-          Ejecutar cálculo
-        </ng-container>
-        <ng-container *ngIf="processing">
-          <mat-progress-spinner diameter="16" mode="indeterminate" strokeWidth="2.5"/>
-          Procesando...
-        </ng-container>
-      </button>
-    </div>
-    <div class="hints">
-      <mat-icon class="hint-icon">info</mat-icon>
-      <span>El proceso puede tardar varios minutos. No cierres esta ventana.</span>
-    </div>
-  </mat-card>
-
-  <div class="calculo-scroll">
-    <mat-card class="progress-card" appearance="outlined">
-      <div class="progress-header">
-        <div class="status">
-          <span class="status-dot" 
-            [class.running]="processing" 
-            [class.done]="progress===100" 
-            [class.error]="failedStepIndex !== null"></span>
-          <span class="status-text">
-            {{ failedStepIndex !== null ? 'Error' : (processing ? 'En ejecución' : (progress===100 ? 'Completado' : 'Pendiente')) }}
+    <div class="subtitle-row">
+      <p class="page-subtitle">Valida primero que se haya recibido toda la informacion y despues ejecuta y da seguimiento al proceso de cálculo.</p>
+      <div class="qna-summary">
+        <span class="qna-label">Quincena activa</span>
+        @if (cargandoCalendario) {
+          <span class="qna-tag">Cargando...</span>
+        } @else if (calendarioActual) {
+          <span class="qna-tag">
+            {{ calendarioActual.qna.toString().padStart(2, '0') }} / {{ calendarioActual.ejercicio }}
           </span>
-          @if (deliverableReady){
-            <mat-icon class="checkmark-success">check_circle</mat-icon>
-          }
+        } @else {
+          <span class="qna-tag">{{ qnaActual }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="meta-tags">
+      <div class="meta-tag-row">
+        <span class="field-label">Fecha de captura</span>
+        <div class="bottom-row">
+          <span class="meta-value">{{ fechaCaptura }}</span>
+          <mat-checkbox class="meta-check">Aceptado</mat-checkbox>
         </div>
+      </div>
+      <div class="meta-tag-row">
+        <span class="field-label">Movimientos de personal</span>
+        <div class="bottom-row">
+          <span class="meta-value">{{ qnaActual }}</span>
+          <mat-checkbox class="meta-check">Recibido</mat-checkbox>
+        </div>
+      </div>
+      <div class="meta-tag-row">
+        <span class="field-label">Pensión alimenticia</span>
+        <div class="bottom-row">
+          <span class="meta-value">
+            {{ calendarioActual ? (calendarioActual.qna.toString().padStart(2,'0') + ' / ' + calendarioActual.ejercicio) : qnaActual }}
+          </span>
+          <mat-checkbox class="meta-check" [checked]="calendarioActual?.pension ?? false" [disabled]="true">
+            {{ calendarioActual?.pension ? 'Recibido' : 'Pendiente' }}
+          </mat-checkbox>
+        </div>
+      </div>
+      <div class="meta-tag-row">
+        <span class="field-label">Juicios mercantiles</span>
+        <div class="bottom-row">
+          <span class="meta-value">
+            {{ calendarioActual ? (calendarioActual.qna.toString().padStart(2,'0') + ' / ' + calendarioActual.ejercicio) : qnaActual }}
+          </span>
+          <mat-checkbox class="meta-check" [checked]="calendarioActual?.juicios ?? false" [disabled]="true">
+            {{ calendarioActual?.juicios ? 'Recibido' : 'Pendiente' }}
+          </mat-checkbox>
+        </div>
+      </div>
+      <div class="meta-tag-row">
+        <span class="field-label">Terceros</span>
+        <div class="bottom-row">
+          <span class="meta-value">
+            {{ calendarioActual ? (calendarioActual.qna.toString().padStart(2,'0') + ' / ' + calendarioActual.ejercicio) : qnaActual }}
+          </span>
+          <mat-checkbox class="meta-check" [checked]="calendarioActual?.terceros ?? false" [disabled]="true">
+            {{ calendarioActual?.terceros ? 'Recibido' : 'Pendiente' }}
+          </mat-checkbox>
+        </div>
+      </div>
+    </div>
 
-          @if(totalDurationMs > 0){
-            <div class="total-time-box">
-              <div class="total-time-header">
-                <mat-icon>timer</mat-icon>
-                <span class="title">Tiempo total</span>
+    <div class="section-divider"></div>
+
+    <div class="subtitle-row">
+      <p class="page-subtitle">Conceptos extra de la QNA</p>
+      <div class="qna-summary">
+        <span class="qna-label">Quincena activa</span>
+        @if (calendarioActual) {
+          <span class="qna-tag">
+            {{ calendarioActual.qna.toString().padStart(2, '0') }} / {{ calendarioActual.ejercicio }}
+          </span>
+        }
+      </div>
+    </div>
+
+    @if (conceptosExtra.length > 0) {
+      <button class="btn-toggle-pasos" (click)="showSteps = !showSteps">
+        <mat-icon>
+          {{ showSteps ? 'expand_less' : 'expand_more' }}
+        </mat-icon>
+          {{ showSteps ? 'Ocultar conceptos' : 'Ver conceptos' }}
+      </button>
+
+      @if (showSteps) {
+        <div class="conceptos-section">
+          <div class="concepto-header">
+              <span class="concepto-check">Validar</span>
+              <span class="concepto-cve">CVE</span>
+              <span class="concepto-modelo">Modelo</span>
+              <span class="concepto-desc">Descripción</span>
+              <span class="concepto-status">Estado</span>
+          </div>
+          @for (concepto of conceptosExtra; track concepto.catModeloId) {
+              <div class="concepto-row" [class.concepto-excluido]="!isConceptoSeleccionado(concepto.catConceptoCve + concepto.catModeloId)">
+                  <span class="concepto-check">
+                      <mat-checkbox class="meta-check"
+                          [checked]="isConceptoSeleccionado(concepto.catConceptoCve + concepto.catModeloId)"
+                          (change)="toggleConcepto(concepto.catConceptoCve + concepto.catModeloId)">
+                      </mat-checkbox>
+                  </span>
+                  <span class="concepto-cve">{{ concepto.catConceptoCve }}</span>
+                  <span class="concepto-modelo">Modelo {{ concepto.catModeloId }}</span>
+                  <span class="concepto-desc">{{ concepto.descripcion }}</span>
+                  <span class="concepto-status">
+                      @if (isConceptoSeleccionado(concepto.catConceptoCve + concepto.catModeloId)) {
+                          Incluido
+                      } @else {
+                          Excluido
+                      }
+                  </span>
               </div>
-
-              <div class="total-time-row">
-                <div class="time-item">
-                  <mat-icon>schedule</mat-icon>
-                  <span>{{ getExecution(stepsWithProgress.length - 1)?.endTime }}</span>
-                </div>
-
-                <div class="divider"></div>
-
-                <div class="time-item">
-                  <mat-icon>hourglass_bottom</mat-icon>
-                  <span>{{ totalDurationFormatted }}</span>
-                </div>
-              </div>
-            </div>
           }
       </div>
+    }
+  }
 
-      <mat-progress-bar class="progress-bar"
-        [color]="progress === 100 ? 'primary' : 'accent'"
-        mode="determinate"
-        [value]="progress">
-      </mat-progress-bar>
+    <div class="section-divider"></div>
 
-      @if(failedStepIndex !== null){
-        <div class="error-panel">
-
-          <div class="error-header">
-            <mat-icon>error</mat-icon>
-            <span>Detalle del error</span>
-          </div>
-
-
-          <!-- Información para usuario final -->
-          <div class="error-section user-error">
-
-            <div class="error-title">
-              <mat-icon>person</mat-icon>
-              <span>Mensaje para usuario</span>
-            </div>
-
-            <div class="error-row">
-              <span>
-                {{ userMessage }}
-              </span>
-            </div>
-          </div>
-
-          <!-- Información técnica -->
-          @if (errorType || errorMessage || failedStepName) {
-            <div class="error-section technical-error">
-
-              <div class="error-title">
-                <mat-icon>code</mat-icon>
-                <span>Detalle técnico</span>
-              </div>
-
-              @if (failedStepName) {
-                <div class="error-row">
-                  <strong>Paso:</strong>
-                  <span>{{ failedStepName }}</span>
-                </div>
-              }
-
-              @if (errorType) {
-                <div class="error-row">
-                  <strong>Tipo:</strong>
-                  <span>{{ errorType }}</span>
-                </div>
-              }
-
-              @if (errorMessage) {
-                <div class="error-row">
-                  <strong>Error:</strong>
-                  <span>{{ errorMessage }}</span>
-                </div>
-              }
-            </div>
-          }
-        </div>
-      }
-
-      <div class="process-steps" *ngIf="processing || progress === 100 || failedStepIndex !== null">
-        <mat-vertical-stepper [selectedIndex]="currentStepIndex" linear>
-          <mat-step *ngFor="let step of stepsWithProgress; let i = index" [completed]="progress >= step.progress && failedStepIndex !== i">
-            <ng-template matStepLabel>
-              <div class="step-label">
-                <mat-icon class="step-icon"
-                  [class.error]="failedStepIndex === i"
-                  [class.done]="failedStepIndex !== i && progress >= step.progress"
-                  [class.running]="failedStepIndex === null && i === currentStepIndex && processing">
-                  {{ failedStepIndex === i ? 'cancel' :
-                    (progress >= step.progress ? 'check_circle' :
-                    (i === currentStepIndex && processing) ? 'pending' : 'schedule') }}
-                </mat-icon>
-                {{ step.label }}
-              </div>
-            </ng-template>
-            <div class="step-content">
-              <ng-container *ngIf="failedStepIndex === i">
-                <span class="chip chip-error">Error</span>
-              </ng-container>
-              <ng-container *ngIf="failedStepIndex !== i && progress >= step.progress">
-                <span class="chip chip-done">Completado</span>
-              </ng-container>
-              <ng-container *ngIf="failedStepIndex === null && progress < step.progress && i === currentStepIndex && processing">
-                <mat-progress-spinner diameter="22" mode="indeterminate" strokeWidth="3"/>
-                Ejecutando...
-              </ng-container>
-              <ng-container *ngIf="failedStepIndex !== i && progress < step.progress && i !== currentStepIndex">
-                <span class="chip chip-pending">Pendiente</span>
-              </ng-container>
-
-              @if (getExecution(i); as exec) {
-                <div class="step-details">
-                  <div class="execution-info">
-                    <div class="execution-item">
-                      <mat-icon>schedule</mat-icon>
-                      <span>{{ exec.endTime }}</span>
-                    </div>
-                    <div class="execution-item">
-                      <mat-icon>timer</mat-icon>
-                      <span>{{ DateYearsHelper.formatDuration(exec.durationMs) }}</span>
-                    </div>
-                  </div>
-                </div>
-              }
-            </div>
-          </mat-step>
-        </mat-vertical-stepper>
+    <mat-card class="actions-card" appearance="outlined">
+      <div class="actions-row" [formGroup]="form">
+        <button class="btn-exec" (click)="executePayrollProcess()" [disabled]="processing || form.invalid">
+          <ng-container *ngIf="!processing">
+            <mat-icon>play_circle</mat-icon>
+            Ejecutar cálculo
+          </ng-container>
+          <ng-container *ngIf="processing">
+            <mat-progress-spinner diameter="16" mode="indeterminate" strokeWidth="2.5"/>
+            Procesando...
+          </ng-container>
+        </button>
+      </div>
+      <div class="hints">
+        <mat-icon class="hint-icon">info</mat-icon>
+        <span>El proceso puede tardar varios minutos. No cierres esta ventana.</span>
       </div>
     </mat-card>
+
+    <div class="calculo-scroll">
+      <mat-card class="progress-card" appearance="outlined">
+        <div class="progress-header">
+          <div class="status">
+            <span class="status-dot" 
+              [class.running]="processing" 
+              [class.done]="progress===100" 
+              [class.error]="failedStepIndex !== null"></span>
+            <span class="status-text">
+              {{ failedStepIndex !== null ? 'Error' : (processing ? 'En ejecución' : (progress===100 ? 'Completado' : 'Pendiente')) }}
+            </span>
+            @if (deliverableReady){
+              <mat-icon class="checkmark-success">check_circle</mat-icon>
+            }
+          </div>
+
+            @if(totalDurationMs > 0){
+              <div class="total-time-box">
+                <div class="total-time-header">
+                  <mat-icon>timer</mat-icon>
+                  <span class="title">Tiempo total</span>
+                </div>
+
+                <div class="total-time-row">
+                  <div class="time-item">
+                    <mat-icon>schedule</mat-icon>
+                    <span>{{ getExecution(stepsWithProgress.length - 1)?.endTime }}</span>
+                  </div>
+
+                  <div class="divider"></div>
+
+                  <div class="time-item">
+                    <mat-icon>hourglass_bottom</mat-icon>
+                    <span>{{ totalDurationFormatted }}</span>
+                  </div>
+                </div>
+              </div>
+            }
+        </div>
+
+        <mat-progress-bar class="progress-bar"
+          [color]="progress === 100 ? 'primary' : 'accent'"
+          mode="determinate"
+          [value]="progress">
+        </mat-progress-bar>
+
+        @if(failedStepIndex !== null){
+          <div class="error-panel">
+
+            <div class="error-header">
+              <mat-icon>error</mat-icon>
+              <span>Detalle del error</span>
+            </div>
+
+
+            <!-- Información para usuario final -->
+            <div class="error-section user-error">
+
+              <div class="error-title">
+                <mat-icon>person</mat-icon>
+                <span>Mensaje para usuario</span>
+              </div>
+
+              <div class="error-row">
+                <span>
+                  {{ userMessage }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Información técnica -->
+            @if (errorType || errorMessage || failedStepName) {
+              <div class="error-section technical-error">
+
+                <div class="error-title">
+                  <mat-icon>code</mat-icon>
+                  <span>Detalle técnico</span>
+                </div>
+
+                @if (failedStepName) {
+                  <div class="error-row">
+                    <strong>Paso:</strong>
+                    <span>{{ failedStepName }}</span>
+                  </div>
+                }
+
+                @if (errorType) {
+                  <div class="error-row">
+                    <strong>Tipo:</strong>
+                    <span>{{ errorType }}</span>
+                  </div>
+                }
+
+                @if (errorMessage) {
+                  <div class="error-row">
+                    <strong>Error:</strong>
+                    <span>{{ errorMessage }}</span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+
+        <div class="process-steps" *ngIf="processing || progress === 100 || failedStepIndex !== null">
+          <mat-vertical-stepper [selectedIndex]="currentStepIndex" linear>
+            <mat-step *ngFor="let step of stepsWithProgress; let i = index" [completed]="progress >= step.progress && failedStepIndex !== i">
+              <ng-template matStepLabel>
+                <div class="step-label">
+                  <mat-icon class="step-icon"
+                    [class.error]="failedStepIndex === i"
+                    [class.done]="failedStepIndex !== i && progress >= step.progress"
+                    [class.running]="failedStepIndex === null && i === currentStepIndex && processing">
+                    {{ failedStepIndex === i ? 'cancel' :
+                      (progress >= step.progress ? 'check_circle' :
+                      (i === currentStepIndex && processing) ? 'pending' : 'schedule') }}
+                  </mat-icon>
+                  {{ step.label }}
+                </div>
+              </ng-template>
+              <div class="step-content">
+                <ng-container *ngIf="failedStepIndex === i">
+                  <span class="chip chip-error">Error</span>
+                </ng-container>
+                <ng-container *ngIf="failedStepIndex !== i && progress >= step.progress">
+                  <span class="chip chip-done">Completado</span>
+                </ng-container>
+                <ng-container *ngIf="failedStepIndex === null && progress < step.progress && i === currentStepIndex && processing">
+                  <mat-progress-spinner diameter="22" mode="indeterminate" strokeWidth="3"/>
+                  Ejecutando...
+                </ng-container>
+                <ng-container *ngIf="failedStepIndex !== i && progress < step.progress && i !== currentStepIndex">
+                  <span class="chip chip-pending">Pendiente</span>
+                </ng-container>
+
+                @if (getExecution(i); as exec) {
+                  <div class="step-details">
+                    <div class="execution-info">
+                      <div class="execution-item">
+                        <mat-icon>schedule</mat-icon>
+                        <span>{{ exec.endTime }}</span>
+                      </div>
+                      <div class="execution-item">
+                        <mat-icon>timer</mat-icon>
+                        <span>{{ DateYearsHelper.formatDuration(exec.durationMs) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </mat-step>
+          </mat-vertical-stepper>
+        </div>
+      </mat-card>
+    </div>
   </div>
 </div>
