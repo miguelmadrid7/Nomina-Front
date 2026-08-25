@@ -5,4 +5,5 @@ export interface Toast {
     message: string;
     duration?: number;
     closing?: boolean;
+    persistent?: boolean;
 }
