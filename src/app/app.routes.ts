@@ -124,6 +124,13 @@ export const routes: Routes = [
               import('./features/nomina/generar-producto/generar-producto.component')
                 .then(m => m.GenerarProductoComponent),
             data: { breadcrumb: 'Generar producto' }
+          },
+          {
+            path: 'percepciones-informadas',
+            loadComponent: () =>
+              import('./features/nomina/percepciones-informadas/percepciones-informadas')
+                .then(m => m.PercepcionesInformadas),
+            data: { breadcrumb: 'Carga de percepciones' }
           }
         ]
       },
