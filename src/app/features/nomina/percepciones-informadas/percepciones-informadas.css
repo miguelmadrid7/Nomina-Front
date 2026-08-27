@@ -309,11 +309,11 @@
   text-align: center;
 }
 
-@media (max-width: 768px) {
-    .page-container {
-        padding: 12px;
-    }
+.page-container {
+  padding-bottom: 0;
+}
 
+@media (max-width: 768px) {
     .row {
         grid-template-columns: 1fr;
         gap: 12px;
@@ -388,6 +388,16 @@
         justify-content: flex-start;
     }
 
+    .table-global {
+        min-width: 810px;
+    }
+
+    .table-global .mat-mdc-header-cell,
+    .table-global .mat-mdc-cell {
+        padding: 6px 5px !important;
+        font-size: 12px;
+    }
+
     .table-global .mat-column-rfc,
     .table-global .mat-column-curp,
     .table-global .mat-column-concepto,
@@ -406,7 +416,7 @@
         box-sizing: border-box;
         overflow: visible;
     }
-    
+
     .table-foote ::ng-deep .mat-mdc-paginator {
         width: 100%;
         min-height: 44px;
@@ -465,6 +475,29 @@
         margin: 0 !important;
         padding: 0 !important;
         flex-shrink: 0;
+    }
+
+    .table-foote ::ng-deep .mat-mdc-paginator-navigation-first,
+    .table-foote ::ng-deep .mat-mdc-paginator-navigation-previous,
+    .table-foote ::ng-deep .mat-mdc-paginator-navigation-next,
+    .table-foote ::ng-deep .mat-mdc-paginator-navigation-last {
+        width: 30px !important;
+        height: 30px !important;
+        min-width: 30px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .table-foote ::ng-deep .mat-mdc-paginator-navigation-first .mat-mdc-paginator-icon,
+    .table-foote ::ng-deep .mat-mdc-paginator-navigation-previous .mat-mdc-paginator-icon,
+    .table-foote ::ng-deep .mat-mdc-paginator-navigation-next .mat-mdc-paginator-icon,
+    .table-foote ::ng-deep .mat-mdc-paginator-navigation-last .mat-mdc-paginator-icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    .page-container {
+        padding-bottom: 35px;
     }
 
 }
