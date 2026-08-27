@@ -23,9 +23,10 @@
 }
 
 .btn {
-    width: 120px;
+    min-width: 140px;
+    width: auto;
     height: 36px;
-    padding: 0 16px;
+    padding: 0 18px;
     border: 2px solid;
     border-radius: 8px;
     background: transparent;
@@ -54,17 +55,49 @@
     transform: translateY(-1px);
 }
 
+.btn-edit {
+  color: #6d28d9;
+  border-color: #6d28d9;
+}
+.btn-edit:hover {
+  background: #6d28d9;
+  color: #ffffff;
+  border-color: #6d28d9;
+  transform: translateY(-1px);
+}
+
+.btn-upload {
+  color: #0369a1;
+  border-color: #0369a1;
+}
+.btn-upload:hover {
+  background: #0369a1;
+  color: #ffffff;
+  border-color: #0369a1;
+  transform: translateY(-1px);
+}
+
 .btn-success {
   background: transparent;
   color: #2e7d32;
   border-color: #2e7d32;
-  width: 140px;
 }
 
 .btn-success:hover {
   background: #2e7d32;
   color: #ffffff;
   border-color: #2e7d32;
+  transform: translateY(-1px);
+}
+
+.btn-download {
+  color: #d97706;
+  border-color: #d97706;
+}
+.btn-download:hover {
+  background: #d97706;
+  color: #ffffff;
+  border-color: #d97706;
   transform: translateY(-1px);
 }
 
@@ -277,8 +310,161 @@
 }
 
 @media (max-width: 768px) {
+    .page-container {
+        padding: 12px;
+    }
+
+    .row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .qna-field-short {
+        max-width: none;
+    }
+
+    .file-upload-group {
+        align-self: stretch;
+    }
+
+    .file-upload-group input[type="file"] {
+        width: 100%;
+    }
+
     .actions-right {
-    align-items: stretch;
-    gap: 8px;
-  }
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin: 10px 0 14px;
+    }
+
+    .btn-group {
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .actions-right .btn-group {
+        order: 3;
+    }
+
+    .actions-right .btn-upload {
+        order: 1;
+    }
+
+    .actions-right .btn-process {
+        order: 2;
+    }
+
+    .actions-right .btn-download {
+        order: 4;
+    }
+
+    .info-card__chips {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+
+    .info-card__chip {
+        font-size: 0.75rem;
+        padding: 3px 10px;
+        text-align: center;
+    }
+
+    .global-search {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-field {
+        width: 100%;
+    }
+
+    .validation-summary {
+        text-align: left;
+        justify-content: flex-start;
+    }
+
+    .table-global .mat-column-rfc,
+    .table-global .mat-column-curp,
+    .table-global .mat-column-concepto,
+    .table-global .mat-column-cantidad,
+    .table-global .mat-column-importe,
+    .table-global .mat-column-estatus {
+        width: auto !important;
+        min-width: 90px !important;
+        max-width: none !important;
+    }
+
+    .table-foote {
+        width: 100%;
+        min-height: auto;
+        padding-top: 8px;
+        box-sizing: border-box;
+        overflow: visible;
+    }
+    
+    .table-foote ::ng-deep .mat-mdc-paginator {
+        width: 100%;
+        min-height: 44px;
+        height: auto;
+        overflow: visible;
+    }
+
+    .table-foote ::ng-deep .mat-mdc-paginator-container {
+        min-height: 76px;
+        height: auto;
+        padding: 4px 2px 4px;
+        box-sizing: border-box;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: flex-end !important;
+        align-content: flex-start;
+        gap: 0 !important;
+        overflow: visible;
+    }
+
+    .table-foote ::ng-deep .mat-mdc-paginator-page-size {
+        width: 100% !important;
+        height: 30px;
+        display: flex !important;
+        align-items: center;
+        justify-content: flex-end;
+        margin: 0 0 6px !important;
+        font-size: 11px;
+        flex-shrink: 0;
+    }
+
+    .table-foote ::ng-deep .mat-mdc-paginator-page-size-label {
+        font-size: 11px;
+        margin-right: 3px;
+        white-space: nowrap;
+    }
+
+    .table-foote ::ng-deep .mat-mdc-paginator-page-size-select {
+        width: 75px;
+        margin: 0  10px 5px 0 !important;
+        padding: 0 !important;
+        flex-shrink: 0;
+    }
+
+    .table-foote ::ng-deep .mat-mdc-paginator-range-label {
+        margin: 0 4px;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+
+    .table-foote ::ng-deep .mat-mdc-paginator-range-actions {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 0px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex-shrink: 0;
+    }
+
 }

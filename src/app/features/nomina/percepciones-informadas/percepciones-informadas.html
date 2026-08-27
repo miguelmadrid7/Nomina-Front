@@ -59,11 +59,23 @@
     
     <div class="actions-right">
         <div class="btn-group">
-            <button class="btn btn-primary" (click)="onPersonalitedQuantity()">Personalizar cantidad</button>
+            <button class="btn btn-primary" (click)="onPersonalitedQuantity()">
+                <mat-icon>edit</mat-icon>
+                    Personalizar cantidad
+            </button>
         </div>
-        <button class="btn btn-success" [disabled]="!selecteExcelFile" (click)="onAceptBotton()">Cargar archivo</button>
-        <button class="btn btn-success" [disabled]="isProcessingPayroll || yaSeProceso" (click)="onProcessPayroll()"> {{ isProcessingPayroll ? 'Procesando...' : 'Procesar a nómina' }} </button>
-        <button class="btn btn-primary" [disabled]="!resultAvalible" (click)="onDownloadResult()"> Descargar resultado </button>
+        <button class="btn btn-success" class="btn btn-upload" [disabled]="!selecteExcelFile" (click)="onAceptBotton()">
+            <mat-icon>upload_file</mat-icon>
+                Cargar archivo
+        </button>
+        <button class="btn btn-success" class="btn btn-success" [disabled]="isProcessingPayroll || yaSeProceso" (click)="onProcessPayroll()"> 
+            <mat-icon>{{ isProcessingPayroll ? 'sync' : 'send' }}</mat-icon>
+                {{ isProcessingPayroll ? 'Procesando...' : 'Procesar a nómina' }} 
+        </button>
+        <button class="btn btn-primary" class="btn btn-download" [disabled]="!resultAvalible" (click)="onDownloadResult()"> 
+            <mat-icon>download</mat-icon>
+                Descargar resultado 
+        </button>
     </div>
     
     <mat-card class="form-card" [formGroup]="searchForm">
@@ -147,7 +159,7 @@
                         </table>
 
                     </div>
-                    <div class="table-footer">
+                    <div class="table-foote">
                         <mat-paginator
                             [length]="totalElements"
                             [pageSize]="50"
