@@ -1,0 +1,284 @@
+/* INPUTS */
+.row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(160px, 1fr));
+  align-items: center;
+  gap: 16px;
+}
+
+.file-upload-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-self: flex-start;
+}
+
+/* BOTONES */
+.actions-right {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px 0 14px;
+}
+
+.btn {
+    width: 120px;
+    height: 36px;
+    padding: 0 16px;
+    border: 2px solid;
+    border-radius: 8px;
+    background: transparent;
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: .2px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all .18s ease;
+    box-shadow: none !important;
+}
+
+.btn-primary {
+    color: #2563eb;
+    border-color: #2563eb;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+    transform: translateY(-1px);
+}
+
+.btn-success {
+  background: transparent;
+  color: #2e7d32;
+  border-color: #2e7d32;
+  width: 140px;
+}
+
+.btn-success:hover {
+  background: #2e7d32;
+  color: #ffffff;
+  border-color: #2e7d32;
+  transform: translateY(-1px);
+}
+
+/* Global search */
+.global-search {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap; 
+}
+
+/* Inputs de card */
+.qna-compact {
+  --mat-form-field-container-height: 40px;
+  --mat-form-field-container-vertical-padding: 8px;
+}
+
+.qna-field-short {
+  max-width: 450px;
+  justify-self: start;
+}
+
+.qna-compact .mat-mdc-form-field-infix {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  min-height: unset !important;
+}
+
+.qna-compact .mat-mdc-input-element {
+  font-size: 0.9rem;
+}
+
+.qna-compact .mat-icon[matPrefix] {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+}
+
+.validation-summary {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0;
+  text-align: right;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface-variant, #5f6368);
+}
+
+/* FORM- CARD */
+.form-card {
+  padding: 20px 24px;
+}
+
+.form-card.mat-mdc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-card {
+  padding: 10px 16px;
+  margin: 12px 0 16px;
+  background: var(--bg-accent, #e6f1fb);
+  max-width: none; 
+}
+
+.info-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.info-card__header mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.info-card__chips {
+  display: flex;
+  flex-direction: row; 
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.info-card__chip {
+  padding: 4px 12px;
+  border-radius: 12px;
+  background: var(--surface-2, #fff);
+  border: 1px solid var(--border, #ccc);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.estatus-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.estatus-vigente {
+  background: var(--bg-success, #eaf3de);
+  color: var(--text-success, #3b6d11);
+}
+
+.estatus-cancelado {
+  background: var(--bg-danger, #fcebeb);
+  color: var(--text-danger, #a32d2d);
+}
+
+.row-selected {
+  background-color: var(--bg-accent, #e6f1fb);
+}
+
+/* TABLA GLOBAL */
+.table-container {
+  width: 100%;
+}
+
+.table-card {
+  border: 1px solid var(--line, #e0e0e0);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-global {
+    width: 100%;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.table-footer {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid var(--line, #e0e0e0);
+  background: var(--card, #fff);
+  width: 100%;
+}
+
+.table-global .mat-mdc-header-cell {
+    vertical-align: middle !important;
+    padding: 10px 8px !important;
+}
+
+.table-global .mat-column-rfc {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-curp {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-concepto {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-cantidad {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-importe {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
+.table-global .mat-column-estatus {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
+/* Input editar tabla campo cantidad */
+.cantidad-edit-input {
+  width: 60px;
+  border: 1px solid var(--line, #ccc);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font: inherit;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+    .actions-right {
+    align-items: stretch;
+    gap: 8px;
+  }
+}
