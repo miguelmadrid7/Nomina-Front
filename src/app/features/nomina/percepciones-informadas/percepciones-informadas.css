@@ -215,6 +215,11 @@
   color: var(--text-danger, #a32d2d);
 }
 
+.estatus-pendiente {
+  background: var(--bg-accent, #e6f1fb);
+  color: var(--text-secondary, #5f6368);
+}
+
 .row-selected {
   background-color: var(--bg-accent, #e6f1fb);
 }
@@ -286,6 +291,14 @@
 }
 
 .table-global .mat-column-importe {
+  width: 70px !important;
+  min-width: 70px !important;
+  max-width: 70px !important;
+  text-align: center;
+}
+
+
+.table-global .mat-column-nombreTrabajador {
   width: 70px !important;
   min-width: 70px !important;
   max-width: 70px !important;

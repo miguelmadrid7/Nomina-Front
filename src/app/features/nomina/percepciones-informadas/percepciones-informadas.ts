@@ -15,10 +15,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { ExcelUploadService, PERCEPCIONES_REQUIRED_COLUMNS } from '../../../core/services/excel-upload.service';
-import { Excel } from '../../../core/model/excel.model';
-import { ExcelResult } from '../../../core/model/excel-result.model';
-import { debounce, debounceTime, distinctUntilChanged } from 'rxjs';
-import { ProcessProgress } from '../../../core/model/process-progress.model';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { PercepcionesInformadasService } from '../../../core/services/percepciones-informadas.service';
+import { PersonalizarRow } from '../../../core/model/personzaliza-row.model';
 
 @Component({
   selector: 'app-percepciones-informadas',
@@ -55,17 +54,19 @@ export class PercepcionesInformadas {
   editingRowId: number | null = null;
   isProcessingPayroll = false;
   resultAvalible = false;
-  processedRows: ExcelResult[] = [];
+  processedRows: PersonalizarRow[] = [];
   selectedRowId: number | null = null;
   yaSeProceso = false;
 
-  dataSource = new MatTableDataSource<ExcelResult>([]);
+  dataSource = new MatTableDataSource<PersonalizarRow>([]);
 
-  readonly displayedColumns: string[] = ['rfc', 'curp', 'concepto', 'cantidad', 'importe', 'estatus'];
+  readonly displayedColumns: string[] = ['rfc', 'curp', 'nombreTrabajador', 'cantidad', 'importe', 'estatus'];
+
 
   private readonly toastService = inject(ToastService);
   private readonly calendarioService = inject(CalendarioService);
   private readonly excelUploadService = inject(ExcelUploadService);
+  private readonly percepcionesInformadasService = inject(PercepcionesInformadasService)
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly fb = inject(FormBuilder);
   
@@ -147,32 +148,56 @@ export class PercepcionesInformadas {
       this.toastService.warning('Sin archivo', 'Primero se debe de cargar un archivo Excel valido.');
       return;
     }
-
-    this.toastService.upsertPersistent(
-      this.VALIDATION_TOAST_ID,
-      'info',
-      'Validando registros',
-      'Procesando la información del archivo, esto puede tardar unos segundos...',
-    );
-
-    try {
-      const parsedRows = await this.excelUploadService.parseRows(this.selecteExcelFile);
-      this.loadMockValidation(parsedRows);
-
-      this.toastService.resolvePersistent(
-        this.VALIDATION_TOAST_ID,
-        'success',
-        'Registros cargados',
-        `Se cargaron ${this.totalRecordsCount} registros del archivo.`,
-      );
-    } catch (error) {
-      this.toastService.resolvePersistent(
-        this.VALIDATION_TOAST_ID,
-        'error',
-        'Error al procesar',
-        (error as Error).message,
-      );
+    const concepto = this.searchForm.get('concepto')?.value;
+    const qnaProceso = this.calendarioActual?.qna;
+    if (!qnaProceso) {
+      this.toastService.error('Quincena no disponible', 'No se pudo determinar la quincena activa.');
+      return;
     }
+    if (!concepto) {
+      this.toastService.warning('Concepto requerido', 'Selecciona un concepto antes de cargar el archivo.');
+      return;
+    }
+    this.toastService.upsertPersistent(this.VALIDATION_TOAST_ID,'info', 'Validando registros', 'Procesando la información del archivo, esto puede tardar unos segundos...', );
+    this.percepcionesInformadasService.cargarExcel(this.selecteExcelFile, qnaProceso, concepto)
+      .subscribe({
+        next: (response) => {
+          const data = response.data;
+          this.toastService.resolvePersistent(
+            this.VALIDATION_TOAST_ID,
+            data.erroresFormato.length > 0 ? 'warning' : 'success',
+            data.erroresFormato.length > 0 ? 'Carga con observaciones' : 'Registros cargados',
+            `Se insertaron ${data.insertados} de ${data.totalFilasExcel} filas. ${data.omitidos} omitidas.`,
+          );
+          if (data.erroresFormato.length > 0) {
+            const detalle = data.erroresFormato
+              .slice(0, 5)
+              .map((e) => `Fila ${e.fila}: ${e.motivo}`)
+              .join(' | ');
+            this.toastService.warning('Filas con error', detalle);
+          }
+          this.cargarListaPersonalizar(qnaProceso, concepto);
+        },
+        error: (error) => {
+          this.toastService.resolvePersistent(this.VALIDATION_TOAST_ID,'error', 'Error al cargar archivo',error?.error?.message ?? 'Ocurrió un error al procesar el archivo.', );
+        },
+      });
+}
+
+  private cargarListaPersonalizar(qnaProceso: number, concepto: string): void {
+    this.percepcionesInformadasService.listarPersonalizar(qnaProceso, concepto).subscribe({
+      next: (response) => {
+        const data = response.data;
+        this.dataSource.data = data.content;
+        this.totalRecordsCount = data.totalElements;
+        this.totalElements = data.totalElements;
+        this.validRecordCount = data.totalElements;
+      },
+      error: (error) => {
+        this.toastService.error( 'Error al listar',  error?.error?.message ?? 'No se pudo obtener la lista de registros.',
+        );
+      },
+    });
   }
 
   onOptionSelected(emp: EmpleadoItem):void {
@@ -181,7 +206,7 @@ export class PercepcionesInformadas {
     this.form.get('searchText')?.setValue(formatEmployeeDisplay(emp));
   }
 
-  onRowSelected(row: ExcelResult):void {
+  onRowSelected(row: PersonalizarRow): void {
     this.selectedRowId = row.id;
   }
 
@@ -193,13 +218,46 @@ export class PercepcionesInformadas {
     this.editingRowId = this.selectedRowId;
   }
 
-  onQuantityChange(row: ExcelResult, rawValue: string):void {
+  onQuantityChange(row: PersonalizarRow, rawValue: string): void {
     const newValue = Number(rawValue);
-    if(!Number.isNaN(newValue)) {
-      this.dataSource.data = this.dataSource.data.map((item) => 
-        item.id === row.id ? { ...item, cantidad: newValue} : item,
-      );
+    if (Number.isNaN(newValue)) {
+      this.editingRowId = null;
+      this.selectedRowId = null;
+      return;
     }
+
+    this.percepcionesInformadasService
+      .personalizarRegistro(row.id, row.rfc, row.curp, row.nombreTrabajador, row.importe, newValue)
+      .subscribe({
+        next: (response) => {
+          const data = response.data;
+
+          // WHY actualizar CON el estatus/motivoRechazo que el
+          // backend acaba de calcular (no solo la cantidad local):
+          // esta es la confirmación real de que el registro cambió de
+          // estado tras la edición — reflejarlo en la tabla evita que
+          // el usuario piense que su registro sigue "pendiente" cuando
+          // en realidad ya fue rechazado por el backend.
+          this.dataSource.data = this.dataSource.data.map((item) =>
+            item.id === row.id
+              ? { ...item, cantidad: newValue, estatus: data.estatus, motivoRechazo: data.motivoRechazo }
+              : item,
+          );
+
+          if (data.estatus === 'RECHAZADO') {
+            this.toastService.warning('Registro rechazado', data.motivoRechazo ?? 'El registro no pasó la validación.');
+          } else {
+            this.toastService.success('Registro actualizado', 'La cantidad se actualizó correctamente.');
+          }
+        },
+        error: (error) => {
+          this.toastService.error(
+            'Error al actualizar',
+            error?.error?.message ?? 'No se pudo actualizar el registro.',
+          );
+        },
+      });
+
     this.editingRowId = null;
     this.selectedRowId = null;
   }
@@ -209,43 +267,65 @@ export class PercepcionesInformadas {
       this.toastService.warning('Sin registros', 'Primero carga y valida un archivo Excel.');
       return;
     }
-    if (this.validRecordCount < this.totalRecordsCount) {
-      this.toastService.warning('Registros con observaciones', `Hay ${this.totalRecordsCount - this.validRecordCount} registro(s) inválido(s). Corrígelos antes de procesar.`);
+    const rechazados = this.dataSource.data.filter((row) => row.estatus === 'RECHAZADO').length;
+    if (rechazados > 0) {
+      this.toastService.warning('Registros rechazados', `Hay ${rechazados} registro(s) rechazado(s). Corrígelos antes de procesar.`,);
+      return;
+    }
+    const concepto = this.searchForm.get('concepto')?.value;
+    const qnaProceso = this.calendarioActual?.qna;
+    if (!qnaProceso || !concepto) {
+      this.toastService.error('Datos incompletos', 'No se pudo determinar la quincena o el concepto.');
+      return;
+    }
+    this.isProcessingPayroll = true;
+    this.toastService.upsertPersistent(this.PROCESAMIENTO_TOAST_ID,'info', 'Procesando a nómina', `Enviando ${this.totalRecordsCount} registros al módulo de nómina...`,);
+    this.percepcionesInformadasService.continuar(qnaProceso, concepto).subscribe({
+      next: (response) => {
+        const data = response.data;
+        this.toastService.resolvePersistent(this.PROCESAMIENTO_TOAST_ID, 'success', 'Procesado con éxito', data.mensaje ?? `${this.totalRecordsCount} registros se enviaron correctamente a nómina.`,);
+        this.processedRows = [...this.dataSource.data];
+        this.resultAvalible = true;
+        this.yaSeProceso = true;
+        this.isProcessingPayroll = false;
+      },
+      error: (error) => {
+        this.toastService.resolvePersistent(this.PROCESAMIENTO_TOAST_ID, 'error', 'Error al procesar', error?.error?.message ?? 'Ocurrió un error al procesar el volcado a nómina.',);
+        this.isProcessingPayroll = false;
+      },
+    });
+  }
+
+  onDownloadResult(): void {
+    const concepto = this.searchForm.get('concepto')?.value;
+    const qnaProceso = this.calendarioActual?.qna;
+
+    if (!qnaProceso) {
+      this.toastService.error('Quincena no disponible', 'No se pudo determinar la quincena activa.');
       return;
     }
 
-    this.isProcessingPayroll = true;
+    this.percepcionesInformadasService.descargarValidaciones(qnaProceso, concepto ?? undefined).subscribe({
+      next: (blob) => {
+        const fecha = new Date().toISOString().slice(0, 10);
+        const fileName = `validaciones_qna${qnaProceso}_${fecha}.xlsx`;
 
-    try {
-      await this.procesarNominaConProgresoMock(
-        this.totalRecordsCount,
-        (progress) => this.onProgressActually(progress),
-      );
-      this.toastService.resolvePersistent(this.PROCESAMIENTO_TOAST_ID, 'success','Procesado con éxito', `${this.totalRecordsCount} registros se enviaron correctamente a nómina.`, );
-      this.processedRows = [...this.dataSource.data];
-      this.resultAvalible = true;
-      this.yaSeProceso = true;
-    } catch (error) {
-      this.toastService.resolvePersistent(this.PROCESAMIENTO_TOAST_ID, 'error', 'Error al procesar', (error as Error).message,);
-    
-    } finally {
-      this.isProcessingPayroll = false;
-    }
-  }
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        link.click();
+        window.URL.revokeObjectURL(url);
 
-  onProgressActually(progress: ProcessProgress):void {
-    this.toastService.upsertPersistent(this.PROCESAMIENTO_TOAST_ID, 'info', 'Procesando a nómina',  `Volcando registros: ${progress.process} de ${progress.total}...`);
-  }
-
-  onDownloadResult() {
-    const fecha = new Date().toISOString().slice(0, 10);
-    const fileName = `validación_percepciones_${fecha}.xlsx`;
-    this.excelUploadService.exportResultados(this.processedRows, fileName);
-
-    this.toastService.success('Descarga completada', 'El archivo de resultado se descargó correctamente');
-    this.resultAvalible = false;
-    this.processedRows =[];
-    this.clear();
+        this.toastService.success('Descarga completada', 'El archivo de resultado se descargó correctamente');
+        this.resultAvalible = false;
+        this.processedRows = [];
+        this.clear();
+      },
+      error: () => {
+        this.toastService.error('Error al descargar', 'No se pudo generar el archivo de resultado.');
+      },
+    });
   }
 
   selectEmployee(emp: EmpleadoItem):void {
@@ -257,20 +337,20 @@ export class PercepcionesInformadas {
     this.empleadoRfc = rfc || null;
   }
 
-  tableFilter():void {
-    this.dataSource.filterPredicate = (row: ExcelResult, filter: string) => {
+  tableFilter(): void {
+    this.dataSource.filterPredicate = (row: PersonalizarRow, filter: string) => {
       const normalizedFilter = filter.trim().toLowerCase();
       return (
-        row.rfc.toLowerCase().includes(normalizedFilter)||
-        row.curp.toLowerCase().includes(normalizedFilter)||
-        row.concepto.toLowerCase().includes(normalizedFilter)
+        row.rfc.toLowerCase().includes(normalizedFilter) ||
+        row.curp.toLowerCase().includes(normalizedFilter) ||
+        row.nombreTrabajador.toLowerCase().includes(normalizedFilter)
       );
     };
     this.searchForm.get('searchText')?.valueChanges
-    .pipe(debounceTime(300), distinctUntilChanged())
-    .subscribe((value) => {
-      this.dataSource.filter = (value ?? '').trim().toLowerCase();
-    });
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((value) => {
+        this.dataSource.filter = (value ?? '').trim().toLowerCase();
+      });
   }
 
   clear():void {
@@ -291,47 +371,5 @@ export class PercepcionesInformadas {
     if(this.fileInputRef) {
       this.fileInputRef.nativeElement.value = '';
     }
-  }
-  
-  private loadMockValidation(parsedRows: Excel[]): void {
-    const mockValidatedRows: ExcelResult[] = parsedRows.map((row, index) => ({
-      ...row, // curp, rfc, cantidad, concepto, importe ya vienen del Excel
-      id: index + 1,
-      estatus: row.curp && row.rfc ? 'APLICADO' : 'CANCELADO',
-      mostrarEmpleado: true,
-    }));
-
-    this.totalRecordsCount = mockValidatedRows.length;
-    this.validRecordCount = mockValidatedRows.filter((row) => row.estatus === 'APLICADO').length;
-    this.dataSource.data = mockValidatedRows;
-    this.totalElements = mockValidatedRows.length;
-  }
-
-  private procesarNominaConProgresoMock(
-    total: number,
-    onProgress: (progress: ProcessProgress) => void,
-  ): Promise<void> {
-    const BATCH_SIZE = Math.max(1, Math.ceil(total / 10));
-    const DELAY_PER_BATCH_MS = 150;
-
-    return new Promise((resolve) => {
-      let processed = 0;
-
-      const processBatch = () => {
-        processed = Math.min(processed + BATCH_SIZE, total);
-        const completado = processed >= total;
-
-        onProgress({ process: processed, total, completed: completado});
-
-        if (completado) {
-          resolve();
-          return;
-        }
-
-        setTimeout(processBatch, DELAY_PER_BATCH_MS);
-      };
-
-      processBatch();
-    });
   }
 }
