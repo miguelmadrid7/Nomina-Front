@@ -40,7 +40,6 @@ import { PersonalizarRow } from '../../../core/model/personzaliza-row.model';
 })
 export class PercepcionesInformadas {
 
-  form!: FormGroup;
   cargandoQna = false;
   errorQna = false;
   calendarioActual: Calendario | null = null; 
@@ -58,9 +57,12 @@ export class PercepcionesInformadas {
   selectedRowId: number | null = null;
   yaSeProceso = false;
 
+  isValidatingLote = false;
+  
+
   dataSource = new MatTableDataSource<PersonalizarRow>([]);
 
-  readonly displayedColumns: string[] = ['rfc', 'curp', 'nombreTrabajador', 'cantidad', 'importe', 'estatus'];
+  readonly displayedColumns: string[] = ['rfc', 'curp', 'nombreTrabajador', 'cantidad', 'importe', 'estatus', 'acciones'];
 
 
   private readonly toastService = inject(ToastService);
@@ -158,31 +160,37 @@ export class PercepcionesInformadas {
       this.toastService.warning('Concepto requerido', 'Selecciona un concepto antes de cargar el archivo.');
       return;
     }
-    this.toastService.upsertPersistent(this.VALIDATION_TOAST_ID,'info', 'Validando registros', 'Procesando la información del archivo, esto puede tardar unos segundos...', );
+    this.toastService.upsertPersistent(this.VALIDATION_TOAST_ID, 'info', 'Validando registros', 'Procesando la información del archivo, esto puede tardar unos segundos...');
     this.percepcionesInformadasService.cargarExcel(this.selecteExcelFile, qnaProceso, concepto)
       .subscribe({
         next: (response) => {
+          if (!response.success) {
+            this.toastService.resolvePersistent(this.VALIDATION_TOAST_ID,'error', 'Error al cargar archivo', response.message ?? 'No se pudo procesar el archivo.',);
+            return;
+          }
           const data = response.data;
+          const hayObservaciones = data.erroresFormato.length > 0 || data.rechazados > 0;
           this.toastService.resolvePersistent(
             this.VALIDATION_TOAST_ID,
-            data.erroresFormato.length > 0 ? 'warning' : 'success',
-            data.erroresFormato.length > 0 ? 'Carga con observaciones' : 'Registros cargados',
-            `Se insertaron ${data.insertados} de ${data.totalFilasExcel} filas. ${data.omitidos} omitidas.`,
+            hayObservaciones ? 'warning' : 'success',
+            hayObservaciones ? 'Carga con observaciones' : 'Registros cargados',
+            `${data.aceptados} aceptados, ${data.rechazados} rechazados de ${data.insertados} insertados (${data.omitidos} omitidos por formato).`,
           );
+
           if (data.erroresFormato.length > 0) {
             const detalle = data.erroresFormato
               .slice(0, 5)
               .map((e) => `Fila ${e.fila}: ${e.motivo}`)
               .join(' | ');
-            this.toastService.warning('Filas con error', detalle);
+            this.toastService.warning('Filas con error de formato', detalle);
           }
           this.cargarListaPersonalizar(qnaProceso, concepto);
         },
         error: (error) => {
-          this.toastService.resolvePersistent(this.VALIDATION_TOAST_ID,'error', 'Error al cargar archivo',error?.error?.message ?? 'Ocurrió un error al procesar el archivo.', );
+          this.toastService.resolvePersistent(this.VALIDATION_TOAST_ID, 'error', 'Error al cargar archivo', error?.error?.message ?? 'Ocurrió un error al procesar el archivo.');
         },
       });
-}
+  }
 
   private cargarListaPersonalizar(qnaProceso: number, concepto: string): void {
     this.percepcionesInformadasService.listarPersonalizar(qnaProceso, concepto).subscribe({
@@ -200,22 +208,50 @@ export class PercepcionesInformadas {
     });
   }
 
+  onRevalidarLote(): void {
+    const ids = this.dataSource.data.map((row) => row.id);
+    if (ids.length === 0) {
+      this.toastService.warning('Sin registros', 'No hay registros cargados para validar.');
+      return;
+    }
+    const concepto = this.searchForm.get('concepto')?.value;
+    const qnaProceso = this.calendarioActual?.qna;
+    if (!qnaProceso || !concepto) {
+      this.toastService.error('Datos incompletos', 'No se pudo determinar la quincena o el concepto.');
+      return;
+    }
+    this.isValidatingLote = true;
+    this.percepcionesInformadasService.validarRegistros(ids).subscribe({
+      next: (response) => {
+        const data = response.data;
+        this.toastService.success('Validación completada', `${data.aceptados} aceptados, ${data.rechazados} rechazados de ${data.total} registros.`,);
+        this.cargarListaPersonalizar(qnaProceso, concepto);
+        this.isValidatingLote = false;
+      },
+      error: (error) => {
+        this.toastService.error('Error al validar', error?.error?.message ?? 'No se pudo validar el lote.');
+        this.isValidatingLote = false;
+      },
+    });
+  }
+
   onOptionSelected(emp: EmpleadoItem):void {
     this.empleadoId = emp.id ?? null;
     this.selectEmployee(emp);
-    this.form.get('searchText')?.setValue(formatEmployeeDisplay(emp));
+    this.searchForm.get('searchText')?.setValue(formatEmployeeDisplay(emp));
   }
 
   onRowSelected(row: PersonalizarRow): void {
     this.selectedRowId = row.id;
   }
 
-  onPersonalitedQuantity():void {
-    if(!this.selectedRowId) {
-      this.toastService.warning('Sin selección', 'Seleccionar un registro de la tabla antes de personalizar la cantidad.');
-      return;
-    }
-    this.editingRowId = this.selectedRowId;
+  onPersonalitedQuantity(row: PersonalizarRow): void {
+      if (!row) {
+        this.toastService.error('Operacion invalida', 'Seleccionar un registro para hacer la edición')
+          return;
+      }
+      this.selectedRowId = row.id;
+      this.editingRowId = row.id;
   }
 
   onQuantityChange(row: PersonalizarRow, rawValue: string): void {
@@ -269,7 +305,7 @@ export class PercepcionesInformadas {
     }
     const rechazados = this.dataSource.data.filter((row) => row.estatus === 'RECHAZADO').length;
     if (rechazados > 0) {
-      this.toastService.warning('Registros rechazados', `Hay ${rechazados} registro(s) rechazado(s). Corrígelos antes de procesar.`,);
+      this.toastService.warning('Registros rechazados', `Hay ${rechazados} registro(s) rechazado(s). Corrígelos antes de procesar.`);
       return;
     }
     const concepto = this.searchForm.get('concepto')?.value;
@@ -279,18 +315,25 @@ export class PercepcionesInformadas {
       return;
     }
     this.isProcessingPayroll = true;
-    this.toastService.upsertPersistent(this.PROCESAMIENTO_TOAST_ID,'info', 'Procesando a nómina', `Enviando ${this.totalRecordsCount} registros al módulo de nómina...`,);
+    this.toastService.upsertPersistent(this.PROCESAMIENTO_TOAST_ID, 'info', 'Procesando a nómina', `Enviando ${this.totalRecordsCount} registros al módulo de nómina...`);
+
     this.percepcionesInformadasService.continuar(qnaProceso, concepto).subscribe({
       next: (response) => {
+        if (!response.success) {
+          this.toastService.resolvePersistent(this.PROCESAMIENTO_TOAST_ID, 'error', 'No se pudo procesar', response.message ?? 'No hay registros aceptados para continuar.',);
+          this.isProcessingPayroll = false;
+          return;
+        }
+
         const data = response.data;
-        this.toastService.resolvePersistent(this.PROCESAMIENTO_TOAST_ID, 'success', 'Procesado con éxito', data.mensaje ?? `${this.totalRecordsCount} registros se enviaron correctamente a nómina.`,);
+        this.toastService.resolvePersistent(this.PROCESAMIENTO_TOAST_ID, 'success', 'Procesado con éxito', `${data.insertadosHistorico} de ${data.total} registros se enviaron correctamente a nómina.`,);
         this.processedRows = [...this.dataSource.data];
         this.resultAvalible = true;
         this.yaSeProceso = true;
         this.isProcessingPayroll = false;
       },
       error: (error) => {
-        this.toastService.resolvePersistent(this.PROCESAMIENTO_TOAST_ID, 'error', 'Error al procesar', error?.error?.message ?? 'Ocurrió un error al procesar el volcado a nómina.',);
+        this.toastService.resolvePersistent(this.PROCESAMIENTO_TOAST_ID, 'error', 'Error al procesar', error?.error?.message ?? 'Ocurrió un error al procesar el volcado a nómina.');
         this.isProcessingPayroll = false;
       },
     });
@@ -322,8 +365,24 @@ export class PercepcionesInformadas {
         this.processedRows = [];
         this.clear();
       },
-      error: () => {
-        this.toastService.error('Error al descargar', 'No se pudo generar el archivo de resultado.');
+      error: (error) => {
+        // WHY parsear el Blob de error manualmente: con
+        // responseType:'blob', HttpClient entrega TAMBIÉN el body del
+        // error como Blob (no JSON parseado) — sin esto, mostraríamos
+        // un mensaje genérico en vez del mensaje real que el backend
+        // ahora sí manda (ej. "No hay validaciones procesadas...").
+        if (error.error instanceof Blob) {
+          error.error.text().then((text: string) => {
+            try {
+              const parsed = JSON.parse(text);
+              this.toastService.error('Sin resultados', parsed.message ?? 'No hay validaciones procesadas para descargar.');
+            } catch {
+              this.toastService.error('Error al descargar', 'No se pudo generar el archivo de resultado.');
+            }
+          });
+        } else {
+          this.toastService.error('Error al descargar', 'No se pudo generar el archivo de resultado.');
+        }
       },
     });
   }
