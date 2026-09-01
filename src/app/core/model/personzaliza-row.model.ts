@@ -7,6 +7,7 @@ export interface PersonalizarRow {
   nombreTrabajador: string;
   cantidad: number;
   importe: number;
+  importeUnitario: number;
   estatus: string | null;
   motivoRechazo: string | null;
 }

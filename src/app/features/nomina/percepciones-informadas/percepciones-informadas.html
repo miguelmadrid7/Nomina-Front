@@ -65,14 +65,17 @@
                     Cargar archivo
             </button>
         </div>
+        
         <button class="btn btn-edit" [disabled]="isValidatingLote || totalRecordsCount === 0" (click)="onRevalidarLote()">
             <mat-icon>{{ isValidatingLote ? 'sync' : 'fact_check' }}</mat-icon>
             {{ isValidatingLote ? 'Validando...' : 'Revalidar lote' }}
         </button>
-        <button class="btn btn-success" [disabled]="isProcessingPayroll || yaSeProceso" (click)="onProcessPayroll()"> 
+        
+        <button class="btn btn-success" [disabled]="isProcessingPayroll || yaSeProceso || totalRecordsCount === 0" (click)="onProcessPayroll()"> 
             <mat-icon>{{ isProcessingPayroll ? 'sync' : 'send' }}</mat-icon>
                 {{ isProcessingPayroll ? 'Procesando...' : 'Procesar a nómina' }} 
         </button>
+       
         <button class="btn btn-download" [disabled]="!resultAvalible" (click)="onDownloadResult()"> 
             <mat-icon>download</mat-icon>
                 Descargar resultado 
@@ -102,6 +105,13 @@
 
         <div class="table-container">
             <div class="table-card">
+
+                @if (isValidatingLote) {
+                    <div class="table-loading-overlay">
+                        <mat-spinner diameter="40"></mat-spinner>
+                        <span>Revalidando registros...</span>
+                    </div>
+                }
                 <div class="table-content">
                     <div class="table-scroll">
                         <table mat-table [dataSource]="dataSource" class="table-global">
@@ -137,7 +147,7 @@
 
                             <ng-container matColumnDef="importe">
                                 <th mat-header-cell *matHeaderCellDef> IMPORTE </th>
-                                <td mat-cell *matCellDef="let e">{{ e.importe }}</td>
+                                <td mat-cell *matCellDef="let e">{{ e.importe * e.cantidad | number:'1.2-2'}}</td>
                             </ng-container>
 
                             <ng-container matColumnDef="estatus">
@@ -153,13 +163,29 @@
                                 </td>
                             </ng-container>
 
+                            <ng-container matColumnDef="observaciones">
+                                <th mat-header-cell *matHeaderCellDef> OBSERVACIONES </th>
+                                    <td mat-cell *matCellDef="let e">
+                                        @if (e.motivoRechazo) {
+                                            <span class="observacion-text">{{ e.motivoRechazo }}</span>
+                                        } @else {
+                                            <span class="observacion-empty">—</span>
+                                        }
+                                    </td>
+                            </ng-container>
+
                             <ng-container matColumnDef="acciones">
-                                <th mat-header-cell *matHeaderCellDef> PERSONALIZAR <br> CANTIDAD </th>
-                                <td mat-cell *matCellDef="let e">
-                                    <button class="btn btn-primary" type="button" (click)="onPersonalitedQuantity(e); $event.stopPropagation()">
-                                        <mat-icon>edit</mat-icon>
-                                    </button>
-                                </td>
+                                <th mat-header-cell *matHeaderCellDef> ACCIONES </th>
+                                    <td mat-cell *matCellDef="let e">
+                                        <div class="actions-row">
+                                            <button class="btn btn-primary" type="button" (click)="onPersonalitedQuantity(e); $event.stopPropagation()">
+                                                <mat-icon>edit</mat-icon>
+                                            </button>
+                                            <button class="btn btn-danger" type="button" (click)="onDeleteRecord(e); $event.stopPropagation()">
+                                                <mat-icon>delete</mat-icon>
+                                            </button>
+                                        </div>
+                                    </td>
                             </ng-container>
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

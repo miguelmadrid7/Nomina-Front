@@ -18,6 +18,7 @@ import { ExcelUploadService, PERCEPCIONES_REQUIRED_COLUMNS } from '../../../core
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { PercepcionesInformadasService } from '../../../core/services/percepciones-informadas.service';
 import { PersonalizarRow } from '../../../core/model/personzaliza-row.model';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-percepciones-informadas',
@@ -34,6 +35,7 @@ import { PersonalizarRow } from '../../../core/model/personzaliza-row.model';
     MatInputModule,
     MatTableModule,
     MatPaginatorModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './percepciones-informadas.html',
   styleUrl: './percepciones-informadas.css'
@@ -62,7 +64,7 @@ export class PercepcionesInformadas {
 
   dataSource = new MatTableDataSource<PersonalizarRow>([]);
 
-  readonly displayedColumns: string[] = ['rfc', 'curp', 'nombreTrabajador', 'cantidad', 'importe', 'estatus', 'acciones'];
+  readonly displayedColumns: string[] = ['rfc', 'curp', 'nombreTrabajador', 'cantidad', 'importe', 'estatus', 'observaciones', 'acciones'];
 
 
   private readonly toastService = inject(ToastService);
@@ -162,7 +164,7 @@ export class PercepcionesInformadas {
       return;
     }
     this.toastService.upsertPersistent(this.VALIDATION_TOAST_ID, 'info', 'Validando registros', 'Procesando la información del archivo, esto puede tardar unos segundos...');
-    this.percepcionesInformadasService.cargarExcel(this.selecteExcelFile, qnaProceso, concepto)
+    this.percepcionesInformadasService.uploadExcel(this.selecteExcelFile, qnaProceso, concepto)
       .subscribe({
         next: (response) => {
           if (!response.success) {
@@ -194,16 +196,18 @@ export class PercepcionesInformadas {
   }
 
   private cargarListaPersonalizar(qnaProceso: number, concepto: string): void {
-    this.percepcionesInformadasService.listarPersonalizar(qnaProceso, concepto).subscribe({
+    this.percepcionesInformadasService.getList(qnaProceso, concepto).subscribe({
       next: (response) => {
         const data = response.data;
         this.dataSource.data = data.content;
         this.totalRecordsCount = data.totalElements;
         this.totalElements = data.totalElements;
         this.validRecordCount = data.content.filter((row) => row.estatus === 'ACEPTADO').length;
+        this.isValidatingLote = false;
       },
       error: (error) => {
         this.toastService.error('Error al listar', error?.error?.message ?? 'No se pudo obtener la lista de registros.');
+        this.isValidatingLote = false;
       },
     });
   }
@@ -221,12 +225,11 @@ export class PercepcionesInformadas {
       return;
     }
     this.isValidatingLote = true;
-    this.percepcionesInformadasService.validarRegistros(ids).subscribe({
+    this.percepcionesInformadasService.validateRecords(ids).subscribe({
       next: (response) => {
         const data = response.data;
-        this.toastService.success('Validación completada', `${data.aceptados} aceptados, ${data.rechazados} rechazados de ${data.total} registros.`,);
+        this.toastService.success('Validación completada',`${data.aceptados} aceptados, ${data.rechazados} rechazados de ${data.total} registros.`,);
         this.cargarListaPersonalizar(qnaProceso, concepto);
-        this.isValidatingLote = false;
       },
       error: (error) => {
         this.toastService.error('Error al validar', error?.error?.message ?? 'No se pudo validar el lote.');
@@ -255,28 +258,22 @@ export class PercepcionesInformadas {
   }
 
   onQuantityChange(row: PersonalizarRow, rawValue: string): void {
-    const newValue = Number(rawValue);
-    if (Number.isNaN(newValue)) {
+    const newCantidad = Number(rawValue);
+
+    if (Number.isNaN(newCantidad) || newCantidad <= 0) {
+      this.toastService.warning('Cantidad inválida', 'La cantidad debe de ser mayor a 0')
       this.editingRowId = null;
       this.selectedRowId = null;
       return;
     }
-
     this.percepcionesInformadasService
-      .personalizarRegistro(row.id, row.rfc, row.curp, row.nombreTrabajador, row.importe, newValue)
+      .editRecord(row.id, row.rfc, row.curp, row.nombreTrabajador, row.importe, newCantidad)
       .subscribe({
         next: (response) => {
           const data = response.data;
-
-          // WHY actualizar CON el estatus/motivoRechazo que el
-          // backend acaba de calcular (no solo la cantidad local):
-          // esta es la confirmación real de que el registro cambió de
-          // estado tras la edición — reflejarlo en la tabla evita que
-          // el usuario piense que su registro sigue "pendiente" cuando
-          // en realidad ya fue rechazado por el backend.
           this.dataSource.data = this.dataSource.data.map((item) =>
             item.id === row.id
-              ? { ...item, cantidad: newValue, estatus: data.estatus, motivoRechazo: data.motivoRechazo }
+              ? { ...item, cantidad: newCantidad, estatus: data.estatus, motivoRechazo: data.motivoRechazo }
               : item,
           );
 
@@ -287,13 +284,9 @@ export class PercepcionesInformadas {
           }
         },
         error: (error) => {
-          this.toastService.error(
-            'Error al actualizar',
-            error?.error?.message ?? 'No se pudo actualizar el registro.',
-          );
+          this.toastService.error('Error al actualizar', error?.error?.message ?? 'No se pudo actualizar el registro.');
         },
       });
-
     this.editingRowId = null;
     this.selectedRowId = null;
   }
@@ -317,7 +310,7 @@ export class PercepcionesInformadas {
     this.isProcessingPayroll = true;
     this.toastService.upsertPersistent(this.PROCESAMIENTO_TOAST_ID, 'info', 'Procesando a nómina', `Enviando ${this.totalRecordsCount} registros al módulo de nómina...`);
 
-    this.percepcionesInformadasService.continuar(qnaProceso, concepto).subscribe({
+    this.percepcionesInformadasService.processPayroll(qnaProceso, concepto).subscribe({
       next: (response) => {
         if (!response.success) {
           this.toastService.resolvePersistent(this.PROCESAMIENTO_TOAST_ID, 'error', 'No se pudo procesar', response.message ?? 'No hay registros aceptados para continuar.',);
@@ -339,6 +332,28 @@ export class PercepcionesInformadas {
     });
   }
 
+  onDeleteRecord(row: PersonalizarRow):void {
+    const confirmed = window.confirm(`¿Eliminar el registro de ${row.nombreTrabajador ?? row.rfc}?`);
+    if(!confirmed) {
+      return;
+    }
+    this.percepcionesInformadasService.deleteRegisterTemporary(row.id).subscribe({
+      next: () => {
+        
+        this.toastService.success('Operación exitosa', 'El registro se elimino correctamente.');
+        const concepto = this.searchForm.get('concepto')?.value;
+        const qnaProceso = this.calendarioActual?.qna;
+        if(qnaProceso && concepto) {
+          this.cargarListaPersonalizar(qnaProceso, concepto);
+        }
+      },
+      error: (error) => {
+        this.toastService.error('Error al eliminar', error?.error?.message ?? 'No se pudo eliminar registro')
+        
+      },
+    });
+  }
+
   onDownloadResult(): void {
     const concepto = this.searchForm.get('concepto')?.value;
     const qnaProceso = this.calendarioActual?.qna;
@@ -348,7 +363,7 @@ export class PercepcionesInformadas {
       return;
     }
 
-    this.percepcionesInformadasService.descargarValidaciones(qnaProceso, concepto ?? undefined).subscribe({
+    this.percepcionesInformadasService.downloadValidations(qnaProceso, concepto ?? undefined).subscribe({
       next: (blob) => {
         const fecha = new Date().toISOString().slice(0, 10);
         const fileName = `validaciones_qna${qnaProceso}_${fecha}.xlsx`;
@@ -366,11 +381,6 @@ export class PercepcionesInformadas {
         this.clear();
       },
       error: (error) => {
-        // WHY parsear el Blob de error manualmente: con
-        // responseType:'blob', HttpClient entrega TAMBIÉN el body del
-        // error como Blob (no JSON parseado) — sin esto, mostraríamos
-        // un mensaje genérico en vez del mensaje real que el backend
-        // ahora sí manda (ej. "No hay validaciones procesadas...").
         if (error.error instanceof Blob) {
           error.error.text().then((text: string) => {
             try {
