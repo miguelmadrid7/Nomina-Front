@@ -80,7 +80,8 @@ export class PercepcionesInformadas {
   @ViewChild('fileInput') fileInputRef?: ElementRef<HTMLInputElement>;
 
   get validationSummaryText(): string {
-    return `Registros validados: ${this.validRecordCount} - ${this.totalRecordsCount}`;
+    const rechazados = this.totalRecordsCount - this.validRecordCount;
+    return `Aceptados: ${this.validRecordCount} · Rechazados: ${rechazados} de ${this.totalRecordsCount} registros`;
   }
 
   ngOnInit():void  {
@@ -199,11 +200,10 @@ export class PercepcionesInformadas {
         this.dataSource.data = data.content;
         this.totalRecordsCount = data.totalElements;
         this.totalElements = data.totalElements;
-        this.validRecordCount = data.totalElements;
+        this.validRecordCount = data.content.filter((row) => row.estatus === 'ACEPTADO').length;
       },
       error: (error) => {
-        this.toastService.error( 'Error al listar',  error?.error?.message ?? 'No se pudo obtener la lista de registros.',
-        );
+        this.toastService.error('Error al listar', error?.error?.message ?? 'No se pudo obtener la lista de registros.');
       },
     });
   }

@@ -125,7 +125,7 @@
                                 <th mat-header-cell *matHeaderCellDef> CANTIDAD </th>
                                 <td mat-cell *matCellDef="let e">
                                     @if (editingRowId === e.id) {
-                                        <input class="cantidad-edit-input" type="number" [value]="e.cantidad"
+                                        <input class="cantidad-edit-input" type="number" min="1" [value]="e.cantidad"
                                             (blur)="onQuantityChange(e, $any($event.target).value)"
                                             (keydown.enter)="onQuantityChange(e, $any($event.target).value)"
                                             (click)="$event.stopPropagation()"/>
@@ -143,13 +143,13 @@
                             <ng-container matColumnDef="estatus">
                                 <th mat-header-cell *matHeaderCellDef> ESTATUS </th>
                                 <td mat-cell *matCellDef="let e">
-                                    @if (e.estatus) {
-                                        <span class="estatus-badge" [ngClass]="e.estatus === 'VIGENTE' ? 'estatus-vigente' : 'estatus-cancelado'">
-                                            {{ e.estatus }}
-                                        </span>
-                                    } @else {
-                                        <span class="estatus-badge estatus-pendiente">PENDIENTE</span>
-                                    }
+                                    <span class="estatus-badge" [ngClass]="{
+                                        'estatus-aceptado': e.estatus === 'ACEPTADO',
+                                        'estatus-rechazado': e.estatus === 'RECHAZADO',
+                                        'estatus-pendiente': !e.estatus
+                                    }">
+                                        {{ e.estatus ?? 'PENDIENTE' }}
+                                    </span>
                                 </td>
                             </ng-container>
 

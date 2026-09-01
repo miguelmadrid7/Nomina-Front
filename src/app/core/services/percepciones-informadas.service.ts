@@ -71,6 +71,11 @@ export class PercepcionesInformadasService {
         return this.http.put<ApiResponse<PersonalizarRegistroResponse>>(`${this.base}/nom-emp-pza-cpto/personalizar/${id}`,body,);
     }
 
+    validarRegistros(ids: number[]): Observable<ApiResponse<{ total: number; aceptados: number; rechazados: number; todosAceptados: boolean }>> {
+        const body = { ids };
+        return this.http.post<ApiResponse<{ total: number; aceptados: number; rechazados: number; todosAceptados: boolean }>>(`${this.base}/nom-emp-pza-cpto/validar`,body,);
+    }
+
     continuar(qnaProceso: number, concepto: string): Observable<ApiResponse<ContinuarResponse>> {
         const body = { qnaProceso, concepto };
         return this.http.post<ApiResponse<ContinuarResponse>>(`${this.base}/nom-emp-pza-cpto/continuar`,body,);
