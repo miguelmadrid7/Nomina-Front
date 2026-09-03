@@ -36,19 +36,15 @@
 
 /* Fijar gutter y neutralizar márgenes negativos del row dentro de la página */
 .page > .row {
-  --bs-gutter-x: 0.75rem; /* o 1rem si quieres más separación */
+  --bs-gutter-x: 0.75rem;
   --bs-gutter-y: 0.75rem;
   margin-left: 0;
   margin-right: 0;
 }
 
-@media (max-width: 575px) {
+@media (max-width: 768px) {
   .gp-card {
     margin-bottom: 8px;
   }
 
-  .btn-component {
-    width: 100%;
-    justify-content: center;
-  }
 }

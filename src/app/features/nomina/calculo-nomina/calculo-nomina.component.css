@@ -5,17 +5,6 @@
   margin-bottom: 4px;
 }
 
-.page-title {
-  font-size: 22px;
-  font-weight: 500;
-}
-
-.page-subtitle {
-  font-size: 14px;
-  color: #6b7280;
-  margin-bottom: 0.5rem;
-}
-
 .subtitle-row {
   display: flex;
   align-items: center;
@@ -570,14 +559,14 @@
     white-space:nowrap;
 }
 
-.time-item mat-icon{
+.time-item mat-icon {
     width:18px;
     height:18px;
     font-size:18px;
     color:#6b7280;
 }
 
-.divider{
+.divider {
     width:1px;
     height:18px;
     background:#d1d5db;
