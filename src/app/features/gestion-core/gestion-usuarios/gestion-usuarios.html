@@ -53,23 +53,23 @@
                 <div class="table-scroll">
                     <table mat-table [dataSource]="usersDataSource" matSort matSortActive="id" class="table-global">
                             <ng-container matColumnDef="nombreCompleto">
-                                <th mat-header-cell *matHeaderCellDef> USUARIO </th>
-                                <td mat-cell *matCellDef="let row"> {{ row.username }} </td>
+                                <th mat-header-cell *matHeaderCellDef class="col-xl col-center"> USUARIO </th>
+                                <td mat-cell *matCellDef="let row" class="col-xl col-center"> {{ row.username }} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="empleado">
-                                <th mat-header-cell *matHeaderCellDef> DETALLE </th>
-                                <td mat-cell *matCellDef="let row">  {{ row.email }} </td>
+                                <th mat-header-cell *matHeaderCellDef class="col-xl col-center"> DETALLE </th>
+                                <td mat-cell *matCellDef="let row" class="col-xl col-center">  {{ row.email }} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="area">
-                                <th mat-header-cell *matHeaderCellDef> AREA </th>
-                                <td mat-cell *matCellDef="let row">  {{ row.area }} </td>
+                                <th mat-header-cell *matHeaderCellDef class="col-xl col-center"> AREA </th>
+                                <td mat-cell *matCellDef="let row" class="col-xl col-center">  {{ row.area }} </td>
                             </ng-container>
 
                             <ng-container matColumnDef="roles">
-                                <th mat-header-cell *matHeaderCellDef> ROLES </th>
-                                <td mat-cell *matCellDef="let row">
+                                <th mat-header-cell *matHeaderCellDef class="col-xl col-center"> ROLES </th>
+                                <td mat-cell *matCellDef="let row" class="col-xl col-center">
                                     <ng-container *ngIf="getUserRoles(row).length; else noRoles">
                                         <div *ngFor="let role of getUserRoles(row)">{{ role }}</div>
                                     </ng-container>
@@ -78,8 +78,8 @@
                             </ng-container>
 
                             <ng-container matColumnDef="padre">
-                                <th mat-header-cell *matHeaderCellDef> PADRE </th>
-                                <td mat-cell *matCellDef="let row">
+                                <th mat-header-cell *matHeaderCellDef class="col-xl col-center"> PADRE </th>
+                                <td mat-cell *matCellDef="let row" class="col-xl col-center">
                                     <ng-container *ngIf="getUserParentModules(row).length; else noParentModules">
                                         <div *ngFor="let module of getUserParentModules(row)">{{ module }}</div>
                                     </ng-container>
@@ -88,8 +88,8 @@
                             </ng-container>
 
                             <ng-container matColumnDef="hijo">
-                                <th mat-header-cell *matHeaderCellDef> HIJO </th>
-                                <td mat-cell *matCellDef="let row">
+                                <th mat-header-cell *matHeaderCellDef class="col-md col-center"> HIJO </th>
+                                <td mat-cell *matCellDef="let row" class="col-md col-center">
                                     <ng-container *ngIf="getUserChildModules(row).length; else noChildModules">
                                         <div *ngFor="let module of getUserChildModules(row)">{{ module }}</div>
                                     </ng-container>
@@ -98,8 +98,8 @@
                             </ng-container>
 
                             <ng-container matColumnDef="acciones">
-                                <th mat-header-cell *matHeaderCellDef> ACCIONES </th>
-                                <td mat-cell *matCellDef="let row">
+                                <th mat-header-cell *matHeaderCellDef class="col-xl col-center"> ACCIONES </th>
+                                <td mat-cell *matCellDef="let row" class="col-xl col-center">
                                     <div class="actions-cell">
                                         <button class="btnn btn-succes" type="button" (click)="openUsuarioDialog(row)">
                                             <mat-icon>edit</mat-icon>
