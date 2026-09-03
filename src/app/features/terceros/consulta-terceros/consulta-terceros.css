@@ -1,190 +1,9 @@
-/* CONTENEDORES Y BOTONES */
 .actions-right {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-start;
-    align-items: center;
-    margin: 0 0 14px;
-}
-
-
-.btn-group {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.btn {
-    width: 120px;
-    height: 36px;
-    padding: 0 16px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    text-transform: none;
-    letter-spacing: .2px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    box-shadow: none !important;
-    transition: all .18s ease;
-    cursor: pointer;
-    position: relative;
-    background: transparent;
-    border: 2px solid;
-}
-
-.btn mat-icon {
-    font-size: 20px;
-    width: 20px;
-    height: 20px;
-    line-height: 20px;
-    transition: transform 0.2s ease;
-}
-
-.btn-danger {
-    background: transparent;
-    color: #dc2626;
-    border-color: #dc2626;
-}
-
-.btn-danger:hover {
-    background: #dc2626;
-    color: #ffffff;
-    border-color: #dc2626;
-    transform: translateY(-1px);
-}
-
-.btn-primary {
-    background: transparent;
-    color: #2563eb;
-    border-color: #2563eb;
-}
-
-.btn-primary:hover {
-    background: #2563eb;
-    color: #ffffff;
-    border-color: #2563eb;
-    transform: translateY(-1px);
-}
-
-.btn-success {
-  background: transparent;
-  color: #2e7d32;
-  border-color: #2e7d32;
-  min-width: 150px;
-}
-
-.btn-success:hover {
-  background: #2e7d32;
-  color: #ffffff;
-  border-color: #2e7d32;
-  transform: translateY(-1px);
-}
-
-/* TABLA GLOBAL */
-.table-global {
-    width: 100%;
-}
-
-.table-global .mat-mdc-header-cell {
-    vertical-align: middle !important;
-    padding: 10px 8px !important;
-}
-
-.table-global .mat-column-validar {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
-}
-
-.table-global .mat-column-rfc {
-  width: 12%;
-  min-width: 110px !important;
-  max-width: 140px !important;
-  text-align: center;
-}
-
-.table-global .mat-column-curp {
-  width: 14%;
-  min-width: 120px !important;
-  max-width: 160px !important;
-  text-align: center;
-}
-
-
-.table-global .mat-column-nombreCompleto {
-  width: 18%;
-  min-width: 150px !important;
-  max-width: 200px !important;
-  text-align: center;
-  white-space: normal !important;
-  word-break: break-word;
-  line-height: 18px;
-  text-align: center !important;
-}
-
-.table-global .mat-column-numeroOrden {
-    width: 12%;
-    min-width: 110px !important;
-    max-width: 130px !important;
-    text-align: center !important;
-}
-
-.table-global .mat-column-tipoOrden {
-    width: 14%;
-    min-width: 120px !important;
-    max-width: 150px !important;
-    text-align: center !important;
-}
-
-.table-global .mat-column-importeMensual {
-    width: 12%;
-    min-width: 100px !important;
-    max-width: 120px !important;
-    text-align: center !important;
-}
-
-.table-global .mat-column-concepto {
-  width: 8%;
-  min-width: 75px !important;
-  max-width: 90px !important;
-  text-align: center;
-}
-
-
-.table-global .mat-column-qnaProceso {
-    width: 16%;
-    min-width: 150px !important;
-    max-width: 200px !important;
-    text-align: center !important;
-}
-
-.table-global .mat-column-estatus {
-    width: 12%;
-    min-width: 110px !important;
-    max-width: 140px !important;
-    text-align: center !important;
-}
-
-.table-global .mat-column-documento {
-  width: 10%;
-  min-width: 90px !important;
-  max-width: 110px !important;
-  text-align: center;
-}
-
-.table-global .mat-column-fechaRegistro {
-  width: 12%;
-  min-width: 110px !important;
-  max-width: 140px !important;
-  text-align: center;
-  white-space: normal !important;
-  word-break: break-word;
-  line-height: 18px;
-  text-align: center !important;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px 0 14px;
 }
 
 .fecha-cell {
@@ -193,7 +12,6 @@
     align-items: center;
     line-height: 18px;
 }
-
 
 .concepto-wide {
   width: 150px;
@@ -240,7 +58,7 @@
 }
 
 .header-select-orden {
-  max-width: 150px !important; /* prueba 140/160/180 según te guste */
+  max-width: 150px !important; 
 }
 
 .header-text-input {
@@ -287,7 +105,6 @@
 }
 
 
-
 :host ::ng-deep .header-select .mat-mdc-form-field-infix,
 :host ::ng-deep .qna-select .mat-mdc-form-field-infix {
     min-height: 28px !important;
@@ -326,22 +143,23 @@
 
 
 @media (max-width: 768px) {
-  /* Botones en columna */
+  .table-global {
+    min-width: 900px; 
+  }
+
   .actions-right {
-    flex-direction: column;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 10px 0 14px;
   }
 
-  .btn-group,
-  .actions-right > button {
+  .btn-group {
     width: 100%;
   }
 
-  .btn,
-  .btn-success {
+  .btn {
     width: 100%;
-    min-width: unset;
-    justify-content: center;
   }
 
   /* Filtros en columna */
@@ -363,22 +181,5 @@
   .mat-mdc-radio-button ~ .mat-mdc-radio-button {
     margin-left: 0;
     margin-top: 8px;
-  }
-
-  /* Tabla con scroll horizontal */
-  .table-scroll {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .table-global {
-    min-width: 900px; /* ← fuerza scroll en vez de comprimir columnas */
-  }
-
-  /* Ocultar columnas menos prioritarias en móvil */
-  .table-global .mat-column-curp,
-  .table-global .mat-column-numeroOrden,
-  .table-global .mat-column-fechaRegistro {
-    display: none !important;
   }
 }
