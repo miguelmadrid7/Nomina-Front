@@ -125,20 +125,6 @@
   pointer-events: none;
 }
 
-/* TABLA GLOBAL */
-.table-global .mat-mdc-header-cell {
-    vertical-align: middle !important;
-    padding: 10px 8px !important;
-}
-
-.table-global .mat-mdc-row:hover {
-    background: #f8fafc;
-}
-
-.table-global .mat-mdc-row:last-child .mat-mdc-cell {
-    border-bottom: none !important;
-}
-
 
 /* TABLA — contenedor */
 .table-card {

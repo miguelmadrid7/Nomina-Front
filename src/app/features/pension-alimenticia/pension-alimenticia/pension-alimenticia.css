@@ -409,7 +409,7 @@ mat-form-field {
 }
 
 .plazas-badge {
-    margin-left: auto;       /* ← empuja el badge a la derecha */
+    margin-left: auto;  
     font-size: 11px;
     font-weight: 600;
     color: #1976d2;
@@ -561,7 +561,6 @@ mat-form-field {
     margin-bottom: -40px;      
 }
 
-
 .employee-status {
   font-size: 12px;
   font-weight: 600;
@@ -592,23 +591,6 @@ mat-form-field {
   color:#2563eb;
 }
 
-/* Contenedor de botones */
-.actions-right {
-  display: flex;
-  gap: 12px;
-  justify-content: flex-start;
-  align-items: center;
-  margin: 0px 0 15px;
-  margin-top: 15px;
-}
-
-.actions-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-}
 
 .qna-summary {
   display: flex;
@@ -629,97 +611,6 @@ mat-form-field {
   border-radius: 99px;
   background: #f3f4f6;
   color: #374151;
-}
-
-
-.btn-group {
-  display: inline-flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 5px;
-}
-
-.btn {
-  width: 120px;
-  height: 36px;
-  padding: 0 16px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  text-transform: none;
-  letter-spacing: .2px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: none !important;
-  transition: all .18s ease;
-  cursor: pointer;
-  position: relative;
-  background: transparent;
-  border: 2px solid;
-}
-
-.btn mat-icon {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  transition: transform 0.2s ease;
-}
-
-.btn-primary {
-  background: transparent;
-  color: #2563eb;
-  border-color: #2563eb;
-}
-
-.btn-primary:hover {
-  background: #2563eb;
-  color: #ffffff;
-  border-color: #2563eb;
-  transform: translateY(-1px);
-}
-
-.btn-danger {
-  background: transparent;
-  color: #dc2626;
-  border-color: #dc2626;
-}
-
-.btn-danger:hover {
-  background: #dc2626;
-  color: #ffffff;
-  border-color: #dc2626;
-  transform: translateY(-1px);
-}
-
-.btn-success {
-  background: transparent;
-  color: #2e7d32;
-  border-color: #2e7d32;
-  width: 120px;
-  height: 36px;
-  padding: 0 16px;
-  margin-bottom: 10px;
-}
-
-.btn-success:hover {
-  background: #2e7d32;
-  color: #ffffff;
-  border-color: #2e7d32;
-  transform: translateY(-1px);
-}
-
-.btn[disabled] {
-  opacity: .5;
-  cursor: not-allowed;
-  transform: none !important;
-}
-
-.btn:focus-visible {
-  outline: 2px solid rgba(37, 99, 235, 0.35);
-  outline-offset: 2px;
 }
 
 .conversion-text {
@@ -788,12 +679,6 @@ mat-form-field {
 }
 
 @media (max-width: 768px) {
-  .actions-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
-
   .qna-summary {
       justify-content: center;
   }
@@ -813,16 +698,6 @@ mat-form-field {
   .search-field {
     width: 100%;
     max-width: 100%;
-  }
-
-  .actions-right {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .btn,
-  .btn-success {
-    width: 100%;
   }
 
   .global-search {
@@ -888,31 +763,4 @@ mat-form-field {
     min-width: unset;
     width: 100%;
   }
-
-  /* Botones en columna */
-  .actions-right {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .btn-group {
-    width: 100%;
-  }
-
-  .btn,
-  .btn-success {
-    width: 100%;
-    justify-content: center;
-  }
-}
-
-/* En móvil — apila las columnas */
-@media (max-width: 900px) {
-    .two-col-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .col-info {
-        position: static;
-    }
 }

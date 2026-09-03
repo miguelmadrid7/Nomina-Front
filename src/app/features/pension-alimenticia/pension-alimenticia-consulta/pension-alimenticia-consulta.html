@@ -1,15 +1,23 @@
 <div class="page-container">
-  <div class="actions-right">
-    <div class="btn-group">
-      <button class="btn btn-primary" (click)="buscar()">
-        <mat-icon>search</mat-icon>
-        <span>Buscar</span>
+  <div class="page-header">
+        <h2 class="page-title">Información de pensiones alimenticia</h2>
+  </div>
+
+  <div class="section-divider"></div>
+  
+  <div class="actions-bar">
+    <div class="actions-right">
+      <div class="btn-group">
+        <button class="btn btn-primary" (click)="buscar()">
+          <mat-icon>search</mat-icon>
+          <span>Buscar</span>
+        </button>
+      </div>
+      <button class="btn btn-danger" (click)="clearFilters()">
+        <mat-icon>delete_outline</mat-icon>
+        <span>Limpiar</span>
       </button>
     </div>
-    <button class="btn btn-danger" (click)="clearFilters()">
-      <mat-icon>delete_outline</mat-icon>
-      <span>Limpiar</span>
-    </button>
   </div>
 
   <div [formGroup]="form" class="global-search">
@@ -66,56 +74,49 @@
           <table mat-table [dataSource]="dataSource" class="table-global">
 
                 <ng-container matColumnDef="nombreEmpleado">
-                  <th mat-header-cell *matHeaderCellDef class="header-with-select"> NOMBRE <br> EMPLEADO
-                  </th>
-                  <td mat-cell *matCellDef="let e">
+                  <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> NOMBRE <br> EMPLEADO</th>
+                  <td mat-cell *matCellDef="let e" class="col-xs col-center">
                     <span *ngIf="e.mostrarEmpleado">{{ e.nombreEmpleado }}</span>
                   </td>
                 </ng-container>
 
                 <ng-container matColumnDef="rfcEmpleado">
-                  <th mat-header-cell *matHeaderCellDef> RFC <br> EMPLEADO 
-                   
-                  </th>
-                    <td mat-cell *matCellDef="let e">
+                  <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> RFC <br> EMPLEADO </th>
+                    <td mat-cell *matCellDef="let e" class="col-xs col-center">
                       <span *ngIf="e.mostrarEmpleado"> {{ e.rfcEmpleado }} </span>
                     </td>
                 </ng-container>
 
                 <ng-container matColumnDef="nombreBeneficiario">
-                  <th mat-header-cell *matHeaderCellDef class="header-with-select"> NOMBRE <br> BENEFICIARIO
-                    
-                  </th>
-                  <td mat-cell *matCellDef="let e">{{ e.nombreBeneficiario }}</td>
+                  <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> NOMBRE <br> BENEFICIARIO </th>
+                  <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.nombreBeneficiario }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="rfcReferencia">
-                  <th mat-header-cell *matHeaderCellDef class="header-with-select"> RFC <br> REFERENCIA
-                    
-                  </th>
-                  <td mat-cell *matCellDef="let e">{{ e.rfcReferencia }}</td>
+                  <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> RFC <br> REFERENCIA </th>
+                  <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.rfcReferencia }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="noBeneficiario">
-                  <th mat-header-cell *matHeaderCellDef>NUMERO <br> DE <br> BENEFICIARIO</th>
-                  <td mat-cell *matCellDef="let e">{{ e.noBeneficiario }}</td>
+                  <th mat-header-cell *matHeaderCellDef class="col-xs col-center">NUMERO <br> DE <br> BENEFICIARIO</th>
+                  <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.noBeneficiario }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="numeroOficio">
-                  <th mat-header-cell *matHeaderCellDef>NUMERO <br> DE <br> OFICIO</th>
-                  <td mat-cell *matCellDef="let e">{{ e.numeroOficio }}</td>
+                  <th mat-header-cell *matHeaderCellDef class="col-xs col-center">NUMERO <br> DE <br> OFICIO</th>
+                  <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.numeroOficio }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="qna">
-                  <th mat-header-cell *matHeaderCellDef>QNA</th>
-                  <td mat-cell *matCellDef="let e">
+                  <th mat-header-cell *matHeaderCellDef class="col-xs col-center">QNA</th>
+                  <td mat-cell *matCellDef="let e" class="col-xs col-center">
                     {{ e.qnaIni }} - {{ e.qnaFin === 999999 ? '999999' : e.qnaFin }}
                   </td>
                 </ng-container>
 
                 <ng-container matColumnDef="estado">
-                  <th mat-header-cell *matHeaderCellDef>ESTADO</th>
-                  <td mat-cell *matCellDef="let e">
+                  <th mat-header-cell *matHeaderCellDef class="col-xs col-center">ESTADO</th>
+                  <td mat-cell *matCellDef="let e" class="col-xs col-center">
                     <span class="chip" 
                       [class.chip-ok]="e.estatus === 'VIGENTE'" 
                       [class.chip-off]="e.estatus === 'FINALIZADO'"
@@ -126,17 +127,18 @@
                 </ng-container>
 
                 <ng-container matColumnDef="acciones">
-                  <th mat-header-cell *matHeaderCellDef>ACCIONES</th>
-                  <td mat-cell *matCellDef="let e">
+                  <th mat-header-cell *matHeaderCellDef class="col-xs col-center">ACCIONES</th>
+                  <td mat-cell *matCellDef="let e" class="col-xs col-center">
                     <div class="table-actions" *ngIf="e.estatus === 'VIGENTE'">
-                      <div class="bttn-group">
-                        <button mat-icon-button class="bttn ico-btn-primary" 
+                      
+                      <div class="btn-cell">
+                        <button class="btnn ico-btn-primary" 
                           (click)="abrirDialog(e)"
                           [disabled]="e.estatus !== 'VIGENTE'"
                           [matTooltip]="e.estatus !== 'VIGENTE' ? 'Registro' +  e.estatus.toLowerCase() : 'Editar'">
                           <mat-icon>edit</mat-icon>
                         </button>
-                        <button mat-icon-button class="bttn ico-btn-danger" 
+                        <button class="btnn ico-btn-danger" 
                           (click)="eliminarBeneficiario(e)"
                           [disabled]="!!e.qnaFin && e.qnaFin !== 999999" matTooltip="{{ (e.qnaFin && e.qnaFin !== 999999) ? 'Registro finalizado' : 'Editar' }}">
                           <mat-icon>delete_outline</mat-icon>
