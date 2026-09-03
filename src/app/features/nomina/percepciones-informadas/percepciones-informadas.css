@@ -22,39 +22,16 @@
   margin: 10px 0 14px;
 }
 
-.btn {
-    min-width: 140px;
-    width: auto;
-    height: 36px;
-    padding: 0 18px;
-    border: 2px solid;
-    border-radius: 8px;
-    background: transparent;
-    font-size: 13px;
-    font-weight: 500;
-    text-transform: none;
-    letter-spacing: .2px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: all .18s ease;
-    box-shadow: none !important;
-}
-
 .btn-primary {
-   min-width: 30px; 
-   padding: 0 10px;
-    color: #2563eb;
-    border-color: #2563eb;
+  color: #2563eb;
+  border-color: #2563eb;
 }
 
 .btn-primary:hover {
-    background: #2563eb;
-    color: #ffffff;
-    border-color: #2563eb;
-    transform: translateY(-1px);
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  transform: translateY(-1px);
 }
 
 .btn-edit {
@@ -105,8 +82,6 @@
 }
 
 .btn-danger {
-  min-width: 30px; 
-  padding: 0 10px;
   color: #dc2626;
   border-color: #dc2626;
 }
@@ -249,92 +224,6 @@
 }
 
 /* TABLA GLOBAL */
-.table-container {
-  width: 100%;
-}
-
-.table-card {
-  border: 1px solid var(--line, #e0e0e0);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.table-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.table-global {
-    width: 100%;
-}
-
-.table-scroll {
-  overflow-x: auto;
-  width: 100%;
-}
-
-.table-footer {
-  display: flex;
-  justify-content: flex-end;
-  border-top: 1px solid var(--line, #e0e0e0);
-  background: var(--card, #fff);
-  width: 100%;
-}
-
-.table-global .mat-mdc-header-cell {
-    vertical-align: middle !important;
-    padding: 10px 8px !important;
-}
-
-.table-global .mat-column-rfc {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
-}
-
-.table-global .mat-column-curp {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
-}
-
-.table-global .mat-column-nombreTrabajador {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
-}
-
-.table-global .mat-column-cantidad {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
-}
-
-.table-global .mat-column-importe {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
-}
-
-.table-global .mat-column-estatus {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
-}
-
-.table-global .mat-column-observaciones {
-  width: 70px !important;
-  min-width: 70px !important;
-  max-width: 70px !important;
-  text-align: center;
-}
-
 .table-card {
   position: relative; 
 }
@@ -363,195 +252,67 @@
   text-align: center;
 }
 
-.page-container {
-  padding-bottom: 0;
-}
 
 @media (max-width: 768px) {
-    .row {
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
+  .row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
 
-    .qna-field-short {
-        max-width: none;
-    }
+  .qna-field-short {
+    max-width: none;
+  }
 
-    .file-upload-group {
-        align-self: stretch;
-    }
+  .file-upload-group {
+    align-self: stretch;
+  }
 
-    .file-upload-group input[type="file"] {
-        width: 100%;
-    }
+  .file-upload-group input[type="file"] {
+    width: 100%;
+  }
 
-    .actions-right {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        margin: 10px 0 14px;
-    }
+  .actions-right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 10px 0 14px;
+  }
 
-    .btn-group {
-        width: 100%;
-    }
+  .btn-group {
+    width: 100%;
+  }
 
-    .btn {
-        width: 100%;
-    }
+  .btn {
+    width: 100%;
+  }
 
-    .actions-right .btn-group {
-        order: 3;
-    }
+  .info-card__chips {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+  }
 
-    .actions-right .btn-upload {
-        order: 1;
-    }
+  .info-card__chip {
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    text-align: center;
+  }
 
-    .actions-right .btn-process {
-        order: 2;
-    }
+  .global-search {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-    .actions-right .btn-download {
-        order: 4;
-    }
+  .search-field {
+    width: 100%;
+  }
 
-    .info-card__chips {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 6px;
-    }
+  .validation-summary {
+    text-align: left;
+    justify-content: flex-start;
+  }
 
-    .info-card__chip {
-        font-size: 0.75rem;
-        padding: 3px 10px;
-        text-align: center;
-    }
-
-    .global-search {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .search-field {
-        width: 100%;
-    }
-
-    .validation-summary {
-        text-align: left;
-        justify-content: flex-start;
-    }
-
-    .table-global {
-        min-width: 810px;
-    }
-
-    .table-global .mat-mdc-header-cell,
-    .table-global .mat-mdc-cell {
-        padding: 6px 5px !important;
-        font-size: 12px;
-    }
-
-    .table-global .mat-column-rfc,
-    .table-global .mat-column-curp,
-    .table-global .mat-column-concepto,
-    .table-global .mat-column-cantidad,
-    .table-global .mat-column-importe,
-    .table-global .mat-column-estatus {
-        width: auto !important;
-        min-width: 90px !important;
-        max-width: none !important;
-    }
-
-    .table-foote {
-        width: 100%;
-        min-height: auto;
-        padding-top: 8px;
-        box-sizing: border-box;
-        overflow: visible;
-    }
-
-    .table-foote ::ng-deep .mat-mdc-paginator {
-        width: 100%;
-        min-height: 44px;
-        height: auto;
-        overflow: visible;
-    }
-
-    .table-foote ::ng-deep .mat-mdc-paginator-container {
-        min-height: 76px;
-        height: auto;
-        padding: 4px 2px 4px;
-        box-sizing: border-box;
-        display: flex !important;
-        flex-wrap: wrap !important;
-        justify-content: flex-end !important;
-        align-content: flex-start;
-        gap: 0 !important;
-        overflow: visible;
-    }
-
-    .table-foote ::ng-deep .mat-mdc-paginator-page-size {
-        width: 100% !important;
-        height: 30px;
-        display: flex !important;
-        align-items: center;
-        justify-content: flex-end;
-        margin: 0 0 6px !important;
-        font-size: 11px;
-        flex-shrink: 0;
-    }
-
-    .table-foote ::ng-deep .mat-mdc-paginator-page-size-label {
-        font-size: 11px;
-        margin-right: 3px;
-        white-space: nowrap;
-    }
-
-    .table-foote ::ng-deep .mat-mdc-paginator-page-size-select {
-        width: 75px;
-        margin: 0  10px 5px 0 !important;
-        padding: 0 !important;
-        flex-shrink: 0;
-    }
-
-    .table-foote ::ng-deep .mat-mdc-paginator-range-label {
-        margin: 0 4px;
-        font-size: 11px;
-        white-space: nowrap;
-    }
-
-    .table-foote ::ng-deep .mat-mdc-paginator-range-actions {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-start !important;
-        gap: 0px !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        flex-shrink: 0;
-    }
-
-    .table-foote ::ng-deep .mat-mdc-paginator-navigation-first,
-    .table-foote ::ng-deep .mat-mdc-paginator-navigation-previous,
-    .table-foote ::ng-deep .mat-mdc-paginator-navigation-next,
-    .table-foote ::ng-deep .mat-mdc-paginator-navigation-last {
-        width: 30px !important;
-        height: 30px !important;
-        min-width: 30px !important;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-
-    .table-foote ::ng-deep .mat-mdc-paginator-navigation-first .mat-mdc-paginator-icon,
-    .table-foote ::ng-deep .mat-mdc-paginator-navigation-previous .mat-mdc-paginator-icon,
-    .table-foote ::ng-deep .mat-mdc-paginator-navigation-next .mat-mdc-paginator-icon,
-    .table-foote ::ng-deep .mat-mdc-paginator-navigation-last .mat-mdc-paginator-icon {
-        width: 16px;
-        height: 16px;
-    }
-
-    .page-container {
-        padding-bottom: 35px;
-    }
-
+  .table-global {
+    min-width: 810px;
+  }
 }
