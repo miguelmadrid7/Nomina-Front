@@ -9,30 +9,25 @@
         <p class="page-subtitle"> Consulta y analiza los registros generados por el sistema. </p>
     </div>
 
-    <div class="actions-bar">
-        <div class="actions-right">
-            <div class="btn-group">
-                <button class="btn btn-primary" (click)="searchLog()">
-                    <mat-icon>search</mat-icon>
+    <div class="actions-right">
+        <div class="btn-group">
+            <button class="btn btn-primary" (click)="searchLog()">
+                <mat-icon>search</mat-icon>
                     <span>Buscar</span>
-                </button>
-            </div>
-
-            <button class="btn btn-danger" (click)="clearFilters()">
-                <mat-icon>delete_outline</mat-icon>
-                <span>Limpiar</span>
             </button>
-
-            <button class="btn btn-success"  (click)="loadLog()">
-                <mat-icon>add</mat-icon>
-                <span>Cargar log</span>
-            </button>
-
-            <button class="btn btn-tree" (click)="tailLog()">
-                Últimas {{ tailLines }} líneas
-            </button>
-
         </div>
+
+        <button class="btn btn-danger" (click)="clearFilters()">
+            <mat-icon>delete_outline</mat-icon>
+                <span>Limpiar</span>
+        </button>
+
+        <button class="btn btn-success"  (click)="loadLog()">
+            <mat-icon>add</mat-icon>
+                <span>Cargar log</span>
+        </button>
+
+        <button class="btn btn-tree" (click)="tailLog()"> Últimas {{ tailLines }} líneas </button>
     </div>
 
     <div class="global-search">

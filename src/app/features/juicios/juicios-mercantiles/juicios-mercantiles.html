@@ -8,19 +8,17 @@
     <div *ngIf="form" [formGroup]="form">
         <mat-card class="form-card">
             
-            <div class="actions-bar">
-                <div class="actions-right">
-                    <div class="btn-group">
-                        <button class="btn btn-primary" (click)="buscarEmpleado()">
-                            <mat-icon>search</mat-icon>
-                                <span>Buscar</span>
-                        </button>
-                    </div>
-                    <button class="btn btn-danger" (click)="clearFilters()">
-                        <mat-icon>delete_outline</mat-icon>
-                            <span>Limpiar</span>
+            <div class="actions-right">
+                <div class="btn-group">
+                    <button class="btn btn-primary" (click)="buscarEmpleado()">
+                        <mat-icon>search</mat-icon>
+                            <span>Buscar</span>
                     </button>
                 </div>
+                <button class="btn btn-danger" (click)="clearFilters()">
+                    <mat-icon>delete_outline</mat-icon>
+                        <span>Limpiar</span>
+                </button>
             </div>
 
             <div formGroupName="busqueda" class="global-search">
@@ -75,10 +73,10 @@
         <div class="section-divider"></div>
 
         <div class="section-header">
-          <h3>Alta de juicio</h3>
+          <h2>Alta de juicio</h2>
         </div>
        
-        <div class="actions-bar">
+        <div class="actions-right">
             <div class="btn-group">
                 <button class="btn btn-success" (click)="saveBeneficiary()">
                     <mat-icon>save</mat-icon>
