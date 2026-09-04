@@ -80,7 +80,13 @@ mat-sidenav-content {
   justify-content: flex-start;
   align-items: center;
   margin: 0px 0 15px;
-  margin-top: 15px;
+}
+
+.btn-group {
+  display: inline-flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
 }
 
 .actions-bar {
@@ -90,12 +96,6 @@ mat-sidenav-content {
   margin-bottom: 16px;
 }
 
-.btn-group {
-  display: inline-flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 8px;
-}
 
 .actions-row {
   display: flex;
@@ -140,7 +140,7 @@ mat-sidenav-content {
   border-color: #2e7d32;
 }
 
-.btn-succes:hover {
+.btn-success:hover {
   background: #2e7d32;
   color: #ffffff;
   border-color: #2e7d32;
@@ -238,6 +238,18 @@ mat-sidenav-content {
     margin-left: 8px;
 }
 
+.btnn-primaryy {
+  color: #2563eb;
+  border-color: #2563eb;
+}
+
+.btnn-primaryy:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+}
+
 .btnn-dangerr {
   background: transparent;
   color: #dc2626;
@@ -251,56 +263,19 @@ mat-sidenav-content {
   transform: translateY(-1px);
 }
 
-.btn-dangerr {
-  background: transparent;
-  color: #dc2626;
-  border-color: #dc2626;
-}
-
-.btn-dangerr:hover {
-  background: #dc2626;
-  color: #ffffff;
-  border-color: #dc2626;
-  transform: translateY(-1px);
-}
-
-.btn-succes {
+.btnn-successs {
   background: transparent;
   color: #2e7d32;
   border-color: #2e7d32;
 }
 
-.btn-succes:hover {
+.btnn-successs:hover {
   background: #2e7d32;
   color: #ffffff;
   border-color: #2e7d32;
   transform: translateY(-1px);
 }
 
-.btnn-succes {
-  color: #2e7d32;
-  border-color: #2e7d32;
-}
-
-.btnn-succes:hover {
-  background: #2e7d32;
-  color: #ffffff;
-  transform: translateY(-1px);
-}
-
-.btn-primary {
-  min-width: 30px; 
-  padding: 0 10px;
-  color: #2563eb;
-  border-color: #2563eb;
-}
-
-.btn-primary:hover {
-  background: #2563eb;
-  color: #ffffff;
-  border-color: #2563eb;
-  transform: translateY(-1px);
-}
 
 .btn-component {
   background-color: #491D2A !important;
@@ -337,7 +312,7 @@ mat-sidenav-content {
 }
 
 
-/* Botones globales del lado dercho superior */
+/* Botones globales del lado derecho superior */
 .search-actions { 
   display: flex; 
   gap: 10px; 
@@ -348,7 +323,6 @@ mat-sidenav-content {
 .table-global {
   width: 100%;
   table-layout:fixed;
-
   border-collapse: separate;
   border-spacing: 0;
 }
@@ -357,11 +331,6 @@ mat-sidenav-content {
   min-height: 0; 
   width: 100%;
   max-width: 100%;
-
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
 }
 
 .table-scroll {
@@ -370,9 +339,6 @@ mat-sidenav-content {
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-              
-  flex: 1 1 auto;
-  min-height: 0;
   scrollbar-gutter: stable both-edges;
 }
 
@@ -399,7 +365,7 @@ mat-sidenav-content {
 }
 
 .table-global th {
-  padding: 8px 10px;
+  padding: 2px 5px;
   border: 1px solid #e5e7eb;
   text-align: center;
   vertical-align: middle;
@@ -511,6 +477,15 @@ mat-sidenav-content {
 .ico-btn-primary { background: transparent; color: #2563eb; border-color: #2563eb; }
 .ico-btn-danger { background: transparent; color: #dc2626; border-color: #dc2626;}
 
+
+/* --- Text about cell of each column --- */
+.col-wrap {
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: unset !important;
+  word-break: break-word;
+  line-height: 1.3;
+}
 
 
 /* Encabezado de sección + acciones */
@@ -628,7 +603,7 @@ mat-sidenav-content {
 
   .table-global .mat-mdc-header-cell,
   .table-global .mat-mdc-cell {
-    padding: 6px 5px !important;
+    padding: 5px 8px !important;
     font-size: 12px;
   }
 
@@ -731,23 +706,46 @@ mat-sidenav-content {
     width: 100%;
   }
 
-  .page-container {
-    padding-bottom: 35px;
+  /* --- Size of columns of the tables --- */
+  .col-xs.actions-col {
+    width: 100px !important;
+    min-width: 100px !important;
   }
 
-  /* --- Configurations of buttons --- */
-  .actions-right {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  /* --- Configurations ob buttons on table --- */
+  .actions-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn {
+    width: 120px;
+    flex: 0 0 120px;
+  }
+
+
+  /* --- Configurations of buttons of components --- */
+ .actions-right {
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin: 10px 0 14px;
   }
 
-  .actions-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    justify-content: center;
+  .actions-right > .btn,
+  .actions-right > .btn-group {
+    flex: 1 1 calc(50% - 4px);
+    min-width: 0;
+  }
+
+  .actions-right > .btn-group > .btn {
+    width: 100%;   /* el botón dentro del wrapper también llena su mitad */
+  }
+
+  .btn {
+    width: 120px;   /* se ignora dentro de .actions-right por el flex-basis de arriba, pero sigue aplicando en otros contextos (ej. dlg-actions) */
   }
 
   .row {
@@ -766,11 +764,6 @@ mat-sidenav-content {
     width: auto;
     flex: 0 0 auto;
     align-self: flex-start;
+    justify-self: start;
   }
-
-  .btn {
-    width: 120px;
-    flex: 0 0 120px;
-  }
-
 }
