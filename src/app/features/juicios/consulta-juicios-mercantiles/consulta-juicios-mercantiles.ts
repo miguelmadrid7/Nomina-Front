@@ -51,6 +51,9 @@ export class ConsultaJuiciosMercantiles {
   dataSource = new MatTableDataSource<any>([]);
   hasCheck = false;
   banco: any[] = [];
+  totalRegisters = 0;
+  pageSize = 10;
+  pageIndex = 0;
   totalElements = 0;
   displayedColumns: string[] = [
     'nombreEmpleado',
@@ -84,6 +87,7 @@ export class ConsultaJuiciosMercantiles {
   });
 
   ngOnInit(): void {
+    this.dataSource.paginator = this.paginator;
     this.anios = DateYearsHelper.getYears(1,1);
     this.quincenas = DateYearsHelper.getQna();
     this.loadBanks();
