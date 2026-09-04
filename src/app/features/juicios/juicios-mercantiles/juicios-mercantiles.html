@@ -1,0 +1,270 @@
+<div class="page-container">
+    <div class="page-header">
+        <h2 class="page-title">Registro de juicios mercantiles</h2>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div *ngIf="form" [formGroup]="form">
+        <mat-card class="form-card">
+            
+            <div class="actions-right">
+                <div class="btn-group">
+                    <button class="btn btn-primary" (click)="buscarEmpleado()">
+                        <mat-icon>search</mat-icon>
+                            <span>Buscar</span>
+                    </button>
+                </div>
+                <button class="btn btn-danger" (click)="clearFilters()">
+                    <mat-icon>delete_outline</mat-icon>
+                        <span>Limpiar</span>
+                </button>
+            </div>
+
+            <div formGroupName="busqueda" class="global-search">
+                <mat-form-field appearance="outline" class="with-separator qna-compact search-field" floatLabel="always">
+                    <mat-icon matPrefix>search</mat-icon>
+                    <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
+                    <input
+                        matInput
+                        id="buscarEmpleado"
+                        formControlName="searchText"
+                        [matAutocomplete]="auto"
+                        #inputTrigger="matAutocompleteTrigger"
+                        #searchInput
+                        (keydown.enter)="$event.preventDefault(); 
+                        buscarEmpleado()">
+                    <mat-autocomplete #auto="matAutocomplete"  (optionSelected)="employeeSelect($event.option.value)" [displayWith]="displayFn">
+                        <mat-option *ngFor="let emp of resultado" [value]="emp"> {{ displayFn(emp) }}  </mat-option>
+                    </mat-autocomplete>
+                </mat-form-field>
+
+
+            </div>
+
+            <mat-card-content class="form-grid">
+                <div>Datos del empleado seleccionado:</div>
+                <div formGroupName="empleado" class="empleado-grid">
+                    <div class="info-field">
+                        <mat-icon>person</mat-icon>
+                        <div class="info-content">
+                            <span class="info-label">Apellido paterno</span>
+                            <span>{{ form.get('empleado.primerApellido')?.value || '—' }}</span>
+                        </div>
+                    </div>
+                    <div class="info-field">
+                        <mat-icon>person</mat-icon>
+                        <div class="info-content">
+                            <span class="info-label">Apellido materno</span>
+                            <span>{{ form.get('empleado.segundoApellido')?.value || '—' }}</span>
+                        </div>
+                    </div>
+                    <div class="info-field">
+                        <mat-icon>person</mat-icon>
+                        <div class="info-content">
+                            <span class="info-label">Nombre</span>
+                            <span>{{ form.get('empleado.nombre')?.value || '—' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <div class="section-divider"></div>
+
+        <div class="section-header">
+          <h2>Alta de juicio</h2>
+        </div>
+       
+        <div class="actions-right">
+            <div class="btn-group">
+                <button class="btn btn-success" (click)="saveBeneficiary()">
+                    <mat-icon>save</mat-icon>
+                        <span>Guardar</span>
+                </button>
+            </div>
+            <div class="qna-summary">
+                <span class="qna-label">Quincena activa</span>
+                    @if (cargandoQna) {
+                        <span class="qna-tag">Cargando...</span>
+                    } @else if (calendarioActual) {
+                        <span class="qna-tag">
+                            {{ calendarioActual.qna.toString().padStart(2, '0') }} / {{ calendarioActual.ejercicio }}
+                        </span>
+                    } @else {
+                        <span class="qna-tag">No disponible</span>
+                    }
+            </div>
+        </div>
+      
+
+         <mat-card class="form-card">
+            <mat-card-content class="form-layout" formGroupName="beneficiario">
+
+                <div class="row-nuOficio">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>description</mat-icon>
+                            <mat-label>NÚMERO DE OFICIO</mat-label>
+                            <input matInput formControlName="numeroOficio" appUppercase />
+                    </mat-form-field>
+                </div>
+                
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>badge</mat-icon>
+                            <mat-label>RFC*</mat-label>
+                                <input  matInput formControlName="rfc" maxlength="13"  placeholder="RFC del beneficiario" appUppercase/>
+                                    <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('rfcLongitud')"> El RFC debe contener exactamente 13 caracteres.</mat-error>
+                    </mat-form-field>
+                </div>
+                
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>person</mat-icon>
+                            <mat-label>Apellido Paterno*</mat-label>
+                                <input matInput formControlName="primerApellido" placeholder="Apellido paterno" appSoloLetras appUppercase/>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>person</mat-icon>
+                            <mat-label>Apellido materno*</mat-label>
+                                <input matInput formControlName="segundoApellido" placeholder="Apellido materno" appSoloLetras appUppercase/>
+                        </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>person</mat-icon>
+                            <mat-label>Nombres personales/Nombres empresariales*</mat-label>
+                                <input matInput formControlName="nombre" placeholder="Nombre completo" appUppercase/>
+                    </mat-form-field>  
+                </div>
+                
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>attach_money</mat-icon>
+                            <mat-label>Importe total*</mat-label>
+                                <input 
+                                    matInput 
+                                    formControlName="importeTotal" 
+                                    type="number" 
+                                    min="0" 
+                                    step="any" 
+                                    inputmode="decimal" 
+                                    (keydown)="($event.key === '-' || $event.key === 'e' || $event.key === 'E') ? $event.preventDefault() : null" 
+                                    placeholder="Importe total"/>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>receipt_long</mat-icon>
+                            <mat-label>Cuenta bancaria*</mat-label>
+                                <input matInput formControlName="citaBancaria" placeholder="Cuenta bancaria" />
+                    </mat-form-field> 
+                </div>
+                
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix>credit_card</mat-icon>
+                            <mat-label>Clabe interbancaria*</mat-label>
+                                <input  matInput id="clabe" formControlName="clabe" placeholder="18 dígitos" maxlength="18" />
+                    </mat-form-field>
+                </div>
+     
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field full-width with-separator" floatLabel="always">
+                        <mat-icon matPrefix>account_balance</mat-icon>
+                            <mat-label>Institución bancaria*</mat-label>
+                                <mat-select id="bancoId" formControlName="bancoId" placeholder="Seleccionar banco">
+                                    <mat-option *ngFor="let bank of bancos" [value]="bank.id">{{ bank.banco }}</mat-option>
+                                </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field full-width with-separator" floatLabel="always">
+                        <mat-icon matPrefix>tune</mat-icon>
+                            <mat-label>Forma de aplicación*</mat-label>
+                                <mat-select formControlName="formaAplicacion" (selectionChange)="updateFactorDecimal(); updateFactorValidator()" placeholder="Seleccionar">
+                                    <mat-option value="P">Factor</mat-option>
+                                    <mat-option value="C">Importe fijo</mat-option>
+                                </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group" *ngIf="form.get('beneficiario.formaAplicacion')?.value === 'P'">
+                    <mat-form-field appearance="outline" class="login-field compact-field full-width with-separator" floatLabel="always">
+                        <mat-icon matPrefix>tune</mat-icon>
+                            <mat-label>Tipo porcentaje*</mat-label>
+                                <mat-select formControlName="tipoPorcentaje" placeholder="Seleccionar">
+                                    <mat-option value="1">% sobre líquido</mat-option>
+                                    <mat-option value="2">% sobre concepto 07</mat-option>
+                                    <mat-option value="3">30% excedente salario mínimo</mat-option>
+                                </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group" *ngIf="form.get('beneficiario.formaAplicacion')?.value === 'P' && form.get('beneficiario.tipoPorcentaje')?.value === '1'">
+                    <mat-form-field appearance="outline" class="login-field compact-field full-width with-separator" floatLabel="always">
+                        <mat-icon matPrefix>tune</mat-icon>
+                            <mat-label>Tipo base*</mat-label>
+                                <mat-select formControlName="tipoBase" placeholder="Seleccionar">
+                                    <mat-option value="A">Omite conceptos 01, 02, 04, 62</mat-option>
+                                    <mat-option value="B">Omite conceptos 01, 02, 04, 58, 77, 62</mat-option>
+                                </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+                        <mat-icon matPrefix> {{ form.get('beneficiario.formaAplicacion')?.value === 'P' ? 'percent' : 'attach_money' }} </mat-icon>
+                            <mat-label>Factor / Importe*</mat-label>
+                                <input
+                                    matInput
+                                    id="factorImporte"
+                                    formControlName="factorImporte"
+                                    type="number"
+                                    [attr.min]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 0 : null"
+                                    [attr.max]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 100 : null"
+                                    [attr.step]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 1 : 'any'"
+                                    inputmode="decimal"
+                                    (input)="updateFactorDecimal()"
+                                    (keydown)="($event.key === '-' || $event.key === 'e' || $event.key === 'E' || $event.key === '+') ? $event.preventDefault() : null"
+                                    placeholder="Ingresar cantidad" />
+                                <mat-hint *ngIf="form.get('beneficiario.formaAplicacion')?.value === 'P'"> Equivale a {{ factorDecimal | number:'1.2-2' }} de la base </mat-hint>
+
+                                <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('min') && (form.get('beneficiario.factorImporte')?.touched)">
+                                    Debe ser un valor positivo
+                                </mat-error>
+                                <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('max') && (form.get('beneficiario.factorImporte')?.touched)">
+                                    El porcentaje no puede ser mayor al 100%
+                                </mat-error>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field appearance="outline" class="login-field compact-field full-width with-separator" floatLabel="always">
+                        <mat-icon matPrefix>tune</mat-icon>
+                            <mat-label>Estatus*</mat-label>
+                                <mat-select formControlName="estatus" placeholder="Seleccionar">
+                                    <mat-option value="ACTIVO">Activo</mat-option>
+                                    <mat-option value="INACTIVO">Inactivo</mat-option>
+                                    <mat-option value="PAUSA">Pausa</mat-option>
+                                </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div class="field-group">
+                    <mat-form-field  appearance="outline" class="qna-compact search-field with-separator description-field" floatLabel="always">
+                        <mat-label>Descripción*</mat-label>
+                            <textarea matInput formControlName="descripcion" rows="4" appUppercase></textarea>
+                    </mat-form-field>
+                </div>
+            </mat-card-content>
+         </mat-card>
+    </div>
+</div>

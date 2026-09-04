@@ -1,0 +1,56 @@
+<div class="dialog-shell">
+  <div class="dialog-header dlg-bar">
+    <div class="dlg-bar-title"> {{ data ? 'Editar rol' : 'Alta de rol' }}</div>
+    <button mat-icon-button class="dialog-close" (click)="cerrar()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div mat-dialog-content [formGroup]="form" class="dlg-conten">
+
+    <div class="section-divider"></div>
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+        <mat-label>NOMBRE DEL ROL</mat-label>
+        <mat-icon matPrefix>admin_panel_settings</mat-icon>
+        <input matInput formControlName="name" appUppercase/>
+        <mat-error *ngIf="form.get('name')?.hasError('required')">El nombre es requerido</mat-error>
+  
+      </mat-form-field>
+
+      <mat-form-field  appearance="outline" class="qna-compact search-field with-separator description-field" floatLabel="always">
+        <mat-label>DESCRIPCIÓN</mat-label>
+          <textarea matInput formControlName="description" rows="4" appUppercase></textarea>
+            <mat-error *ngIf="form.get('description')?.hasError('required')">La descripción es requerida</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+        <mat-label>MÓDULOS</mat-label>
+        <mat-icon matPrefix>view_module</mat-icon>
+        <mat-select formControlName="modulesId" multiple>
+          <mat-option *ngFor="let module of modules$ | async" [value]="module.id">
+            {{ module.name }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="form.get('modulesId')?.hasError('required')">Selecciona al menos un módulo</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+        <mat-label>PERMISO</mat-label>
+        <mat-icon matPrefix>security</mat-icon>
+        <mat-select formControlName="permissionId">
+          <mat-option [value]="null"> Sin permiso </mat-option>
+          <mat-option *ngFor="let permiso of permissions$ | async" [value]="permiso.id"> {{ permiso.id }}
+            <span *ngIf="permiso.verDetalleTecnico"> - Ver detalle técnico </span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="dlg-actions">
+    <button class="btn btn-danger" (click)="cerrar()">Cancelar</button>
+    <button class="btn btn-primary" (click)="guardar()"> {{ data ? 'Aceptar' : 'Guardar' }}</button>
+  </div>
+</div>

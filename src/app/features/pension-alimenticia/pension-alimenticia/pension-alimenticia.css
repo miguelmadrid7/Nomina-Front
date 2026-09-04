@@ -1,0 +1,766 @@
+/* Card de search */
+.form-card {
+  background-color: var(--card);
+  padding:2px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+
+}
+
+.form-card mat-form-field {
+  display: block;
+}
+
+/* Grid */
+.form-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.row {
+  display: grid;
+  gap: 12px;
+}
+
+.row-single {
+  grid-template-columns: minmax(260px, 350px);
+}
+
+.row-2 {
+  grid-template-columns: repeat(2, minmax(260px, 1fr));
+}
+
+.row-4 {
+  align-items: start;
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+}
+
+.row-oficio {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  align-items: start; 
+}
+
+.row-4,
+.row-oficio {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  align-items: start;
+}
+
+.row-inline {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  min-width: 0;
+}
+
+.row-inline mat-form-field {
+  flex: 1;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.grid-empty {
+  min-height: 1px;
+}
+
+/* Divider */
+.section-divider { 
+  grid-column: 1 / -1;
+  height: 2px; 
+  background: var(--brand); 
+  opacity: 0.15; 
+  margin: 5px 0 10px; 
+}
+
+/* Search */
+.global-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.search-field {
+  width: auto;             
+  flex: 1 1 520px;         
+  min-width: 360px;        
+  max-width: 100%;  
+}
+
+/* Anula el width global del mat-form-field solo para el buscador */
+.search-field.mat-mdc-form-field,
+.global-search .search-field {
+  width: auto !important;
+}
+
+/* ── Contenedor principal de info de líquido  */
+.liquido-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-top: 12px;
+    background: #fafafa;
+}
+
+/*  Nombre del empleado  */
+.liquido-empleado {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #333;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/*  Bloque de una plaza  */
+/* Contenedor de todas las plazas — grid de 2 columnas */
+.liquido-plazas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+/* Cada plaza individual */
+.liquido-plaza {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+/* Cada card dentro de la plaza */
+.liquido-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    background: #f5f7fb;
+    border-radius: 6px;
+    min-width: 0;
+}
+
+.liquido-plaza {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/*  Título de la plaza  */
+.plaza-titulo {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #000000;
+    width: 100%;           
+}
+
+/* Cada tarjeta de dato (líquido, concepto07, pensión) */
+.liquido-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    min-width: 0;
+    flex: 1;
+}
+
+.liquido-card mat-icon {
+    color: #1976d2;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+.liquido-card div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/*  Etiqueta (texto pequeño arriba)  */
+.liquido-label {
+    font-size: 11px;
+    color: #888;
+    line-height: 1;
+}
+
+/* Valor (número grande abajo) */
+.liquido-valor {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    line-height: 1.2;
+}
+
+.liquido-sin-datos {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    margin-top: 12px;
+    border-radius: 6px;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    color: #f57c00;
+    font-size: 13px;
+}
+
+.liquido-sin-datos mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #f57c00;
+}
+
+.liquido-loading-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 0;
+    margin-top: 8px;
+}
+
+.liquido-loading-text {
+    font-size: 13px;
+    color: #888;
+    margin-left: 4px;
+}
+
+.liquido-loading-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1976d2;
+    animation: bounce 1.2s infinite ease-in-out;
+}
+
+.liquido-loading-dot:nth-child(1) { 
+  animation-delay: 0s;    
+}
+
+.liquido-loading-dot:nth-child(2) { 
+  animation-delay: 0.2s;  
+}
+
+.liquido-loading-dot:nth-child(3) { 
+  animation-delay: 0.4s;  
+}
+
+@keyframes bounce {
+    0%, 80%, 100% { 
+      transform: scale(0.6); 
+      opacity: 0.4; 
+    }
+    40% { 
+      transform: scale(1);  
+       opacity: 1;   
+    }
+}
+
+/* Animación de entrada suave  */
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Aplica la animación a la info de plazas */
+.liquido-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-top: 12px;
+    background: #fafafa;
+    animation: fadeSlideIn 0.35s ease forwards; 
+}
+
+/* Aplica la animación al mensaje de error/sin datos */
+.liquido-sin-datos {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    margin-top: 12px;
+    border-radius: 6px;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    color: #f57c00;
+    font-size: 13px;
+    animation: fadeSlideIn 0.35s ease forwards; 
+}
+
+/* Cada plaza aparece con delay escalonado */
+.liquido-plaza:nth-child(1) { 
+  animation: fadeSlideIn 0.3s ease 0.05s both; 
+}
+
+.liquido-plaza:nth-child(2) { 
+  animation: fadeSlideIn 0.3s ease 0.15s both; 
+}
+
+.liquido-plaza:nth-child(3) { 
+  animation: fadeSlideIn 0.3s ease 0.25s both; 
+}
+
+/* Cada card dentro de la plaza */
+.liquido-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    padding: 8px 12px;
+    min-width: 160px;
+    flex: 1;
+    animation: fadeSlideIn 0.3s ease both;  
+}
+
+.liquido-card:nth-child(2) { 
+  animation-delay: 0.08s; 
+}
+
+.liquido-card:nth-child(3) { 
+  animation-delay: 0.16s; 
+}
+
+.liquido-card:nth-child(4) { 
+  animation-delay: 0.24s; 
+}
+
+/* Buscador full width encima del layout */
+.search-wrapper {
+    margin-bottom: 16px;
+    width: 100%; 
+}
+
+.search-wrapper mat-form-field {
+    width: 100% !important;
+}
+
+.search-wrapper .search-field {
+    width: 100%;
+    max-width: 100%;
+    flex: none;
+}
+
+/* Layout de dos columnas */
+.two-col-layout {
+    display: grid;
+    grid-template-columns: 1fr 460px;
+    gap: 24px;
+    align-items: start;
+}
+
+/* Columna izquierda — formulario */
+.col-form {
+    min-width: 0;
+}
+
+/* Columna derecha — gráfica + info */
+.col-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: sticky;
+    top: 16px;
+    background: var(--color-background-secondary, #f5f7fb);
+    border: 1px solid #dbe3f0;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+/* Espacio para mensajes de error */
+:host ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+  height: auto !important;
+  min-height: 20px;
+  padding-top: 18px;
+}
+
+.plazas-badge {
+    margin-left: auto;  
+    font-size: 11px;
+    font-weight: 600;
+    color: #1976d2;
+    background: #e3f2fd;
+    border: 1px solid #90caf9;
+    border-radius: 999px;
+    padding: 2px 8px;
+    white-space: nowrap;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.field-break {
+  grid-column: 1 / 2;
+}
+
+.qna-filters {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.qna-filters mat-form-field {
+  width: 40px;
+  min-width: 100px;
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-form-field-infix {
+  min-height: 40px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  display: flex;
+  align-items: center;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-text-field-wrapper,
+:host ::ng-deep .qna-compact .mat-mdc-form-field-flex,
+:host ::ng-deep .qna-compact .mdc-notched-outline {
+  height: auto !important;
+}
+
+.mat-mdc-form-field-hint-wrapper { white-space: normal; } 
+
+:host ::ng-deep .qna-compact .mat-mdc-text-field-wrapper {
+  height: 40px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .qna-compact input.mat-mdc-input-element {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* El contenedor del outline (el borde visible) */
+:host ::ng-deep .qna-compact .mdc-notched-outline {
+  height: 40px !important;
+}
+
+/* El wrapper externo que envuelve todo */
+:host ::ng-deep .qna-compact .mat-mdc-form-field-flex {
+  height: 40px !important;
+  align-items: center;
+}
+
+/* GRAFICA */
+.chart-with-legend {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 16px;
+  flex-wrap: nowrap;
+}
+
+.chart-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 260px;
+}
+
+.legend-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 2px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  display: inline-block;
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+.legend-item.active {
+  font-weight: 600;
+  color: #111827;
+}
+
+.legend-dot.dot-red   { 
+  background: #ef4444; 
+}
+
+.legend-dot.dot-amber { 
+  background: #f59e0b; 
+}
+
+.legend-dot.dot-blue  { 
+  background: #2563eb; 
+}
+
+.employee-percent-box {
+    width: 100%;
+    flex: none;
+    padding: 8px 8px 10px  8px;   
+    border-radius: 10px;
+    background: #f5f7fb;
+    border: 1px solid #dbe3f0;
+    display: flex;
+    align-items: flex-start;   
+    justify-content: center;
+    overflow: hidden;           
+}
+
+.employee-percent-box apx-chart {
+    width: 100%;
+    height: 140px;              
+    display: block;
+    margin-bottom: -40px;      
+}
+
+.employee-status {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  align-self: center;
+}
+.employee-status.ok {
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+}
+.employee-status.no {
+  color: #7f1d1d;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+}
+
+.employee-name{
+  font-size:13px;
+  color:#374151;
+}
+
+.employee-percent{
+  font-size:18px;
+  font-weight:700;
+  color:#2563eb;
+}
+
+
+.qna-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.qna-label {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.qna-tag {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 99px;
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.conversion-text {
+  color: #666;
+  font-size: 12px;
+  margin-left: 8px;
+}
+
+.toggle-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 56px; 
+  gap: 6px;
+}
+
+.toggle-container mat-slide-toggle {
+  width: 100%;
+}
+
+.toggle-container .mdc-form-field {
+  width: 100%;
+}
+
+.toggle-container .mdc-label {
+  font-size: 14px;
+}
+
+.monto-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  min-height: 32px;
+}
+
+.monto-field {
+  top: 100%;          
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  margin-top: 4px;
+}
+
+.checkbox-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.checkbox-label {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.toggle-label {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.87);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .qna-summary {
+      justify-content: center;
+  }
+
+  .row-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .row-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .row-single {
+    grid-template-columns: 1fr;
+  }
+
+  .search-field {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .global-search {
+    flex-wrap: wrap;      
+  }
+  .search-field {
+    flex: 1 1 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .employee-percent-box {
+    flex: 1 1 100%;
+    min-height: 120px;
+  }
+  .employee-percent-box apx-chart {
+    width: 100%;
+  }
+
+   /* Layout principal en columna */
+  .two-col-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .col-info {
+    position: static;
+  }
+
+  /* Fila de oficio en columna */
+  .row-oficio {
+    grid-template-columns: 1fr;
+  }
+
+  /* Toggle en fila completa */
+  .toggle-container {
+    min-height: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  /* Plazas en una columna */
+  .liquido-plazas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Cards de datos de plaza en columna */
+  .liquido-plaza {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .liquido-card {
+    min-width: unset;
+    width: 100%;
+  }
+
+  /* Gráfica y leyenda en columna */
+  .chart-with-legend {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .chart-legend {
+    min-width: unset;
+    width: 100%;
+  }
+}

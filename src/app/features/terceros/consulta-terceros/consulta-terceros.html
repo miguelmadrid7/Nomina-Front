@@ -1,0 +1,216 @@
+<div class="page-container">
+     <div class="page-header">
+        <h2 class="page-title">Información de pensiones alimenticia</h2>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="actions-right">
+        <div class="btn-group">
+            <button class="btn btn-primary">
+                <mat-icon>task_alt</mat-icon>
+                <span>Validar</span>
+            </button>
+        </div>
+            <button class="btn btn-danger" (click)="clearFilters()">
+                <mat-icon>delete_outline</mat-icon>
+                <span>Limpiar</span>
+            </button>
+
+            
+            <button class="btn btn-success" (click)="descargarExcel()">
+                <mat-icon>table_view</mat-icon>
+                <span>Descarga xls</span>
+            </button>
+
+            <button class="btn btn-success" (click)="descargarPdf()">
+                <mat-icon>picture_as_pdf</mat-icon>
+                <span>Descarga pdf</span>
+            </button>
+    </div>
+
+    <form [formGroup]="form">
+        <div formGroupName="busqueda" class="global-search">
+            <mat-radio-group aria-label="Select an option" formControlName="tipoConcepto">
+                <mat-radio-button class="rad" [value]="2">No Institucionales</mat-radio-button>
+                 <mat-radio-button [value]="1">Institucionales</mat-radio-button>
+            </mat-radio-group>
+
+            <mat-form-field appearance="outline" class="compact-field qna-compact concepto-wi" floatLabel="always">
+                <mat-label>Concepto</mat-label>
+                    <mat-select formControlName ="concepto">
+                        <mat-option *ngFor="let c of conceptosFiltrados" [value]="c.cve">{{ c.cve }} - {{ c.descripcion }} </mat-option>
+                    </mat-select>
+            </mat-form-field>
+
+            <div class="concepto-total" *ngIf="buildQnaProceso() && form.get('busqueda.concepto')?.value">
+                Número de registros de este concepto:
+                <strong>{{ totalConceptoSeleccionado }}</strong>
+            </div>
+        </div>
+    </form>
+
+    <div class="section-divider"></div>
+
+    <div class="table-layout">
+        <div class="table-section">
+            <div class="table-card card">
+                <div class="table-content">
+                    <div class="table-scroll">
+                        <table mat-table [dataSource]="dataSource" class="table-global">
+                            
+                            <ng-container matColumnDef="validar">
+                                <th mat-header-cell *matHeaderCellDef class="header-with-select" class="col-xs col-center"> VALIDAR
+                                    <div class="header-column">
+                                        <mat-checkbox
+                                            [checked]="isAllChecked()"
+                                            [indeterminate]="isSomeChecked()"
+                                            (change)="toggleAll($event.checked)">
+                                        </mat-checkbox>
+                                    </div>
+                                </th>
+
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                                    <mat-checkbox [checked]="!!e.validado" (change)="toggleRow(e, $event.checked)"> </mat-checkbox>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="nombreCompleto">
+                                <th mat-header-cell *matHeaderCellDef class="col-md col-center">NOMBRE  <br> COMPLETO</th>
+                                <td mat-cell *matCellDef="let e" class="col-md col-center"> {{ e.nombreTrabajador  }} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="numeroOrden">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> NUMERO  <br> DE <br>  ORDEN</th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.numeroDocumento  }}</td>
+                            </ng-container>
+
+                            <div [formGroup]="filtrosTabla">
+
+                                
+                            <ng-container matColumnDef="rfc">
+                                <th mat-header-cell *matHeaderCellDef class="header-with-select" class="col-xs col-center"> RFC
+                                    <div class="header-column">
+                                        <mat-form-field appearance="outline" class="header-text-input-small" floatLabel="always">
+                                            <mat-label>Buscar</mat-label>
+                                            <input matInput formControlName="rfc"  (keydown.enter)="buscar()">
+                                        </mat-form-field>
+                                    </div>
+                                </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.rfc }}</td>
+                            </ng-container>
+
+                             <ng-container matColumnDef="curp">
+                                <th mat-header-cell *matHeaderCellDef class="header-with-select" class="col-xs col-center"> CURP
+                                    <div class="header-column">
+                                        <mat-form-field appearance="outline" class="header-text-input" floatLabel="always">
+                                            <mat-label>Buscar</mat-label>
+                                            <input matInput formControlName="curp"  (keydown.enter)="buscar()">
+                                        </mat-form-field>
+                                    </div>
+                                </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.curp }}</td>
+                            </ng-container>
+
+
+                                <ng-container matColumnDef="tipoOrden">
+                                        <th mat-header-cell *matHeaderCellDef class="header-with-select" class="col-xs col-center"> ORDEN
+                                            <div class="header-column estatus-column">
+                                                <mat-form-field appearance="outline" class="header-select header-select-orden">
+                                                    <mat-select formControlName="tipoOrden">
+                                                        <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t.value"> {{ t.label }} </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                        </th>
+                                        <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.tipoOrden }}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="importeMensual">
+                                    <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> IMPORTE  <br> MENSUAL</th>
+                                    <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.importeMensual }}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="concepto">
+                                    <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> CONCEPTO</th>
+                                    <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.conceptoDescuento  }}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="qnaProceso">
+                                        <th mat-header-cell *matHeaderCellDef class="col-xs col-center">QUINCENA PROCESO
+                                            <div class="header-column qna-proceso-column">
+                                                <div class="qna-filters-container">
+
+                                                    <mat-form-field appearance="outline" class="header-select" floatLabel="always">
+                                                        <mat-label>QNA</mat-label>
+                                                            <mat-select formControlName ="quincena" >
+                                                                <mat-option *ngFor="let q of quincena" [value]="q">{{ q.toString().padStart(2,'0') }}</mat-option>
+                                                            </mat-select>
+                                                    </mat-form-field>
+                                                    <mat-form-field appearance="outline" class="header-select" floatLabel="always">
+                                                        <mat-label>AÑO</mat-label>
+                                                            <mat-select formControlName="anio" >
+                                                                <mat-option *ngFor="let anio of anio" [value]="anio">{{ anio }}</mat-option>
+                                                            </mat-select>
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.qnaProceso }}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="estatus">
+                                        <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> ESTATUS
+                                            <div class="header-column estatus-column">
+                                                <mat-form-field appearance="outline" class="header-select header-select-orden" floatLabel="always">
+                                                    <mat-select formControlName="estatus">
+                                                        <mat-option *ngFor="let s of estatusOptions" [value]="s.value"> {{ s.label }} </mat-option>
+                                                    </mat-select>
+                                                </mat-form-field>
+                                            </div>
+                                        </th>
+                                        <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.estatus }}</td>
+                                </ng-container>
+                            </div>
+
+                            <ng-container matColumnDef="documento">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center">Documentos <br> PDF</th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                                    <div class="table-actions">
+                                        <div class="btn-group">
+                                            <button mat-icon-button class="btn btn-primary" (click)="verDocumentos(e)">
+                                                <mat-icon>picture_as_pdf</mat-icon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="fechaRegistro">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> FECHA <br> Y <br> HORA <br> DE <br> REGISTRO </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center"> 
+                                    <div class="fecha-cell">
+                                        <span>{{ e.fechaRegistro | date:'dd/MM/yyyy' }}</span>
+                                        <span>{{ e.fechaRegistro | date:'hh:mm:ss a' }}</span>
+                                    </div>
+                                </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </div>
+                     <div class="table-footer">
+                        <mat-paginator
+                            [length]="totalElements"
+                            [pageSize]="50"
+                            [pageSizeOptions]="[50, 100, 150, 200]"
+                            showFirstLastButtons
+                            (page)="onPage($event)">
+                        </mat-paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,120 @@
+<div class="page-container">
+    <div class="page-header"> 
+        <h2 class="page-title">Registro de terceros institucionales</h2> 
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="actions-right">
+        <div class="btn-group">
+            <button class="btn btn-primary" (click)="buscarRegistrosNp()">
+                <mat-icon>search</mat-icon>
+                    <span>Buscar</span>
+            </button>
+           
+        </div>
+        <button class="btn btn-danger" (click)="clearFilters()">
+            <mat-icon>delete_outline</mat-icon>
+                <span>Limpiar</span>
+        </button>
+       
+        <button class="btn btn-success" (click)="abrirAgregar()">
+            <mat-icon>playlist_add</mat-icon>
+            <span>Agregar</span>
+        </button>
+    </div>
+
+    <form [formGroup]="form">
+        <div formGroupName="busqueda" class="global-search">
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-icon matPrefix>search</mat-icon>
+                <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
+                    <input
+                        matInput
+                        id="buscarEmpleado"
+                        formControlName="searchText"
+                        [matAutocomplete]="auto"
+                        #autocompleteTrigger="matAutocompleteTrigger" 
+                        (keyup.enter)="buscarEmpleado()"
+                        appUppercase>
+
+                <mat-autocomplete #auto="matAutocomplete" (optionSelected)="empleadoSeleccionado($event.option.value)" [displayWith]="displayEmpleado">
+                    <mat-option *ngFor="let emp of resultado" [value]="emp">
+                        {{ displayEmpleado(emp) }} 
+                    </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="compact-field qna-compact concepto-wi" floatLabel="always">
+                <mat-label>Concepto</mat-label>
+                    <mat-select formControlName ="concepto">
+                        <mat-option *ngFor="let c of conceptosFiltrados" [value]="c">{{ c.cve }} - {{ c.descripcion }}</mat-option>
+                    </mat-select>
+            </mat-form-field>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <div class="table-layout">
+            <div class="table-section">
+                <div class="table-card card">
+                    <div class="table-content">
+                        <div class="table-scroll">
+                            <table mat-table [dataSource]="dataSource" class="table-global">
+                                <ng-container matColumnDef="rfc">
+                                    <th mat-header-cell *matHeaderCellDef  class="col-sm col-center"> RFC </th>
+                                    <td mat-cell *matCellDef="let e"  class="col-sm col-center">{{ e.rfc }}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="nombreCompleto">
+                                    <th mat-header-cell *matHeaderCellDef  class="col-sm col-center">NOMBRE  <br> COMPLETO</th>
+                                    <td mat-cell *matCellDef="let e"  class="col-sm col-center">{{ e.nombreEmpleado }}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="tipoMovimiento">
+                                    <th mat-header-cell *matHeaderCellDef class="col-sm col-center"> TIPO   <br> MOVIMIENTO </th>
+                                    <td mat-cell *matCellDef="let e" class="col-sm col-center">{{ e.tipoMovimiento }}</td>
+                                </ng-container>
+
+                                 <ng-container matColumnDef="concepto">
+                                    <th mat-header-cell *matHeaderCellDef class="col-sm col-center"> CONCEPTO </th>
+                                    <td mat-cell *matCellDef="let e" class="col-sm col-center">{{ e.concepto }}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="qnaProceso">
+                                    <th mat-header-cell *matHeaderCellDef class="col-sm col-center"> QNA PROCESO</th>
+                                    <td mat-cell *matCellDef="let e" class="col-sm col-center">{{ e.qnaProceso }}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="acciones">
+                                    <th mat-header-cell *matHeaderCellDef class="col-sm col-center">DETALLAR  <br> REGISTRO</th>
+                                        <td mat-cell *matCellDef="let e" class="col-sm col-center">
+                                            <div class="btn-cell">
+                                                <button class="btnn btn-primary" (click)="verDetalles(e)">
+                                                    <mat-icon>edit</mat-icon>
+                                                </button>
+                                            </div>
+                                        </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                        </div>
+                         <div class="table-footer">
+                            <mat-paginator
+                                [length]="totalElements"
+                                [pageSize]="50"
+                                [pageSizeOptions]="[50, 100, 150, 200]"
+                                showFirstLastButtons
+                                (page)="onPageChange($event)">
+                            </mat-paginator>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </form>
+</div>

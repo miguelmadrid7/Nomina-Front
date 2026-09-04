@@ -1,0 +1,277 @@
+<div class="dialog-shell">
+  <div class="dialog-header dlg-bar">
+    
+        <button mat-icon-button class="dialog-close" (click)="cerrar()">
+          <mat-icon>close</mat-icon>
+        </button>
+  </div>
+
+  <div class="header-row">
+    <div class="section-title">
+      <span></span>
+      <h3 class="dialog-title">{{ data.modo === 'editar'? 'Editar Beneficiario': 'Agregar Beneficiario'}} </h3>
+  
+    </div>
+  
+    <div class="qna-summary">
+      <span class="qna-label">Quincena activa</span>
+      @if (cargandoQna) {
+        <span class="qna-tag">Cargando...</span>
+      } @else if (calendarioActual) {
+        <span class="qna-tag">
+          {{ calendarioActual.qna.toString().padStart(2, '0') }} / {{ calendarioActual.ejercicio }}
+        </span>
+      } @else {
+        <span class="qna-tag">No disponible</span>
+      }
+    </div>
+  </div>
+
+  <div class="dlg-content">
+    <div [formGroup]="form">
+      <div formGroupName="beneficiario">
+        <div class="form-card">
+
+          <div class="section-divider"></div>
+          <div class="form-grid">
+
+            <div class="row-numOficio">
+              <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                  <mat-icon matPrefix>description</mat-icon>
+                    <mat-label>NÚMERO DE OFICIO</mat-label>
+                      <input matInput formControlName="numeroOficio" appUppercase />
+                </mat-form-field>
+            </div>
+
+
+            <div class="span-3">
+              <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-icon matPrefix>badge</mat-icon>
+                  <mat-label>RFC</mat-label>
+                    <input 
+                      matInput 
+                      formControlName="rfc" 
+                      maxlength="13" 
+                      
+                      appUppercase/>
+                    <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('required')"> El RFC es obligatorio</mat-error>
+                    <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('rfcLongitud')"> Longitud inválida: debe ser de 12 (Moral) o 13 (Física) caracteres </mat-error>
+                    <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('rfcFecha')"> La fecha (AAMMDD) dentro del RFC no es válida </mat-error>
+                    <mat-error *ngIf="form.get('beneficiario.rfc')?.hasError('rfcFormato')"> Formato de RFC inválido </mat-error>
+              </mat-form-field>
+            </div>
+
+            <div class="span-3 name-row">
+              <div>
+                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                  <mat-icon matPrefix>person</mat-icon>
+                    <mat-label>APELLIDO PATERNO*</mat-label>
+                      <input 
+                        matInput 
+                        formControlName="primerApellido" 
+                        
+                        appSoloLetras 
+                        appUppercase/>
+                      <mat-error *ngIf="form.get('beneficiario.primerApellido')?.invalid && (form.get('beneficiario.primerApellido')?.touched)">Ingresa el apellido paterno (mín. 2 caracteres).</mat-error>
+                </mat-form-field>
+              </div>
+
+              <div>
+                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                  <mat-icon matPrefix>person</mat-icon>
+                    <mat-label>APELLIDO MATERNO*</mat-label>
+                      <input 
+                        matInput 
+                        formControlName="segundoApellido" 
+                        
+                        appSoloLetras 
+                        appUppercase/>
+                      <mat-error *ngIf="form.get('beneficiario.segundoApellido')?.invalid && (form.get('beneficiario.segundoApellido')?.touched)"> Ingresa el apellido materno (mín. 2 caracteres).</mat-error>
+                </mat-form-field>
+              </div>
+
+              <div>
+                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                  <mat-icon matPrefix>person</mat-icon>
+                    <mat-label>NOMBRES PERSONALES / NOMBRES EMPRESARIALES*</mat-label>
+                      <input 
+                        matInput 
+                        formControlName="nombre" 
+                        
+                        appUppercase/>
+                    <mat-error *ngIf="form.get('beneficiario.nombre')?.invalid && (form.get('beneficiario.nombre')?.touched)">Ingresa el nombre (mín. 2 caracteres).</mat-error>
+                </mat-form-field>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <mat-card-content class="form-grid">
+          <div class="bank-row">
+            <div>
+              <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-icon matPrefix>attach_money</mat-icon>
+                  <mat-label>IMPORTE TOTAL*</mat-label>
+                    <input 
+                      matInput 
+                      formControlName="importeTotal" 
+                      type="number" 
+                      min="0" 
+                      step="any" 
+                      inputmode="decimal" 
+                      (keydown)="($event.key === '-' || $event.key === 'e' || $event.key === 'E') ? $event.preventDefault() : null" 
+                       />
+                    <mat-error *ngIf="form.get('beneficiario.importeTotal')?.invalid && (form.get('beneficiario.importeTotal')?.touched)">Captura un importe válido.</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div>
+              <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-icon matPrefix>receipt_long</mat-icon>
+                  <mat-label>CUENTA BANCARIA*</mat-label>
+                    <input 
+                      matInput 
+                      formControlName="citaBancaria" 
+                      />
+                    <mat-error *ngIf="form.get('beneficiario.citaBancaria')?.invalid && (form.get('beneficiario.citaBancaria')?.touched)">Captura la cita bancaria.</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div>
+                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                  <mat-icon matPrefix>credit_card</mat-icon>
+                    <mat-label>CLABE INTERBANCARIA*</mat-label>
+                      <input  
+                        matInput id="clabe" 
+                        formControlName="clabe" 
+                        placeholder="18 dígitos"
+                        maxlength="18"/>
+                      <mat-error *ngIf="form.get('beneficiario.clabe')?.invalid && (form.get('beneficiario.clabe')?.touched)">La CLABE debe tener exactamente 18 dígitos numéricos.</mat-error>
+                </mat-form-field>
+            </div>
+          </div>
+        
+          <div class="aplicacion-row">
+            <div>
+              <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-icon matPrefix>account_balance</mat-icon>
+                  <mat-label>INSTITUCION BANCARIA*</mat-label>
+                    <mat-select 
+                      id="bancoId" 
+                      formControlName="bancoId">
+                      <mat-option *ngFor="let bank of bancos" [value]="bank.id">{{ bank.banco }}</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="form.get('beneficiario.bancoId')?.invalid && (form.get('beneficiario.bancoId')?.touched)">Selecciona un banco.</mat-error>
+              </mat-form-field>
+            </div>
+
+            <div>
+              <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-icon matPrefix>tune</mat-icon>
+                  <mat-label>FORMA APLICACION*</mat-label>
+                    <mat-select formControlName="formaAplicacion">
+                      <mat-option value="P">Factor</mat-option>
+                      <mat-option value="C">Importe fijo</mat-option>
+                    </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div *ngIf="form.get('beneficiario.formaAplicacion')?.value === 'P'">
+              <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-icon matPrefix>tune</mat-icon>
+                  <mat-label>TIPO PORCENTAJE*</mat-label>
+                    <mat-select formControlName="tipoPorcentaje" [compareWith]="compareNumeroConString">
+                      <mat-option *ngFor="let opt of TIPO_PORCENTAJE_OPTIONS" [value]="opt.value">
+                        {{ opt.label }}
+                      </mat-option>
+                    </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div *ngIf="form.get('beneficiario.formaAplicacion')?.value === 'P' && form.get('beneficiario.tipoPorcentaje')?.value === '1'">
+              <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-icon matPrefix>tune</mat-icon>
+                  <mat-label>TIPO BASE*</mat-label>
+                   <mat-select formControlName="tipoBase">
+                      <mat-option *ngFor="let opt of TIPO_BASE_OPTIONS" [value]="opt.value">
+                        {{ opt.label }}
+                      </mat-option>
+                    </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div>
+              <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-icon matPrefix>{{ form.get('beneficiario.formaAplicacion')?.value === 'P' ? 'percent' : 'attach_money' }}</mat-icon>
+                  <mat-label>FACTOR / IMPORTE*</mat-label>
+                    <input
+                      matInput
+                      id="factorImporte"
+                      formControlName="factorImporte"
+                      type="number"
+                      [attr.min]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 0 : null"
+                      [attr.max]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 100 : null"
+                      [attr.step]="form.get('beneficiario.formaAplicacion')?.value === 'P' ? 1 : 'any'"
+                      inputmode="decimal"
+                      (keydown)="($event.key === '-' || $event.key === 'e' || $event.key === 'E' || $event.key === '+') ? $event.preventDefault() : null"/>
+                    <mat-hint *ngIf="form.get('beneficiario.formaAplicacion')?.value === 'P'"> Equivale a {{ factorDecimal | number:'1.2-2' }} de la base </mat-hint>
+                    <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('required') && (form.get('beneficiario.factorImporte')?.touched)"> Campo obligatorio </mat-error>
+                    <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('min') && (form.get('beneficiario.factorImporte')?.touched)">  Debe ser un valor positivo </mat-error>
+                    <mat-error *ngIf="form.get('beneficiario.factorImporte')?.hasError('max') && (form.get('beneficiario.factorImporte')?.touched)"> El porcentaje no puede ser mayor a 100 </mat-error>
+              </mat-form-field>
+            </div>
+
+            <!-- Estatus -->
+            <div>
+              <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-icon matPrefix>tune</mat-icon>
+                  <mat-label>ESTATUS*</mat-label>
+                    <mat-select formControlName="estatus">
+                      <mat-option value="ACTIVO">Activo</mat-option>
+                      <mat-option value="INACTIVO">Inactivo</mat-option>
+                      <mat-option value="PAUSA">Pausa</mat-option>
+                    </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="span-2">
+                <mat-form-field appearance="outline" class="qna-compact search-field with-separator description-field" floatLabel="always">
+                  <mat-label>DESCRIPCION*</mat-label>
+                    <textarea 
+                      matInput 
+                      formControlName="descripcion" 
+                      rows="4" 
+                      placeholder="Agregar descripcion..." 
+                      appUppercase>
+                    </textarea>
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-card-content>
+
+      
+        <mat-card-content class="form-grid vigencia-grid">
+          <div>
+              <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-icon matPrefix>calendar_today</mat-icon>
+                  <mat-label>HASTA*</mat-label>
+                    <input 
+                      matInput 
+                      id="vigenciaFin" 
+                      formControlName="fin" 
+                      placeholder="AAAAQQ" 
+                      maxlength="6"/>
+                    <mat-error *ngIf="form.get('beneficiario.fin')?.invalid && (form.get('beneficiario.fin')?.touched)">Captura la vigencia de fin en formato AAAAQQ.</mat-error>
+              </mat-form-field>
+          </div>
+        </mat-card-content>
+      </div>
+    </div>
+  </div>
+
+  <div class="dlg-actions">
+    <button class="btn btn-primary" type="button" (click)="guardar()">Guardar</button>
+    <button class="btn btn-danger" type="button" (click)="cerrar()">Cancelar</button>
+  </div>
+</div>

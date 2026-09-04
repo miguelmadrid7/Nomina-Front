@@ -1,0 +1,80 @@
+<div class="dialog-shell">
+    <div class="dialog-header dlg-bar">
+      <button mat-icon-button class="dialog-close" (click)="cerrar()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <mat-dialog-content [formGroup]="form" class="dlg-content">
+
+        <div class="dlg-bar-title">Detalle Tercero institucional</div>
+
+        <mat-card class="form-card">
+            <mat-card-content class="form-grid">
+                <div class="info-field">
+                    <mat-icon>assignment_ind</mat-icon>
+                        <div class="info-content">
+                            <span class="info-label">RFC</span>
+                            <span>{{ form.get('rfc')?.value || '—' }}</span>
+                        </div>
+                </div>
+
+                <div class="info-field">
+                    <mat-icon>person</mat-icon>
+                        <div class="info-content">
+                            <span class="info-label">NOMBRE EMPLEADO</span>
+                            <span>{{ form.get('apellidoPaterno')?.value || '—' }} {{ form.get('apellidoMaterno')?.value || '—' }} {{ form.get('nombres')?.value || '—' }} </span>
+                        </div>
+                </div>
+
+                <div class="info-field">
+                    <mat-icon>info</mat-icon>
+                        <div class="info-content">
+                            <span class="info-label">CONCEPTO SELECCIONADO</span>
+                            <span>{{ form.get('concepto')?.value?.cve || '—' }} - {{ form.get('concepto')?.value?.descripcion || '—' }}</span>
+                        </div>
+                </div>
+
+            </mat-card-content>
+        </mat-card>
+
+        <div class="section-divider"></div>
+
+        <div class="fields-grid">
+        <mat-form-field appearance="outline" class="login-field compact-field with-separator orden-field" floatLabel="always">
+            <mat-label>Orden*</mat-label>
+                <mat-icon matPrefix>reorder</mat-icon>
+                    <mat-select formControlName="tipoOrden">
+                        <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t.value"> {{ t.label }} </mat-option>
+                    </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+            <mat-label>Importe mensual*</mat-label>
+                <mat-icon matPrefix>payments</mat-icon>
+                    <input matInput formControlName="importeMensual" inputmode="decimal">
+                    <mat-error *ngIf="form.get('importeMensual')?.hasError('required')">El importe mensual es requerido </mat-error>
+        </mat-form-field>
+    
+        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+            <mat-label>Desde*</mat-label>
+                <mat-icon matPrefix>calendar_today</mat-icon>
+                    <input matInput formControlName="qnaDesde" readonly>
+                    <mat-error *ngIf="form.hasError('qnaMenorActual')">No puede ser menor a la quincena actual</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+            <mat-label>Hasta*</mat-label>
+                <mat-icon matPrefix>calendar_today</mat-icon>
+                    <input matInput formControlName="qnaHasta" maxlength="6"  pattern="[0-9]*">
+                        <mat-error *ngIf="form.hasError('qnaMenorActual')">No puede ser menor a la quincena actual</mat-error>
+                        <mat-error *ngIf="form.hasError('rangoInvalido')"> La QNA final no puede ser menor que la inicial</mat-error>
+        </mat-form-field>
+        </div>
+    </mat-dialog-content>
+
+    <div class="dlg-actions">
+        <button class="btn btn-primary" (click)="guardar()">Guardar</button>
+        <button class="btn btn-danger" (click)="cerrar()">Cancelar</button>
+    </div>
+</div>

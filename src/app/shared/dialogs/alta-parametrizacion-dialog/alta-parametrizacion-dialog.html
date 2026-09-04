@@ -1,0 +1,59 @@
+<div class="dialog-shell">
+    <div class="dialog-header dlg-bar">
+        <div class="dlg-bar-title"> {{ mode === 'update' ? 'Detalle de parametros' : 'Agregar parametros' }}</div>
+         <button mat-icon-button class="dialog-close" (click)="close()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    
+     <div class="dlg-content">
+        
+        <div class="section-divider"></div>
+
+        <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-conten">
+            <div class="form-grid">
+
+
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator full-width" floatLabel="always">
+                <mat-label>AÑO</mat-label>
+                    <mat-icon matPrefix>calendar_today</mat-icon>
+                        <input matInput formControlName="anio" type="number" placeholder="Ej. 2025"/>
+                        <mat-error *ngIf="form.get('anio')?.hasError('required')">El año es requerido</mat-error>
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>IMPORTE DIARIO</mat-label>
+                    <mat-icon matPrefix>payments</mat-icon>
+                        <input matInput formControlName="importeDiario" type="number" placeholder="0.00"/>
+                        <mat-error *ngIf="form.get('importeDiario')?.hasError('required')">El importe diario es requerido</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>IMPORTE MENSUAL</mat-label>
+                    <mat-icon matPrefix>paid</mat-icon>
+                        <input matInput formControlName="importeMensual" type="number" placeholder="0.00"/>
+                        <mat-error *ngIf="form.get('importeMensual')?.hasError('required')">El importe mensual es requerido</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>QNA INICIO</mat-label>
+                    <mat-icon matPrefix>event_available</mat-icon>
+                        <input matInput formControlName="qnaInicio" type="number" placeholder="Ej. 202501"/>
+                        <mat-error *ngIf="form.get('qnaInicio')?.hasError('required')">La QNA inicio es requerida</mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-label>QNA FIN</mat-label>
+                    <mat-icon matPrefix>event_busy</mat-icon>
+                        <input matInput formControlName="qnaFin" type="number" placeholder="Ej. 202524"/>
+                        <mat-error *ngIf="form.get('qnaFin')?.hasError('required')">La QNA fin es requerida</mat-error>
+            </mat-form-field>
+             </div>
+        </mat-dialog-content>
+
+        <div class="dlg-actions">
+            <button class="btn btn-danger" (click)="close()">Cancelar</button>
+            <button class="btn btn-succes" (click)="guardar()"> {{ mode === 'update' ? 'Aceptar' : 'Guardar' }}</button>
+        </div>
+     </div>
+</div>

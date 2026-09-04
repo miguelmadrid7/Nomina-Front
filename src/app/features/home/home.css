@@ -1,0 +1,86 @@
+/* Shell debajo del header fijo de 64px */
+.home-shell {
+  height: calc(100vh - 64px);
+  display: flex;
+  min-height: 0;            
+}
+
+/* Columna central scrolleable */
+.content-shell {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;           
+  overflow: auto;           
+  padding-top: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Evita cualquier separación visual del header respecto al divider */
+.content-shell > header.navbar {
+  margin: 0;
+  border-radius: 0;
+}
+
+/* El wrapper del contenido de rutas no debe cortar */
+.content-shell > .container-fluid {
+  min-height: 0;        
+}
+
+.home-shell{
+  height: calc(100vh - 64px);
+  display: flex;
+}
+
+.sidebar-wrapper{
+  width: 280px;
+  flex-shrink: 0;
+  transition: width 0.3s ease;
+}
+
+.sidebar-collapsed .sidebar-wrapper{
+  width: 80px;
+}
+
+.content-shell{
+  flex: 1;
+  overflow: auto;
+}
+
+
+.page-header{
+  background:#f6f7fb;
+  border-bottom:1px solid #e5e7eb;
+}
+
+.page-title{
+  font-size:22px;
+  font-weight:600;
+}
+
+.breadcrumb{
+  font-size:14px;
+}
+
+.breadcrumb a{
+  text-decoration:none;
+  color:#6c757d;
+}
+
+
+.offcanvas {
+  background-color: #491D2A;
+  color: #fff;
+  width: 280px !important; 
+}
+
+.offcanvas .offcanvas-body {
+  padding: 0 !important;
+}
+
+/* Fuerza al sidebar interno a ocupar todo el ancho */
+.offcanvas sidebar,
+.offcanvas app-sidebar {
+  width: 100% !important;
+  min-width: 100% !important;
+}

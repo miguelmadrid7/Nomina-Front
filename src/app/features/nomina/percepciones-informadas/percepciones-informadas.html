@@ -1,0 +1,208 @@
+<div class="page-container">
+    <div class="page-header">
+        <h2 class="page-title">Carga de percepciones informadas</h2>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="row" [formGroup]="searchForm">
+        <mat-form-field appearance="outline" class="with-separator compact-field qna-compact qna-field-short" floatLabel="always">
+            <mat-icon matPrefix>event</mat-icon>
+            <mat-label>Quincena activa</mat-label>
+            <input matInput
+                readonly
+                [value]="cargandoQna
+                    ? 'Cargando...'
+                    : (calendarioActual
+                        ? calendarioActual.qna.toString().padStart(2, '0') + ' / ' + calendarioActual.ejercicio
+                        : 'No disponible')"/>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+            <mat-icon matPrefix>account_balance</mat-icon>
+                <mat-label>Concepto:</mat-label>
+                <mat-select formControlName="concepto">
+                    <mat-option value="ME">ME</mat-option>
+                    <mat-option value="MG">MG</mat-option>
+                    <mat-option value="VM">VM</mat-option>
+                    <mat-option value="37">37</mat-option>
+                    <mat-option value="TP">TP</mat-option>
+                    <mat-option value="OA">OA</mat-option>
+                    <mat-option value="OL">OL</mat-option>
+                    <mat-option value="TE">TE</mat-option>
+                    <mat-option value="7S">7S</mat-option>
+                    <mat-option value="24">24</mat-option>
+                </mat-select>
+        </mat-form-field>
+
+        <div class="file-upload-group">
+            <label class="mat-body-2">Cargar layout:</label>
+            <input 
+                #fileInput
+                type="file" 
+                accept=".xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" 
+                (change)="onExcelSelected($event)">
+        </div>
+    </div>   
+
+    <mat-card class="info-card">
+            <div class="info-card__header">
+                <mat-icon>info</mat-icon>
+                <span>Antes de cargar tu archivo</span>
+            </div>
+            <p class="info-card__text"> El archivo Excel debe contener exactamente las siguientes columnas: </p>
+                <div class="info-card__chips">
+                    @for (column of requiredColumns; track column) {
+                        <span class="info-card__chip">{{ column }}</span>
+                    }
+                </div>
+    </mat-card>
+    
+    <div class="actions-right">
+        <div class="btn-group">
+            <button class="btn btn-upload" [disabled]="!selecteExcelFile" (click)="onAceptBotton()">
+                <mat-icon>upload_file</mat-icon>
+                    Cargar
+            </button>
+        </div>
+        
+        <button class="btn btn-edit" [disabled]="isValidatingLote || totalRecordsCount === 0" (click)="onRevalidarLote()">
+            <mat-icon>{{ isValidatingLote ? 'sync' : 'fact_check' }}</mat-icon>
+            {{ isValidatingLote ? 'Validando...' : 'Revalidar' }}
+        </button>
+        
+        <button class="btn btn-success" [disabled]="isProcessingPayroll || yaSeProceso || totalRecordsCount === 0" (click)="onProcessPayroll()"> 
+            <mat-icon>{{ isProcessingPayroll ? 'sync' : 'send' }}</mat-icon>
+                {{ isProcessingPayroll ? 'Procesando...' : 'Procesar' }} 
+        </button>
+       
+        <button class="btn btn-download" [disabled]="!resultAvalible" (click)="onDownloadResult()"> 
+            <mat-icon>download</mat-icon>
+                Descargar 
+        </button>
+    </div>
+    
+    <mat-card class="form-card" [formGroup]="searchForm">
+        <div class="global-search">
+            <mat-form-field appearance="outline" class="with-separator qna-compact search-field" floatLabel="always">
+                <mat-icon matPrefix>search</mat-icon>
+                <mat-label>Buscar CURP, RFC</mat-label>
+                    <input matInput
+                        id="buscarEmpleado"
+                        formControlName="searchText"
+                        [matAutocomplete]="auto"
+                        #autocompleteTrigger="matAutocompleteTrigger"
+                        appUppercase/>
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event.option.value)">
+                        <mat-option *ngFor="let emp of resultados" [value]="emp"> {{ emp?.rfc || '—' }} · {{ emp?.curp || '—' }}</mat-option>
+                    </mat-autocomplete>
+            </mat-form-field>
+        </div>
+
+        @if (totalRecordsCount > 0) {
+            <p class="validation-summary">{{ validationSummaryText }}</p>
+        }
+
+        <div class="table-container">
+            <div class="table-card">
+
+                @if (isValidatingLote) {
+                    <div class="table-loading-overlay">
+                        <mat-spinner diameter="40"></mat-spinner>
+                        <span>Revalidando registros...</span>
+                    </div>
+                }
+                <div class="table-content">
+                    <div class="table-scroll">
+                        <table mat-table [dataSource]="dataSource" class="table-global">
+                            
+                            <ng-container matColumnDef="rfc">
+                                <th mat-header-cell *matHeaderCellDef class="col-md col-center">  RFC </th>
+                                <td mat-cell *matCellDef="let e" class="col-md col-center">{{ e.rfc }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="curp">
+                                <th mat-header-cell *matHeaderCellDef class="col-md col-center"> CURP </th>
+                                <td mat-cell *matCellDef="let e" class="col-md col-center">{{ e.curp }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="nombreTrabajador">
+                                <th mat-header-cell *matHeaderCellDef class="col-md col-center"> EMPLEADO </th>
+                                <td mat-cell *matCellDef="let e" class="col-md col-center">{{ e.nombreTrabajador }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="cantidad">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> CANTIDAD </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                                    @if (editingRowId === e.id) {
+                                        <input class="cantidad-edit-input" type="number" min="1" [value]="e.cantidad"
+                                            (blur)="onQuantityChange(e, $any($event.target).value)"
+                                            (keydown.enter)="onQuantityChange(e, $any($event.target).value)"
+                                            (click)="$event.stopPropagation()"/>
+                                    } @else {
+                                        <span>{{ e.cantidad }}</span>
+                                    }
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="importe">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> IMPORTE </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.importe * e.cantidad | number:'1.2-2'}}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="estatus">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> ESTATUS </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                                    <span class="estatus-badge" [ngClass]="{
+                                        'estatus-aceptado': e.estatus === 'ACEPTADO',
+                                        'estatus-rechazado': e.estatus === 'RECHAZADO',
+                                        'estatus-pendiente': !e.estatus
+                                    }">
+                                        {{ e.estatus ?? 'PENDIENTE' }}
+                                    </span>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="observaciones">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> OBSERVACIONES </th>
+                                    <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                                        @if (e.motivoRechazo) {
+                                            <span class="observacion-text">{{ e.motivoRechazo }}</span>
+                                        } @else {
+                                            <span class="observacion-empty">—</span>
+                                        }
+                                    </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="acciones">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> ACCIONES </th>
+                                    <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                                        <div class="actions-row">
+                                            <button class="btnn btn-primary" type="button" (click)="onPersonalitedQuantity(e); $event.stopPropagation()">
+                                                <mat-icon>edit</mat-icon>
+                                            </button>
+                                            <button class="btnn btn-danger" type="button" (click)="onDeleteRecord(e); $event.stopPropagation()">
+                                                <mat-icon>delete</mat-icon>
+                                            </button>
+                                        </div>
+                                    </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.row-selected]="selectedRowId === row.id" (click)="onRowSelected(row)"></tr>
+                        </table>
+
+                    </div>
+                    <div class="table-footer">
+                        <mat-paginator
+                            [length]="totalElements"
+                            [pageSize]="50"
+                            [pageSizeOptions]="[50, 100, 150, 200]"
+                            showFirstLastButtons>
+                        </mat-paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card>
+</div>

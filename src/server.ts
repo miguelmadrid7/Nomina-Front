@@ -1,3 +1,9 @@
+import 'zone.js/node';
+// Polyfills required for Vite SSR
+if (process.env['NODE_ENV'] === 'development') {
+  await import('./polyfills');
+}
+
 import {
   AngularNodeAppEngine,
   createNodeRequestHandler,

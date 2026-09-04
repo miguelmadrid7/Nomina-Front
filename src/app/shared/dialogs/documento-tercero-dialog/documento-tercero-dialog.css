@@ -1,0 +1,132 @@
+/* Dialog structure */
+.dialog-shell {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.dialog-header {
+  position: relative;
+  background: var(--brand);
+  color: #fff;
+  padding: 25px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Centra el contenido */
+}
+
+
+/* Titulo modal */
+.dlg-bar-title {
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+}
+        
+.dialog-content {
+    padding: 16px;
+}
+
+.documentos-list {
+   margin-top: 16px;
+}
+        
+.documento-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+        
+.documento-item:hover {
+     background-color: #f5f5f5;
+}
+        
+.documento-info {
+    flex: 1;
+    margin-left: 12px;
+}
+        
+.documento-nombre {
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+        
+.documento-detalles {
+    font-size: 12px;
+    color: #666;
+}
+        
+.download-icon {
+    color: #1976d2;
+}
+        
+        .no-documentos {
+            text-align: center;
+            padding: 32px;
+            color: #666;
+        }
+        
+        .no-documentos mat-icon {
+            font-size: 48px;
+            width: 48px;
+            height: 48px;
+            margin-bottom: 16px;
+        }
+
+        
+.form-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  align-items: start;
+  justify-content: start;
+}
+
+
+.dialog-close {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Dialog content - SIN display: grid */
+.dlg-content {
+  padding: 14px 16px;
+  max-height: calc(80vh - 120px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg);
+  flex: 1;
+}
+
+
+.dlg-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  background: #fff;
+  flex-shrink: 0;
+}
