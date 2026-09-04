@@ -11,21 +11,9 @@
   letter-spacing: 0.4px;
 }
 
-/* --- Styles about row --- */
-.table-global .row-closed .badge-year {
-  color: #94a3b8;
-}
-
 @media (max-width: 768px) {
   .table-global {
     min-width: 680px;
-  }
-
-  .btn-group {
-    display: inline-flex;
-    width: auto;
-    flex: 0 0 auto;
-    align-self: flex-start;
   }
 
   .btn {
