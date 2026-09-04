@@ -45,6 +45,9 @@ export class GestionParametrizacion implements OnInit, AfterViewInit, OnDestroy 
   ];
 
   totalElements = 0;
+  totalRegisters = 0;
+  pageSize = 10;
+  pageIndex = 0;
   loading = false;
 
   ngOnInit(): void {

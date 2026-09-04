@@ -19,11 +19,6 @@
     min-width: 650px;
   }
 
-  .table-global .mat-column-actions {
-    width: 100px;
-    min-width: 100px;
-  }
-
   .amount-label {
     display: none;
   }
