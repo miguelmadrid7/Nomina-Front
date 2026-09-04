@@ -3,12 +3,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { IconoDialog } from '../../../shared/dialogs/alta-icono-dialog/alta-icono-dialog';
 import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-gestion-icono',
   standalone: true,
   imports: [
     MatIconModule,
+    MatTableModule,
+    MatPaginatorModule,
   ],
   templateUrl: './gestion-icono.html',
   styleUrl: './gestion-icono.css'
