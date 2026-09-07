@@ -41,7 +41,7 @@
                         placeholder="Buscar dentro del log..." />
         </mat-form-field>
         <div class="qna-filters">
-            <mat-form-field appearance="outline" class="compact-field" floatLabel="always">
+            <mat-form-field appearance="outline" class="qna-compact" floatLabel="always">
                 <mat-label>Fecha</mat-label>
                     <mat-select [(ngModel)]="selectedDate" (selectionChange)="loadLog()">
                         @for (date of availableDates; track date) {
@@ -49,7 +49,7 @@
                         }
                     </mat-select>
                 </mat-form-field>
-                <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
+                <mat-form-field appearance="outline" class="qna-compact" floatLabel="always">
                     <mat-label>Tipo de log</mat-label>
                         <mat-select [(ngModel)]="selectedType" (selectionChange)="loadLog()">
                             <mat-option value="application"> Application </mat-option>
