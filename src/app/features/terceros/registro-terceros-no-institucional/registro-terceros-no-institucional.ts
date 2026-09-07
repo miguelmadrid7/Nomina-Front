@@ -64,84 +64,84 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
   private readonly toastService = inject(ToastService);
 
   ngOnInit() {
-  this.form = this.fb.group({ 
-    anio: [new Date().getFullYear()],
-    busqueda: this.fb.group({
-      searchText: ['', [Validators.required, Validators.maxLength(60), searchEmployeeValidator()]],
-      concepto: [null, [Validators.required]],
-    }),
-  });
-  this.conceptosOptions$ = this.conceptoAccesoService.getConceptosPermitidos().pipe(
-    switchMap((permitidos: string[]) =>
-      this.terceroService.obtenerConceptos().pipe(
-        map((rows: any[]) => {
-          const input = rows ?? [];
-
-          const filtered = (!permitidos || permitidos.length === 0)
-            ? input
-            : (() => {
-                const allowed = new Set(permitidos.map((c: string) => c.trim().toUpperCase()));
-                return input.filter((r: any) => allowed.has((r?.cve ?? '').trim().toUpperCase()));
-              })();
-
-          const uniq = new Map<string, any>();
-          for (const r of filtered) {
-            const key = `${(r?.cve ?? '').trim().toUpperCase()}|${(r?.percDed ?? '').trim().toUpperCase()}`;
-            if (!uniq.has(key)) uniq.set(key, r);
-          }
-          return Array.from(uniq.values());
-        }),
-        tap((rows: any[]) => {
-          const permitidosLen = permitidos?.length ?? 0;
-          if (permitidosLen === 1 && (rows?.length ?? 0) === 1) {
-            this.conceptoUnicoPermitido = rows[0] ?? null;
-            this.form.get('busqueda.concepto')?.setValue(rows[0]?.cve ?? null, { emitEvent: false });
-            this.form.get('busqueda.concepto')?.disable({ emitEvent: false });
-          } else {
-            this.conceptoUnicoPermitido = null;
-          }
-        })
-      )
-    )
-  );
-
-
-    // Cargar calendario inicial con el año actual
-    const anioInicial = this.form.get('anio')?.value ?? new Date().getFullYear();
-    this.terceroService.getCalendarioRecepcion(anioInicial).subscribe({
-      next: (rows) => {
-        this.calendarioRecepcion = rows ?? [];
-      },
-      error: () => {
-        this.toastService.error('Operación invalida', 'No se pudo cargar el calendario de recepción', 6000);
-      },
+    this.form = this.fb.group({ 
+      anio: [new Date().getFullYear()],
+      busqueda: this.fb.group({
+        searchText: ['', [Validators.required, Validators.maxLength(60), searchEmployeeValidator()]],
+        concepto: [null, [Validators.required]],
+      }),
     });
+    this.conceptosOptions$ = this.conceptoAccesoService.getConceptosPermitidos().pipe(
+      switchMap((permitidos: string[]) =>
+        this.terceroService.obtenerConceptos().pipe(
+          map((rows: any[]) => {
+            const input = rows ?? [];
 
-    // Suscribirse a cambios futuros del año
-    this.form.get('anio')?.valueChanges.subscribe(anioSeleccionado => {
-      const anio = anioSeleccionado ?? new Date().getFullYear();
-      this.terceroService.getCalendarioRecepcion(anio).subscribe({
+            const filtered = (!permitidos || permitidos.length === 0)
+              ? input
+              : (() => {
+                  const allowed = new Set(permitidos.map((c: string) => c.trim().toUpperCase()));
+                  return input.filter((r: any) => allowed.has((r?.cve ?? '').trim().toUpperCase()));
+                })();
+
+            const uniq = new Map<string, any>();
+            for (const r of filtered) {
+              const key = `${(r?.cve ?? '').trim().toUpperCase()}|${(r?.percDed ?? '').trim().toUpperCase()}`;
+              if (!uniq.has(key)) uniq.set(key, r);
+            }
+            return Array.from(uniq.values());
+          }),
+          tap((rows: any[]) => {
+            const permitidosLen = permitidos?.length ?? 0;
+            if (permitidosLen === 1 && (rows?.length ?? 0) === 1) {
+              this.conceptoUnicoPermitido = rows[0] ?? null;
+              this.form.get('busqueda.concepto')?.setValue(rows[0]?.cve ?? null, { emitEvent: false });
+              this.form.get('busqueda.concepto')?.disable({ emitEvent: false });
+            } else {
+              this.conceptoUnicoPermitido = null;
+            }
+          })
+        )
+      )
+    );
+
+
+      // Cargar calendario inicial con el año actual
+      const anioInicial = this.form.get('anio')?.value ?? new Date().getFullYear();
+      this.terceroService.getCalendarioRecepcion(anioInicial).subscribe({
         next: (rows) => {
           this.calendarioRecepcion = rows ?? [];
-      },
-      error: () => {
-        this.toastService.error('Operación invalida', 'No se pudo cargar el calendario de recepción', 6000);
-      },
+        },
+        error: () => {
+          this.toastService.error('Operación invalida', 'No se pudo cargar el calendario de recepción', 6000);
+        },
       });
-    });
-    }
 
-    ngAfterViewInit(): void {
-      setTimeout(() => {
-        if (this.paginator) {
-          this.dataSource.paginator = this.paginator;
-        }
-      }, 0);
-    }
+      // Suscribirse a cambios futuros del año
+      this.form.get('anio')?.valueChanges.subscribe(anioSeleccionado => {
+        const anio = anioSeleccionado ?? new Date().getFullYear();
+        this.terceroService.getCalendarioRecepcion(anio).subscribe({
+          next: (rows) => {
+            this.calendarioRecepcion = rows ?? [];
+        },
+        error: () => {
+          this.toastService.error('Operación invalida', 'No se pudo cargar el calendario de recepción', 6000);
+        },
+        });
+      });
+  }
 
-    ngOnDestroy () {
-      this.dialog.closeAll();
-    }
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      if (this.paginator) {
+        this.dataSource.paginator = this.paginator;
+      }
+    }, 0);
+  }
+
+  ngOnDestroy () {
+    this.dialog.closeAll();
+  }
 
   private getCurrentQna(): { anio: number; qna: number; aaaaqq: number } {
     const now = new Date();
@@ -349,7 +349,7 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
         this.terceroService.registrarNp(payload).subscribe({
           next: (res: any) => {
             if (res?.success) {
-              this.toastService.warning('Operación exitosa', 'Se guardó correctamente.', 6000);
+              this.toastService.success('Operación exitosa', 'Se guardó correctamente.', 6000);
               return;
             }
             const msg = res?.message || 'Error al guardar';
