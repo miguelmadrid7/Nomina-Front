@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NominaRow } from '../../../core/model/nomina-Row.model';
 import { CommonModule } from '@angular/common';
@@ -11,11 +11,11 @@ import { LoaderService } from '../../../core/services/loader.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { finalize } from 'rxjs';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import { DocumentoTerceroDialog } from '../../../shared/dialogs/documento-tercero-dialog/documento-tercero-dialog';
 import { MatDialog } from '@angular/material/dialog';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-consulta-terceros',
@@ -65,11 +65,10 @@ export class ConsultaTerceros implements OnDestroy {
 
   private readonly fb = inject(FormBuilder);
   private readonly cd = inject(ChangeDetectorRef);
-  private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
-  private readonly zone = inject(NgZone);
   private readonly terceroService = inject(TerceroService);
   private readonly loaderService = inject(LoaderService);
+  private readonly toastService = inject(ToastService);
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -111,14 +110,6 @@ export class ConsultaTerceros implements OnDestroy {
     this.dialog.closeAll();
   }
 
-  private showSnack(message: string, action: string, duration: number): void {
-    this.zone.runOutsideAngular(() => {
-      setTimeout(() => {
-        this.zone.run(() => this.snackBar.open(message, action, { duration }));
-      }, 50);
-    });
-  }
-
   buscar(): void {
     this.pageIndex = 0;
     this.paginator?.firstPage();
@@ -157,8 +148,8 @@ export class ConsultaTerceros implements OnDestroy {
 
       this.cd.detectChanges();
     },
-    error: (err) => {
-      console.error('Error al cargar conceptos:', err);
+    error: () => {
+      this.toastService.error('Operación invalida', 'Error al cargar los conceptos.', 6000);
     }
   });
   }
@@ -227,14 +218,13 @@ export class ConsultaTerceros implements OnDestroy {
     const qnaProceso = this.buildQnaProceso();
 
     if (!concepto) {
-      this.snackBar.open('Selecciona un concepto', 'Cerrar', { duration: 4000 });
+      this.toastService.error('Operación invalida', 'Selecciona un concepto.', 6000);
       return;
     }
     if (!qnaProceso) {
-      this.snackBar.open('Selecciona año y quincena', 'Cerrar', { duration: 4000 });
+      this.toastService.error('Operación invalida', 'Selecciona año y quincena.', 6000);
       return;
     }
-
     this.loaderService.show();
     this.terceroService.descargarRegistrosNpExcel(qnaProceso, concepto)
       .pipe(finalize(() => this.loaderService.hide()))
@@ -242,7 +232,7 @@ export class ConsultaTerceros implements OnDestroy {
         next: (blob) => this.downloadBlob(blob, `registros_np_${concepto}_${qnaProceso}.xlsx`),
         error: (err) => {
           const msg = err?.error?.message || err?.message || 'Error al descargar Excel';
-          this.snackBar.open(msg, 'Cerrar', { duration: 4000 });
+          this.toastService.error('Operación invalida', msg, 6000);
         }
       });
   }
@@ -252,11 +242,11 @@ export class ConsultaTerceros implements OnDestroy {
     const qnaProceso = this.buildQnaProceso();
 
     if (!concepto) {
-      this.snackBar.open('Selecciona un concepto', 'Cerrar', { duration: 4000 });
+      this.toastService.error('Operación invalida', 'Selecciona un concepto.', 6000);
       return;
     }
     if (!qnaProceso) {
-      this.snackBar.open('Selecciona año y quincena', 'Cerrar', { duration: 4000 });
+      this.toastService.error('Operación invalida', 'Selecciona año y quincena.', 6000);
       return;
     }
 
@@ -267,14 +257,14 @@ export class ConsultaTerceros implements OnDestroy {
         next: (blob) => this.downloadBlob(blob, `registros_np_${concepto}_${qnaProceso}.pdf`),
         error: (err) => {
           const msg = err?.error?.message || err?.message || 'Error al descargar PDF';
-          this.snackBar.open(msg, 'Cerrar', { duration: 4000 });
+          this.toastService.error('Operación invalida', msg, 6000);
         }
       });
   }
 
   verDocumentos(row: any) {
     if (!row.tabEmpleadoId) {
-        this.showSnack('No se encontró ID del empleado', 'Cerrar', 4000);
+        this.toastService.error('Operación invalida', 'No se encontró ID del empleado.', 6000);
         return;
     }
 
@@ -283,11 +273,11 @@ export class ConsultaTerceros implements OnDestroy {
             if (res?.success && res?.data?.length > 0) {
                 this.mostrarListaDocumentos(res.data, row);
             } else {
-                this.showSnack('No se encontraron documentos para este empleado', 'Cerrar', 4000);
+              this.toastService.error('Operación invalida', 'No se encontraron documentos para este empleado.', 6000);
             }
         },
         error: () => {
-            this.showSnack('Error al obtener documentos', 'Cerrar', 4000);
+          this.toastService.error('Operación invalida', 'Error al obtener documentos.', 6000);
         }
     });
   }
@@ -322,7 +312,7 @@ export class ConsultaTerceros implements OnDestroy {
             window.URL.revokeObjectURL(url);
         },
         error: () => {
-            this.showSnack('Error al descargar documento', 'Cerrar', 4000);
+          this.toastService.error('Operación invalida', 'Error al descargar documento.', 6000);
         }
     });
   }
@@ -352,8 +342,8 @@ export class ConsultaTerceros implements OnDestroy {
               }
             this.conteoPorConcepto = map;
           },
-            error: (err) => {
-              console.error('Error conteos por concepto', err);
+            error: () => {
+              this.toastService.error('Operación invalida', 'Error conteos por concepto.', 6000);
               this.conteoPorConcepto.clear();
             }
           });
@@ -433,7 +423,7 @@ export class ConsultaTerceros implements OnDestroy {
           err?.message ||
           'Error al cargar registros NP';
 
-        this.snackBar.open(msg, 'Cerrar', { duration: 4000 });
+        this.toastService.error('Operación invalida', msg, 6000);  
       }
     });
   }
