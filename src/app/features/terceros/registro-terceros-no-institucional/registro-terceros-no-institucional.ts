@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild, NgZone, inject, OnDestroy } from '@angular/core';
+import { Component, ViewChild, inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,11 +10,9 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { TerceroService } from '../../../core/services/tercero.service';
 import { NominaRow } from '../../../core/model/nomina-Row.model';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import { AltaTercerosNoInstitucionalesDialog } from '../../../shared/dialogs/alta-terceros-no-institucionales-dialog/alta-terceros-no-institucionales-dialog';
-import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { EmpleadoItem } from '../../../core/model/emplado.model';
 import { Observable, tap, map, switchMap } from 'rxjs';
 import { MatOptionModule } from '@angular/material/core';
@@ -22,6 +20,7 @@ import { ConceptoAccesoService } from '../../../core/services/concepto-acceso.se
 import { searchEmployeeValidator } from '../../../shared/validators/validaciones.validators';
 import { CalendarioRecepcion } from '../../../core/model/calendario-recepcion.model';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-terceros',
@@ -59,13 +58,12 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
   calendarioRecepcion: CalendarioRecepcion[] = [];
 
   private readonly fb = inject(FormBuilder);
-  private readonly snackBar = inject(MatSnackBar);
-  private readonly zone = inject(NgZone);
   private readonly dialog = inject(MatDialog);
   private readonly terceroService = inject(TerceroService);
   private readonly conceptoAccesoService = inject(ConceptoAccesoService);
+  private readonly toastService = inject(ToastService);
 
-    ngOnInit() {
+  ngOnInit() {
   this.form = this.fb.group({ 
     anio: [new Date().getFullYear()],
     busqueda: this.fb.group({
@@ -115,7 +113,7 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
         this.calendarioRecepcion = rows ?? [];
       },
       error: () => {
-        this.showSnack('No se pudo cargar el calendario de recepción', 'Cerrar', 4000);
+        this.toastService.error('Operación invalida', 'No se pudo cargar el calendario de recepción', 6000);
       },
     });
 
@@ -127,7 +125,7 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
           this.calendarioRecepcion = rows ?? [];
       },
       error: () => {
-        this.showSnack('No se pudo cargar el calendario de recepción', 'Cerrar', 4000);
+        this.toastService.error('Operación invalida', 'No se pudo cargar el calendario de recepción', 6000);
       },
       });
     });
@@ -144,14 +142,6 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
     ngOnDestroy () {
       this.dialog.closeAll();
     }
-
-  private showSnack(message: string, action: string, duration: number): void {
-    this.zone.runOutsideAngular(() => {
-      setTimeout(() => {
-        this.zone.run(() => this.snackBar.open(message, action, { duration }));
-      }, 50);
-    });
-  }
 
   private getCurrentQna(): { anio: number; qna: number; aaaaqq: number } {
     const now = new Date();
@@ -196,13 +186,13 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
     if (!texto) {
       this.resultado = [];
       this.autocompleteTrigger?.closePanel();
-      this.showSnack('Captura un criterio de busqueda', 'Cerrar', 4000);
+      this.toastService.warning('Operación invalida', 'Captura un criterio de busqueda.', 6000);
       return;
     }
     if (texto.length < 3) {
       this.resultado = [];
       this.autocompleteTrigger?.closePanel();
-      this.showSnack('Captura almenos 3 caractares para buscar', 'Cerrar', 4000);
+      this.toastService.warning('Operación invalida', 'Captura almenos 3 caractares para buscar.', 6000);
       return;
     }
 
@@ -234,7 +224,7 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
       error: () => {
         setTimeout(() => {
           this.cargandoBusqueda = false;
-          this.showSnack('Error en la busqueda', 'Cerrar', 4000);
+          this.toastService.warning('Operación invalida', 'Error en la busqueda.', 6000);
         }, 0);
       }
     });
@@ -300,17 +290,17 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
     
 
     if (!this.calendarioRecepcion || this.calendarioRecepcion.length === 0) {
-      this.showSnack('Calendario de recepción no cargado aún', 'Cerrar', 4000);
+      this.toastService.warning('Operación invalida', 'Calendario de recepción no cargado aún.', 6000);
       return;
     }
 
     if (!row?.rfc) {
-      this.showSnack('Selecciona un empleado válido', 'Cerrar', 4000);
+      this.toastService.warning('Operación invalida', 'Selecciona un empleado válido.', 6000);
       return;
     }
 
     if (!conceptoSeleccionado) {
-      this.showSnack('Selecciona un concepto', 'Cerrar', 4000);
+      this.toastService.warning('Operación invalida', 'Selecciona un concepto.', 6000);
       return;
     }
 
@@ -327,9 +317,7 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
 
     const qnaRecepcionSugerida = this.sugerirQnaRecepcion(this.calendarioRecepcion) ?? this.getCurrentQna().aaaaqq;
     const qnaProceso = this.getCurrentQna().aaaaqq;
-
     const qnaDesde = qnaRecepcionSugerida;
-
     const dialogRef = this.dialog.open(AltaTercerosNoInstitucionalesDialog, {
       width: '1200px',
       maxWidth: '92vw',
@@ -361,21 +349,14 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
         this.terceroService.registrarNp(payload).subscribe({
           next: (res: any) => {
             if (res?.success) {
-              this.dialog.open(PensionAlimenDialog, {
-                width: '500px',
-                disableClose: true,
-                data: {
-                  mensaje: 'Se guardó correctamente'
-                }
-              });
+              this.toastService.warning('Operación exitosa', 'Se guardó correctamente.', 6000);
               return;
             }
-
             const msg = res?.message || 'Error al guardar';
-            this.showSnack(msg, 'Cerrar', 5000);
+            this.toastService.error('Operación invalida', msg, 6000);
           },
           error: () => {
-            this.showSnack('Error al guardar', 'Cerrar', 4000);
+            this.toastService.error('Operación invalida', 'Error al guardar.', 6000);
           }
         });
     });
