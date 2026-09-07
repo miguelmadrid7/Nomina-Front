@@ -1,31 +1,6 @@
 
-.bttn-group {
-    display: flex;
-    gap: 10px;  
-    align-items: center;
-    justify-content: center;
-}
 
-.bttn {
-    width: 40px;
-    height: 36px;
-    padding: 0 5px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    text-transform: none;
-    letter-spacing: .2px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    box-shadow: none !important;
-    transition: all .18s ease;
-    cursor: pointer;
-    position: relative;
-    background: transparent;
-    border: 2px solid;
-}
+
 
 
 .ico-btn-danger {
@@ -62,23 +37,6 @@
 .search-field.date {
     width: 100px;
 }
-
-/* TABLA GLOBAL */
-.table-global {
-    width: 100%;
-}
-
-.table-global .mat-mdc-header-cell {
-    vertical-align: middle !important;
-    padding: 10px 8px !important;
-}
-
-/* COLUMNAS DE TABLA */
-
-
-
-
-
 
 /* HEADERS CON SELECTS */
 .header-column {
@@ -230,21 +188,5 @@
         width: 100% !important;
         min-width: unset !important;
         max-width: unset !important;
-    }
-
-    /* Botones en fila completa */
-    .actions-right {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .btn-group,
-    .actions-right > button {
-        width: 100%;
-    }
-
-    .btn {
-        width: 100%;
-        justify-content: center;
     }
 }
