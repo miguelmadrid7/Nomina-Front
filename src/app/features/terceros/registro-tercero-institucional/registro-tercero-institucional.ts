@@ -1,23 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, inject, NgZone, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { UppercaseDirective } from '../../../shared/directives/upperCase.directivas';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { EmpleadoItem } from '../../../core/model/emplado.model';
 import { TerceroService } from '../../../core/services/tercero.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { NominaRow } from '../../../core/model/nomina-Row.model';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatInputModule } from '@angular/material/input';
-import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { AltaTerceroInstitucionalDialog } from '../../../shared/dialogs/alta-tercero-institucional-dialog/alta-tercero-institucional-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { ConceptoAccesoService } from '../../../core/services/concepto-acceso.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-registro-tercero-institucional',
@@ -51,22 +50,12 @@ export class RegistroTerceroInstitucional implements OnDestroy {
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
 
-
   private readonly fb = inject(FormBuilder);
-  private readonly snackBar = inject(MatSnackBar);
-  private readonly zone = inject(NgZone);
   private readonly cd = inject(ChangeDetectorRef);
   private readonly dialog = inject(MatDialog);
   private readonly terceroService = inject(TerceroService);
   private readonly conceptoAccesoService = inject(ConceptoAccesoService);
-
-  private showSnack(message: string, action: string, duration: number): void {
-    this.zone.runOutsideAngular(() => {
-      setTimeout(() => {
-        this.zone.run(() => this.snackBar.open(message, action, { duration }));
-      }, 50);
-    });
-  }
+  private readonly toastService = inject (ToastService);
 
   ngOnInit() {
      this.form = this.fb.group({ 
@@ -110,14 +99,14 @@ export class RegistroTerceroInstitucional implements OnDestroy {
       if (!texto) {
         this.resultado = [];
         this.autocompleteTrigger?.closePanel();
-        this.showSnack('Captura un criterio de busqueda', 'Cerrar', 4000);
+        this.toastService.warning('Warning', 'Captura un criterio de busqueda', 6000);
         return;
       }
 
       if (texto.length < 3) {
         this.resultado = [];
         this.autocompleteTrigger?.closePanel();
-        this.showSnack('Captura almenos 3 caractares para buscar', 'Cerrar', 4000);
+        this.toastService.warning('Warning', 'Captura almenos 3 caractares para buscar', 6000);
         return;
       }
   
@@ -145,7 +134,7 @@ export class RegistroTerceroInstitucional implements OnDestroy {
         },
         error: () => {
           this.cargandoBusqueda = false;
-          this.showSnack('Error en la busqueda', 'Cerrar', 4000);
+          this.toastService.error('Operación invalida', 'Error en la busqueda', 6000);
         }
       });
   }
@@ -246,59 +235,34 @@ export class RegistroTerceroInstitucional implements OnDestroy {
         req$.subscribe({
           next: () => {
             this.buscarRegistrosNp(this.paginator?.pageIndex ?? 0, this.paginator?.pageSize ?? 50);
-            this.dialog.open(PensionAlimenDialog, {
-              width: '500px',
-              disableClose: true,
-              data: {
-                type: 'success',
-                title: 'Éxito',
-                message: row?.id ? 'Se actualizó correctamente' : 'Se guardó correctamente'
-              }
-            });
+            this.toastService.success('Operación exitosa', row?.id ? 'Se actualizó correctamente' : 'Se guardó correctamente');
           },
           error: (err) => {
             const msg = err?.error?.message || err?.error?.mensaje || 'Error al guardar';
-            this.showSnack(msg, 'Cerrar', 4000);
+            this.toastService.error('Operacion invalida', msg, 6000);
           }
         });
       });
   }
 
   cargarConceptos(): void {
-  this.conceptoAccesoService.getConceptosPermitidos().subscribe({
-    next: (permitidos) => {
-      this.terceroService.obtenerConceptos().subscribe({
-        next: (todos) => {
-          this.conceptosFiltrados = permitidos.length === 0
-            ? todos  // lista vacía = admin, ve todo
-            : todos.filter(c =>
-                permitidos
-                  .map(p => p.toUpperCase())
-                  .includes((c?.cve ?? '').toUpperCase())
-              );
-
-          this.conceptosFiltrados = this.dedupeByCve(this.conceptosFiltrados);
-          this.cd.markForCheck();
-        }
-      });
-    }
-  });
-}
-
-  private ordenarPorPrioridad(conceptos: any[], codigosPrioridad: string[]): any[] {
-  const rank = new Map<string, number>();
-  codigosPrioridad.forEach((c, i) => rank.set(c.toLowerCase(), i));
-
-  return [...conceptos].sort((a, b) => {
-    const ca = (a?.cve ?? '').toString().toLowerCase();
-    const cb = (b?.cve ?? '').toString().toLowerCase();
-
-    const ra = rank.has(ca) ? rank.get(ca)! : Number.POSITIVE_INFINITY;
-    const rb = rank.has(cb) ? rank.get(cb)! : Number.POSITIVE_INFINITY;
-
-    if (ra !== rb) return ra - rb;
-    return ca.localeCompare(cb);
-  });
+    this.conceptoAccesoService.getConceptosPermitidos().subscribe({
+      next: (permitidos) => {
+        this.terceroService.obtenerConceptos().subscribe({
+          next: (todos) => {
+            this.conceptosFiltrados = permitidos.length === 0
+              ? todos  // lista vacía = admin, ve todo
+              : todos.filter(c =>
+                  permitidos
+                    .map(p => p.toUpperCase())
+                    .includes((c?.cve ?? '').toUpperCase())
+                );
+            this.conceptosFiltrados = this.dedupeByCve(this.conceptosFiltrados);
+            this.cd.markForCheck();
+          }
+        });
+      }
+    });
   }
 
   private dedupeByCve(conceptos: any[]): any[] {
@@ -310,7 +274,6 @@ export class RegistroTerceroInstitucional implements OnDestroy {
 
       if (!map.has(key)) map.set(key, c);
     }
-
     return Array.from(map.values());
   }
 
@@ -346,7 +309,9 @@ export class RegistroTerceroInstitucional implements OnDestroy {
         this.dataSource.data = rows;
         this.cd.markForCheck();
       },
-      error: () => this.showSnack('Error al consultar registros NP', 'Cerrar', 4000),
+      error: () =>  {
+        this.toastService.error('Operacion invalida', 'Error al consultar registros NP', 6000);
+      }
     });
   }
 
@@ -355,12 +320,12 @@ export class RegistroTerceroInstitucional implements OnDestroy {
     const conceptoSeleccionado = this.form.get('busqueda.concepto')?.value ?? null;
 
     if (!emp) {
-      this.showSnack('Selecciona un empleado', 'Cerrar', 3000);
+      this.toastService.error('Operacion invalida', 'Selecciona un empleado.', 6000);
       return;
     }
 
     if (!conceptoSeleccionado?.cve) {
-      this.showSnack('Selecciona un concepto', 'Cerrar', 3000);
+      this.toastService.error('Operacion invalida', 'Selecciona un concepto.', 6000);
       return;
     }
 
@@ -415,15 +380,11 @@ export class RegistroTerceroInstitucional implements OnDestroy {
         this.terceroService.registrarNp(result).subscribe({
           next: () => {
             this.buscarRegistrosNp(this.paginator?.pageIndex ?? 0, this.paginator?.pageSize ?? 50);
-            this.dialog.open(PensionAlimenDialog, {
-              width: '500px',
-              disableClose: true,
-              data: { type: 'success', title: 'Éxito', message: 'Se guardó correctamente' }
-            });
+            this.toastService.success('Operación exitosa', 'Se guardó correctamente.', 6000);
           },
           error: (err) => {
             const msg = err?.error?.message || err?.error?.mensaje || 'Error al guardar';
-            this.showSnack(msg, 'Cerrar', 4000);
+            this.toastService.error('Operación invalida', msg, 6000);
           }
         });
       });
@@ -455,9 +416,7 @@ export class RegistroTerceroInstitucional implements OnDestroy {
       this.resultado = [];
       this.autocompleteTrigger?.closePanel();
       this.dataSource.data = [];
-      
       this.totalElements = 0;
-    
       this.paginator?.firstPage?.();
       this.cd.markForCheck();
   }
