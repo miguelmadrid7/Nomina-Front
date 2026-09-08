@@ -15,7 +15,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { Empleado } from '../../servicios/empleado';
 import { EmpleadoItem } from '../../../core/model/emplado.model';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { PensionAlimenDialog } from '../pension-alimen-dialog/pension-alimen-dialog';
 import { IdResponse } from '../../../core/model/response/id-response.model';
 import { Banco } from '../../../core/model/banco.model';
 import { ApiResponse } from '../../../core/model/response/api-Response.model';
@@ -132,7 +131,6 @@ export class PensionAlimenticia implements OnDestroy {
   loadQnaActiva(): void  {
     this.cargandoQna = true;
     this.errorQna = false;
-
     this.calendarioService.getQnaActiva().subscribe({
       next: (resp) => {
         const calendario = resp?.data ?? null;
@@ -142,7 +140,7 @@ export class PensionAlimenticia implements OnDestroy {
           this.initForm();
           this.cdr.detectChanges();      
       }, 
-        error: (err) => {
+        error: () => {
           this.calendarioActual = null;
           this.cargandoQna = false;
           this.errorQna = true;
@@ -265,7 +263,6 @@ export class PensionAlimenticia implements OnDestroy {
     this.cargandoLiquido = true;
     this.liquidoInfo = null;
     this.liquidoError = null;
-
     this.pensionAlimenticiaService.getLiquidoByRfc(rfc).subscribe({
       next: (resp) => {
         if (resp.success && resp.data?.plazas?.length) {
@@ -277,7 +274,7 @@ export class PensionAlimenticia implements OnDestroy {
           this.liquidoError = resp.message ?? 'No se encontró información de nómina.';
         }
           this.cargandoLiquido = false;
-            this.cdr.detectChanges();
+          this.cdr.detectChanges();
       },
         error: () => {
           this.liquidoInfo = null;
@@ -348,54 +345,42 @@ export class PensionAlimenticia implements OnDestroy {
       nombre: value.nombreCompleto
     };
 
-   
-      const fail = (msg: string) => {
-        this.dialog.open(PensionAlimenDialog, {
-          width: '360px',
-          data: { title: 'Faltan datos', message: msg, type: 'error' }
-        });
-        this.guardando = false;
-      };
+    const fail = (msg: string) => {
+      this.toastService.error('Faltan datos', msg, 6000);
+      this.guardando = false;
+    };
 
-      if (!this.empleadoId) return fail('Selecciona un empleado antes de guardar.');
-      if (!['P','C'].includes(value.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
-      if (value.factorImporte == null) return fail('Captura Factor/Importe.');
+    if (!this.empleadoId) return fail('Selecciona un empleado antes de guardar.');
+    if (!['P','C'].includes(value.formaAplicacion)) return fail('Selecciona la forma de aplicación.');
+    if (value.factorImporte == null) return fail('Captura Factor/Importe.');
       
-      if(value.formaAplicacion === 'C') {
-        if(!value.factorImporte || Number(value.factorImporte) <= 0) {
-          return fail('El importe quincenal es requerido para Importe fijo');
-        }
-        if(value.importeTotal && Number(value.importeTotal) > 0 && Number(value.factorImporte) > Number(value.importeTotal)) {
-          return fail('El importe quincenal debe ser menor o igual al tope máximo total');
-        }
+    if(value.formaAplicacion === 'C') {
+      if(!value.factorImporte || Number(value.factorImporte) <= 0) {
+        return fail('El importe quincenal es requerido para Importe fijo');
       }
-      if (!value.vigenciaInicio) return fail('Captura la vigencia de inicio.');
-
-      // Normalizar y validar CLABE (18 dígitos)
-      const clabe = String(value.numeroDocumento ?? '').trim().replace(/\D+/g, '');
-        if (clabe && !/^\d{18}$/.test(clabe)) {
-          return fail('La CLABE debe tener exactamente 18 dígitos numéricos.');
-        }
+      if(value.importeTotal && Number(value.importeTotal) > 0 && Number(value.factorImporte) > Number(value.importeTotal)) {
+        return fail('El importe quincenal debe ser menor o igual al tope máximo total');
+      }
+    }
+    if (!value.vigenciaInicio) return fail('Captura la vigencia de inicio.');
+    // Normalizar y validar CLABE (18 dígitos)
+    const clabe = String(value.numeroDocumento ?? '').trim().replace(/\D+/g, '');
+      if (clabe && !/^\d{18}$/.test(clabe)) {
+        return fail('La CLABE debe tener exactamente 18 dígitos numéricos.');
+      }
         
-
-      this.pensionAlimenticiaService.addBeneficiarioAlim(beneficiarioAlimPayload).subscribe({
-        next: (resp: ApiResponse<IdResponse>) =>{
-          const beneficiarioAlimId = resp?.data?.id;
-          
+    this.pensionAlimenticiaService.addBeneficiarioAlim(beneficiarioAlimPayload).subscribe({
+      next: (resp: ApiResponse<IdResponse>) =>{
+        const beneficiarioAlimId = resp?.data?.id;
           if (!beneficiarioAlimId) {
-            this.dialog.open(PensionAlimenDialog, {
-              width: '360px',
-              data: { title: 'Error', message: 'No se recibió ID del beneficiario base.', type: 'error' }
-            });
+            this.toastService.error('Operación invalida', 'No se recibió ID del beneficiario base.', 6000)
             this.guardando = false;
             return;
           }
-
           let factor = Number(value.factorImporte);
           if (Number.isNaN(factor)) {
             return fail('El campo Factor/Importe debe ser numérico.');
           }
-
           if (value.formaAplicacion === 'P') {
             if (!(factor > 0 && factor <= 100)) {
               return fail('Para Factor, usa un porcentaje válido (ej. 20 = 20%). Debe ser mayor a 0 y hasta 100%.');
@@ -405,7 +390,6 @@ export class PensionAlimenticia implements OnDestroy {
               return fail('El Importe fijo debe ser mayor o igual a 0.');
             }
           }
-
           const beneficiarioPayload: BeneficiarioRequest = {
             tabEmpleadosId: this.empleadoId!,
             tabBeneficiariosAlimId: beneficiarioAlimId,
@@ -429,17 +413,10 @@ export class PensionAlimenticia implements OnDestroy {
           if ([beneficiarioPayload.factorImporte, beneficiarioPayload.qnaini].some((v: number) => Number.isNaN(v))) {
             return fail('Revisa que los campos numéricos tengan valores válidos.');
           }
-
+          
           this.pensionAlimenticiaService.addBeneficario(beneficiarioPayload).subscribe({
             next: () => {
-              this.dialog.open(PensionAlimenDialog, {
-                width: '360px',
-                data: {
-                  title: 'Éxito',
-                  message: 'Se guardó correctamente tus datos.',
-                  type: 'success'
-                }
-              });
+              this.toastService.success('Operación exitosa', 'Se guardó correctamente tus datos.', 6000)
               this.guardando = false;
               if (this.empleadoId) {
                 this.cargarPorcentajeDisponible(this.empleadoId);
@@ -447,66 +424,58 @@ export class PensionAlimenticia implements OnDestroy {
               this.resetForm();
             },
             error: err => {
-              console.error('Error al guardar pensión alimenticia', err);
-              this.dialog.open(PensionAlimenDialog, {
-                width: '360px',
-                data: { title: 'Error', message: 'Error al guardar pensión alimenticia.', type: 'error' }
-              });
+              const msg = err?.error?.message ?? 'Error al guardar pensión alimenticia.';
+              this.toastService.error('Operación invalida', msg, 6000)
               this.guardando = false;
             }
           });
         },
         error: err => {
-          console.error('Error al crear beneficiario base', err);
-          this.dialog.open(PensionAlimenDialog, {
-            width: '360px',
-            data: { title: 'Error', message: 'No se pudo crear el beneficiario base.', type: 'error' }
-          });
+          const msg = err?.error?.message ?? 'No se pudo crear el beneficiario base..';
+          this.toastService.error('Operación invalida', msg,  6000)
           this.guardando = false;
         }
       });
   }
 
   resetForm () {
-      this.form.reset({
-        numeroBeneficiario: null,
-        searchText: this.form.get('searchText')?.value, 
-        apellidoPaterno: '',
-        apellidoMaterno: '',
-        nombreCompleto: '',
-        rfc: '',
-        formaAplicacion: '',
-        factorImporte: null,
-        bancoSeleccionado: null,
-        numeroDocumento: null,
-        vigenciaInicio: this.calendarioActual ? this.toAaaaqq(this.calendarioActual) : '',
-        importeTotal: null,
-      });
-
+    this.form.reset({
+      numeroBeneficiario: null,
+      searchText: this.form.get('searchText')?.value, 
+      apellidoPaterno: '',
+      apellidoMaterno: '',
+      nombreCompleto: '',
+      rfc: '',
+      formaAplicacion: '',
+      factorImporte: null,
+      bancoSeleccionado: null,
+      numeroDocumento: null,
+      vigenciaInicio: this.calendarioActual ? this.toAaaaqq(this.calendarioActual) : '',
+      importeTotal: null,
+    });
     Object.keys(this.form.controls).forEach(key => {
       this.form.get(key)?.setErrors(null);
       this.form.get(key)?.markAsPristine();
       this.form.get(key)?.markAsUntouched();
     });
-
     this.form.markAsPristine();
     this.form.markAsUntouched();
   }
 
   clearSearch () {
-      this.form.reset({
-        numeroBeneficiario: null,
-        searchText: '',
-        apellidoPaterno: '',
-        apellidoMaterno: '',
-        nombreCompleto: '',
-        rfc: '',
-        formaAplicacion: '',
-        factorImporte: null,
-        bancoSeleccionado: null,
-        numeroDocumento: null,
-        vigenciaInicio: this.calendarioActual ? this.toAaaaqq(this.calendarioActual) : '',
-        importeTotal: null,
+    this.form.reset({
+      numeroBeneficiario: null,
+      searchText: '',
+      apellidoPaterno: '',
+      apellidoMaterno: '',
+      nombreCompleto: '',
+      rfc: '',
+      formaAplicacion: '',
+      factorImporte: null,
+      bancoSeleccionado: null,
+      numeroDocumento: null,
+      vigenciaInicio: this.calendarioActual ? this.toAaaaqq(this.calendarioActual) : '',
+      importeTotal: null,
     });
     this.beneficiariosCapturados = [];
     this.porcentajeDisponible = 100;
