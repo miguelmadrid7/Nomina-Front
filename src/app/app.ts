@@ -1,8 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { GlobalLoader } from './shared/global-loader/global-loader';
 import { ToastContainer } from "./shared/toast-container/toast-container";
-import { PayrollJobService } from './core/services/payroll.service';
 
 @Component({
   selector: 'app-root',
@@ -16,6 +15,5 @@ import { PayrollJobService } from './core/services/payroll.service';
   styleUrl: './app.css'
 })
 export class App {
-  private readonly payrollJobService = inject(PayrollJobService);
   protected readonly title = signal('curso');
 }

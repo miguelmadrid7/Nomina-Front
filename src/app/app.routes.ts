@@ -1,7 +1,6 @@
 import { Home } from './features/home/home';
 import { Routes } from '@angular/router';
 import { Login } from '../app/features/login/login';
-import { NominaExtraordinaria } from '../app/features/nomina/nomina-extraordinaria/nomina-extraordinaria';
 import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
