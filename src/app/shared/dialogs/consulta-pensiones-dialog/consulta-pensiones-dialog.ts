@@ -14,14 +14,13 @@ import { BeneficiarioRequest } from '../../../core/model/request/beneficiario-re
 import { BeneficiarioAlimRequest } from '../../../core/model/request/beneficiarioalim-request.model';
 import { finalize, switchMap } from 'rxjs/operators';
 import { UppercaseDirective } from '../../directives/upperCase.directivas';
-import { PensionAlimenDialog } from '../../../features/pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { Banco } from '../../../core/model/banco.model';
 import { ApiResponse } from '../../../core/model/response/api-Response.model';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { getCurrentQna } from '../../validators/validaciones.validators';
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { Calendario } from '../../../core/model/calendario.model';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-consulta-pensiones-dialog',
@@ -46,11 +45,11 @@ import { Calendario } from '../../../core/model/calendario.model';
 export class ConsultaPensionesDialog implements OnInit {
 
   private readonly pensionAlimenticiaService = inject(PensionAlimenticiaService);
-  private readonly dialog = inject(MatDialog);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly ref = inject(MatDialogRef<ConsultaPensionesDialog>);
   private readonly fb = inject(FormBuilder);
   private readonly calendarioService = inject(CalendarioService);
+  private readonly toastService = inject(ToastService);
 
 
   form!: FormGroup;
@@ -209,10 +208,7 @@ export class ConsultaPensionesDialog implements OnInit {
     }
 
     if (qFin !== null && (Number.isNaN(qFin) || qFin < qIni)) {
-      this.dialog.open(PensionAlimenDialog, {
-        width: '350px',
-        data: { message: 'La QNA fin no puede ser menor a la QNA inicio.', type: 'error' }
-      });
+      this.toastService.error('Operación invalida', 'La QNA fin no puede ser menor a la QNA inicio.', 6000);
       return;
     }
 
@@ -252,20 +248,11 @@ export class ConsultaPensionesDialog implements OnInit {
       )
       .subscribe({
         next: () => {
-          const dialogRef = this.dialog.open(PensionAlimenDialog, {
-            width: '350px',
-            data: { message: 'Se actualizó correctamente', type: 'success' }
-          });
-          dialogRef.afterClosed().subscribe(() => {
-            this.ref.close(true); 
-          });
+          this.toastService.success('Operación exitosa', 'Se actualizó correctamente.', 6000);
         },
-        error: (err: any) => {
-          console.error('Error al actualizar', err);
-          this.dialog.open(PensionAlimenDialog, {
-            width: '350px',
-            data: { message: 'Error al actualizar', type: 'error' }
-          });
+        error: () => {
+          this.toastService.error('Operación invalida', 'Error al actualizar.', 6000)
+    
         }
       });
   }

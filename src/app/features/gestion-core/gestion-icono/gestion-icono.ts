@@ -2,9 +2,9 @@ import { Component, inject, OnDestroy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { IconoDialog } from '../../../shared/dialogs/alta-icono-dialog/alta-icono-dialog';
-import { PensionAlimenDialog } from '../../pension-alimenticia/pension-alimen-dialog/pension-alimen-dialog';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-gestion-icono',
@@ -20,6 +20,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 export class GestionIcono implements OnDestroy {
 
   private readonly dialog = inject(MatDialog);
+  private readonly toastService = inject(ToastService);
 
   ngOnDestroy(): void {
     this.dialog.closeAll();
@@ -39,13 +40,6 @@ export class GestionIcono implements OnDestroy {
   }
 
   openSuccessDialog(): void {
-    this.dialog.open(PensionAlimenDialog, {
-      width: '420px',
-      disableClose: true,
-      data: {
-        type: 'success',
-        message: 'El icono se guardó correctamente.'
-      }
-    });
+    this.toastService.info('Operación exitosa', 'El icono se guardó correctamente.', 6000);
   }
 }
