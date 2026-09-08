@@ -311,13 +311,11 @@ mat-sidenav-content {
   overflow: visible !important;
 }
 
-
 /* Botones globales del lado derecho superior */
 .search-actions { 
   display: flex; 
   gap: 10px; 
 }
-
 
 /* --- Configuration of table --- */
 .table-global {
@@ -467,7 +465,6 @@ mat-sidenav-content {
 .col-center { text-align: center; }
 .col-left   { text-align: left; }
 
-
 /* --- Iconos of tables --- */
 .icon-check { color: #2e7d32; }
 .icon-close { color: #e53935; }
@@ -477,7 +474,6 @@ mat-sidenav-content {
 .ico-btn-primary { background: transparent; color: #2563eb; border-color: #2563eb; }
 .ico-btn-danger { background: transparent; color: #dc2626; border-color: #dc2626;}
 
-
 /* --- Text about cell of each column --- */
 .col-wrap {
   white-space: normal !important;
@@ -486,7 +482,6 @@ mat-sidenav-content {
   word-break: break-word;
   line-height: 1.3;
 }
-
 
 /* Encabezado de sección + acciones */
 .section-header { 
