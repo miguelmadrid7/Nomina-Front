@@ -60,13 +60,13 @@
     
     <div class="actions-right">
         <div class="btn-group">
-            <button class="btn btn-upload" [disabled]="!selecteExcelFile" (click)="onAceptBotton()">
+            <button class="btn btn-upload" [disabled]="!selecteExcelFile || yaSeProceso" (click)="onAceptBotton()">
                 <mat-icon>upload_file</mat-icon>
                     Cargar
             </button>
         </div>
         
-        <button class="btn btn-edit" [disabled]="isValidatingLote || totalRecordsCount === 0" (click)="onRevalidarLote()">
+        <button class="btn btn-edit" [disabled]="isValidatingLote || totalRecordsCount === 0 || yaSeProceso" (click)="onRevalidarLote()">
             <mat-icon>{{ isValidatingLote ? 'sync' : 'fact_check' }}</mat-icon>
             {{ isValidatingLote ? 'Validando...' : 'Revalidar' }}
         </button>
