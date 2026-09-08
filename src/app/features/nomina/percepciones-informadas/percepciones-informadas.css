@@ -1,9 +1,9 @@
 /* INPUTS */
 .row {
   display: grid;
-  grid-template-columns: repeat(3, minmax(160px, 1fr));
+  grid-template-columns: auto auto 1fr auto;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
 }
 
 .file-upload-group {
@@ -253,6 +253,28 @@
 }
 
 
+.qna-field-mini {
+  max-width: 200px;
+  justify-self: start;
+}
+
+.btnn-filter {
+  display: none;
+  color: #6b7280;
+  border-color: #6b7280;
+}
+
+.btnn-filter:hover {
+  background: #6b7280;
+  color: #ffffff;
+}
+
+.btnn-filter.active {
+  background: var(--brand);
+  color: #ffffff;
+  border-color: var(--brand);
+}
+
 @media (max-width: 768px) {
   .row {
     grid-template-columns: 1fr;
@@ -284,6 +306,11 @@
 
   .btn {
     width: 100%;
+  }
+
+  .btnn-filter {
+    display: inline-flex;
+    justify-self: end;
   }
 
   .info-card__chips {
