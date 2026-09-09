@@ -7,7 +7,7 @@ const ALLOWED_EXCEL_MIME_TYPES = [
         'application/vnd.ms-excel' // .xls
 ];
 
-export const PERCEPCIONES_REQUIRED_COLUMNS = ['CURP', 'RFC', 'CONCEPTO', 'CANTIDAD', 'IMPORTE'];
+export const PERCEPCIONES_REQUIRED_COLUMNS = ['RFC', 'CURP', 'CONCEPTO', 'IMPORTE', 'CANTIDAD'];
 
 
 @Injectable({
@@ -30,8 +30,8 @@ export class ExcelUploadService {
     }
 
     validateRequiredColumns(
-        file: File, 
-        requiredColumns: string [] = PERCEPCIONES_REQUIRED_COLUMNS): Promise<string | null> {
+        file: File,
+        requiredColumnsInOrder: string[] = PERCEPCIONES_REQUIRED_COLUMNS): Promise<string | null> {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
@@ -48,16 +48,24 @@ export class ExcelUploadService {
                             return;
                         }
 
-                        const headerRow = rows[0].map((col) => String(col).trim().toUpperCase());
-                        const missingColumns = requiredColumns.filter(
-                            (required) => !headerRow.includes(required.toUpperCase()),
-                        );
+                        const headerRow = rows[0].map((col) => String(col ?? '').trim().toUpperCase());
 
-                        if (missingColumns.length > 0) {
-                            resolve(`Faltan las columnas: ${missingColumns.join(', ')}`);
+                        const errores: string[] = [];
+                        requiredColumnsInOrder.forEach((expectedColumn, index) => {
+                            const actualColumn = headerRow[index] ?? '';
+                            if (actualColumn !== expectedColumn.toUpperCase()) {
+                                errores.push(
+                                    `Columna ${index + 1}: se esperaba "${expectedColumn}" pero se encontró "${actualColumn || '(vacío)'}"`,
+                                );
+                            }
+                        });
+
+                        if (errores.length > 0) {
+                            resolve(`El orden de las columnas no coincide con el formato esperado. ${errores.join(' | ')}`);
                             return;
                         }
-                            resolve(null);
+
+                        resolve(null);
                     } catch {
                             resolve('No se pudo leer el contenido del archivo. Verifica que sea un Excel válido.');
                     }
