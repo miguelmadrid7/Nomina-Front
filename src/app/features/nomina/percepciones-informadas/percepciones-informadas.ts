@@ -322,7 +322,7 @@ export class PercepcionesInformadas {
         }
 
         const data = response.data;
-        this.toastService.resolvePersistent(this.PROCESAMIENTO_TOAST_ID, 'success', 'Procesado con éxito', `${data.insertadosHistorico} de ${data.total} registros se enviaron correctamente a nómina.`,);
+        this.toastService.resolvePersistent(this.PROCESAMIENTO_TOAST_ID, 'success', 'Procesado con éxito',  `${data.insertadosNomEmpPzaCpto} de ${data.total} registros se enviaron correctamente a nómina.`,);
         this.processedRows = [...this.dataSource.data];
         this.resultAvalible = true;
         this.yaSeProceso = true;
