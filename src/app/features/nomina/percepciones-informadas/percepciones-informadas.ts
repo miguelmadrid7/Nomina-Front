@@ -13,7 +13,7 @@ import { formatEmployeeDisplay } from '../../../shared/helpers/empelado.helper';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { ExcelUploadService, PERCEPCIONES_REQUIRED_COLUMNS } from '../../../core/services/excel-upload.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { PercepcionesInformadasService } from '../../../core/services/percepciones-informadas.service';
@@ -48,7 +48,6 @@ export class PercepcionesInformadas {
   resultados: EmpleadoItem[] = [];
   empleadoId: number | null = null;
   empleadoRfc: string | null = null;
-  totalElements = 0;
   validRecordCount = 0;
   totalRecordsCount = 0;
   selecteExcelFile: File | null = null;
@@ -58,8 +57,11 @@ export class PercepcionesInformadas {
   processedRows: PersonalizarRow[] = [];
   selectedRowId: number | null = null;
   yaSeProceso = false;
-
   isValidatingLote = false;
+
+  totalElements = 0;
+  pageSize = 10;
+  pageIndex = 0;
   
 
   dataSource = new MatTableDataSource<PersonalizarRow>([]);
@@ -196,7 +198,8 @@ export class PercepcionesInformadas {
   }
 
   private cargarListaPersonalizar(qnaProceso: number, concepto: string): void {
-    this.percepcionesInformadasService.getList(qnaProceso, concepto).subscribe({
+  this.percepcionesInformadasService.getList(qnaProceso, concepto, undefined, undefined, this.pageIndex, this.pageSize)
+    .subscribe({
       next: (response) => {
         const data = response.data;
         this.dataSource.data = data.content;
@@ -210,7 +213,7 @@ export class PercepcionesInformadas {
         this.isValidatingLote = false;
       },
     });
-  }
+}
 
   onRevalidarLote(): void {
     const ids = this.dataSource.data.map((row) => row.id);
@@ -439,6 +442,16 @@ export class PercepcionesInformadas {
     this.empleadoRfc = null;
     if(this.fileInputRef) {
       this.fileInputRef.nativeElement.value = '';
+    }
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
+    const concepto = this.searchForm.get('concepto')?.value;
+    const qnaProceso = this.calendarioActual?.qna;
+    if (qnaProceso && concepto) {
+      this.cargarListaPersonalizar(qnaProceso, concepto);
     }
   }
 }

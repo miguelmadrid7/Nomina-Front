@@ -31,7 +31,6 @@
                     <mat-option value="OL">OL</mat-option>
                     <mat-option value="TE">TE</mat-option>
                     <mat-option value="7S">7S</mat-option>
-                    <mat-option value="24">24</mat-option>
                 </mat-select>
         </mat-form-field>
 
@@ -197,9 +196,11 @@
                     <div class="table-footer">
                         <mat-paginator
                             [length]="totalElements"
-                            [pageSize]="50"
-                            [pageSizeOptions]="[50, 100, 150, 200]"
-                            showFirstLastButtons>
+                            [pageSize]="pageSize"
+                            [pageIndex]="pageIndex"
+                            [pageSizeOptions]="[5, 10, 25, 50, 100]"
+                            showFirstLastButtons
+                            (page)="onPageChange($event)">
                         </mat-paginator>
                     </div>
                 </div>
