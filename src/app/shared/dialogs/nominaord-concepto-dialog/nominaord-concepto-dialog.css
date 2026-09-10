@@ -1,0 +1,512 @@
+/* Dialog structure */
+.dialog-shell {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
+.dialog-header {
+  position: relative;
+  background: var(--brand);
+  color: #fff;
+  padding: 12px 40px;
+  min-height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+}
+
+.dlg-bar-title {
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+
+/* Contenido con scroll */
+.dlg-content {
+  padding: 10px;
+  max-height: calc(90vh - var(--dlg-title-h) - var(--dlg-actions-h));
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--bg);
+}
+
+.dialog-close {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Acciones fijas al pie */
+.dlg-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  background: #fff;
+  flex-shrink: 0;
+}
+
+/* Botones */
+.btn {
+  width: 120px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: .2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: none !important;
+  transition: all .18s ease;
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+  border: 2px solid;
+}
+
+.btn-danger {
+  background: transparent;
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+/* Info de empleado */
+.employee-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 25px;
+  margin-bottom: 10px;
+}
+
+.full {
+  grid-column: span 2;
+}
+
+.employee-field {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.employee-field .label {
+  font-weight: 600;
+  color: var(--ink-700);
+}
+
+.employee-field .value {
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.employee-totals {
+  grid-column: span 2;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  font-weight: 700;
+  padding: 8px 10px;
+  background: var(--brand-100);
+  border-radius: 6px;
+}
+
+.view-toggle{
+  margin: 12px 0 6px 0;
+}
+
+.grid-empty {
+  height: 0;
+  border-top: 1px solid var(--line);
+  margin: 10px 0 12px;
+  width: 100%;
+}
+
+/* Informcaion del empleado */
+.employee-card {
+  background:#fff;
+  border:1px solid #E5E7EB;
+  border-radius:14px;
+  padding:14px;
+  box-shadow:0 3px 8px rgba(0,0,0,.05);
+}
+
+.summary-grid {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:12px;
+}
+
+.summary-card {
+  padding:10px;
+  border-radius:10px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.success {
+  background:#ECFDF5;
+  color:#166534;
+}
+
+.danger {
+  background:#FEF2F2;
+  color:#991B1B;
+}
+
+.primary {
+  background:#EFF6FF;
+  color:#1E40AF;
+}
+
+.card-title {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:18px;
+    font-weight:700;
+    color:var(--brand);
+    margin-bottom:12px;
+}
+
+.card-title mat-icon{
+    color:var(--brand);
+}
+
+.employee-grid {
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:16px 40px;
+}
+
+.employee-row {
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.employee-row.full {
+  grid-column: span 2;
+}
+
+.employee-row .label {
+  font-size:14px;
+  font-weight:700;
+  color:#374151;
+}
+
+.employee-row .value {
+  font-size:15px;
+  font-weight:700;
+  color:#111827;
+}
+
+.employee-card {
+  background:white;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:22px;
+  box-shadow:
+  0 4px 12px rgba(0,0,0,.06);
+}
+
+.card-title {
+ display:flex;
+ align-items:center;
+ gap:10px;
+ font-size:18px;
+ font-weight:800;
+ color:#491d2a;
+ margin-bottom:20px;
+}
+
+.card-title mat-icon{
+ font-size:20px;
+ width:20px;
+ height:20px;
+}
+
+.entity-box {
+ background:#f8fafc;
+ border-left:4px solid #491d2a;
+ padding:8px 12px;
+ border-radius:7px;
+ margin-bottom:12px;
+ display:flex;
+ flex-direction:column;
+ gap:5px;
+}
+
+.entity-box span {
+ font-size:12px;
+ color:#64748b;
+ font-weight:700;
+ text-transform:uppercase;
+}
+
+.entity-box strong {
+ font-size:16px;
+ color:#111827;
+}
+
+.employee-grid {
+ display:grid;
+ grid-template-columns:repeat(2,1fr);
+ gap: 4px 8px;
+}
+
+.info-box {
+ background:#fafafa;
+ border:1px solid #e5e7eb;
+ border-radius:8px;
+ padding:8px 12px;
+ display:flex;
+ flex-direction:column;
+ gap:6px;
+}
+
+.info-box span {
+ font-size:10px;
+ font-weight:700;
+ color:#64748b;
+}
+
+.info-box strong {
+ font-size:13px;
+ color:#111827;
+}
+
+.payroll-box {
+ margin-top:12px;
+ background:#491d2a;
+ color:white;
+ padding:8px 12px;
+ border-radius:8px;
+ display:flex;
+ font-size:13px;
+ justify-content:space-between;
+ align-items:center;
+}
+
+.payroll-box span {
+ font-weight:600;
+}
+
+.payroll-box strong {
+ font-size:16px;
+}
+
+/* Radios */
+:host ::ng-deep .mat-mdc-radio-button .mdc-radio__outer-circle,
+:host ::ng-deep .mat-mdc-radio-button .mdc-radio__inner-circle {
+  border-color: var(--brand) !important;
+}
+:host ::ng-deep .mat-mdc-radio-checked .mdc-radio__background::before {
+  background-color: rgba(73,29,42,0.15) !important;
+}
+:host ::ng-deep .mat-mdc-radio-button .mdc-form-field > label {
+  color: var(--ink-700);
+  font-weight: 500;
+}
+
+/* Grid de tablas */
+.pd-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.pd-grid.single {
+  grid-template-columns: 1fr;
+}
+
+.pd-title {
+  font-weight: 700;
+  color: var(--ink-900);
+  margin: 4px 0 8px;
+  padding-left: 6px;
+  border-left: 4px solid var(--brand);
+}
+
+/* Marco exterior de la tabla */
+.pd-table {
+  width: 100%;
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg);
+  box-shadow: inset 0 0 0 1px var(--line); /* refuerza el marco interior */
+}
+
+/* MatTable (clases mat-mdc-*) */
+:host ::ng-deep .pd-table .mat-mdc-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+:host ::ng-deep .pd-table .mat-mdc-header-row {
+  background: #D4C19C;
+  border-bottom: 1px solid var(--line);
+}
+
+:host ::ng-deep .pd-table .mat-mdc-header-cell,
+:host ::ng-deep .pd-table .mat-mdc-cell {
+  padding: 8px 10px;
+  color: var(--ink-900);
+  border-right: 1px solid var(--line);
+}
+
+:host ::ng-deep .pd-table .mat-mdc-header-cell {
+  color: var(--ink-700);
+  font-weight: 700;
+}
+
+:host ::ng-deep .pd-table .mat-mdc-row {
+  border-bottom: 1px solid var(--line);
+}
+
+:host ::ng-deep .pd-table .mat-mdc-row:hover {
+  background: #faf9fa;
+}
+
+/* Bordes de orilla por columna */
+:host ::ng-deep .pd-table .mat-mdc-header-row .mat-mdc-header-cell:first-child,
+:host ::ng-deep .pd-table .mat-mdc-row .mat-mdc-cell:first-child {
+  border-left: 1px solid var(--line);
+}
+:host ::ng-deep .pd-table .mat-mdc-header-row .mat-mdc-header-cell:last-child,
+:host ::ng-deep .pd-table .mat-mdc-row .mat-mdc-cell:last-child {
+  border-right: none;
+}
+
+/* Línea inferior garantizada en última fila */
+:host ::ng-deep .pd-table .mat-mdc-row:last-child {
+  border-bottom: 1px solid var(--line);
+}
+
+/* Alineación derecha */
+.right { text-align: right; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .pd-grid { grid-template-columns: 1fr; }
+}
+
+/* Ícono blanco en la barra superior */
+:host ::ng-deep .dlg-bar .mat-icon {
+  color: #fff !important;
+  opacity: 1 !important; /* evita el grisáceo por opacidad del tema */
+}
+
+/* Si quieres asegurar también el color del botón/icono según MDC vars */
+:host ::ng-deep .dlg-bar .mat-mdc-icon-button {
+  --mdc-icon-button-icon-color: #ffffff;
+  --mdc-icon-button-disabled-icon-color: rgba(255,255,255,.38);
+}
+
+/* Opcional: color del ripple para que se vea bien sobre fondo borgoña */
+:host ::ng-deep .dlg-bar .mat-mdc-icon-button .mat-ripple-element {
+  background-color: rgba(255,255,255,0.2);
+}
+
+@media (max-width: 768px) {
+  /* Info del empleado en una columna */
+  .employee-info {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .full {
+    grid-column: span 1;
+  }
+
+  /* Totales en una columna */
+  .employee-totals {
+    grid-column: span 1;
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .employee-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .employee-card {
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .card-title {
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+
+  .info-box {
+    padding: 8px;
+  }
+
+  .info-box strong {
+    font-size: 12px;
+    word-break: break-word;
+  }
+
+  .entity-box strong {
+    font-size: 14px;
+  }
+  
+  /* Tablas en una columna aunque sea "ambas" */
+  .pd-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Header del diálogo menos padding */
+  .dialog-header {
+    padding: 16px 40px;
+  }
+
+  /* Contenido con más espacio */
+  .dlg-content {
+    padding: 12px;
+  }
+
+  /* Botón al 100% */
+  .dlg-actions {
+    padding: 10px;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Radio buttons apilados */
+  .view-toggle mat-radio-button {
+    display: block;
+    margin-bottom: 6px;
+  }
+}

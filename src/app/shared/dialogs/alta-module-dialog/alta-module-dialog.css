@@ -1,0 +1,203 @@
+/* Dialog structure */
+.dialog-shell {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  gap: 12px;
+}
+
+.dialog-header {
+  background: var(--brand);
+  color: #fff;
+  padding: 25px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; 
+  position: relative;
+}
+
+.dialog-close {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Contenido de dialogo */
+.dlg-conten {
+  padding: 14px 16px;
+  background: var(--bg);
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  box-sizing: border-box;
+}
+
+.dlg-bar-title {
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.dlg-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 12px;
+  border-top: 1px solid var(--line);
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.dlg-content,
+.dlg-actions {
+  background: var(--bg);
+}
+
+
+/* Form grid*/
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.description-field {
+  grid-column: 1 / -1;
+}
+
+.description-field textarea {
+  resize: none;
+  min-height: 100px !important;
+  line-height: 22px;
+  padding-top: 10px !important;
+}
+
+/* Botones */
+.btn {
+  width: 120px;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: .2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: none !important;
+  transition: all .18s ease;
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+  border: 2px solid;
+}
+
+.btn-primary {
+  background: transparent;
+  color: #2563eb;
+  border-color: #2563eb;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background: transparent;
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  transform: translateY(-1px);
+}
+
+:host ::ng-deep .dlg-bar .mat-mdc-icon-button {
+  --mdc-icon-button-icon-color: #ffffff;
+  --mdc-icon-button-disabled-icon-color: rgba(255, 255, 255, 0.38);
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+:host ::ng-deep .dlg-bar .mat-mdc-icon-button {
+  --mdc-icon-button-icon-color: #ffffff;
+  --mdc-icon-button-disabled-icon-color: rgba(255, 255, 255, 0.38);
+}
+
+:host ::ng-deep .compact-field mat-icon {
+  font-size: 18px;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-form-field-infix {
+    min-height: 40px !important;
+    display: flex;
+    align-items: center;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .qna-compact:not(.description-field) .mat-mdc-text-field-wrapper {
+    height: 40px !important;
+    display: flex;
+    align-items: center;
+}
+
+:host ::ng-deep .qna-compact input.mat-mdc-input-element {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr; 
+  }
+
+  .dialog-header {
+    padding: 16px 40px;
+  }
+
+  .dialog-shell {
+    max-height: 95vh;
+  }
+
+  .dlg-conten {
+    padding: 12px;
+    max-height: calc(90vh - 100px);
+  }
+
+ .dlg-actions {
+    flex: 0 0 auto;
+    padding: 15px 25px 20px;
+    gap: 8px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}

@@ -1,0 +1,48 @@
+/* Overlay pantalla completa */
+.loading-overlay{
+  position: fixed;
+  inset:0;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(2px);
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  z-index:9999;
+}
+
+
+/* Tarjeta blanca del loader */
+.loading-card{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  background:white;
+
+  padding:28px 32px;
+
+  border-radius:12px;
+
+  box-shadow:
+    0 10px 25px rgba(0,0,0,0.25),
+    0 2px 6px rgba(0,0,0,0.15);
+
+  gap:12px;
+}
+
+
+/* Texto */
+.loading-text{
+  font-size:14px;
+  font-weight:500;
+  color:#621132;
+}
+
+
+/* Color del spinner */
+.nomina-spinner ::ng-deep circle{
+  stroke:#621132;
+}

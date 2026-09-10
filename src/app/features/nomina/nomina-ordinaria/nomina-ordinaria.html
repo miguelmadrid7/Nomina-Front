@@ -1,0 +1,129 @@
+<div class="page-container">
+  <div class="page-header">
+    <h2 class="page-title">Nómina ordinaria</h2>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <div class="actions-right">
+    <div class="btn-group">
+      <button class="btn btn-primary" (click)="applySearchFilter()"> 
+        <mat-icon>search</mat-icon>
+           <span>Buscar</span> 
+      </button>
+    </div>
+    <button class="btn btn-danger" (click)="clearFilters()"> 
+      <mat-icon>delete_outline</mat-icon>
+        <span>Limpiar</span>
+    </button>
+  </div>
+
+  <div class="global-search">
+    <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always" >
+      <mat-icon matPrefix>search</mat-icon>
+      <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
+      <input matInput
+        [(ngModel)]="search"
+        appUppercase
+        (keyup.enter)="applySearchFilter()"/>
+    </mat-form-field>
+
+    <div class="qna-filters">
+
+      <mat-form-field appearance="outline" class="qna-compact" floatLabel="always" >
+        <mat-label>Año</mat-label>
+        <mat-select [(ngModel)]="anioSeleccionado" (ngModelChange)="onQnaChange()" placeholder="Seleccionar año">
+          <mat-option *ngFor="let anio of anios" [value]="anio">
+            {{ anio }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="qna-compact" floatLabel="always" >
+        <mat-label>Quincena</mat-label>
+        <mat-select [(ngModel)]="quincenaSeleccionada" (ngModelChange)="onQnaChange()" placeholder="Seleccionar quincena">
+          <mat-option *ngFor="let q of quincenas" [value]="q">
+            {{ q.toString().padStart(2,'0') }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+  </div>
+
+
+  <div class="table-container" *ngIf="showRecords">
+    <div class="table-card card">
+      <div class="table-content">
+        <div class="table-scroll">
+          <table mat-table [dataSource]="dataSource" class="table-global">
+
+            <ng-container matColumnDef="curp">
+              <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                <div class="header-filter">
+                  <span>CURP</span>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let e" class="col-sm col-center">{{ e.curp }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="rfc">
+              <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                <div class="header-filter">
+                  <span>RFC</span>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let e" class="col-sm col-center">{{ e.rfc }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="nombreEmpleado">
+              <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                <div class="header-filter">
+                  <span>EMPLEADO</span>
+                </div>
+              </th>
+              <td mat-cell *matCellDef="let e" class="col-sm col-center">{{ e.nombreEmpleado }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="qnaProceso">
+              <th mat-header-cell *matHeaderCellDef class="col-sm col-center">QNA PROCESO</th>
+              <td mat-cell *matCellDef="let e" class="col-sm col-center">{{ e.qnaProceso }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="clavePlaza">
+              <th mat-header-cell *matHeaderCellDef class="col-sm col-center">CLAVE PLAZA</th>
+              <td mat-cell *matCellDef="let e" class="col-sm col-center">{{ e.clavePlaza }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="baseCalculoIsr">
+              <th mat-header-cell *matHeaderCellDef class="col-sm col-center">BASE CÁLCULO <br> ISR</th>
+              <td mat-cell *matCellDef="let e" class="col-sm col-center">{{ e.baseCalculoIsr }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="conceptoDetalle">
+                <th mat-header-cell *matHeaderCellDef class="col-sm col-center">ACCIONES</th>
+                <td mat-cell *matCellDef="let e" class="col-sm col-center">
+                    <button mat-icon-button (click)="openConceptosDialog(e)" title="Ver conceptos">
+                        <mat-icon class ="btn-icon">visibility</mat-icon>
+                    </button>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <mat-paginator
+            [length]="totalElements"
+            [pageSize]="50"
+            [pageSizeOptions]="[50, 100, 150, 200]"
+            showFirstLastButtons
+            aria-label="Select page">
+          </mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

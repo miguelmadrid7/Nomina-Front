@@ -1,0 +1,11 @@
+.table-global {
+  width: 100%;
+  table-layout:fixed;
+}
+
+@media (max-width: 768px) {
+  .table-global {
+    min-width: 750px;
+  }
+
+}

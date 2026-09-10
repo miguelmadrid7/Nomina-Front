@@ -1,0 +1,143 @@
+<div class="page-container">
+    <div class="page-header">
+        <h2 class="page-title">Gestión de calendario de entregas</h2>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="actions-right">
+        <div class="btn-group">
+            <button class="btn btn-success" (click)="openDialog()" type="button">
+                <mat-icon>add</mat-icon>
+                <span>Agregar</span>
+            </button>
+        </div>
+    </div>
+
+     <div class="table-container">
+        <div class="table-card card">
+            <div class="table-content">
+                <div class="table-scroll">
+                    <table mat-table [dataSource]="dataSource" class="table-global">
+                        <ng-container matColumnDef="ejercicio">
+                            <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> EJERCICIO </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                                    <span class="badge-year"> {{ e.ejercicio }} </span>
+                                </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="qna">
+                            <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> QUINCENA </th>
+                            <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                                <span class="badge-year"> {{ e.qna }} </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="tipo">
+                            <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> TIPO </th>
+                            <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                                <span class="badge-year"> {{ e.tipo }} </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="fechaCierre">
+                            <th mat-header-cell *matHeaderCellDef class="col-sm col-center"> FECHA CIERRE </th>
+                            <td mat-cell *matCellDef="let e" class="col-sm col-center">
+                                <span class="badge-year"> {{ e.fechaCierre }} </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="fechaPago">
+                            <th mat-header-cell *matHeaderCellDef class="col-sm col-center"> FECHA PAGO </th>
+                            <td mat-cell *matCellDef="let e" class="col-sm col-center">
+                                <span class="badge-year"> {{ e.fechaPago }} </span>
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="movimientos">
+                            <th mat-header-cell *matHeaderCellDef class="col-sm col-center"> MOVIMIENTOS </th>
+                            <td mat-cell *matCellDef="let e" class="col-sm col-center">
+                                 @if (e.movimientos) {
+                                    <mat-icon class="icon-check">check</mat-icon>
+                                } @else {
+                                    <mat-icon class="icon-close">close</mat-icon>
+                                }
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="pension">
+                            <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> PENSION  </th>
+                            <td mat-cell *matCellDef="let e">
+                                 @if (e.movimientos) {
+                                    <mat-icon class="icon-check">check</mat-icon>
+                                } @else {
+                                    <mat-icon class="icon-close">close</mat-icon>
+                                }
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="juicios">
+                            <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> JUICIOS </th>
+                            <td mat-cell *matCellDef="let e">
+                                 @if (e.movimientos) {
+                                    <mat-icon class="icon-check">check</mat-icon>
+                                } @else {
+                                    <mat-icon class="icon-close">close</mat-icon>
+                                }
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="terceros">
+                            <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> TERCEROS </th>
+                            <td mat-cell *matCellDef="let e">
+                                 @if (e.movimientos) {
+                                    <mat-icon class="icon-check">check</mat-icon>
+                                } @else {
+                                    <mat-icon class="icon-close">close</mat-icon>
+                                }
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="activa">
+                            <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> ACTIVA </th>
+                            <td mat-cell *matCellDef="let e">
+                                @if (e.activa) {
+                                    <mat-icon class="icon-active">check_circle</mat-icon>
+                                } @else {
+                                    <mat-icon class="icon-inactive">radio_button_unchecked</mat-icon>
+                                }
+                            </td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="acciones">
+                            <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> ACCIONES </th>
+                            <td mat-cell *matCellDef="let e">
+                                @if (e.qna >= qnaActiva && qnaActiva > 0) {
+                                    <button class="btnn btnn-primary" type="button" (click)="openEditDialog(e)">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                } @else {
+                                    <span class="badge-closed">Closed</span>
+                                }
+                            </td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
+                        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.row-closed]="!row.activa"> </tr>
+                    </table>
+                </div>
+
+                <div class="table-footer">
+                    <mat-paginator
+                        [length]="totalRecords"
+                        [pageSize]="pageSize"
+                        [pageIndex]="pageIndex"
+                        [pageSizeOptions]="[5, 10, 25, 50, 100]"
+                        showFirstLastButtons
+                        (page)="onPageChange($event)">
+                    </mat-paginator>
+                </div>
+            </div>
+        </div>  
+    </div>
+</div>
