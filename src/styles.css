@@ -276,7 +276,6 @@ mat-sidenav-content {
   transform: translateY(-1px);
 }
 
-
 .btn-component {
   background-color: #491D2A !important;
   color: #fff !important;
@@ -286,7 +285,6 @@ mat-sidenav-content {
   text-transform: none;
   box-shadow: 0 2px 6px rgba(0,0,0,.15);
 }
-
 
 /* Linea separadora*/
 .with-separator 
@@ -517,16 +515,57 @@ mat-sidenav-content {
   color: #111827;
 }
 
-/* Header fijo arriba, sin texto */
+/* --- Desing of dialogs --- */
+.dialog-shell {
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+}
+
 .dialog-header {
-  height: 56px;
-  background: #491D2A;
-  margin: 0;
+  height: 50px;
+  position: relative;
+  background: var(--brand);
+  color: #fff;
+  padding: 25px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; 
+}
+
+.dialog-close {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.dialog-conten {
+  padding: 14px 16px;
+  background: var(--bg);
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  max-height: calc(80vh - 120px);
+  box-sizing: border-box;
 }
 
 .dlg-bar-title {
   font-weight: 700;
   letter-spacing: 0.3px;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .dlg-content {
@@ -537,14 +576,16 @@ mat-sidenav-content {
   background: var(--bg);
 }
 
-.dlg-actions {
+.dialog-actions {
   display: flex;
   justify-content: center;
   gap: 10px;
-  padding: 10px 12px;
+  padding: 14px 12px;
   border-top: 1px solid var(--line);
   background: #fff;
+  flex-shrink: 0;
 }
+
 
 .dlg-actions button[mat-stroked-button] {
   border-color: var(--brand);
@@ -610,7 +651,7 @@ mat-sidenav-content {
     overflow: visible;
   }
 
-   .table-foote {
+  .table-foote {
     width: 100%;
     min-height: auto;
     padding-top: 8px;
@@ -720,7 +761,6 @@ mat-sidenav-content {
     flex: 0 0 120px;
   }
 
-
   /* --- Configurations of buttons of components --- */
  .actions-right {
     display: flex;
@@ -736,11 +776,11 @@ mat-sidenav-content {
   }
 
   .actions-right > .btn-group > .btn {
-    width: 100%;   /* el botón dentro del wrapper también llena su mitad */
+    width: 100%;   
   }
 
   .btn {
-    width: 120px;   /* se ignora dentro de .actions-right por el flex-basis de arriba, pero sigue aplicando en otros contextos (ej. dlg-actions) */
+    width: 120px;  
   }
 
   .row {
@@ -760,5 +800,33 @@ mat-sidenav-content {
     flex: 0 0 auto;
     align-self: flex-start;
     justify-self: start;
+  }
+
+   /* --- Forms --- */
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* --- Dialogs --- */
+  .dialog-shell {
+    max-height: 95vh;
+  }
+
+  .dialog-header {
+    padding: 16px 40px;
+  }
+
+  .dialog-content {
+    padding: 14px 16px;
+    max-height: calc(80vh - var(--dlg-title-h) - var(--dlg-actions-h));
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--bg);
+  }
+
+  .dialog-actions {
+    flex: 0 0 auto;
+    padding: 15px 25px 20px;
+    gap: 8px;
   }
 }
