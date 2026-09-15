@@ -1,7 +1,7 @@
 <div class="dialog-shell">
     <div class="dialog-header dlg-bar">
         <div class="dlg-bar-title"> {{ mode === 'update' ? 'Detalle de parametros' : 'Agregar parametros' }}</div>
-         <button mat-icon-button class="dialog-close" (click)="close()">
+         <button class="dialog-close" (click)="close()">
             <mat-icon>close</mat-icon>
         </button>
     </div>
@@ -10,7 +10,7 @@
         
         <div class="section-divider"></div>
 
-        <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-conten">
+        <mat-dialog-content *ngIf="form" [formGroup]="form" class="dialog-conten">
             <div class="form-grid">
 
 
@@ -51,9 +51,9 @@
              </div>
         </mat-dialog-content>
 
-        <div class="dlg-actions">
+        <div class="dialog-actions">
             <button class="btn btn-danger" (click)="close()">Cancelar</button>
-            <button class="btn btn-succes" (click)="guardar()"> {{ mode === 'update' ? 'Aceptar' : 'Guardar' }}</button>
+            <button class="btn btn-success" (click)="guardar()"> {{ mode === 'update' ? 'Aceptar' : 'Guardar' }}</button>
         </div>
      </div>
 </div>

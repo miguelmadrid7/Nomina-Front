@@ -1,7 +1,7 @@
 <div class="dialog-shell">
     <div class="dialog-header dlg-bar">
         <div class="dlg-bar-title"> {{ mode === 'edit' ? 'Detalle de módulo' : 'Agregar módulo' }} </div>
-        <button mat-icon-button class="dialog-close" (click)="close()">
+        <button class="dialog-close" (click)="close()">
             <mat-icon>close</mat-icon>
         </button>
     </div>
@@ -68,7 +68,7 @@
         </div>
     </mat-dialog-content>
 
-    <div class="dlg-actions">
+    <div class="dialog-actions">
         <button class="btn btn-danger" type="button"(click)="close()">Cancelar</button>
         <button class="btn btn-primary"type="button" (click)="submit()"> {{ mode === 'edit' ? 'Aceptar' : 'Guardar' }} </button>
     </div>
