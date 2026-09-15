@@ -8,8 +8,13 @@
 /* INPUTS */
 .row {
   display: grid;
-  grid-template-columns: auto auto 1fr auto;
+  grid-template-columns: auto  1fr auto;
   align-items: center;
+  gap: 7px;
+}
+
+.qna-concepto-row {
+  display: flex;
   gap: 8px;
 }
 
@@ -288,7 +293,24 @@
     gap: 12px;
   }
 
-  .qna-field-short {
+  .qna-concepto-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+
+.qna-concepto-row mat-form-field {
+  min-width: 0;
+  width: 100%; 
+}
+
+  .qna-concepto-row .mat-icon[matPrefix] {
+    margin-right: 4px;
+    flex-shrink: 0; 
+  }
+
+  .qna-field-mini {
     max-width: none;
   }
 

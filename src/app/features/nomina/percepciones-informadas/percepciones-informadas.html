@@ -6,33 +6,36 @@
     <div class="section-divider"></div>
 
     <div class="row" [formGroup]="searchForm">
-        <mat-form-field appearance="outline" class="with-separator compact-field qna-compact qna-field-mini" floatLabel="always">
-            <mat-icon matPrefix>event</mat-icon>
-            <mat-label>Quincena activa</mat-label>
-            <input matInput
-                readonly
-                [value]="cargandoQna
-                    ? 'Cargando...'
-                    : (calendarioActual
-                        ? calendarioActual.qna.toString().padStart(2, '0') + ' / ' + calendarioActual.ejercicio
-                        : 'No disponible')"/>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
-            <mat-icon matPrefix>account_balance</mat-icon>
-                <mat-label>Concepto:</mat-label>
-                <mat-select formControlName="concepto">
-                    <mat-option value="ME">ME</mat-option>
-                    <mat-option value="MG">MG</mat-option>
-                    <mat-option value="VM">VM</mat-option>
-                    <mat-option value="37">37</mat-option>
-                    <mat-option value="TP">TP</mat-option>
-                    <mat-option value="OA">OA</mat-option>
-                    <mat-option value="OL">OL</mat-option>
-                    <mat-option value="TE">TE</mat-option>
-                    <mat-option value="7S">7S</mat-option>
-                </mat-select>
-        </mat-form-field>
+        <div class="qna-concepto-row">
+            <mat-form-field appearance="outline" class="with-separator compact-field qna-compact qna-field-mini" floatLabel="always">
+                    <mat-icon matPrefix>event</mat-icon>
+                    <mat-label>Quincena activa</mat-label>
+                    <input matInput
+                        readonly
+                        [value]="cargandoQna
+                            ? 'Cargando...'
+                            : (calendarioActual
+                                ? calendarioActual.qna.toString().padStart(2, '0') + ' / ' + calendarioActual.ejercicio
+                                : 'No disponible')"/>
+            </mat-form-field>
+         
+            <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
+                    <mat-icon matPrefix>account_balance</mat-icon>
+                        <mat-label>Concepto:</mat-label>
+                        <mat-select formControlName="concepto">
+                            <mat-option value="ME">ME</mat-option>
+                            <mat-option value="MG">MG</mat-option>
+                            <mat-option value="VM">VM</mat-option>
+                            <mat-option value="37">37</mat-option>
+                            <mat-option value="TP">TP</mat-option>
+                            <mat-option value="OA">OA</mat-option>
+                            <mat-option value="OL">OL</mat-option>
+                            <mat-option value="TE">TE</mat-option>
+                            <mat-option value="7S">7S</mat-option>
+                        </mat-select>
+            </mat-form-field>
+        </div>
+       
 
         <div class="file-upload-group">
             <label class="mat-body-2">Cargar layout:</label>
