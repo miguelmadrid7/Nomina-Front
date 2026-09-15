@@ -1,12 +1,12 @@
 <div class="dialog-shell">
   <div class="dialog-header dlg-bar">
     <div class="dlg-bar-title">Alta de usuario</div>
-    <button mat-icon-button class="dialog-close" (click)="cerrar()">
-      <mat-icon>close</mat-icon>
-    </button>
+      <button class="dialog-close" (click)="cerrar()">
+        <mat-icon>close</mat-icon>
+      </button>
   </div>
 
-  <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-conten">
+  <mat-dialog-content *ngIf="form" [formGroup]="form" class="dialog-conten">
 
     <div class="section-divider"></div>
 
@@ -68,7 +68,7 @@
     </div>
   </mat-dialog-content>
 
-  <div class="dlg-actions">
+  <div class="dialog-actions">
     <button class="btn btn-danger" (click)="cerrar()">Cancelar</button>
     <button class="btn btn-primary" (click)="guardar()">Guardar</button>
   </div>
