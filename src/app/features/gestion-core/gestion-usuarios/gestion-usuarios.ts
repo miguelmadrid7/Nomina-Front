@@ -73,15 +73,7 @@ export class GestionUsuarios implements OnDestroy {
 
   dataSource = new MatTableDataSource<NominaRow>([]);
   usersDataSource = new MatTableDataSource<User>([]);
-  displayedColumns: string[] = [
-    'nombreCompleto', 
-    'empleado', 
-    'area',
-    'roles', 
-    'padre', 
-    'hijo', 
-    'acciones'
-  ];
+  displayedColumns: string[] = ['nombreCompleto', 'empleado', 'area','roles', 'padre', 'hijo', 'acciones'];
 
   ngOnInit() {
     this.form = this.fb.group({
