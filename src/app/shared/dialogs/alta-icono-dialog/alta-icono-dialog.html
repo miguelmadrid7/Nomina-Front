@@ -1,16 +1,15 @@
 <div class="dialog-shell">
     <div class="dialog-header dlg-bar">
-         <button mat-icon-button class="dialog-close" (click)="close()">
-            <mat-icon>close</mat-icon>
-        </button>
+        <div class="dlg-bar-title"> Alta de icono </div>
+            <button mat-icon-button class="dialog-close" (click)="close()">
+                <mat-icon>close</mat-icon>
+            </button>
     </div>
 
-    <mat-dialog-content class="dlg-content">
-        <div class="dlg-bar-title">Alta de icono</div>
+    <mat-dialog-content class="dialog-content">
 
         <div class="section-divider"></div>
 
-            
                <form *ngIf="form" [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
 
                     <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
@@ -39,7 +38,7 @@
             
     </mat-dialog-content>
 
-    <div class="dlg-actions">
+    <div class="dialog-actions">
         <button class="btn btn-danger" (click)="close()">Cancelar</button>
         <button class="btn btn-primary" (click)="submit()"> {{ loading ? 'Guardando...' : 'Guardar' }}</button>
     </div>
