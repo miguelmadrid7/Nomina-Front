@@ -1,20 +1,13 @@
 <div class="dialog-shell">
   <div class="dialog-header dlg-bar">
-    
-        <button mat-icon-button class="dialog-close" (click)="cerrar()">
+    <div class="dlg-bar-title">{{ data.modo === 'editar'? 'Editar Beneficiario': 'Agregar Beneficiario'}} </div>
+        <button class="dialog-close" (click)="cerrar()">
           <mat-icon>close</mat-icon>
         </button>
   </div>
 
-  <div class="header-row">
-    <div class="section-title">
-      <span></span>
-      <h3 class="dialog-title">{{ data.modo === 'editar'? 'Editar Beneficiario': 'Agregar Beneficiario'}} </h3>
-  
-    </div>
-  
-    <div class="qna-summary">
-      <span class="qna-label">Quincena activa</span>
+  <div class="qna-summary-dialog">
+    <span class="qna-label">Quincena activa</span>
       @if (cargandoQna) {
         <span class="qna-tag">Cargando...</span>
       } @else if (calendarioActual) {
@@ -24,10 +17,9 @@
       } @else {
         <span class="qna-tag">No disponible</span>
       }
-    </div>
   </div>
 
-  <div class="dlg-content">
+  <mat-dialog-content class="dlg-content">
     <div [formGroup]="form">
       <div formGroupName="beneficiario">
         <div class="form-card">
@@ -268,9 +260,9 @@
         </mat-card-content>
       </div>
     </div>
-  </div>
+  </mat-dialog-content>
 
-  <div class="dlg-actions">
+  <div class="dialog-actions">
     <button class="btn btn-primary" type="button" (click)="guardar()">Guardar</button>
     <button class="btn btn-danger" type="button" (click)="cerrar()">Cancelar</button>
   </div>
