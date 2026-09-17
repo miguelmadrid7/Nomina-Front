@@ -7,6 +7,7 @@ import { CargarExcelResponse } from "../model/response/cargar-excel-response.mod
 import { PersonalizarListResponse } from "../model/response/personalizar-list-response.model";
 import { PersonalizarRegistroResponse } from "../model/response/personalizar-registro-response.model";
 import { ContinuarResponse } from "../model/response/validacion-excel-response.model";
+import { LoteResumen } from "../model/carga-excel/lote-resumen.model";
 
 @Injectable({
     providedIn: 'root',
@@ -59,6 +60,10 @@ export class PercepcionesInformadasService {
         return this.http.get<ApiResponse<PersonalizarListResponse>>( `${this.base}/nom-emp-pza-cpto/personalizar`,{ params },);
     }
 
+    getLotes(): Observable<ApiResponse<LoteResumen>> {
+        return this.http.get<ApiResponse<LoteResumen>>( `${this.base}/nom-emp-pza-cpto/lotes`);
+    }
+
     editRecord(
         id: number,
         rfc: string,
@@ -73,6 +78,11 @@ export class PercepcionesInformadasService {
 
     deleteRegisterTemporary(id: number): Observable<ApiResponse<void>> {
         return this.http.delete<ApiResponse<void>>(`${this.base}/nom-emp-pza-cpto/personalizar/${id}`);
+    }
+    
+    deleteLote(qnaProceso: number, concepto: string): Observable<ApiResponse<{ filasBorradas: number }>> {
+        const params = new HttpParams().set('qnaProceso', qnaProceso.toString()).set('concepto', concepto);
+        return this.http.delete<ApiResponse<{ filasBorradas: number }>>( `${this.base}/nom-emp-pza-cpto/borrar-lote`, { params },);
     }
 
     validateRecords(ids: number[]): Observable<ApiResponse<{ total: number; aceptados: number; rechazados: number; todosAceptados: boolean }>> {
