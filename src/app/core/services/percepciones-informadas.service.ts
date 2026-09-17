@@ -92,7 +92,7 @@ export class PercepcionesInformadasService {
 
     processPayroll(qnaProceso: number, concepto: string): Observable<ApiResponse<ContinuarResponse>> {
         const body = { qnaProceso, concepto };
-        return this.http.post<ApiResponse<ContinuarResponse>>(`${this.base}/nom-emp-pza-cpto/continuar`,body,);
+        return this.http.post<ApiResponse<ContinuarResponse>>(`${this.base}/nom-emp-pza-cpto/procesar`,body,);
     }
 
     downloadValidations(
