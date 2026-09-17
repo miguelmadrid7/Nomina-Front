@@ -55,15 +55,7 @@ export class ConsultaJuiciosMercantiles {
   pageSize = 10;
   pageIndex = 0;
   totalElements = 0;
-  displayedColumns: string[] = [
-    'nombreEmpleado',
-    'rfc', 
-    'nombreCompleto', 
-    'qnaProceso',
-    'formaAplicacion',
-    'status',
-    'acciones'
-  ];
+  displayedColumns: string[] = ['nombreEmpleado', 'rfc', 'nombreCompleto', 'qnaProceso', 'formaAplicacion', 'status', 'acciones'];
 
   anios: number[] = [];
   quincenas: number[] = [];
@@ -204,9 +196,6 @@ export class ConsultaJuiciosMercantiles {
   }
   
   openEditDialog(row: any): void {
-    console.log('Row seleccionada:', row);
-    console.log('ID de la row:', row.id);
-    
     const dialogRef = this.dialog.open(AltaBeneficiarioJmDialog, {
       width: '1200px',
       maxWidth: '92vw',
@@ -243,9 +232,7 @@ export class ConsultaJuiciosMercantiles {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-       console.log('Diálogo cerrado con resultado:', result);
       if (!result) return;
-      console.log('Recargando beneficiarios...');
       this.loadBeneficiaries();
     });
   }
