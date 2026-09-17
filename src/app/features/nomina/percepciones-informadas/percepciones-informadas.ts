@@ -19,6 +19,8 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { PercepcionesInformadasService } from '../../../core/services/percepciones-informadas.service';
 import { PersonalizarRow } from '../../../core/model/personzaliza-row.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog } from '@angular/material/dialog';
+import { ConsultaPersepcionesInformadasDialog } from '../../../shared/dialogs/consulta-persepciones-informadas-dialog/consulta-persepciones-informadas-dialog';
 
 @Component({
   selector: 'app-percepciones-informadas',
@@ -58,6 +60,7 @@ export class PercepcionesInformadas {
   selectedRowId: number | null = null;
   yaSeProceso = false;
   isValidatingLote = false;
+  fechaCarga: string | null = null;
 
   totalElements = 0;
   pageSize = 10;
@@ -75,6 +78,7 @@ export class PercepcionesInformadas {
   private readonly percepcionesInformadasService = inject(PercepcionesInformadasService)
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly fb = inject(FormBuilder);
+  private readonly dialog = inject(MatDialog);
   
   private readonly VALIDATION_TOAST_ID = 5001;
   private readonly PROCESAMIENTO_TOAST_ID = 5002;
@@ -90,7 +94,6 @@ export class PercepcionesInformadas {
 
   ngOnInit():void  {
     this.loadQnaActivated();
-    //this.loadMockData();
     this.tableFilter();
   }
 
@@ -306,14 +309,20 @@ export class PercepcionesInformadas {
     }
     const concepto = this.searchForm.get('concepto')?.value;
     const qnaProceso = this.calendarioActual?.qna;
-    if (!qnaProceso || !concepto) {
+    const ejercicio = this.calendarioActual?.ejercicio;
+    
+    if (!qnaProceso || !ejercicio || !concepto) {
       this.toastService.error('Datos incompletos', 'No se pudo determinar la quincena o el concepto.');
       return;
     }
+    
+    // Combinar año y quincena en formato AAAAQQ (ej. 202522)
+    const qnaCompleto = parseInt(`${ejercicio}${qnaProceso.toString().padStart(2, '0')}`);
+    
     this.isProcessingPayroll = true;
     this.toastService.upsertPersistent(this.PROCESAMIENTO_TOAST_ID, 'info', 'Procesando a nómina', `Enviando ${this.totalRecordsCount} registros al módulo de nómina...`);
 
-    this.percepcionesInformadasService.processPayroll(qnaProceso, concepto).subscribe({
+    this.percepcionesInformadasService.processPayroll(qnaCompleto, concepto).subscribe({
       next: (response) => {
         if (!response.success) {
           this.toastService.resolvePersistent(this.PROCESAMIENTO_TOAST_ID, 'error', 'No se pudo procesar', response.message ?? 'No hay registros aceptados para continuar.',);
@@ -322,6 +331,7 @@ export class PercepcionesInformadas {
         }
 
         const data = response.data;
+        this.fechaCarga = data.fechaCarga;
         this.toastService.resolvePersistent(this.PROCESAMIENTO_TOAST_ID, 'success', 'Procesado con éxito',  `${data.insertadosNomEmpPzaCpto} de ${data.total} registros se enviaron correctamente a nómina.`,);
         this.processedRows = [...this.dataSource.data];
         this.resultAvalible = true;
@@ -360,13 +370,17 @@ export class PercepcionesInformadas {
   onDownloadResult(): void {
     const concepto = this.searchForm.get('concepto')?.value;
     const qnaProceso = this.calendarioActual?.qna;
+    const ejercicio = this.calendarioActual?.ejercicio;
 
-    if (!qnaProceso) {
+    if (!qnaProceso || !ejercicio) {
       this.toastService.error('Quincena no disponible', 'No se pudo determinar la quincena activa.');
       return;
     }
 
-    this.percepcionesInformadasService.downloadValidations(qnaProceso, concepto ?? undefined).subscribe({
+    // Combinar año y quincena en formato AAAAQQ (ej. 202522)
+    const qnaCompleto = parseInt(`${ejercicio}${qnaProceso.toString().padStart(2, '0')}`);
+
+    this.percepcionesInformadasService.downloadValidations(qnaCompleto, concepto ?? undefined, undefined).subscribe({
       next: (blob) => {
         const fecha = new Date().toISOString().slice(0, 10);
         const fileName = `validaciones_qna${qnaProceso}_${fecha}.xlsx`;
@@ -433,6 +447,7 @@ export class PercepcionesInformadas {
     this.validRecordCount = 0;
     this.totalRecordsCount = 0;
     this.yaSeProceso = false;
+    this.fechaCarga = null;
 
     this.searchForm.reset({
       searchText: '',
@@ -453,5 +468,22 @@ export class PercepcionesInformadas {
     if (qnaProceso && concepto) {
       this.cargarListaPersonalizar(qnaProceso, concepto);
     }
+  }
+
+  loadLotes():void {
+    this.percepcionesInformadasService.getLotes().subscribe({
+      next: (response) => {
+        this.dialog.open(ConsultaPersepcionesInformadasDialog, {
+          width: '1000px',
+          maxWidth: '95vw',
+          data: { 
+            lotes: response.data 
+          },
+        });
+      },
+      error: (error) => {
+        this.toastService.error('Error', error?.error?.message ?? 'No se pudieron obtener los lotes.');
+      },
+    });
   }
 }
