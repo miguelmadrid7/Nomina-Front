@@ -1,0 +1,50 @@
+/* --- Table --- */
+.table-global {
+  width: 100%;
+  table-layout:fixed;
+}
+
+/* --- BADGES Y ESTILOS DE CELDA --- */
+.badge-year {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* --- Global search ---  */
+.global-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+:host ::ng-deep .qna-compact {
+    width: 680px !important;
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-form-field-infix {
+    min-height: 40px !important;
+    display: flex;
+    align-items: center;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .table-global {
+    min-width: 810px;
+  }
+
+  /* Buscador */
+  .global-search {
+    width: 100%;
+  }
+}

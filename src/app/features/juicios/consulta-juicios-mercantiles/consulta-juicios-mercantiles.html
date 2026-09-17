@@ -1,0 +1,150 @@
+<div class="page-container">
+    <div class="page-header">
+        <h2 class="page-title">Información de juicios mercantiles</h2>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="actions-right">
+        <div class="btn-group">
+            <button class="btn btn-primary" (click)="searchEmployee()">
+                <mat-icon>search</mat-icon>
+                    <span>Buscar</span>
+            </button>
+        </div>
+
+        <button class="btn btn-danger"  (click)="clearFilters()">
+            <mat-icon>delete_outline</mat-icon>
+                <span>Limpiar</span>
+        </button>
+    </div>
+
+    <div [formGroup]="searchForm" class="global-search">
+        <mat-form-field appearance="outline" class="with-separator qna-compact search-field" floatLabel="always">
+            <mat-icon matPrefix>search</mat-icon>
+                <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
+                    <input 
+                        matInput 
+                        id="buscarEmpleado" 
+                        formControlName="searchText" 
+                        appUppercase 
+                        (keydown.enter)="searchEmployee()">
+        </mat-form-field>
+
+        <div formGroupName="busqueda" class="qna-filters">
+        <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
+            <mat-label>Año</mat-label>
+                <mat-select formControlName="anio">
+                    @for (anio of anios; track anio) {
+                        <mat-option [value]="anio">{{ anio }}</mat-option>
+                    }
+                </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="compact-field qna-compact" floatLabel="always">
+            <mat-label>Quincena</mat-label>
+                <mat-select formControlName="quincena">
+                    @for (q of quincenas; track q) {
+                        <mat-option [value]="q">{{ q.toString().padStart(2, '0') }}</mat-option>
+                    }
+                </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="compact-field qna-compact estado-field" floatLabel="always">
+            <mat-label>Estado</mat-label>
+            <mat-select formControlName="estado">
+                @for (estado of estados; track estado.value){
+                <mat-option [value]= "estado.value">
+                    {{ estado.label}}
+                </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+        </div>
+    </div>
+
+
+<div class="table-container">
+    <div class="table-card">
+        <div class="table-content">
+            <div class="table-scroll">
+                <table mat-table [dataSource]="dataSource" class="table-global">
+                    
+                    <ng-container matColumnDef="nombreEmpleado">
+                        <th mat-header-cell *matHeaderCellDef class="col-xl col-center">NOMBRE EMPLEADO</th>
+                        <td mat-cell *matCellDef="let e" class="col-xl col-center col-wrap"> 
+                            <span *ngIf="e.showEmpleado">{{ e.nombreEmpleado }}</span>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="rfc">
+                        <th mat-header-cell *matHeaderCellDef class="col-xl col-center">RFC</th>
+                        <td mat-cell *matCellDef="let e" class="col-xl col-center">  
+                            <span *ngIf="e.showEmpleado">{{ e.rfcEmpleado }}</span>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="nombreCompleto">
+                        <th mat-header-cell *matHeaderCellDef class="col-xl col-center">NOMBRE COMPLETO</th>
+                        <td mat-cell *matCellDef="let e" class="col-xl col-center col-wrap">{{ e.nombreCompleto }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="qnaProceso">
+                        <th mat-header-cell *matHeaderCellDef class="col-xl col-center">QNA A DESCONTAR</th>
+                        <td mat-cell *matCellDef="let e" class="col-xl col-center">{{ e.qnaini }} - {{ e.qnafin }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="formaAplicacion">
+                        <th mat-header-cell *matHeaderCellDef class="col-xl col-center">FORMA DE APLICACIÓN</th>
+                        <td mat-cell *matCellDef="let e" class="col-xl col-center">{{ e.formaAplicacion }}</td>
+                    </ng-container>
+
+
+                    <ng-container matColumnDef="status">
+                        <th mat-header-cell *matHeaderCellDef class="col-xl col-center">ESTATUS</th>
+                        <td mat-cell *matCellDef="let e" class="col-xl col-center">
+                            <span class="chip" [class.chip-ok]="e.status !== 'INACTIVO'"  [class.chip-off]="e.status === 'INACTIVO'">
+                                {{ e.status === 'INACTIVO' ? 'Finalizado' : 'Activo' }}
+                            </span>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="acciones">
+                        <th mat-header-cell *matHeaderCellDef class="col-xs col-center">ACCIONES</th>
+                        <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                            <div class="table-actions" *ngIf="e.status !== 'INACTIVO'">
+                                
+                                <div class="actions-cell">
+                                    <button class="btnn btnn-primaryy" (click)="openEditDialog(e)"  matTooltip="Editar">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.inactive-row]="row?.status === 'INACTIVO'"></tr>
+
+                    <tr class="mat-row" *matNoDataRow [class.hidden]="!hasCheck">
+                        <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
+                            SIN BENEFICIARIOS REGISTRADOS
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="table-footer">
+                <mat-paginator
+                    [length]="dataSource.data.length"
+                    [pageSize]="pageSize"
+                    [pageSizeOptions]="[5, 10, 25, 50, 100]"
+                    showFirstLastButtons
+                    aria-label="Select page">
+                </mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

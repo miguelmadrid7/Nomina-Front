@@ -1,0 +1,17 @@
+<div class="dialog-header"></div>
+
+<div class="dialog-icon" [ngClass]="data.type || 'success'">
+  <mat-icon aria-hidden="true">
+    {{ (data.type === 'error' && 'close') || (data.type === 'info' && 'info') || 'check' }}
+  </mat-icon>
+</div>
+
+<div mat-dialog-content class="dialog-content">
+  {{ data.message || 'Se guardó correctamente tus datos.' }}
+</div>
+
+<div class="section-divider"></div>
+
+<div mat-dialog-actions align="center" class="dialog-actions">
+  <button class="btn btn-success" (click)="close()">Aceptar</button>
+</div>

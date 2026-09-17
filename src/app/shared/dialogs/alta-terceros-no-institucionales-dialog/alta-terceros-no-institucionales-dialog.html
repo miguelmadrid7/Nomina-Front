@@ -1,0 +1,158 @@
+<div class="dialog-shell">
+  <div class="dialog-header dlg-bar">
+      <button mat-icon-button class="dialog-close" (click)="cerrar()">
+        <mat-icon>close</mat-icon>
+      </button>
+  </div>
+
+  <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
+    
+    <div class="dlg-bar-title">Detalle Tercero</div>
+    
+    <div class="dlg-recepcion" *ngIf="calRecSeleccionado">
+      <strong>Fecha de recepción:</strong> {{ fechaRecepcionInfo }}
+      <span *ngIf="calRecSeleccionado.noMovimientos"> | No movimientos</span>
+      <span *ngIf="calRecSeleccionado.soloBajas"> | Solo bajas</span>
+    </div>
+    
+
+    <mat-card class="form-card">
+      <mat-card-content class="form-grid">
+        
+        <div class="info-field">
+          <mat-icon>fingerprint</mat-icon>
+            <div class="info-content">
+              <span class="info-label">CURP</span>
+              <span>{{ form.get('curp')?.value || '—' }}</span>
+            </div>
+        </div>
+
+        <div class="info-field">
+          <mat-icon>assignment_ind</mat-icon>
+              <div class="info-content">
+                <span class="info-label">RFC</span>
+                <span>{{ form.get('rfc')?.value || '—' }}</span>
+              </div>
+        </div>
+
+        <div class="info-field">
+          <mat-icon>person</mat-icon>
+              <div class="info-content">
+                <span class="info-label">NOMBRE EMPLEADO</span>
+                <span>{{ form.get('apellidoPaterno')?.value || '—' }} {{ form.get('apellidoMaterno')?.value || '—' }} {{ form.get('nombres')?.value || '—' }} </span>
+              </div>
+        </div>
+
+        <div class="info-field">
+          <mat-icon>checklist</mat-icon>
+              <div class="info-content">
+                <span class="info-label">CONCEPTO SELECCIONADO</span>
+                <span>{{ form.get('concepto')?.value || '—' }}</span>
+              </div>
+        </div>
+
+        <div class="info-field">
+          <mat-icon>event_available</mat-icon>
+              <div class="info-content">
+                <span class="info-label">QNA DE RECEPCION </span>
+                <span>{{ form.get('qnaRecepcion')?.value || '—' }}</span>
+              </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="section-divider"></div>
+
+    <div class="dlg-bar-title">Registro de Tercero</div>
+
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Número documento</mat-label>
+        <mat-icon matPrefix>description</mat-icon>
+        <input matInput formControlName="numeroDocumento" maxlength="9">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Tipo movimiento*</mat-label>
+        <mat-icon matPrefix>reorder</mat-icon>
+        <mat-select formControlName="tipoOrden">
+          <mat-option *ngFor="let t of tipoOrdenOptions" [value]="t.value">
+            {{ t.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field *ngIf="!esAltaFlag" appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Estatus*</mat-label>
+        <mat-icon matPrefix>rule</mat-icon>
+        <mat-select formControlName="estatus">
+          <mat-option *ngFor="let e of estatusOptions" [value]="e"> {{ e }} </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+        <mat-label>Importe mensual*</mat-label>
+        <mat-icon matPrefix>attach_money</mat-icon>
+        <input matInput type="number" formControlName="importeMensual">
+      </mat-form-field>
+
+      <div class="span-3 pdf-upload-row">
+        <div class="login-field compact-field with-separator">
+          <label class="mat-body-2">Archivo PDF</label>
+          <input type="file" accept="application/pdf" (change)="onPdfSelected($event)">
+            <div *ngIf="archivoPdf" class="mat-caption"> {{ archivoPdf.name }}</div>
+            <div *ngIf="archivoPdfError" class="mat-caption"> {{ archivoPdfError }}</div>
+        </div>
+
+        <div *ngIf="pdfPreviewUrl" class="pdf-preview">
+          <div class="pdf-preview-toolbar">
+            <button type="button" class="btn btn-primary" (click)="abrirPdfEnNuevaPestana()">Abrir PDF </button>
+          </div>
+
+          <iframe [src]="pdfPreviewUrl" title="Previsualización PDF"></iframe>
+        </div>
+      </div>
+
+      <div class="datetime-row span-3">
+        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+          <mat-label>Desde*</mat-label>
+            <mat-icon matPrefix>calendar_today</mat-icon>
+            <input matInput formControlName="qnaDesde">
+              <mat-error *ngIf="form.hasError('qnaMenorActual')">
+                No puede ser menor a la quincena actual
+              </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+          <mat-label>Hasta*</mat-label>
+            <mat-icon matPrefix>calendar_today</mat-icon>
+            <input matInput formControlName="qnaHasta" maxlength="6"  pattern="[0-9]*">
+              <mat-error *ngIf="form.hasError('qnaMenorActual')">
+                No puede ser menor a la quincena actual
+              </mat-error>
+
+              <mat-error *ngIf="form.hasError('rangoInvalido')">
+                La QNA final no puede ser menor que la inicial
+              </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
+            <mat-label>Fecha y hora registro*</mat-label>
+            <mat-icon matPrefix>calendar_today</mat-icon>
+            <input 
+              matInput 
+              formControlName="fechaRegistro"
+              id="fechaHoraInput"
+              placeholder="Selecciona fecha y hora"
+              readonly>
+          </mat-form-field>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <!-- ACTIONS -->
+  <div class="dlg-actions">
+    <button class="btn btn-primary" (click)="guardar()">Guardar</button>
+    <button class="btn btn-danger" (click)="cerrar()">Cancelar</button>
+  </div>
+</div>

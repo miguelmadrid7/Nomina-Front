@@ -1,0 +1,322 @@
+import { ChangeDetectorRef, Component, ElementRef, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { JuiciosMercantilesService } from '../../../core/services/juicios-mercantiles.service';
+import { BeneficiarioJMRequest } from '../../../core/model/request/beneficiariojm-request.model';
+import { Banco } from '../../../core/model/banco.model';
+import { ApiResponse } from '../../../core/model/response/api-Response.model';
+import { calculateFactorDecimal, formatBeneficiarioJMDisplay, mapBeneficiarioJM, repartirNombre } from '../../../shared/helpers/beneficiario-jm.helper';
+import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
+import { CalendarioService } from '../../../core/services/calendario.service';
+import { Calendario } from '../../../core/model/calendario.model';
+import { ToastService } from '../../../core/services/toast.service';
+
+@Component({
+  selector: 'app-juicios-mercantiles',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatAutocompleteModule,
+    MatCardModule,
+    MatInputModule,
+    MatIconModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    MatDialogModule,
+    UppercaseDirective
+],
+  templateUrl: './juicios-mercantiles.html',
+  styleUrls: ['./juicios-mercantiles.css']
+})
+export class JuiciosMercantiles implements OnInit, OnDestroy {
+
+  private readonly fb = inject(FormBuilder);
+  private readonly juiciosMercantilesService = inject(JuiciosMercantilesService);
+  private readonly dialog = inject(MatDialog);
+  private readonly cd = inject(ChangeDetectorRef);
+  private readonly calendarioService = inject(CalendarioService);
+  private readonly toastService = inject(ToastService);
+
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
+  @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
+
+  empleadoIdActual: number | null = null;
+  hasCheck = false;
+  resultado: BeneficiarioJMRequest[] = [];
+  cargandoBusqueda = false;
+  bancos: Banco[] = [];
+  beneficiarios: any[] = [];
+  factorDecimal = 0;
+  calendarioActual: Calendario | null = null;
+  cargandoQna = false;
+
+
+  readonly form = this.fb.group({
+      busqueda: this.fb.group({
+        searchText: [null as BeneficiarioJMRequest | string |null],
+        empleadoId: [null as Number | null],
+        rfc: [''],
+        primerApellido: [''],
+        segundoApellido: [''],
+        nombre: [''],
+      }),
+      empleado: this.fb.group({
+        rfc: [''],
+        primerApellido: [''],
+        segundoApellido: [''],
+        nombre: [''],
+      }),
+      beneficiario: this.fb.group({
+        numeroOficio: [null as string | null],
+        rfc: ['', Validators.required],
+        primerApellido: [''],
+        segundoApellido: [''],
+        nombre: [''],
+        importeTotal: [''],
+        citaBancaria: [''],
+        clabe: [''],
+        bancoId: [''],
+        formaAplicacion: ['', Validators.required],
+        factorImporte: ['', Validators.max(100)],
+        tipoPorcentaje: [''],
+        tipoBase: [''],
+        estatus: [''],
+        descripcion: [''],
+      }),
+  });
+
+  readonly displayFn = (emp: BeneficiarioJMRequest | string | null): string => formatBeneficiarioJMDisplay(emp);
+
+
+  ngOnInit(): void {
+    this.loadBanks();
+    this.loadQnaActiva();
+  }
+
+  ngOnDestroy() {
+    this.dialog.closeAll();
+  }
+
+  buscarEmpleado(): void {
+    const value = this.form.get('busqueda.searchText')?.value;
+    if (value && typeof value === 'object') return;
+
+    const texto = typeof value === 'string' ? value.trim() : '';
+    if (!texto) {
+      this.resultado = [];
+      this.autocompleteTrigger?.closePanel();
+      this.toastService.warning('Búsqueda requerida', 'Captura un criterio de búsqueda.', 4000);
+      return;
+    }
+    if (texto.length < 3) {
+      this.resultado = [];
+      this.autocompleteTrigger?.closePanel();
+      this.toastService.warning('Búsqueda invalida', 'Captura al menos 3 caracteres para buscar.', 4000);
+      return;
+    }
+
+    this.cargandoBusqueda = true;
+    this.juiciosMercantilesService.getBuscarEmpleado(texto).subscribe({
+      next: (resp: ApiResponse<BeneficiarioJMRequest[]>) => {
+        const lista = resp?.data ?? [];
+        this.resultado = lista.map(mapBeneficiarioJM)
+          .filter(e => e.rfc.trim() || e.primerApellido.trim() || e.segundoApellido.trim() || e.nombre.trim());
+        this.cargandoBusqueda = false;
+       if (this.resultado.length > 0) {
+        setTimeout(() => {
+          this.searchInput?.nativeElement.focus();
+          this.autocompleteTrigger?.openPanel();
+        });
+      } else {
+        this.autocompleteTrigger?.closePanel();
+        this.toastService.warning('Warning', 'No se encontraron resultados.', 4000);
+      }
+      },
+      error: () => {
+        this.cargandoBusqueda = false;
+        this.toastService.error('Error', 'Error en la búsqueda.', 4000);
+      }
+    });
+  }
+
+  employeeSelect(emp: BeneficiarioJMRequest): void {
+    this.empleadoIdActual = Number(emp.id);
+    const partes = repartirNombre(emp);
+    this.form.patchValue({
+      busqueda: {
+        empleadoId: Number(emp.id),
+        searchText: emp
+      },
+      empleado: {
+        rfc: emp.rfc ?? '',
+        primerApellido: partes.primerApellido,
+        segundoApellido: partes.segundoApellido,
+        nombre: partes.nombre
+      }
+    });
+    this.resultado = [];
+    this.autocompleteTrigger?.closePanel();
+  }
+
+  saveBeneficiary(): void {
+    if (!this.empleadoIdActual) {
+      this.toastService.warning('Acción invalida', 'Selecciona un empleado primero.', 4000);
+      return;
+    }
+    const beneficiarioGroup = this.form.get('beneficiario');
+    if (!beneficiarioGroup) {
+      this.toastService.error('Error', 'No se pudo leer el formulario.', 4000);
+      return;
+    }
+    if (beneficiarioGroup.invalid) {
+      beneficiarioGroup.markAllAsTouched();
+      this.toastService.warning('Formulario incompleto', 'Por favor completa los campos requeridos.', 4000);
+      return;
+    }
+    const formValue = beneficiarioGroup.value;
+    if (!formValue.formaAplicacion) {
+      this.toastService.warning('Campo requerido', 'Debes seleccionar una forma de aplicación (Factor o Importe fijo).', 4000);
+      return;
+    }
+    const formaAplicacion = formValue.formaAplicacion;
+    let tipoPorcentaje: number | null = null;
+    let tipoBase: string | null = null;
+    if (formaAplicacion === 'P') {
+      tipoPorcentaje = formValue.tipoPorcentaje ? Number(formValue.tipoPorcentaje) : 1;
+      if (tipoPorcentaje === 1) {
+        tipoBase = formValue.tipoBase || 'A';
+      }
+    }
+    const payload = {
+      numeroOficio: formValue.numeroOficio,
+      tabEmpleadosId: this.empleadoIdActual,
+      rfc: formValue.rfc,
+      primerApellido: formValue.primerApellido,
+      segundoApellido: formValue.segundoApellido,
+      nombre: formValue.nombre,
+      importeTotal: formValue.importeTotal,
+      formaAplicacion: formaAplicacion,
+      factorImporte: formValue.factorImporte,
+      tipoPorcentaje: tipoPorcentaje,
+      tipoBase: tipoBase,
+      qnaini: this.calendarioActual ? `${this.calendarioActual.ejercicio}${this.calendarioActual.qna.toString().padStart(2, '0')}` : '',
+      qnafin: '999999',
+      clabeInterbancaria: formValue.clabe,
+      ctaBancaria: formValue.citaBancaria,
+      catBancoId: formValue.bancoId
+    };
+    this.juiciosMercantilesService.saveBeneficiary(payload).subscribe({
+      next: () => {
+        this.form.get('beneficiario')?.reset();
+        this.clearFilters();
+        this.toastService.info('Información guardada', 'Juicio guardado correctamente.', 6000);
+      },
+      error: () => {
+        this.toastService.error('Error', 'No se pudo guardar el juicio. Revisa los datos.', 6000);
+      }
+    });
+  }
+
+  updateFactorValidator(): void {
+    const forma = this.form.get('beneficiario.formaAplicacion');
+    const factor = this.form.get('beneficiario.factorImporte');
+    const tipoPorcentaje = this.form.get('beneficiario.tipoPorcentaje');
+    const tipoBase = this.form.get('beneficiario.tipoBase');
+
+    if(forma?.value === 'P') {
+      factor?.setValidators([
+        Validators.min(0),
+        Validators.max(100)
+      ]);
+      tipoPorcentaje?.setValidators([Validators.required]);
+      if(tipoPorcentaje?.value === '1') {
+        tipoBase?.setValidators([Validators.required]);
+      } else {
+        tipoBase?.clearValidators();
+      }
+    } else {
+      factor?.setValidators([
+        Validators.min(0)
+      ]);
+      tipoPorcentaje?.clearValidators();
+      tipoBase?.clearValidators();
+    }
+    factor?.updateValueAndValidity();
+    tipoPorcentaje?.updateValueAndValidity();
+    tipoBase?.updateValueAndValidity();
+  }
+
+  updateFactorDecimal(): void {
+    const forma = this.form.get('beneficiario.formaAplicacion')?.value;
+    const valor = Number (this.form.get('beneficiario.factorImporte')?.value);
+
+    if(forma === 'P') {
+      this.factorDecimal = calculateFactorDecimal(valor);
+    } else {
+      this.factorDecimal = 0;
+    }
+
+  }
+
+  loadBanks(): void {
+    this.juiciosMercantilesService.getBancos().subscribe({
+      next: (response: ApiResponse<Banco[]>) => {
+        this.bancos = response.data ?? [];
+      },
+      error: () => {
+        this.toastService.error('Error', 'Error al cargar bancos.', 4000);
+      }
+    });
+  }
+
+  loadQnaActiva(): void {
+    this.cargandoQna = true;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (response: ApiResponse<Calendario>) => {
+        this.calendarioActual = response.data ?? null;
+        this.cargandoQna      = false;
+      },
+      error: () => {
+        this.cargandoQna = false;
+        this.toastService.error('Error', 'Error al cargar QNA activa.', 4000);
+      }
+    });
+  }
+
+  clearFilters(): void {
+    this.form.patchValue({
+      busqueda: {
+        searchText: '',
+        empleadoId: null,
+        rfc: '',
+        primerApellido: '',
+        segundoApellido: '',
+        nombre: ''
+      },
+      empleado: {
+        rfc: '',
+        primerApellido: '',
+        segundoApellido: '',
+        nombre: ''
+      }
+    }, { emitEvent: false });
+    this.resultado = [];
+    this.autocompleteTrigger?.closePanel();
+    this.beneficiarios = [];
+    this.empleadoIdActual = null;
+    this.hasCheck = false;
+    this.cd.markForCheck();
+  }
+}
