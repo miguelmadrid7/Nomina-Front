@@ -1,0 +1,58 @@
+.row {
+  display: grid;
+  grid-template-columns: auto  1fr auto;
+  align-items: center;
+  gap: 7px;
+}
+
+.qna-compact {
+  --mat-form-field-container-height: 40px;
+  --mat-form-field-container-vertical-padding: 8px;
+}
+
+.qna-field-short {
+  max-width: 450px;
+  justify-self: start;
+}
+
+.qna-field-mini {
+  max-width: 200px;
+  justify-self: start;
+}
+
+.qna-compact .mat-mdc-form-field-infix {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  min-height: unset !important;
+}
+
+.qna-compact .mat-mdc-input-element {
+  font-size: 0.9rem;
+}
+
+.qna-compact .mat-icon[matPrefix] {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+}
+
+.form-card {
+  padding: 20px 24px;
+}
+
+.form-card.mat-mdc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* --- inpust de salida --- */
+.cantidad-edit-input {
+  width: 80px;
+  border: 1px solid var(--line, #ccc);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font: inherit;
+  text-align: center;
+}
