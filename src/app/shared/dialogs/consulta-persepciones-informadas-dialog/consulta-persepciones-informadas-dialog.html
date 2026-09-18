@@ -10,15 +10,13 @@
         <div class="actions-right">
             <div class="qna-summary">
                 <span class="qna-label">Quincena activa</span>
-                    @if (cargandoQna) {
-                        <span class="qna-tag">Cargando...</span>
-                    } @else if (calendarioActual) {
-                        <span class="qna-tag">
-                            {{ calendarioActual.qna.toString().padStart(2, '0') }} / {{ calendarioActual.ejercicio }}
-                        </span>
-                    } @else {
-                        <span class="qna-tag">No disponible</span>
-                    }
+                @if (calendarioActual) {
+                    <span class="qna-tag">
+                        {{ calendarioActual.qna.toString().padStart(2, '0') }} / {{ calendarioActual.ejercicio }}
+                    </span>
+                } @else {
+                    <span class="qna-tag">No disponible</span>
+                }
             </div>
         </div>
     
