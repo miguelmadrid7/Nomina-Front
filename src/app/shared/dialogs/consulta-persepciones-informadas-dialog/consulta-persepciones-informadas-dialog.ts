@@ -1,4 +1,4 @@
-import { Component, inject, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { LoteResumen } from '../../../core/model/carga-excel/lote-resumen.model';
 import { CommonModule } from '@angular/common';
@@ -9,6 +9,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { ToastService } from '../../../core/services/toast.service';
 import { PercepcionesInformadasService } from '../../../core/services/percepciones-informadas.service';
 import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
+import { Calendario } from '../../../core/model/calendario.model';
 
 @Component({
   selector: 'app-consulta-persepciones-informadas-dialog',
@@ -20,8 +21,6 @@ import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
     MatIconModule,
     MatTableModule,     
     MatPaginatorModule,
-    
-
   ],
   templateUrl: './consulta-persepciones-informadas-dialog.html',
   styleUrl: './consulta-persepciones-informadas-dialog.css'
@@ -29,20 +28,26 @@ import { ConfirmDialog } from '../confirm-dialog/confirm-dialog';
 export class ConsultaPersepcionesInformadasDialog {
 
   private readonly dialogRef = inject(MatDialogRef<ConsultaPersepcionesInformadasDialog>);
-  private readonly toastService = inject(ToastService)
+  private readonly toastService = inject(ToastService);
   private readonly dialog = inject(MatDialog);
-  private readonly percepcionesInformadasService = inject(PercepcionesInformadasService)
+  private readonly percepcionesInformadasService = inject(PercepcionesInformadasService);
   
   readonly displayedColumns: string[] = ['conceptoDescuento', 'qnaProceso', 'totalFilas', 'aceptadas', 'rechazadas', 'pendientesValidar', 'fechaCarga', 'acciones'];
   dataSource = new MatTableDataSource<LoteResumen>([]);
   showRecords = false;
+  totalElements = 0;
+  cargandoQna = false; 
+  errorQna = false;
+  calendarioActual: Calendario | null;
   
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { lotes: LoteResumen[] }) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { lotes: LoteResumen[];  calendarioActual: Calendario | null }) {
     this.dataSource.data = data.lotes;
     this.showRecords = data.lotes.length > 0;
+    this.totalElements = data.lotes.length;
+    this.calendarioActual = data.calendarioActual;
   }
 
-   onBorrarLote(lote: LoteResumen): void {
+  onBorrarLote(lote: LoteResumen): void {
     const ref = this.dialog.open(ConfirmDialog, {
       width: '420px',
       data: {
@@ -53,11 +58,6 @@ export class ConsultaPersepcionesInformadasDialog {
         type: 'danger',
       },
     });
-
-    // WHY afterClosed().subscribe en vez de leer el valor directo:
-    // MatDialogRef.close(true/false) emite ese valor de forma
-    // asíncrona una vez que el usuario interactúa — es el patrón
-    // estándar para esperar la decisión del usuario en un modal.
     ref.afterClosed().subscribe((confirmado) => {
       if (!confirmado) {
         return;
@@ -75,6 +75,7 @@ export class ConsultaPersepcionesInformadasDialog {
             (item) => !(item.conceptoDescuento === lote.conceptoDescuento && item.qnaProceso === lote.qnaProceso),
           );
           this.showRecords = this.dataSource.data.length > 0;
+          this.totalElements = this.dataSource.data.length;
         },
         error: (error) => {
           this.toastService.error('Error', error?.error?.message ?? 'No se pudo eliminar el lote.');
@@ -83,7 +84,6 @@ export class ConsultaPersepcionesInformadasDialog {
     });
   }
     
-
   close(): void {
     this.dialogRef.close();
   }

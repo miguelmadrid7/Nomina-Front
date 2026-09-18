@@ -477,7 +477,8 @@ export class PercepcionesInformadas {
           width: '1000px',
           maxWidth: '95vw',
           data: { 
-            lotes: response.data 
+            lotes: response.data,
+            calendarioActual: this.calendarioActual, 
           },
         });
       },

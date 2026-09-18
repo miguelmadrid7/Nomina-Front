@@ -1,12 +1,28 @@
 <div class="dialog-shell">
     <div class="dialog-header dlg-bar">
-        <div class="dlg-bar-title">Lotes en staging</div>
+        <div class="dlg-bar-title">Historico de cargas</div>
         <button class="dialog-close" (click)="close()">
             <mat-icon>close</mat-icon>
         </button>
     </div>
 
     <mat-dialog-content>
+        <div class="actions-right">
+            <div class="qna-summary">
+                <span class="qna-label">Quincena activa</span>
+                    @if (cargandoQna) {
+                        <span class="qna-tag">Cargando...</span>
+                    } @else if (calendarioActual) {
+                        <span class="qna-tag">
+                            {{ calendarioActual.qna.toString().padStart(2, '0') }} / {{ calendarioActual.ejercicio }}
+                        </span>
+                    } @else {
+                        <span class="qna-tag">No disponible</span>
+                    }
+            </div>
+        </div>
+    
+
         @if (!showRecords) {
             <p>No hay lotes pendientes en este momento.</p>
         } @else {
@@ -80,6 +96,16 @@
                                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                             </table>
                         </div>
+
+                        <div class="table-footer">
+                            <mat-paginator
+                                [length]="totalElements"
+                                [pageSize]="50"
+                                [pageSizeOptions]="[50, 100, 150, 200]"
+                                showFirstLastButtons>
+                            </mat-paginator>
+                        </div>
+
                     </div>
                 </div>
             </div>
