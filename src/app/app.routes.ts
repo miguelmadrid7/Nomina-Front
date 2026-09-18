@@ -201,6 +201,13 @@ export const routes: Routes = [
                 .then(m => m.RegistroTerceroInstitucional),
             data: { breadcrumb: 'Registro terceros institucionales' }
           },
+          {    
+            path: 'carga-terceros-institucionales-no-institucionales',
+            loadComponent: () =>
+              import('./features/terceros/carga-terceros-inst-noinst/carga-terceros-inst-noinst')
+                .then(m => m.CargaTercerosInstNoinst),
+            data: { breadcrumb: 'Carga terceros institucionales y no institucionales' }
+          },
         ]
       },
     ]
