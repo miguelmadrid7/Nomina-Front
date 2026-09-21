@@ -10,6 +10,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ALtaModuleDialog } from '../../../shared/dialogs/alta-module-dialog/alta-module-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { ToastService } from '../../../core/services/toast.service';
+import { CalendarioService } from '../../../core/services/calendario.service';
+import { Calendario } from '../../../core/model/calendario.model';
 
 @Component({
   selector: 'app-gestion-modulos',
@@ -31,24 +33,30 @@ export class GestionModulos implements OnInit, OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly dialog = inject(MatDialog);
   private readonly toastService = inject(ToastService);
+  private readonly cd = inject(ChangeDetectorRef);
+  private readonly calendarioService = inject(CalendarioService);
 
   @ViewChild(MatPaginator) paginator?: MatPaginator;
   displayedColumns: string[] = ['name','description','vista','parent','icon','actions'];
+  
   modules = new MatTableDataSource<Module>([]);
   loading = false;
   loadingModuleId: number | null = null;
   totalModules = 0;
   pageSize = 10;
   pageIndex = 0;
-
   selectedModule: Module | null = null;
   detailLoading = false;
+  cargandoQna = false;
+  calendarioActual: Calendario | null = null;
+  errorQna = false;
 
   private allModules: Module[] = [];
 
 
   ngOnInit(): void {
     this.getAllModules();
+    this.loadQnaActivated();
   }
 
   ngOnDestroy(): void {
@@ -59,6 +67,26 @@ export class GestionModulos implements OnInit, OnDestroy {
     this.pageIndex = event.pageIndex;
     this.pageSize = event.pageSize;
     this.applyTableState();
+  }
+
+  loadQnaActivated(): void {
+    this.cargandoQna = true;
+    this.errorQna = false;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (resp) => {
+        const calendario = resp?.data ?? null;
+        this.calendarioActual = calendario;
+        this.cargandoQna = false;
+        this.errorQna = !calendario;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.calendarioActual = null;
+        this.cargandoQna = false;
+        this.errorQna = true;
+        this.cd.detectChanges();
+      }
+    });
   }
 
   private applyTableState(): void {
