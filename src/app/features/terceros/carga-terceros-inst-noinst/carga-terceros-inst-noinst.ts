@@ -22,7 +22,7 @@ import { CargaTerceroResponse } from '../../../core/model/response/terceros/terc
 import { TerceroRow } from '../../../core/model/terceros/tercero-row.model';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { MatDialog } from '@angular/material/dialog';
-import { ConsultaTercerosLotesDialog } from '../../../consulta-terceros-lotes-dialog/consulta-terceros-lotes-dialog';
+import { ConsultaTercerosLotesDialog } from '../../../shared/dialogs/consulta-terceros-lotes-dialog/consulta-terceros-lotes-dialog';
 
 const TIPO_INSTITUCIONAL = 1;
 const TIPO_NO_INSTITUCIONAL = 2;
