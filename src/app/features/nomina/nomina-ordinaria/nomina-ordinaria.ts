@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, inject, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -20,6 +20,8 @@ import { UppercaseDirective } from "../../../shared/directives/upperCase.directi
 import { buildQnaCode, groupNominaRows, mapRawRowToNominaRow } from '../../../shared/helpers/nomina.helper';
 import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
 import { ToastService } from '../../../core/services/toast.service';
+import { Calendario } from '../../../core/model/calendario.model';
+import { CalendarioService } from '../../../core/services/calendario.service';
 
 @Component({
   selector: 'app-nomina-ordinaria',
@@ -46,26 +48,20 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<NominaRow>([]);
-  readonly displayedColumns: string[] = [
-    'curp', 
-    'rfc', 
-    'nombreEmpleado', 
-    'qnaProceso', 
-    'clavePlaza', 
-    'baseCalculoIsr', 
-    'conceptoDetalle'
-  ];
-
+  readonly displayedColumns: string[] = [ 'curp',  'rfc', 'nombreEmpleado', 'qnaProceso', 'clavePlaza', 'baseCalculoIsr', 'conceptoDetalle'];
+  
   anios: number[] = [];
   quincenas: number[] = [];
-
   anioSeleccionado: number | null = null;
   quincenaSeleccionada: number | null = null;
-  
   search: string = '';
   qnaProceso!: number;
   totalElements = 0;
   showRecords = true;
+
+  cargandoQna = false;
+  calendarioActual: Calendario | null = null;
+  errorQna = false;
 
   private isRefreshing = false;
   private filtersReady = true;
@@ -76,6 +72,8 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
   private readonly loaderService = inject(LoaderService);
   private readonly dialog = inject(MatDialog);
   private readonly toastService = inject(ToastService);
+  private readonly calendarioService = inject(CalendarioService);
+  private readonly cd = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.anios = DateYearsHelper.getYears(1,1);
@@ -89,7 +87,8 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
         (data.nombreEmpleado ?? '').toUpperCase().includes(search)
       );
     };
-    this.loadNomina()
+    this.loadNomina();
+    this.loadQnaActivated();
   }
 
   ngOnDestroy () {
@@ -102,6 +101,26 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
         this.dataSource.paginator = this.paginator;
       }
     }, 0);
+  }
+
+  loadQnaActivated(): void {
+    this.cargandoQna = true;
+    this.errorQna = false;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (resp) => {
+        const calendario = resp?.data ?? null;
+        this.calendarioActual = calendario;
+        this.cargandoQna = false;
+        this.errorQna = !calendario;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.calendarioActual = null;
+        this.cargandoQna = false;
+        this.errorQna = true;
+        this.cd.detectChanges();
+      }
+    });
   }
 
   applySearchFilter(): void {
