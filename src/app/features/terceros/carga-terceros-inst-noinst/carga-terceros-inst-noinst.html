@@ -65,7 +65,7 @@
 
         <button type="button" class="btn btn-download" (click)="getHistoric()">
             <mat-icon>history</mat-icon>
-                Ver historico
+                Historico
         </button>
     </div>
 
@@ -76,11 +76,13 @@
                 <mat-label>Buscar RFC, CURP o empleado</mat-label>
                 <input matInput id="buscarTercero" formControlName="searchText" />
             </mat-form-field>
+
+            @if (totalRecordsCount > 0) {
+                <p class="validation-summary">{{ validationSummaryText }}</p>
+            }
         </div>
 
-        @if (totalRecordsCount > 0) {
-            <p class="validation-summary">{{ validationSummaryText }}</p>
-        }
+        
 
         <div class="table-container">
             <div class="table-card">
