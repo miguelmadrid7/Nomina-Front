@@ -1,21 +1,58 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { NominaService } from '../../../core/services/nomina-ordinaria.service';
 import { LoaderService } from '../../../core/services/loader.service';
 import { finalize } from 'rxjs';
 import { ToastService } from '../../../core/services/toast.service';
+import { MatIconModule } from '@angular/material/icon';
+import { Calendario } from '../../../core/model/calendario.model';
+import { CalendarioService } from '../../../core/services/calendario.service';
 
 @Component({
   selector: 'app-generar-producto',
   standalone: true,
-  imports: [],
+  imports: [
+    MatIconModule,
+  ],
   templateUrl: './generar-producto.component.html',
   styleUrl: './generar-producto.component.css'
 })
 export class GenerarProductoComponent {
 
-    private readonly nominaService = inject(NominaService);
-    private readonly loaderService = inject(LoaderService);
-    private readonly toastService = inject(ToastService);
+  cargandoQna = false;
+  calendarioActual: Calendario | null = null;
+  errorQna = false;
+  
+
+
+  private readonly nominaService = inject(NominaService);
+  private readonly loaderService = inject(LoaderService);
+  private readonly calendarioService = inject(CalendarioService);
+  private readonly cd = inject(ChangeDetectorRef);
+  private readonly toastService = inject(ToastService);
+
+  ngOnInit(): void {
+    this.loadQnaActivated();
+  }
+
+  loadQnaActivated(): void {
+    this.cargandoQna = true;
+    this.errorQna = false;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (resp) => {
+        const calendario = resp?.data ?? null;
+        this.calendarioActual = calendario;
+        this.cargandoQna = false;
+        this.errorQna = !calendario;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.calendarioActual = null;
+        this.cargandoQna = false;
+        this.errorQna = true;
+        this.cd.detectChanges();
+      }
+    });
+  }
 
 
 
@@ -39,6 +76,7 @@ export class GenerarProductoComponent {
       }
       });
   }
+
 
   descargarCSVAnexoVI() {
     this.loaderService.show();
