@@ -23,9 +23,9 @@ import { TerceroRow } from '../../../core/model/terceros/tercero-row.model';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { ConsultaTercerosLotesDialog } from '../../../shared/dialogs/consulta-terceros-lotes-dialog/consulta-terceros-lotes-dialog';
+import { TercerosHistoricoDialog } from '../../../shared/dialogs/terceros-historico-dialog/terceros-historico-dialog';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
-const TIPO_INSTITUCIONAL = 1;
-const TIPO_NO_INSTITUCIONAL = 2;
 const ALLOWED_EXTENSION = '.txt';
 
 @Component({
@@ -43,6 +43,7 @@ const ALLOWED_EXTENSION = '.txt';
     MatTableModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatButtonToggleModule
   ],
   templateUrl: './carga-terceros-inst-noinst.html',
   styleUrl: './carga-terceros-inst-noinst.css'
@@ -51,44 +52,34 @@ export class CargaTercerosInstNoinst implements OnInit {
 
   @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
 
-  conceptosInstitucionalesCodigos = ['03','08','12','55','56','64','vt','sf','5l','6l','21'];
-  conceptosNoInstitucionalesCodigos = ['vp','53','61','cs','ce','fj','gf','51','57','ia','ic','im','iv','np','sg','bs','br','ef','ko','lb','oh','su','tc','tm','tn'];
-  conceptosInstitucionales: TerceroConcepto[] = [];
-  conceptosNoInstitucionales: TerceroConcepto[] = [];
-  conceptosFiltrados: TerceroConcepto[] = [];
-
-  // file upload state
+  private readonly conceptosCodigos = [
+    '03','08','12','55','56','64','vt','sf','5l','6l','21',
+    'vp','53','61','cs','ce','fj','gf','51','57','ia','ic',
+    'im','iv','np','sg','bs','br','ef','ko','lb','oh','su','tc','tm','tn',
+  ];
+  conceptos: TerceroConcepto[] = [];
   selectedFile: File | null = null;
   isUploading = false;
   resultado: CargaTerceroResponse | null = null;
   yaSeProceso = false;
-
-  // qna
   cargandoQna = false;
   calendarioActual: Calendario | null = null;
   errorQna = false;
-
-  // validation
   totalRecordsCount = 0;
   validRecordCount = 0;
   isValidatingLote = false;
-
   editingRowId: number | null = null;
-
-  // table (server-side paging and search)
   totalElements = 0;
   pageSize = 10;
   pageIndex = 0;
-
   isProcessingPayroll = false;
-  private readonly PROCESS_TOAST_ID = 5102;
 
   dataSource = new MatTableDataSource<TerceroRow>([]);
+
   readonly displayedColumns: string[] = ['rfc', 'curp', 'nombreTrabajador', 'tipoMovimiento', 'importeMensual', 'conceptoDescuento', 'estatus', 'observaciones','fechaRegistro','acciones'];
 
-  readonly TIPO_INSTITUCIONAL = TIPO_INSTITUCIONAL;
-  readonly TIPO_NO_INSTITUCIONAL = TIPO_NO_INSTITUCIONAL;
 
+  private readonly PROCESS_TOAST_ID = 5102;
   private readonly toastService = inject(ToastService);
   private readonly terceroService = inject(TerceroService);
   private readonly cd = inject(ChangeDetectorRef);
@@ -98,7 +89,6 @@ export class CargaTercerosInstNoinst implements OnInit {
   private readonly dialog = inject(MatDialog);
 
   readonly form = new FormGroup({
-    tipoConcepto: new FormControl<number>(TIPO_NO_INSTITUCIONAL, { nonNullable: true }),
     concepto: new FormControl<string | null>(null, [Validators.required]),
     importeDefault: new FormControl<number | null>(null, [Validators.min(0)]),
   });
@@ -126,9 +116,6 @@ export class CargaTercerosInstNoinst implements OnInit {
   }
 
   ngOnInit(): void {
-    this.form.controls.tipoConcepto.valueChanges
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((tipo) => this.aplicarFiltro(tipo));
     this.form.controls.concepto.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
@@ -170,25 +157,13 @@ export class CargaTercerosInstNoinst implements OnInit {
   cargarConceptos(): void {
     this.terceroService.obtenerConceptos().subscribe({
       next: (data: TerceroConcepto[]) => {
-        const lista = data ?? [];
-        this.conceptosInstitucionales = this.ordenarPorPrioridad(
-          this.dedupeByCve(
-            lista.filter((c) =>
-              this.conceptosInstitucionalesCodigos.includes((c.cve ?? '').toLowerCase())
-            )
-          ),
-          this.conceptosInstitucionalesCodigos
+        const permitidos = (data ?? []).filter((c) =>
+          this.conceptosCodigos.includes((c.cve ?? '').toLowerCase())
         );
-        this.conceptosNoInstitucionales = this.ordenarPorPrioridad(
-          this.dedupeByCve(
-            lista.filter((c) =>
-              this.conceptosNoInstitucionalesCodigos.includes((c.cve ?? '').toLowerCase())
-            )
-          ),
-          this.conceptosNoInstitucionalesCodigos
+        this.conceptos = this.dedupeByCve(permitidos).sort((a, b) =>
+          (a.cve ?? '').localeCompare(b.cve ?? '', 'es', { numeric: true, sensitivity: 'base' })
         );
-        // apply the filter for the currently selected radio (default: no institucionales)
-        this.aplicarFiltro(this.form.controls.tipoConcepto.value);
+        this.cd.detectChanges();
       },
       error: () => {
         this.toastService.error('Operación invalida', 'Error al cargar los conceptos.', 6000);
@@ -523,6 +498,37 @@ export class CargaTercerosInstNoinst implements OnInit {
     });
   }
 
+  getHistoric(): void {
+    const qnaProceso = this.qnaCompleta;
+    if (!qnaProceso) {
+      this.toastService.error('Quincena no disponible', 'No se pudo determinar la quincena activa.');
+      return;
+    }
+    // optional: without a concepto the backend returns every concepto of the quincena
+    const concepto = this.form.controls.concepto.value;
+
+    this.terceroService.getHistoric(qnaProceso, concepto).subscribe({
+      next: ({ rows }) => {
+        if (rows.length === 0) {
+          this.toastService.warning('Sin histórico', 'No hay movimientos procesados para esta quincena.');
+          return;
+        }
+        this.dialog.open(TercerosHistoricoDialog, {
+          width: '1000px',
+          maxWidth: '95vw',
+          data: {
+            historico: rows,
+            qnaProceso,
+            concepto,
+          },
+        });
+      },
+      error: (error: HttpErrorResponse) => {
+        this.toastService.error('Error', error?.error?.message ?? 'No se pudo obtener el histórico.');
+      },
+    });
+  }
+
   onPageChange(event: PageEvent): void {
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
@@ -572,25 +578,6 @@ export class CargaTercerosInstNoinst implements OnInit {
       if (typeof message === 'string' && message.trim()) return message;
     }
     return 'No fue posible cargar el archivo.';
-  }
-
-  private aplicarFiltro(tipo: number): void {
-    this.conceptosFiltrados = tipo === TIPO_INSTITUCIONAL ? this.conceptosInstitucionales : this.conceptosNoInstitucionales;
-    this.form.controls.concepto.reset(null);
-    this.cd.detectChanges();
-  }
-
-  private ordenarPorPrioridad(conceptos: TerceroConcepto[], codigosPrioridad: string[]): TerceroConcepto[] {
-    const rank = new Map<string, number>();
-    codigosPrioridad.forEach((c, i) => rank.set(c.toLowerCase(), i));
-    return [...conceptos].sort((a, b) => {
-      const ca = (a?.cve ?? '').toString().toLowerCase();
-      const cb = (b?.cve ?? '').toString().toLowerCase();
-      const ra = rank.has(ca) ? rank.get(ca)! : Number.POSITIVE_INFINITY;
-      const rb = rank.has(cb) ? rank.get(cb)! : Number.POSITIVE_INFINITY;
-      if (ra !== rb) return ra - rb;
-      return ca.localeCompare(cb);
-    });
   }
 
   private dedupeByCve(conceptos: TerceroConcepto[]): TerceroConcepto[] {
