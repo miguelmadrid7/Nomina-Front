@@ -1,6 +1,16 @@
 <div class="page-container">
     <div class="page-header">
         <h2 class="page-title">Gestión de usuarios</h2>
+
+        <div class="header-tools">
+            <div class="qna-chip" role="status">
+                <mat-icon>event</mat-icon>
+                <div class="qna-chip__text">
+                    <span class="qna-chip__label">Quincena activa</span>
+                    <span class="qna-chip__value">{{ cargandoQna ? 'Cargando...' : (calendarioActual ? calendarioActual.qna.toString().padStart(2, '0') + ' / ' + calendarioActual.ejercicio : 'No disponible') }}</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="section-divider"></div>

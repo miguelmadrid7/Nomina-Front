@@ -23,6 +23,8 @@ import { AltaUsuarioDialog } from '../../../shared/dialogs/alta-usuario-dialog/a
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { ToastService } from '../../../core/services/toast.service';
 import { User } from '../../../core/model/user.model';
+import { CalendarioService } from '../../../core/services/calendario.service';
+import { Calendario } from '../../../core/model/calendario.model';
 
 @Component({
   selector: 'app-gestion-usuarios',
@@ -51,6 +53,7 @@ export class GestionUsuarios implements OnDestroy {
   private readonly cd = inject(ChangeDetectorRef);
   private readonly dialog = inject(MatDialog);
   private readonly toastService = inject(ToastService);
+  private readonly calendarioService = inject(CalendarioService);
 
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
@@ -71,6 +74,10 @@ export class GestionUsuarios implements OnDestroy {
   pageIndex = 0;
   totalElements = 0;
 
+    cargandoQna = false;
+    calendarioActual: Calendario | null = null;
+    errorQna = false;
+
   dataSource = new MatTableDataSource<NominaRow>([]);
   usersDataSource = new MatTableDataSource<User>([]);
   displayedColumns: string[] = ['nombreCompleto', 'empleado', 'area','roles', 'padre', 'hijo', 'acciones'];
@@ -83,10 +90,31 @@ export class GestionUsuarios implements OnDestroy {
     });
     this.loadRoles();
     this.loadEmpleados();
+    this.loadQnaActivated();
   }
 
   ngOnDestroy () {
     this.dialog.closeAll();
+  }
+
+  loadQnaActivated(): void {
+    this.cargandoQna = true;
+    this.errorQna = false;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (resp) => {
+        const calendario = resp?.data ?? null;
+        this.calendarioActual = calendario;
+        this.cargandoQna = false;
+        this.errorQna = !calendario;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.calendarioActual = null;
+        this.cargandoQna = false;
+        this.errorQna = true;
+        this.cd.detectChanges();
+      }
+    });
   }
 
   displayUsuario(user: User | string | null): string {

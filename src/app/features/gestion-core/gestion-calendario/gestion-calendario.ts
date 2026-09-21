@@ -30,6 +30,7 @@ export class GestionCalendario {
   private readonly dialog = inject(MatDialog);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly toastService = inject(ToastService);
+  private readonly cd = inject(ChangeDetectorRef);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   
@@ -40,9 +41,33 @@ export class GestionCalendario {
   totalRecords = 0;
   pageSize = 10;
   pageIndex = 0;
+  cargandoQna = false;
+  calendarioActual: Calendario | null = null;
+  errorQna = false;
 
   ngOnInit(): void {
     this.cargarCalendario();
+    this.loadQnaActivated();
+  }
+
+  loadQnaActivated(): void {
+    this.cargandoQna = true;
+    this.errorQna = false;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (resp) => {
+        const calendario = resp?.data ?? null;
+        this.calendarioActual = calendario;
+        this.cargandoQna = false;
+        this.errorQna = !calendario;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.calendarioActual = null;
+        this.cargandoQna = false;
+        this.errorQna = true;
+        this.cd.detectChanges();
+      }
+    });
   }
 
   cargarCalendario(): void {
