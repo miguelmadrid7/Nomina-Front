@@ -6,6 +6,15 @@ import { ApiResponse } from '../../core/model/response/api-Response.model';
 import { Empleado } from '../../features/servicios/empleado';
 import { RegistroNp } from '../model/terceros.model';
 import { CalendarioRecepcion } from '../model/calendario-recepcion.model';
+import { CargaTerceroResponse } from '../model/response/terceros/terceros-carga-response.model';
+import { TerceroLoteRequest } from '../model/request/terceros/tercero-lote-request.model';
+import { TerceroResponse } from '../model/response/terceros/tercero-response.model';
+import { TerceroRow } from '../model/terceros/tercero-row.model';
+import { TerceroRegistroRequest } from '../model/request/terceros/tercero-registro-request.model';
+import { TerceroProcesarResponse } from '../model/response/terceros/tercero-procesar-response.model';
+import { TercerosLote } from '../model/terceros/terceros-lote.model';
+import { TerceroLoteResponse } from '../model/response/terceros/tercero-lote-reponse.model';
+import { TerceroHistorico } from '../model/terceros/tercero-historico.model';
 
 @Injectable({ providedIn: 'root' })
 export class TerceroService {
@@ -143,4 +152,71 @@ export class TerceroService {
     descargarPdf(documentoId: number) {
       return this.http.get(`${this.base}/nom-emp-pza-cpto/download/${documentoId}`, {responseType: 'blob'});
     }
+
+  // ENDPOINT DE TERCEROS CONTROLLER
+  uploadTxt(file: File, qnaProceso: number, concepto: string, importeDefault?: number | null): Observable<ApiResponse<CargaTerceroResponse>> {
+    const formData = new FormData();
+    formData.append('file', file);
+    let params = new HttpParams().set('qnaProceso', qnaProceso) .set('concepto', concepto);
+    if (importeDefault !== null && importeDefault !== undefined) {
+      params = params.set('importeDefault', importeDefault);
+    }
+    return this.http.post<ApiResponse<CargaTerceroResponse>>(`${this.base}/terceros/cargar-txt`,  formData, { params });
+  }
+
+  validateLote(payload: TerceroLoteRequest): Observable<ApiResponse<CargaTerceroResponse>> {
+    return this.http.post<ApiResponse<CargaTerceroResponse>>(`${this.base}/terceros/validar`, payload);
+  }
+
+  getListValidate(params: {
+    qnaProceso: number;
+    concepto: string;
+    estatus?: string | null;
+    busqueda?: string | null;
+    page?: number;
+    size?: number;
+  }): Observable<ApiResponse<TerceroResponse>> {
+    let httpParams = new HttpParams()
+      .set('qnaProceso', params.qnaProceso)
+      .set('concepto', params.concepto)
+      .set('page', params.page ?? 0)
+      .set('size', params.size ?? 50);
+
+    if (params.estatus) httpParams = httpParams.set('estatus', params.estatus);
+    const busqueda = params.busqueda?.trim();
+    if (busqueda) httpParams = httpParams.set('busqueda', busqueda);
+    return this.http.get<ApiResponse<TerceroResponse>>(`${this.base}/terceros/personalizar`, { params: httpParams });
+  }
+
+  updateRecord(id: number, payload: TerceroRegistroRequest): Observable<ApiResponse<TerceroRow>> {
+    return this.http.put<ApiResponse<TerceroRow>>(`${this.base}/terceros/personalizar/${id}`, payload);
+  }
+
+  deleteRecord(id: number): Observable<ApiResponse<unknown>> {
+    return this.http.delete<ApiResponse<unknown>>(`${this.base}/terceros/personalizar/${id}`);
+  }
+
+  processLote(payload: TerceroLoteRequest): Observable<ApiResponse<TerceroProcesarResponse>> {
+    return this.http.post<ApiResponse<TerceroProcesarResponse>>(`${this.base}/terceros/procesar`, payload);
+  }
+
+  getLotes(): Observable<ApiResponse<TercerosLote[]>> {
+    return this.http.get<ApiResponse<TercerosLote[]>>(`${this.base}/terceros/lotes`);
+  }
+
+  deleteLote(qnaProceso: number, concepto: string): Observable<ApiResponse<TerceroLoteResponse>> {
+    const params = new HttpParams().set('qnaProceso', qnaProceso).set('concepto', concepto);
+    return this.http.delete<ApiResponse<TerceroLoteResponse>>(`${this.base}/terceros/borrar-lote`, { params });
+  }
+
+  getHistoric(qnaProceso: number, concepto?: string | null): Observable<{ rows: TerceroHistorico[]; total: number}> {
+    let params = new HttpParams().set('qnaProceso', qnaProceso);
+    const cpto = concepto?.trim();
+    if (cpto) {
+      params = params.set('concepto', cpto);
+    }
+    return this.http.get<ApiResponse<TerceroHistorico[]>>(`${this.base}/terceros/historico`, { params })
+      .pipe(map((res) => ({ rows: res?.data ?? [], total: res?.count ?? 0 })));
+  }
+
 }
