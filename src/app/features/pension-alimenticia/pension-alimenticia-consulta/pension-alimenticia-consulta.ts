@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -20,6 +20,8 @@ import { LoaderService } from '../../../core/services/loader.service';
 import { finalize } from 'rxjs';
 import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
 import { ToastService } from '../../../core/services/toast.service';
+import { CalendarioService } from '../../../core/services/calendario.service';
+import { Calendario } from '../../../core/model/calendario.model';
 
 @Component({
   selector: 'app-pension-alimenticia-consulta',
@@ -47,28 +49,23 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
   private readonly pensionAlimenticiaService = inject(PensionAlimenticiaService);
   private readonly loaderService = inject(LoaderService);
   private toastService = inject(ToastService);
+  private readonly calendarioService = inject(CalendarioService);
+  private readonly cd = inject(ChangeDetectorRef);
+  
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  readonly displayedColumns: string[] = [
-    'nombreEmpleado', 
-    'rfcEmpleado', 
-    'nombreBeneficiario', 
-    'rfcReferencia', 
-    'noBeneficiario', 
-    'numeroOficio', 
-    'qna', 
-    'estado', 
-    'acciones'
-  ];
+  readonly displayedColumns: string[] = ['nombreEmpleado',   'rfcEmpleado', 'nombreBeneficiario', 'rfcReferencia', 'noBeneficiario', 'numeroOficio', 'qna', 'estado', 'acciones'];
   dataSource = new MatTableDataSource<FilaBeneficiario>([]);
   todosLosBeneficiarios: FilaBeneficiario[] = [];
   totalElements = 0;
   cargando = false;
   empleadosFiltrados: string[] = [];
-
   anios: number[] = [];
   quincenas: number[] = [];
+  cargandoQna = false;
+  calendarioActual: Calendario | null = null;
+  errorQna = false;
 
   readonly form = this.fb.group({
     busqueda: this.fb.group({         
@@ -96,10 +93,32 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
           this.loaderService.hide();
         }, 200);
     })
+
+    this.loadQnaActivated();
   }
      
   ngOnDestroy () {
     this.dialog.closeAll();
+  }
+
+  loadQnaActivated(): void {
+    this.cargandoQna = true;
+    this.errorQna = false;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (resp) => {
+        const calendario = resp?.data ?? null;
+        this.calendarioActual = calendario;
+        this.cargandoQna = false;
+        this.errorQna = !calendario;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.calendarioActual = null;
+        this.cargandoQna = false;
+        this.errorQna = true;
+        this.cd.detectChanges();
+      }
+    });
   }
 
   buscar(): void {
