@@ -11,6 +11,8 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastService } from '../../../core/services/toast.service';
+import { Calendario } from '../../../core/model/calendario.model';
+import { CalendarioService } from '../../../core/services/calendario.service';
 @Component({
   selector: 'app-gestion-parametrizacion',
   standalone: true,
@@ -32,26 +34,27 @@ export class GestionParametrizacion implements OnInit, AfterViewInit, OnDestroy 
   private readonly dialog = inject(MatDialog);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly toastService = inject(ToastService);
+  private readonly calendarioService = inject(CalendarioService);
+  private readonly cd = inject(ChangeDetectorRef);
+    
 
   readonly dataSource = new MatTableDataSource<ParametrizacionResponse>([]);
 
-  displayedColumns: string[] = [
-    'anio', 
-    'importeDiario', 
-    'importeMensual',
-    'qnaInicio', 
-    'qnaFin', 
-    'actions'
-  ];
+  displayedColumns: string[] = ['anio', 'importeDiario', 'importeMensual','qnaInicio', 'qnaFin', 'actions'];
 
   totalElements = 0;
   totalRegisters = 0;
   pageSize = 10;
   pageIndex = 0;
   loading = false;
+  cargandoQna = false;
+  calendarioActual: Calendario | null = null;
+  errorQna = false;
 
   ngOnInit(): void {
     Promise.resolve().then(() => this.getAllParam());
+    this.loadQnaActivated();
+
   }
 
   ngOnDestroy(): void {
@@ -60,6 +63,26 @@ export class GestionParametrizacion implements OnInit, AfterViewInit, OnDestroy 
   
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
+  }
+
+  loadQnaActivated(): void {
+    this.cargandoQna = true;
+    this.errorQna = false;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (resp) => {
+        const calendario = resp?.data ?? null;
+        this.calendarioActual = calendario;
+        this.cargandoQna = false;
+        this.errorQna = !calendario;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.calendarioActual = null;
+        this.cargandoQna = false;
+        this.errorQna = true;
+        this.cd.detectChanges();
+      }
+    });
   }
 
   getAllParam(): void {
