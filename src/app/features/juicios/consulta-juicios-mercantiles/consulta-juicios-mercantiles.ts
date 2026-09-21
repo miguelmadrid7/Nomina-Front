@@ -17,6 +17,8 @@ import { finalize } from 'rxjs';
 import { MatSelectModule } from '@angular/material/select';
 import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
 import { ToastService } from '../../../core/services/toast.service';
+import { Calendario } from '../../../core/model/calendario.model';
+import { CalendarioService } from '../../../core/services/calendario.service';
 
 @Component({
   selector: 'app-consulta-juicios-mercantiles',
@@ -41,10 +43,10 @@ export class ConsultaJuiciosMercantiles {
 
   private readonly juiciosMercantilesService = inject(JuiciosMercantilesService);
   private readonly cd = inject(ChangeDetectorRef);
-  private readonly zone = inject(NgZone);
   private readonly dialog = inject(MatDialog); 
   private readonly loaderService = inject(LoaderService);
   private readonly toastService = inject(ToastService);
+  private readonly calendarioService = inject(CalendarioService);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -56,9 +58,11 @@ export class ConsultaJuiciosMercantiles {
   pageIndex = 0;
   totalElements = 0;
   displayedColumns: string[] = ['nombreEmpleado', 'rfc', 'nombreCompleto', 'qnaProceso', 'formaAplicacion', 'status', 'acciones'];
-
   anios: number[] = [];
   quincenas: number[] = [];
+  cargandoQna = false;
+  calendarioActual: Calendario | null = null;
+  errorQna = false;
 
   readonly estados = [
     { value: 'TODOS', label: 'Todos' },
@@ -91,10 +95,32 @@ export class ConsultaJuiciosMercantiles {
           this.loaderService.hide();
         }, 200);
     });
+
+    this.loadQnaActivated();
   }
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
+  }
+
+    loadQnaActivated(): void {
+    this.cargandoQna = true;
+    this.errorQna = false;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (resp) => {
+        const calendario = resp?.data ?? null;
+        this.calendarioActual = calendario;
+        this.cargandoQna = false;
+        this.errorQna = !calendario;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.calendarioActual = null;
+        this.cargandoQna = false;
+        this.errorQna = true;
+        this.cd.detectChanges();
+      }
+    });
   }
 
   searchEmployee(): void {
