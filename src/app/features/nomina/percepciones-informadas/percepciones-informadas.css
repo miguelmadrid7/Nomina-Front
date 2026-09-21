@@ -6,18 +6,6 @@
 }
 
 /* INPUTS */
-.row {
-  display: grid;
-  grid-template-columns: auto  1fr auto;
-  align-items: center;
-  gap: 7px;
-}
-
-.qna-concepto-row {
-  display: flex;
-  gap: 8px;
-}
-
 .file-upload-group {
   display: flex;
   flex-direction: column;
@@ -124,21 +112,6 @@
 .qna-compact {
   --mat-form-field-container-height: 40px;
   --mat-form-field-container-vertical-padding: 8px;
-}
-
-.qna-field-short {
-  max-width: 450px;
-  justify-self: start;
-}
-
-.qna-compact .mat-mdc-form-field-infix {
-  padding-top: 8px !important;
-  padding-bottom: 8px !important;
-  min-height: unset !important;
-}
-
-.qna-compact .mat-mdc-input-element {
-  font-size: 0.9rem;
 }
 
 .qna-compact .mat-icon[matPrefix] {
