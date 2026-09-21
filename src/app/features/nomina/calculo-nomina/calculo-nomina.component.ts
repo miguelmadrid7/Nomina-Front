@@ -49,6 +49,8 @@ export class CalculoNominaComponent implements OnInit {
   private readonly payrollJobService = inject(PayrollJobService);
   readonly toastService = inject(ToastService);
 
+  cargandoQna = false;
+
   readonly buildQnaCode = buildQnaCode;
   readonly form: FormGroup = this.fb.group({
     anio: [null, Validators.required],
