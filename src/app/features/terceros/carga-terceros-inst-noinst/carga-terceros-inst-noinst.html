@@ -20,6 +20,7 @@
             <span class="field-group-label" id="tipo-label">Seleccionar concepto</span>
                 <mat-form-field appearance="outline" class="with-separator compact-field qna-compact concepto-field" floatLabel="always" subscriptSizing="dynamic">
                     <mat-label>Concepto a cargar</mat-label>
+                    <mat-icon matPrefix>account_balance</mat-icon>
                         <mat-select formControlName="concepto">
                             @for (c of conceptos; track c.cve) {
                                 <mat-option [value]="c.cve">{{ c.cve }} - {{ c.descripcion }}</mat-option>
