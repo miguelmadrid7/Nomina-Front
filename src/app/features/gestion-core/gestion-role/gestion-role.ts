@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnDestroy, ViewChild } from '@angular/core';
 import { Role } from '../../../core/model/rol.model';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
@@ -10,6 +10,8 @@ import { AltaRolDialog } from '../../../shared/dialogs/alta-rol-dialog/alta-rol-
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { ToastService } from '../../../core/services/toast.service';
+import { Calendario } from '../../../core/model/calendario.model';
+import { CalendarioService } from '../../../core/services/calendario.service';
 
 @Component({
   selector: 'app-gestion-role-usuarios',
@@ -35,21 +37,47 @@ export class GestionRole implements OnDestroy {
   totalRoles = 0;
   pageSize = 10;
   pageIndex = 0;
-
   loading = false;
+  cargandoQna = false;
+  calendarioActual: Calendario | null = null;
+  errorQna = false;
 
   private readonly rolService = inject(RolService);
   private readonly dialog = inject(MatDialog);
   private readonly toastService = inject(ToastService);
+  private readonly calendarioService = inject(CalendarioService);
+  private readonly cd = inject(ChangeDetectorRef);
 
 
   ngOnInit(): void {
      this.loadRoles();
+     this.loadQnaActivated();
   }
 
   ngOnDestroy(): void {
     this.dialog.closeAll();
   }
+
+  loadQnaActivated(): void {
+    this.cargandoQna = true;
+    this.errorQna = false;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (resp) => {
+        const calendario = resp?.data ?? null;
+        this.calendarioActual = calendario;
+        this.cargandoQna = false;
+        this.errorQna = !calendario;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.calendarioActual = null;
+        this.cargandoQna = false;
+        this.errorQna = true;
+        this.cd.detectChanges();
+      }
+    });
+  }
+
 
   loadRoles(): void {
     this.loading = true;
