@@ -1,37 +1,40 @@
 <div class="page-container">
-    <div class="page-header">
+    <div class="page-header page-header--split">
         <h2 class="page-title">Carga de terceros</h2>
+
+        <div class="header-tools">
+            <div class="qna-chip" role="status">
+                <mat-icon>event</mat-icon>
+                <div class="qna-chip__text">
+                    <span class="qna-chip__label">Quincena activa</span>
+                    <span class="qna-chip__value">{{ cargandoQna ? 'Cargando...' : (calendarioActual ? calendarioActual.qna.toString().padStart(2, '0') + ' / ' + calendarioActual.ejercicio : 'No disponible') }}</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="section-divider"></div>
 
-    <form class="row" [formGroup]="form">
-        <div class="qna-concepto-row">
-            <mat-form-field appearance="outline" class="with-separator compact-field qna-compact qna-field-mini" floatLabel="always">
-                <mat-icon matPrefix>event</mat-icon>
-                <mat-label>Quincena activa</mat-label>
-                <input matInput readonly [value]="cargandoQna ? 'Cargando...' : (calendarioActual ? calendarioActual.qna.toString().padStart(2, '0') + ' / ' + calendarioActual.ejercicio : 'No disponible')"/>
-            </mat-form-field>
+    <form class="config-inline" [formGroup]="form">
+        <div class="field-group">
+            <span class="field-group-label" id="tipo-label">Seleccionar concepto</span>
+                <mat-form-field appearance="outline" class="with-separator compact-field qna-compact concepto-field" floatLabel="always" subscriptSizing="dynamic">
+                    <mat-label>Concepto a cargar</mat-label>
+                        <mat-select formControlName="concepto">
+                            @for (c of conceptos; track c.cve) {
+                                <mat-option [value]="c.cve">{{ c.cve }} - {{ c.descripcion }}</mat-option>
+                            }
+                        </mat-select>
+                </mat-form-field>
+        </div>
 
-            <mat-radio-group aria-label="Tipo de concepto" formControlName="tipoConcepto">
-                <mat-radio-button class="rad" [value]="TIPO_NO_INSTITUCIONAL">No Institucionales</mat-radio-button>
-                <mat-radio-button [value]="TIPO_INSTITUCIONAL">Institucionales</mat-radio-button>
-            </mat-radio-group>
-
-            <mat-form-field appearance="outline" class="with-separator compact-field qna-compact" floatLabel="always">
-                <mat-label>Concepto</mat-label>
-                <mat-select formControlName="concepto">
-                    @for (c of conceptosFiltrados; track c.cve) {
-                        <mat-option [value]="c.cve">{{ c.cve }} - {{ c.descripcion }}</mat-option>
-                    }
-                </mat-select>
-            </mat-form-field>
-
-            <label class="mat-body-2">Cargar archivo TXT:</label>
+        <div class="field-group">
+            <span class="field-group-label" id="file-label">Cargar archivo TXT:</span>
             <input
                 #fileInput
                 type="file"
                 accept=".txt, text/plain"
+                aria-labelledby="file-label"
                 [disabled]="isUploading"
                 (change)="onTxtSelected($event)">
         </div>
@@ -55,9 +58,14 @@
             {{ isProcessingPayroll ? 'Procesando...' : 'Procesar' }}
         </button>
 
-        <button type="button" class="btn btn-edit" (click)="loadLotes()">
+        <button type="button" class="btn btn-danger" (click)="loadLotes()">
             <mat-icon>list_alt</mat-icon>
             Ver lotes
+        </button>
+
+        <button type="button" class="btn btn-download" (click)="getHistoric()">
+            <mat-icon>history</mat-icon>
+                Ver historico
         </button>
     </div>
 
