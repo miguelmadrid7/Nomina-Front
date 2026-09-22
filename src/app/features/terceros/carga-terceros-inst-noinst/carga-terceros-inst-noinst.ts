@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -12,7 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { debounceTime, distinctUntilChanged, finalize, forkJoin } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, finalize, forkJoin, from, map, Observable, of } from 'rxjs';
 import { ToastService } from '../../../core/services/toast.service';
 import { TerceroService } from '../../../core/services/tercero.service';
 import { CalendarioService } from '../../../core/services/calendario.service';
@@ -73,6 +73,7 @@ export class CargaTercerosInstNoinst implements OnInit {
   pageSize = 10;
   pageIndex = 0;
   isProcessingPayroll = false;
+  isDownloadingReporte = false;
 
   dataSource = new MatTableDataSource<TerceroRow>([]);
 
@@ -81,6 +82,7 @@ export class CargaTercerosInstNoinst implements OnInit {
 
   private readonly PROCESS_TOAST_ID = 5102;
   private readonly UPLOAD_TOAST_ID = 5103;
+  private readonly DOWNLOAD_TOAST_ID = 5104;
 
   private readonly toastService = inject(ToastService);
   private readonly terceroService = inject(TerceroService);
@@ -541,6 +543,52 @@ export class CargaTercerosInstNoinst implements OnInit {
     });
   }
 
+  // ---------- download report (GET /terceros/descargar-reporte) ----------
+  onDowloadReport(): void {
+    const qnaProceso = this.qnaCompleta;
+    if (!qnaProceso) {
+      this.toastService.error('Quincena no disponible', 'No se pudo determinar la quincena activa.');
+      return;
+    }
+    // optional: without a concepto the backend returns every concepto of the quincena
+    const concepto = this.form.controls.concepto.value;
+
+    this.isDownloadingReporte = true;
+    this.toastService.upsertPersistent(this.DOWNLOAD_TOAST_ID, 'info', 'Generando reporte', 'Preparando el archivo Excel...');
+
+    this.terceroService.descargarReporteTerceros(qnaProceso, concepto)
+      .pipe(
+        finalize(() => {
+          this.isDownloadingReporte = false;
+          this.cd.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (response: HttpResponse<Blob>) => {
+          const blob = response.body;
+          if (!blob) {
+            this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'error', 'Error al descargar', 'El servidor no devolvió ningún archivo.');
+            return;
+          }
+
+          const filename = this.extractFilename(response) ?? `terceros_qna${qnaProceso}.xlsx`;
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = filename;
+          link.click();
+          URL.revokeObjectURL(url);
+
+          this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'success', 'Reporte descargado', `Se descargó "${filename}" correctamente.`);
+        },
+        error: (err: HttpErrorResponse) => {
+          this.extractBlobErrorMessage(err).subscribe((message) => {
+            this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'error', 'No se pudo descargar', message);
+          });
+        }
+      });
+  }
+
   onPageChange(event: PageEvent): void {
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
@@ -600,6 +648,34 @@ export class CargaTercerosInstNoinst implements OnInit {
       if (!map.has(key)) map.set(key, c);
     }
     return Array.from(map.values());
+  }
+
+  private extractFilename(response: HttpResponse<Blob>): string | null {
+    const disposition = response.headers.get('Content-Disposition');
+    if (!disposition) return null;
+    const match = disposition.match(/filename\*?=(?:UTF-8''|")?([^";]+)"?/i);
+    return match ? decodeURIComponent(match[1]) : null;
+  }
+
+  private extractBlobErrorMessage(err: HttpErrorResponse): Observable<string> {
+    const fallback = 'No fue posible generar el reporte.';
+    const body: unknown = err.error;
+
+    if (!(body instanceof Blob)) {
+      return of((body as { message?: string })?.message ?? fallback);
+    }
+
+    return from(body.text()).pipe(
+      map((text) => {
+        try {
+          const parsed = JSON.parse(text);
+          return parsed?.message ?? fallback;
+        } catch {
+          return fallback;
+        }
+      }),
+      catchError(() => of(fallback))
+    );
   }
 
 }
