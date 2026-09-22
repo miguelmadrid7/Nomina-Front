@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild, inject, OnDestroy } from '@angular/core';
+import { Component, ViewChild, inject, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,6 +21,8 @@ import { searchEmployeeValidator } from '../../../shared/validators/validaciones
 import { CalendarioRecepcion } from '../../../core/model/calendario-recepcion.model';
 import { UppercaseDirective } from "../../../shared/directives/upperCase.directivas";
 import { ToastService } from '../../../core/services/toast.service';
+import { Calendario } from '../../../core/model/calendario.model';
+import { CalendarioService } from '../../../core/services/calendario.service';
 
 @Component({
   selector: 'app-terceros',
@@ -56,12 +58,17 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
   conceptosOptions$!: Observable<any[]>;
   conceptoUnicoPermitido: any | null = null;
   calendarioRecepcion: CalendarioRecepcion[] = [];
+  cargandoQna = false;
+  calendarioActual: Calendario | null = null;
+  errorQna = false;
 
   private readonly fb = inject(FormBuilder);
   private readonly dialog = inject(MatDialog);
   private readonly terceroService = inject(TerceroService);
   private readonly conceptoAccesoService = inject(ConceptoAccesoService);
   private readonly toastService = inject(ToastService);
+  private readonly calendarioService = inject(CalendarioService);
+  private readonly cd = inject(ChangeDetectorRef);
 
   ngOnInit() {
     this.form = this.fb.group({ 
@@ -129,6 +136,7 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
         },
         });
       });
+      this.loadQnaActivated();
   }
 
   ngAfterViewInit(): void {
@@ -176,6 +184,26 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
       .sort((a, b) => Number(a.qnaRecepcion) - Number(b.qnaRecepcion));
     
     return validas[0]?.qnaRecepcion ?? null;
+  }
+
+  loadQnaActivated(): void {
+    this.cargandoQna = true;
+    this.errorQna = false;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (resp) => {
+        const calendario = resp?.data ?? null;
+        this.calendarioActual = calendario;
+        this.cargandoQna = false;
+        this.errorQna = !calendario;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.calendarioActual = null;
+        this.cargandoQna = false;
+        this.errorQna = true;
+        this.cd.detectChanges();
+      }
+    });
   }
 
   buscarEmpleado() {

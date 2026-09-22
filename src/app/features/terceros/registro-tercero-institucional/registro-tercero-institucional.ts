@@ -17,6 +17,8 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { ConceptoAccesoService } from '../../../core/services/concepto-acceso.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { Calendario } from '../../../core/model/calendario.model';
+import { CalendarioService } from '../../../core/services/calendario.service';
 
 @Component({
   selector: 'app-registro-tercero-institucional',
@@ -46,6 +48,9 @@ export class RegistroTerceroInstitucional implements OnDestroy {
   conceptosFiltrados: any[] = [];
   displayedColumns: string[] = [ 'rfc', 'nombreCompleto', 'tipoMovimiento', 'concepto', 'qnaProceso', 'acciones'];
   empleadoActual: EmpleadoItem | null = null;
+  cargandoQna = false;
+  calendarioActual: Calendario | null = null;
+  errorQna = false;
   dataSource = new MatTableDataSource<NominaRow>([]);
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild(MatPaginator) paginator?: MatPaginator;
@@ -56,6 +61,8 @@ export class RegistroTerceroInstitucional implements OnDestroy {
   private readonly terceroService = inject(TerceroService);
   private readonly conceptoAccesoService = inject(ConceptoAccesoService);
   private readonly toastService = inject (ToastService);
+  private readonly calendarioService = inject(CalendarioService);
+  
 
   ngOnInit() {
      this.form = this.fb.group({ 
@@ -85,10 +92,31 @@ export class RegistroTerceroInstitucional implements OnDestroy {
         this.paginator?.firstPage?.();
         this.buscarRegistrosNp(0, this.paginator?.pageSize ?? 50);
       });
+      this.loadQnaActivated();
   }
 
   ngOnDestroy () {
     this.dialog.closeAll();
+  }
+
+  loadQnaActivated(): void {
+    this.cargandoQna = true;
+    this.errorQna = false;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (resp) => {
+        const calendario = resp?.data ?? null;
+        this.calendarioActual = calendario;
+        this.cargandoQna = false;
+        this.errorQna = !calendario;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.calendarioActual = null;
+        this.cargandoQna = false;
+        this.errorQna = true;
+        this.cd.detectChanges();
+      }
+    });
   }
 
   buscarEmpleado() {
