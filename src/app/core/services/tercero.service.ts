@@ -1,5 +1,5 @@
 import { Injectable  } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { map, Observable } from 'rxjs';
 import { ApiResponse } from '../../core/model/response/api-Response.model';
@@ -217,6 +217,22 @@ export class TerceroService {
     }
     return this.http.get<ApiResponse<TerceroHistorico[]>>(`${this.base}/terceros/historico`, { params })
       .pipe(map((res) => ({ rows: res?.data ?? [], total: res?.count ?? 0 })));
+  }
+
+  descargarReporteTerceros(
+    qnaProceso: number,
+    concepto?: string | null,
+    fechaCarga?: string | null // ISO datetime, e.g. "2026-09-18T19:16:48"
+  ): Observable<HttpResponse<Blob>> {
+    let params = new HttpParams().set('qnaProceso', qnaProceso);
+    if (concepto) params = params.set('concepto', concepto);
+    if (fechaCarga) params = params.set('fechaCarga', fechaCarga);
+
+    return this.http.get(`${this.base}/terceros/descargar-reporte`, {
+      params,
+      responseType: 'blob',
+      observe: 'response',
+    });
   }
 
 }
