@@ -124,3 +124,19 @@
   border-color: #dc2626;
   transform: translateY(-1px);
 }
+
+@media (max-width: 768px) {
+  .config-inline {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .field-group {
+    width: 100%;
+  }
+
+  .concepto-field {
+    width: 100%;
+  }
+}
