@@ -80,6 +80,8 @@ export class CargaTercerosInstNoinst implements OnInit {
 
 
   private readonly PROCESS_TOAST_ID = 5102;
+  private readonly UPLOAD_TOAST_ID = 5103;
+
   private readonly toastService = inject(ToastService);
   private readonly terceroService = inject(TerceroService);
   private readonly cd = inject(ChangeDetectorRef);
@@ -214,8 +216,11 @@ export class CargaTercerosInstNoinst implements OnInit {
       this.form.markAllAsTouched();
       return;
     }
+
     this.isUploading = true;
     this.resultado = null;
+    this.toastService.upsertPersistent(this.UPLOAD_TOAST_ID, 'info', 'Cargando archivo', `Procesando "${file.name}"...`);
+
     this.terceroService.uploadTxt(file, qnaProceso, concepto, importeDefault)
       .pipe(
         finalize(() => {
@@ -226,19 +231,26 @@ export class CargaTercerosInstNoinst implements OnInit {
       .subscribe({
         next: (res) => {
           if (!res.success) {
-            this.toastService.error('Operación invalida', res.message ?? 'No fue posible cargar el archivo.', 6000);
+            this.toastService.resolvePersistent(this.UPLOAD_TOAST_ID, 'error', 'No se pudo cargar', res.message ?? 'No fue posible cargar el archivo.');
             return;
           }
           this.resultado = res.data;
-          // these two enable "Revalidar" and the validation summary
           this.totalRecordsCount = res.data.total;
           this.validRecordCount = res.data.aceptados;
           this.pageIndex = 0;
+
+          const summary = `${res.data.aceptados} aceptados, ${res.data.rechazados} rechazados de ${res.data.total} registros.`;
+          if (res.data.todosAceptados) {
+            this.toastService.resolvePersistent(this.UPLOAD_TOAST_ID, 'success', 'Archivo cargado', summary);
+          } else {
+            this.toastService.resolvePersistent(this.UPLOAD_TOAST_ID, 'warning', 'Carga con observaciones', summary);
+          }
+
           this.clearFile();
           this.loadTerceroList(qnaProceso, concepto);
         },
         error: (err: HttpErrorResponse) => {
-          this.toastService.error('Operación invalida', this.extractErrorMessage(err), 6000);
+          this.toastService.resolvePersistent(this.UPLOAD_TOAST_ID, 'error', 'No se pudo cargar', this.extractErrorMessage(err));
         }
       });
   }
