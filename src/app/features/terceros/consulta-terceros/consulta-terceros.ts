@@ -16,6 +16,8 @@ import { MatInputModule } from '@angular/material/input';
 import { DocumentoTerceroDialog } from '../../../shared/dialogs/documento-tercero-dialog/documento-tercero-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastService } from '../../../core/services/toast.service';
+import { Calendario } from '../../../core/model/calendario.model';
+import { CalendarioService } from '../../../core/services/calendario.service';
 
 @Component({
   selector: 'app-consulta-terceros',
@@ -52,16 +54,15 @@ export class ConsultaTerceros implements OnDestroy {
   conceptosNoInstitucionales: any[] = [];
   conceptosFiltrados: any[] = [];
   totalElements = 0;
-  
   conteoPorConcepto = new Map<string, number>();
   loadingConteos = false;
-
-
   tipoOrdenOptions = [ { label: 'Alta', value: 1 }, { label: 'Pendiente', value: 2 }, { label: 'Aprobado', value: 3 }];
   estatusOptions = [ { label: 'Registrado', value: 1 }, { label: 'Pendiente', value: 2 }, { label: 'Aprobado', value: 3 },];
-
   pageIndex = 0;
   pageSize = 50
+  cargandoQna = false;
+  calendarioActual: Calendario | null = null;
+  errorQna = false;
 
   private readonly fb = inject(FormBuilder);
   private readonly cd = inject(ChangeDetectorRef);
@@ -69,6 +70,7 @@ export class ConsultaTerceros implements OnDestroy {
   private readonly terceroService = inject(TerceroService);
   private readonly loaderService = inject(LoaderService);
   private readonly toastService = inject(ToastService);
+  private readonly calendarioService = inject(CalendarioService);
 
   ngOnInit() {
     this.form = this.fb.group({
@@ -104,6 +106,7 @@ export class ConsultaTerceros implements OnDestroy {
       this.paginator?.firstPage();
       this.loadRegistros(0, this.pageSize);
     });
+    this.loadQnaActivated();
   }
 
   ngOnDestroy () {
@@ -117,6 +120,27 @@ export class ConsultaTerceros implements OnDestroy {
     this.loadConteos();
     this.loadRegistros(0, this.pageSize);
   }
+
+    loadQnaActivated(): void {
+    this.cargandoQna = true;
+    this.errorQna = false;
+    this.calendarioService.getQnaActiva().subscribe({
+      next: (resp) => {
+        const calendario = resp?.data ?? null;
+        this.calendarioActual = calendario;
+        this.cargandoQna = false;
+        this.errorQna = !calendario;
+        this.cd.detectChanges();
+      },
+      error: () => {
+        this.calendarioActual = null;
+        this.cargandoQna = false;
+        this.errorQna = true;
+        this.cd.detectChanges();
+      }
+    });
+  }
+
 
   cargarConceptos(){
   this.terceroService.obtenerConceptos().subscribe({
