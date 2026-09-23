@@ -61,6 +61,7 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
   factorDecimal = 0;
   calendarioActual: Calendario | null = null;
   cargandoQna = false;
+  errorQna = false;
 
 
   readonly form = this.fb.group({
