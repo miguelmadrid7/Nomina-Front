@@ -27,6 +27,11 @@
             <mat-icon>delete_outline</mat-icon>
                 <span>Limpiar</span>
         </button>
+
+        <button class="btn btn-download"  (click)="clearFilters()">
+            <mat-icon>summarize</mat-icon>
+                <span>Reporte</span>
+        </button>
     </div>
 
     <div [formGroup]="searchForm" class="global-search">
