@@ -125,6 +125,25 @@
   transform: translateY(-1px);
 }
 
+/*--- STYLES ABOUT VIGENCIA --- */
+.vigencia-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.vigencia-ilimitada {
+  background: #e8eefb;
+  color: #23408f;
+}
+
+.vigencia-limitada {
+  background: #fdf1dc;
+  color: #7a4700;
+}
+
 @media (max-width: 768px) {
   .config-inline {
     flex-direction: column;

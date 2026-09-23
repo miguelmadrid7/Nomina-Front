@@ -9,7 +9,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { catchError, debounceTime, distinctUntilChanged, finalize, forkJoin, from, map, Observable, of } from 'rxjs';
@@ -24,7 +23,6 @@ import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-di
 import { MatDialog } from '@angular/material/dialog';
 import { ConsultaTercerosLotesDialog } from '../../../shared/dialogs/consulta-terceros-lotes-dialog/consulta-terceros-lotes-dialog';
 import { TercerosHistoricoDialog } from '../../../shared/dialogs/terceros-historico-dialog/terceros-historico-dialog';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 const ALLOWED_EXTENSION = '.txt';
 
@@ -38,12 +36,10 @@ const ALLOWED_EXTENSION = '.txt';
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
-    MatRadioModule,
     MatIconModule,
     MatTableModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
-    MatButtonToggleModule
   ],
   templateUrl: './carga-terceros-inst-noinst.html',
   styleUrl: './carga-terceros-inst-noinst.css'
@@ -77,7 +73,7 @@ export class CargaTercerosInstNoinst implements OnInit {
 
   dataSource = new MatTableDataSource<TerceroRow>([]);
 
-  readonly displayedColumns: string[] = ['rfc', 'curp', 'nombreTrabajador', 'tipoMovimiento', 'importeMensual', 'conceptoDescuento', 'estatus', 'observaciones','fechaRegistro','acciones'];
+  readonly displayedColumns: string[] = ['rfc', 'curp', 'nombreTrabajador', 'tipoMovimiento', 'vigencia','importeMensual', 'conceptoDescuento', 'estatus', 'observaciones','fechaRegistro','acciones'];
 
 
   private readonly PROCESS_TOAST_ID = 5102;
@@ -117,6 +113,10 @@ export class CargaTercerosInstNoinst implements OnInit {
       return null;
     }
     return Number(`${calendario.ejercicio}${calendario.qna.toString().padStart(2, '0')}`);
+  }
+
+  esIlimitado(row: TerceroRow): boolean {
+    return row.tipoMovimiento === 1 || row.tipoMovimiento === 3;
   }
 
   ngOnInit(): void {
@@ -405,6 +405,7 @@ export class CargaTercerosInstNoinst implements OnInit {
     }
     this.terceroService.updateRecord(row.id, {
       rfc: row.rfc,
+      curp: row.curp,
       nombreTrabajador: row.nombreTrabajador,
       numeroDocumento: row.numeroDocumento,
       tipoMovimiento: row.tipoMovimiento,
@@ -467,6 +468,15 @@ export class CargaTercerosInstNoinst implements OnInit {
         next: (response) => {
           if (!response.success) {
             this.toastService.resolvePersistent(this.PROCESS_TOAST_ID, 'error', 'No se pudo procesar', response.message ?? 'No hay registros aceptados para continuar.');
+            this.loadTerceroList(qnaProceso, concepto);
+            forkJoin({
+              all: this.terceroService.getListValidate({ qnaProceso, concepto, page: 0, size: 1 }),
+              accepted: this.terceroService.getListValidate({ qnaProceso, concepto, estatus: 'ACEPTADO', page: 0, size: 1 }),
+            }).subscribe(({ all, accepted }) => {
+              this.totalRecordsCount = all.data?.totalElements ?? 0;
+              this.validRecordCount = accepted.data?.totalElements ?? 0;
+              this.cd.detectChanges();
+            });
             return;
           }
           const data = response.data;
@@ -556,7 +566,7 @@ export class CargaTercerosInstNoinst implements OnInit {
     this.isDownloadingReporte = true;
     this.toastService.upsertPersistent(this.DOWNLOAD_TOAST_ID, 'info', 'Generando reporte', 'Preparando el archivo Excel...');
 
-    this.terceroService.descargarReporteTerceros(qnaProceso, concepto)
+    this.terceroService.donwloadReportTerceros(qnaProceso, concepto)
       .pipe(
         finalize(() => {
           this.isDownloadingReporte = false;
