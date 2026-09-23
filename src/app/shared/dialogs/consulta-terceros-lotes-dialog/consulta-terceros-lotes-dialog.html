@@ -11,7 +11,7 @@
       <div class="table-card card">
         <div class="table-content">
           <div class="table-scroll">
-            <table mat-table [dataSource]="data.lotes" class="table-global">
+            <table mat-table [dataSource]="pagedLotes" class="table-global">
               
               <ng-container matColumnDef="concepto">
                 <th mat-header-cell *matHeaderCellDef class="col-center"> 
@@ -88,7 +88,7 @@
               </ng-container>
 
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.lote-activo]="row.qnaProceso === activeQna"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.lote-activo]="row.qnaProceso === activeQna" [class.row-removing]="loteKey(row) === removingKey"></tr>
             </table>
           </div>
           <div class="table-footer">

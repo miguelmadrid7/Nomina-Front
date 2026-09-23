@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, output } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -12,6 +12,8 @@ import { TerceroService } from '../../../core/services/tercero.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { finalize } from 'rxjs';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+
+const REMOVE_ANIMATION_MS = 300;
 
 @Component({
   selector: 'app-consulta-terceros-lotes-dialog',
@@ -28,33 +30,34 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
   styleUrl: './consulta-terceros-lotes-dialog.css'
 })
 export class ConsultaTercerosLotesDialog implements OnInit {
-  
+
   private readonly ref = inject<MatDialogRef<ConsultaTercerosLotesDialog>>(MatDialogRef);
   private readonly dialog = inject(MatDialog);
   private readonly terceroService = inject(TerceroService);
   private readonly toastService = inject(ToastService);
+  private readonly cd = inject(ChangeDetectorRef);
   readonly data = inject<ConsultaTercerosLotesDialogData>(MAT_DIALOG_DATA);
 
-
   lotes: TercerosLote[] = [...this.data.lotes];
-  isDeleting = false;
-  
-  totalElements = this.lotes.length;
   pagedLotes: TercerosLote[] = [];
+  isDeleting = false;
+  removingKey: string | null = null;
+  totalElements = 0;
   pageSize = 10;
   pageIndex = 0;
 
-
-
   readonly loteDeleted = output<TercerosLote>();
-  readonly displayedColumns: string[] = ['concepto', 'qnaProceso', 'total','aceptados','rechazados',  'pendientes', 'fechaCarga','acciones'];
+  readonly displayedColumns: string[] = ['concepto', 'qnaProceso', 'total', 'aceptados', 'rechazados', 'pendientes', 'fechaCarga', 'acciones'];
   readonly activeQna: number | null = this.data.calendarioActual
     ? Number(`${this.data.calendarioActual.ejercicio}${this.data.calendarioActual.qna.toString().padStart(2, '0')}`)
     : null;
 
-
-  ngOnInit():void {
+  ngOnInit(): void {
     this.refreshPage();
+  }
+
+  loteKey(lote: TercerosLote): string {
+    return `${lote.qnaProceso}-${lote.concepto}`;
   }
 
   onDeleteLote(lote: TercerosLote): void {
@@ -75,8 +78,12 @@ export class ConsultaTercerosLotesDialog implements OnInit {
         return;
       }
       this.isDeleting = true;
+      this.cd.detectChanges();
       this.terceroService.deleteLote(lote.qnaProceso, lote.concepto)
-        .pipe(finalize(() => (this.isDeleting = false)))
+        .pipe(finalize(() => {
+          this.isDeleting = false;
+          this.cd.detectChanges();
+        }))
         .subscribe({
           next: (response) => {
             if (!response.success) {
@@ -84,10 +91,15 @@ export class ConsultaTercerosLotesDialog implements OnInit {
               return;
             }
             this.toastService.success('Operación exitosa', `Se eliminaron ${response.data.filasBorradas} registros del lote.`);
-            this.lotes = this.lotes.filter(
-              (l) => !(l.qnaProceso === lote.qnaProceso && l.concepto === lote.concepto)
-            );
             this.loteDeleted.emit(lote);
+            this.removingKey = this.loteKey(lote);
+            this.cd.detectChanges();
+            setTimeout(() => {
+              this.lotes = this.lotes.filter((l) => this.loteKey(l) !== this.loteKey(lote));
+              this.removingKey = null;
+              this.refreshPage();
+              this.cd.detectChanges();
+            }, REMOVE_ANIMATION_MS);
           },
           error: (error: HttpErrorResponse) => {
             this.toastService.error('Error al eliminar', error?.error?.message ?? 'No se pudo eliminar el lote.');
@@ -99,8 +111,9 @@ export class ConsultaTercerosLotesDialog implements OnInit {
   onPageChange(event: PageEvent): void {
     this.pageSize = event.pageSize;
     this.pageIndex = event.pageIndex;
+    this.refreshPage();
   }
-  
+
   refreshPage(): void {
     this.totalElements = this.lotes.length;
     const lastPage = Math.max(Math.ceil(this.totalElements / this.pageSize) - 1, 0);
@@ -111,11 +124,7 @@ export class ConsultaTercerosLotesDialog implements OnInit {
     this.pagedLotes = this.lotes.slice(start, start + this.pageSize);
   }
 
-
-
   close(): void {
     this.ref.close();
   }
-
-
 }
