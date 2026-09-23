@@ -1,0 +1,185 @@
+.actions-right {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 10px 0 14px;
+}
+
+.fecha-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 18px;
+}
+
+.concepto-wide {
+  width: 150px;
+}
+
+.concepto-wi {
+  width: 650px;
+  min-height: 36px;
+}
+
+:host ::ng-deep .concepto-wi .mat-mdc-form-field-infix {
+  min-height: 45px !important;
+  padding-top: 10px;
+  padding-bottom: 4px;
+}
+
+.concepto-field .mat-mdc-form-field-infix {
+  text-align: center;
+}
+
+
+:host ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+    display: none !important;
+}
+
+
+/* HEADERS CON SELECTS */
+.header-column {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 2px !important;
+}
+
+.header-select {
+    width: 100% !important;
+    max-width: 110px !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
+.header-select-orden {
+  max-width: 150px !important; 
+}
+
+.header-text-input {
+    width: 140px !important;
+    max-width: 140px !important;
+    margin: 4px auto !important;
+    text-align: center !important;
+}
+
+.header-text-input-small {
+    width: 110px !important;
+    max-width: 110px !important;
+    margin: 4px auto !important;
+    text-align: center !important;
+}
+
+:host ::ng-deep .header-text-input-small .mat-mdc-form-field-infix {
+    min-height: 28px !important;
+    padding-top: 2px !important;
+    padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .header-text-input .mat-mdc-form-field-infix {
+    min-height: 28px !important;
+    padding-top: 2px !important;
+    padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .header-text-input .mat-mdc-text-field-wrapper {
+    height: 32px !important;
+}
+
+:host ::ng-deep .header-text-input-small .mat-mdc-text-field-wrapper {
+    height: 32px !important;
+}
+
+.qna-filters-container {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 2px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+
+:host ::ng-deep .header-select .mat-mdc-form-field-infix,
+:host ::ng-deep .qna-select .mat-mdc-form-field-infix {
+    min-height: 28px !important;
+    padding-top: 2px !important;
+    padding-bottom: 0 !important;
+}
+
+
+:host ::ng-deep .header-select .mat-mdc-text-field-wrapper,
+:host ::ng-deep .qna-select .mat-mdc-text-field-wrapper {
+    height: 32px !important;
+}
+
+
+/* Radios */
+.radio-group {
+  margin-bottom: 16px;
+}
+
+.rad {
+  margin-bottom: 16px;
+  margin-left: 10px;
+
+}
+
+.mat-mdc-radio-button ~ .mat-mdc-radio-button {
+  margin-left: 10px;
+  margin-bottom: 5px;
+}
+
+.global-search {
+  display: flex;
+  align-items: center;
+  gap: 16px; 
+}
+
+
+@media (max-width: 768px) {
+  .table-global {
+    min-width: 900px; 
+  }
+
+  .actions-right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 10px 0 14px;
+  }
+
+  .btn-group {
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  /* Filtros en columna */
+  .global-search {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .concepto-wi {
+    width: 100%;
+  }
+
+  :host ::ng-deep .concepto-wi {
+    width: 100% !important;
+  }
+
+  /* Radio buttons apilados */
+  .mat-mdc-radio-button ~ .mat-mdc-radio-button {
+    margin-left: 0;
+    margin-top: 8px;
+  }
+}

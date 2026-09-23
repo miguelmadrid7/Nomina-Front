@@ -1,0 +1,228 @@
+<div class="page-container">
+    <div class="page-header page-header--split">
+        <h2 class="page-title">Carga de terceros</h2>
+
+        <div class="header-tools">
+            <div class="qna-chip" role="status">
+                <mat-icon>event</mat-icon>
+                <div class="qna-chip__text">
+                    <span class="qna-chip__label">Quincena activa</span>
+                    <span class="qna-chip__value">{{ cargandoQna ? 'Cargando...' : (calendarioActual ? calendarioActual.qna.toString().padStart(2, '0') + ' / ' + calendarioActual.ejercicio : 'No disponible') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <form class="config-inline" [formGroup]="form">
+        <div class="field-group">
+            <span class="field-group-label" id="tipo-label">Seleccionar concepto</span>
+                <mat-form-field appearance="outline" class="with-separator compact-field qna-compact concepto-field" floatLabel="always" subscriptSizing="dynamic">
+                    <mat-label>Concepto a cargar</mat-label>
+                    <mat-icon matPrefix>account_balance</mat-icon>
+                        <mat-select formControlName="concepto">
+                            @for (c of conceptos; track c.cve) {
+                                <mat-option [value]="c.cve">{{ c.cve }} - {{ c.descripcion }}</mat-option>
+                            }
+                        </mat-select>
+                </mat-form-field>
+        </div>
+
+        <div class="field-group">
+            <span class="field-group-label" id="file-label">Cargar archivo TXT:</span>
+            <input
+                #fileInput
+                type="file"
+                accept=".txt, text/plain"
+                aria-labelledby="file-label"
+                [disabled]="isUploading"
+                (change)="onTxtSelected($event)">
+        </div>
+    </form>
+
+    <div class="actions-right">
+        <div class="btn-group">
+            <button type="button" class="btn btn-upload" [disabled]="!canUpload" (click)="onUploadTxt()">
+                <mat-icon>{{ isUploading ? 'sync' : 'upload_file' }}</mat-icon>
+                {{ isUploading ? 'Cargando...' : 'Cargar' }}
+            </button>
+        </div>
+
+        <button type="button" class="btn btn-edit" [disabled]="isValidatingLote || totalRecordsCount === 0 || yaSeProceso" (click)="onRevalidateLote()">
+            <mat-icon>{{ isValidatingLote ? 'sync' : 'fact_check' }}</mat-icon>
+            {{ isValidatingLote ? 'Validando...' : 'Revalidar' }}
+        </button>
+
+        <button type="button" class="btn btn-success" [disabled]="isProcessingPayroll || isValidatingLote || totalRecordsCount === 0" (click)="onProcessPayroll()">
+            <mat-icon>{{ isProcessingPayroll ? 'sync' : 'send' }}</mat-icon>
+            {{ isProcessingPayroll ? 'Procesando...' : 'Procesar' }}
+        </button>
+
+        <button type="button" class="btn btn-danger" (click)="loadLotes()">
+            <mat-icon>list_alt</mat-icon>
+            Ver lotes
+        </button>
+
+        <button type="button" class="btn btn-download" (click)="getHistoric()">
+            <mat-icon>history</mat-icon>
+                Historico
+        </button>
+
+        <button type="button" class="btn btnn-primaryy" (click)="onDowloadReport()">
+            <mat-icon>summarize </mat-icon>
+                Reporte
+        </button>
+    </div>
+
+    <mat-card class="form-card" [formGroup]="searchForm">
+        <div class="global-search">
+            <mat-form-field appearance="outline" class="with-separator qna-compact search-field" floatLabel="always">
+                <mat-icon matPrefix>search</mat-icon>
+                <mat-label>Buscar RFC, CURP o empleado</mat-label>
+                <input matInput id="buscarTercero" formControlName="searchText" />
+            </mat-form-field>
+
+            @if (totalRecordsCount > 0) {
+                <p class="validation-summary">{{ validationSummaryText }}</p>
+            }
+        </div>
+
+        
+
+        <div class="table-container">
+            <div class="table-card">
+                @if (isValidatingLote) {
+                    <div class="table-loading-overlay">
+                        <mat-spinner diameter="40"></mat-spinner>
+                        <span>Revalidando registros...</span>
+                    </div>
+                }
+
+                <div class="table-content">
+                    <div class="table-scroll">
+                         <table mat-table [dataSource]="dataSource" class="table-global">
+
+                            <ng-container matColumnDef="rfc">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> RFC </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.rfc }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="curp">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> CURP </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.curp ?? '—' }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="nombreTrabajador">
+                                <th mat-header-cell *matHeaderCellDef class="col-md col-center"> EMPLEADO </th>
+                                <td mat-cell *matCellDef="let e" class="col-md col-center col-wrap">{{ e.nombreTrabajador ?? '—' }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="tipoMovimiento">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> TIPO MOV. </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                                    @if (editingRowId === e.id) {
+                                        <input class="cantidad-edit-input" [value]="e.tipoMovimiento"
+                                            (blur)="onRecordUpdate(e, $any($event.target).value)"
+                                            (keydown.enter)="onRecordUpdate(e, $any($event.target).value)"/>
+                                     } @else {
+                                        <span>{{ e.tipoMovimiento ?? '—' }}</span>
+                                    }
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="vigencia">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> VIGENCIA </th>
+                                    <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                                        @if (esIlimitado(e)) {
+                                            <span class="vigencia-badge vigencia-ilimitada">Ilimitado</span>
+                                        } @else if (e.tipoMovimiento === 2) {
+                                            <span class="vigencia-badge vigencia-limitada">Hasta {{ e.qnaFin ?? '—' }}</span>
+                                        } @else {
+                                            <span class="observacion-empty">—</span>
+                                        }
+                                    </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="importeMensual">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> IMPORTE <br/> MENSUAL </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                                    @if (editingRowId === e.id) {
+                                        <input class="cantidad-edit-input" type="number" min="0.01" step="0.01" [value]="e.importeMensual"
+                                            (blur)="onRecordUpdate(e, $any($event.target).value)"
+                                            (keydown.enter)="onRecordUpdate(e, $any($event.target).value)"/>
+                                    } @else {
+                                        <span>{{ e.importeMensual | number:'1.2-2' }}</span>
+                                    }
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="conceptoDescuento">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> CONCEPTO </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">{{ e.conceptoDescuento }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="estatus">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> ESTATUS </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                                    <span class="estatus-badge" [ngClass]="{
+                                        'estatus-aceptado': e.estatus === 'ACEPTADO',
+                                        'estatus-rechazado': e.estatus === 'RECHAZADO',
+                                        'estatus-pendiente': !e.estatus
+                                    }">
+                                        {{ e.estatus ?? 'PENDIENTE' }}
+                                    </span>
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="observaciones">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> OBSERVACIONES </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center col-wrap">
+                                    @if (e.motivoRechazo) {
+                                        <span class="observacion-text">{{ e.motivoRechazo }}</span>
+                                    } @else {
+                                        <span class="observacion-empty">—</span>
+                                    }
+                                </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="fechaRegistro">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> FECHA REGISTRO </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center col-wrap">{{ e.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="acciones">
+                                <th mat-header-cell *matHeaderCellDef class="col-xs col-center"> ACCIONES </th>
+                                <td mat-cell *matCellDef="let e" class="col-xs col-center">
+                                    <div class="actions-cell">
+                                        <button class="btnn btnn-primary" type="button" [disabled]="yaSeProceso" (click)="onEditRow(e)">
+                                            <mat-icon>edit</mat-icon>
+                                        </button>
+                                        <button class="btnn btnn-dangerr" type="button" [disabled]="yaSeProceso" (click)="onDeleteRow(e)">
+                                            <mat-icon>delete</mat-icon>
+                                        </button>
+                                    </div>
+                                </td>
+
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </div>
+
+                    <div class="table-footer">
+                        <mat-paginator
+                            [length]="totalElements"
+                            [pageSize]="pageSize"
+                            [pageIndex]="pageIndex"
+                            [pageSizeOptions]="[5, 10, 25, 50, 100]"
+                            showFirstLastButtons
+                            (page)="onPageChange($event)">
+                        </mat-paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-card>
+</div>

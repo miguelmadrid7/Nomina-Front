@@ -1,0 +1,150 @@
+import { inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { LoginPayload } from '../model/login.model';
+import { isPlatformBrowser } from '@angular/common';
+import { SidebarModule } from '../model/sidebar.model';
+import { PayrollJobService } from './payroll.service';
+
+@Injectable({ providedIn: 'root' })
+export class LoginService {
+  private base = environment.apiUrl;
+  private platformId = inject(PLATFORM_ID);
+  private roleChanged = new BehaviorSubject<number | null>(null);
+  private readonly payrollJobService = inject(PayrollJobService);
+
+  constructor(private http: HttpClient) {}
+
+  private isBrowser() {
+    return isPlatformBrowser(this.platformId);
+  }
+
+  // Cambiar a /login y observar headers
+  login(payload: LoginPayload): Observable<HttpResponse<any>> {
+    return this.http.post(`${this.base}/login`, payload, { headers: { 'Content-Type': 'application/json' },observe: 'response' });
+  }
+
+  isAuthenticated(): boolean {
+    if (!this.isBrowser()) return false;
+    const token = this.getToken();
+    if (!token) return false;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1] || ''));
+      if (payload?.exp) {
+        const nowSec = Math.floor(Date.now() / 1000);
+        return payload.exp > nowSec;
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  // SSR-safe
+  setToken(token: string) {
+    if (!this.isBrowser()) return;
+    localStorage.setItem('token', token); // Guarda el JWT crudo (SIN "Bearer ")
+  }
+
+  getToken() {
+    if (!this.isBrowser()) return null;
+    return localStorage.getItem('token'); // Devuelve el JWT crudo
+  }
+
+  getRoles(): number[] {
+  if (!this.isBrowser()) return [];
+    const roles = localStorage.getItem('roles');
+    return roles ? JSON.parse(roles) : [];
+  }
+
+  hasRole(role: number): boolean {
+    return this.getRoles().includes(role);
+  }
+
+  hasAnyRole(roles: number[]): boolean {
+    const userRoles = this.getRoles();
+    return roles.some(r => userRoles.includes(r));
+  }
+
+  hasPermiso(nombre: string): boolean {
+    const permisos = this.getPermisos();
+    return permisos && permisos[nombre] !== undefined;
+  }
+
+  hasModule(moduleId: number): boolean {
+  return this.getModules().includes(moduleId);
+  }
+
+  clearSession() {
+    if (!this.isBrowser()) return;
+
+    localStorage.removeItem('token');
+    localStorage.removeItem('roles');
+    localStorage.removeItem('extras');
+    localStorage.removeItem('permisos');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('config');
+    localStorage.removeItem('menuModules');
+  }
+
+  setSession(data: any) {
+  if (!this.isBrowser()) return;
+    localStorage.setItem('roles', JSON.stringify(data.roles));
+    localStorage.setItem('extras', JSON.stringify(data.config?.extras || []));
+    localStorage.setItem('permisos', JSON.stringify(data.permisos));
+    localStorage.setItem('userId', data.userId);
+    localStorage.setItem('config', JSON.stringify(data.config));
+
+    this.roleChanged.next(data.roles?.[0] ?? null);
+  }
+
+  setMenuModules(modules: SidebarModule[]): void {
+    if (!this.isBrowser()) return;
+    localStorage.setItem('menuModules', JSON.stringify(modules));
+  }
+
+  getMenuModules(): SidebarModule[] {
+    if (!this.isBrowser()) return [];
+    const modules = localStorage.getItem('menuModules');
+    return modules ? JSON.parse(modules) : [];
+  }
+
+  getPrincipalRoute(): string {
+  if (!this.isBrowser()) return '/home';
+    const configStr = localStorage.getItem('config');
+    if (!configStr) return '/home';
+    try {
+      const config = JSON.parse(configStr);
+      switch (config.principal) {
+        case 'pages/Inicio/General':
+          return '/home';
+        default:
+          return '/home';
+      }
+    } catch {
+      return '/home';
+    }
+  }
+
+  getPermisos(): any {
+  if (!this.isBrowser()) return {};
+    const permisos = localStorage.getItem('permisos');
+    return permisos ? JSON.parse(permisos) : {};
+  }
+
+  getModules(): number[] {
+    if (!this.isBrowser()) return [];
+    const modules = localStorage.getItem('modules');
+    return modules ? JSON.parse(modules) : [];
+  }
+
+  getRoleChanged(): Observable<number | null> {
+    return this.roleChanged.asObservable();
+  }
+
+  logout() {
+     this.payrollJobService.reset();
+     this.clearSession();
+  }
+}
