@@ -236,6 +236,28 @@ mat-sidenav-content {
   transform: translateY(-1px);
 }
 
+.btn-download {
+  color: #d97706;
+  border-color: #d97706;
+}
+.btn-download:hover {
+  background: #d97706;
+  color: #ffffff;
+  border-color: #d97706;
+  transform: translateY(-1px);
+}
+
+.btn-upload {
+  color: #0369a1;
+  border-color: #0369a1;
+}
+.btn-upload:hover {
+  background: #0369a1;
+  color: #ffffff;
+  border-color: #0369a1;
+  transform: translateY(-1px);
+}
+
 .btnn-primary {
   background: transparent;
   color: #2563eb;
