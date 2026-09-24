@@ -61,30 +61,30 @@
     
     <div class="actions-right">
         <div class="btn-group">
-            <button class="btn btn-upload" [disabled]="!selecteExcelFile || yaSeProceso" (click)="onAceptBotton()">
+            <button class="btn btnn-primaryy" [disabled]="!selecteExcelFile || yaSeProceso" (click)="onAceptBotton()">
                 <mat-icon>upload_file</mat-icon>
                     Cargar
             </button>
         </div>
         
-        <button class="btn btn-edit" [disabled]="isValidatingLote || totalRecordsCount === 0 || yaSeProceso" (click)="onRevalidarLote()">
+        <button class="btn btnn-successs" [disabled]="isValidatingLote || totalRecordsCount === 0 || yaSeProceso" (click)="onRevalidarLote()">
             <mat-icon>{{ isValidatingLote ? 'sync' : 'fact_check' }}</mat-icon>
             {{ isValidatingLote ? 'Validando...' : 'Revalidar' }}
         </button>
         
-        <button class="btn btn-success" [disabled]="isProcessingPayroll || yaSeProceso || totalRecordsCount === 0" (click)="onProcessPayroll()"> 
+        <button class="btn btnn-dangerr" [disabled]="isProcessingPayroll || yaSeProceso || totalRecordsCount === 0" (click)="onProcessPayroll()"> 
             <mat-icon>{{ isProcessingPayroll ? 'sync' : 'send' }}</mat-icon>
                 {{ isProcessingPayroll ? 'Procesando...' : 'Procesar' }} 
-        </button>
-       
-        <button class="btn btn-download" [disabled]="!resultAvalible" (click)="onDownloadResult()"> 
-            <mat-icon>download</mat-icon>
-                Descargar 
         </button>
 
         <button class="btn btn-edit" (click)="loadLotes()">
             <mat-icon>list_alt</mat-icon>
                 Ver lotes
+        </button>
+
+        <button class="btn btn-download" [disabled]="!resultAvalible" (click)="onDownloadResult()"> 
+            <mat-icon>download</mat-icon>
+                Reporte 
         </button>
     </div>
     
@@ -103,11 +103,11 @@
                         <mat-option *ngFor="let emp of resultados" [value]="emp"> {{ emp?.rfc || '—' }} · {{ emp?.curp || '—' }}</mat-option>
                     </mat-autocomplete>
             </mat-form-field>
-        </div>
 
-        @if (totalRecordsCount > 0) {
-            <p class="validation-summary">{{ validationSummaryText }}</p>
-        }
+            @if (totalRecordsCount > 0) {
+                <p class="validation-summary">{{ validationSummaryText }}</p>
+            }
+        </div>
 
         <div class="table-container">
             <div class="table-card">
