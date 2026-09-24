@@ -69,14 +69,38 @@
 }
 
 /* --- bottons --- */
-.btn-upload {
-  color: #0369a1;
-  border-color: #0369a1;
+.btnn-primaryy {
+  color: #2563eb;
+  border-color: #2563eb;
 }
-.btn-upload:hover {
-  background: #0369a1;
+.btnn-primaryy:hover {
+  background: #2563eb;
   color: #ffffff;
-  border-color: #0369a1;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+}
+
+.btnn-successs {
+  background: transparent;
+  color: #2e7d32;
+  border-color: #2e7d32;
+}
+.btnn-successs:hover {
+  background: #2e7d32;
+  color: #ffffff;
+  border-color: #2e7d32;
+  transform: translateY(-1px);
+}
+
+.btnn-dangerr {
+  background: transparent;
+  color: #dc2626;
+  border-color: #dc2626;
+}
+.btnn-dangerr:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
   transform: translateY(-1px);
 }
 
@@ -100,19 +124,6 @@
   background: #2e7d32;
   color: #ffffff;
   border-color: #2e7d32;
-  transform: translateY(-1px);
-}
-
-
-
-.btn-danger {
-  color: #dc2626;
-  border-color: #dc2626;
-}
-.btn-danger:hover {
-  background: #dc2626;
-  color: #ffffff;
-  border-color: #dc2626;
   transform: translateY(-1px);
 }
 

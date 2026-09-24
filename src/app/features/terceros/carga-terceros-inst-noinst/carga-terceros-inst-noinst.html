@@ -43,23 +43,23 @@
 
     <div class="actions-right">
         <div class="btn-group">
-            <button type="button" class="btn btn-upload" [disabled]="!canUpload" (click)="onUploadTxt()">
+            <button type="button" class="btn btnn-primaryy" [disabled]="!canUpload" (click)="onUploadTxt()">
                 <mat-icon>{{ isUploading ? 'sync' : 'upload_file' }}</mat-icon>
                 {{ isUploading ? 'Cargando...' : 'Cargar' }}
             </button>
         </div>
 
-        <button type="button" class="btn btn-edit" [disabled]="isValidatingLote || totalRecordsCount === 0 || yaSeProceso" (click)="onRevalidateLote()">
+        <button type="button" class="btn btnn-successs" [disabled]="isValidatingLote || totalRecordsCount === 0 || yaSeProceso" (click)="onRevalidateLote()">
             <mat-icon>{{ isValidatingLote ? 'sync' : 'fact_check' }}</mat-icon>
             {{ isValidatingLote ? 'Validando...' : 'Revalidar' }}
         </button>
 
-        <button type="button" class="btn btn-success" [disabled]="isProcessingPayroll || isValidatingLote || totalRecordsCount === 0" (click)="onProcessPayroll()">
+        <button type="button" class="btn btnn-dangerr" [disabled]="isProcessingPayroll || isValidatingLote || totalRecordsCount === 0" (click)="onProcessPayroll()">
             <mat-icon>{{ isProcessingPayroll ? 'sync' : 'send' }}</mat-icon>
             {{ isProcessingPayroll ? 'Procesando...' : 'Procesar' }}
         </button>
 
-        <button type="button" class="btn btn-danger" (click)="loadLotes()">
+        <button type="button" class="btn btn-edit" (click)="loadLotes()">
             <mat-icon>list_alt</mat-icon>
             Ver lotes
         </button>
