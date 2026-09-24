@@ -210,14 +210,12 @@ mat-sidenav-content {
   color: #2e7d32;
   border-color: #2e7d32;
 }
-
 .btn-success:hover {
   background: #2e7d32;
   color: #ffffff;
   border-color: #2e7d32;
   transform: translateY(-1px);
 }
-
 .btn-success.actions-right {
   background: #2e7d32;
   color: #ffffff;
@@ -229,7 +227,6 @@ mat-sidenav-content {
   color: #2563eb;
   border-color: #2563eb;
 }
-
 .btn-primary:hover {
   background: #2563eb;
   color: #ffffff;
@@ -263,7 +260,6 @@ mat-sidenav-content {
   color: #2563eb;
   border-color: #2563eb;
 }
-
 .btnn-primary:hover {
   background: #2563eb;
   color: #ffffff;
@@ -276,7 +272,6 @@ mat-sidenav-content {
   color: #dc2626;
   border-color: #dc2626;
 }
-
 .btn-danger:hover {
   background: #dc2626;
   color: #ffffff;
@@ -288,7 +283,6 @@ mat-sidenav-content {
   color: #6d28d9;
   border-color: #6d28d9;
 }
-
 .btn-edit:hover {
   background: #6d28d9;
   color: #ffffff;
@@ -300,7 +294,6 @@ mat-sidenav-content {
   color: #d97706;
   border-color: #d97706;
 }
-
 .btn-download:hover {
   background: #d97706;
   color: #ffffff;
@@ -335,7 +328,6 @@ mat-sidenav-content {
   color: #2563eb;
   border-color: #2563eb;
 }
-
 .btnn-primaryy:hover {
   background: #2563eb;
   color: #ffffff;
@@ -348,7 +340,6 @@ mat-sidenav-content {
   color: #dc2626;
   border-color: #dc2626;
 }
-
 .btnn-dangerr:hover {
   background: #dc2626;
   color: #ffffff;
@@ -361,7 +352,6 @@ mat-sidenav-content {
   color: #2e7d32;
   border-color: #2e7d32;
 }
-
 .btnn-successs:hover {
   background: #2e7d32;
   color: #ffffff;
