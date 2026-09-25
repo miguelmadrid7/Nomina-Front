@@ -15,6 +15,7 @@ import { TerceroProcesarResponse } from '../model/response/terceros/tercero-proc
 import { TercerosLote } from '../model/terceros/terceros-lote.model';
 import { TerceroLoteResponse } from '../model/response/terceros/tercero-lote-reponse.model';
 import { TerceroHistorico } from '../model/terceros/tercero-historico.model';
+import { TerceroConcepto } from '../model/terceros/tercero-conceptos.model';
 
 @Injectable({ providedIn: 'root' })
 export class TerceroService {
@@ -154,6 +155,11 @@ export class TerceroService {
     }
 
   // ENDPOINT DE TERCEROS CONTROLLER
+  getConcepts(): Observable<ApiResponse<TerceroConcepto[]>> {
+    return this.http.get<ApiResponse<TerceroConcepto[]>>(`${this.base}/terceros/conceptos`);
+
+  }
+
   uploadTxt(file: File, qnaProceso: number, concepto: string, importeDefault?: number | null): Observable<ApiResponse<CargaTerceroResponse>> {
     const formData = new FormData();
     formData.append('file', file);

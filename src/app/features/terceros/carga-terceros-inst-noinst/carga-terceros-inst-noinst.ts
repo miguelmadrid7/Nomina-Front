@@ -48,11 +48,8 @@ export class CargaTercerosInstNoinst implements OnInit {
 
   @ViewChild('fileInput') fileInput?: ElementRef<HTMLInputElement>;
 
-  private readonly conceptosCodigos = [
-    '03','08','12','55','56','64','vt','sf','5l','6l','21',
-    'vp','53','61','cs','ce','fj','gf','51','57','ia','ic',
-    'im','iv','np','sg','bs','br','ef','ko','lb','oh','su','tc','tm','tn',
-  ];
+  cargaConceptos = false;
+
   conceptos: TerceroConcepto[] = [];
   selectedFile: File | null = null;
   isUploading = false;
@@ -159,20 +156,30 @@ export class CargaTercerosInstNoinst implements OnInit {
   }
 
   cargarConceptos(): void {
-    this.terceroService.obtenerConceptos().subscribe({
-      next: (data: TerceroConcepto[]) => {
-        const permitidos = (data ?? []).filter((c) =>
-          this.conceptosCodigos.includes((c.cve ?? '').toLowerCase())
-        );
-        this.conceptos = this.dedupeByCve(permitidos).sort((a, b) =>
-          (a.cve ?? '').localeCompare(b.cve ?? '', 'es', { numeric: true, sensitivity: 'base' })
-        );
-        this.cd.detectChanges();
-      },
-      error: () => {
-        this.toastService.error('Operación invalida', 'Error al cargar los conceptos.', 6000);
-      }
-    });
+    this.cargaConceptos = true;
+    this.terceroService.getConcepts()
+      .pipe(
+        finalize(() => {
+          this.cargaConceptos = false;
+          this.cd.detectChanges();
+        })
+      )
+      .subscribe({
+        next: (response) => {
+          if (!response.success) {
+            this.conceptos = [];
+            this.toastService.error('Operación invalida', response.message ?? 'No se pudieron cargar los conceptos.', 6000);
+            return;
+          }
+          this.conceptos = [...(response.data ?? [])].sort((a, b) =>
+            (a.cve ?? '').localeCompare(b.cve ?? '', 'es', { numeric: true, sensitivity: 'base' })
+          );
+        },
+        error: (error: HttpErrorResponse) => {
+          this.conceptos = [];
+          this.toastService.error('Operación invalida', error?.error?.message ?? 'Error al cargar los conceptos.', 6000);
+        }
+      });
   }
 
   // ---------- file selection ----------

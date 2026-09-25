@@ -21,9 +21,13 @@
                 <mat-form-field appearance="outline" class="with-separator compact-field qna-compact concepto-field" floatLabel="always" subscriptSizing="dynamic">
                     <mat-label>Concepto a cargar</mat-label>
                     <mat-icon matPrefix>account_balance</mat-icon>
-                        <mat-select formControlName="concepto">
+                        <mat-select formControlName="concepto" [placeholder]="cargaConceptos ? 'Cargando conceptos...' : 'Selecciona un concepto'">
                             @for (c of conceptos; track c.cve) {
                                 <mat-option [value]="c.cve">{{ c.cve }} - {{ c.descripcion }}</mat-option>
+                            } @empty {
+                                <mat-option disabled>
+                                    {{ cargaConceptos ? 'Cargando conceptos...' : 'No hay conceptos disponibles' }}
+                                </mat-option>
                             }
                         </mat-select>
                 </mat-form-field>
