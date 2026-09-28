@@ -208,6 +208,13 @@ export const routes: Routes = [
                 .then(m => m.CargaTercerosInstNoinst),
             data: { breadcrumb: 'Carga terceros institucionales y no institucionales' }
           },
+          {    
+            path: 'historico-carga-terceros',
+            loadComponent: () =>
+              import('./features/terceros/historico-terceros/historico-terceros')
+                .then(m => m.HistoricoTerceros),
+            data: { breadcrumb: 'Historico carga de terceros' }
+          },
         ]
       },
     ]
