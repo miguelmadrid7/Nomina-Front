@@ -15,36 +15,52 @@
 
     <div class="section-divider"></div>
 
-    <form class="config-inline" [formGroup]="form">
-        <div class="field-group">
-            <span class="field-group-label" id="tipo-label">Seleccionar concepto</span>
-            <mat-form-field appearance="outline" class="with-separator compact-field qna-compact concepto-field" floatLabel="always" subscriptSizing="dynamic">
-                 <mat-label>Concepto a cargar</mat-label>
-                 <mat-icon matPrefix>account_balance</mat-icon>
-                    <mat-select formControlName="concepto" [placeholder]="cargaConceptos ? 'Cargando conceptos...' : 'Selecciona un concepto'">
-                            @for (c of conceptos; track c.cve) {
-                                <mat-option [value]="c.cve">{{ c.cve }} - {{ c.descripcion }}</mat-option>
-                            } @empty {
-                                <mat-option disabled>
-                                    {{ cargaConceptos ? 'Cargando conceptos...' : 'No hay conceptos disponibles' }}
-                                </mat-option>
-                            }
-                        </mat-select>
-            </mat-form-field>
-        </div>
+    <form class="config-inline" [formGroup]="filters">
+        <mat-form-field appearance="outline" class="qna-compact concepto-field" floatLabel="always" subscriptSizing="dynamic">
+            <mat-label>Concepto</mat-label>
+            <mat-icon matPrefix>account_balance</mat-icon>
+            <mat-select formControlName="concepto" [placeholder]="cargaConceptos ? 'Cargando conceptos...' : 'Todos los conceptos'">
+                <mat-option [value]="null">Todos los conceptos</mat-option>
+                @for (c of conceptos; track c.cve) {
+                    <mat-option [value]="c.cve">{{ c.cve }} - {{ c.descripcion }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
 
-        <div class="field-group">
-            <span class="field-group-label" id="tipo-label">Descarga de reporte general</span>
-                <div class="actions-right">
-                    <div class="btn-group">
-                        <button type="button" class="btn btnn-primaryy" (click)="onDownloadReport()">
-                            <mat-icon>summarize </mat-icon>
-                                Reporte
-                        </button>
-                    </div>
-                </div>
-        </div>
+        <mat-form-field appearance="outline" class="qna-compact" floatLabel="always" subscriptSizing="dynamic">
+            <mat-label>Año</mat-label>
+            <mat-select formControlName="anio" placeholder="Todos">
+                <mat-option [value]="null">Todos</mat-option>
+                @for (a of anios; track a) {
+                    <mat-option [value]="a">{{ a }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="qna-compact" floatLabel="always" subscriptSizing="dynamic">
+            <mat-label>Quincena</mat-label>
+            <mat-select formControlName="quincena" placeholder="Todas">
+                <mat-option [value]="null">Todas</mat-option>
+                @for (q of quincenas; track q) {
+                    <mat-option [value]="q">{{ q }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
     </form>
+
+    <div class="actions-right">
+        <div class="btn-group">
+            <button type="button" class="btn btn-edit" (click)="cleanFilters()">
+                <mat-icon>filter_alt_off</mat-icon>
+                    Limpiar
+            </button>
+        </div>
+        
+        <button type="button" class="btn btn-primary" [disabled]="isDownloadingReporte" (click)="onDownloadReport()">
+            <mat-icon>{{ isDownloadingReporte ? 'sync' : 'summarize' }}</mat-icon>
+                {{ isDownloadingReporte ? 'Generando...' : 'Reporte' }}
+        </button>
+    </div>
 
     <div class="table-container">
         <div class="table-card card">
@@ -70,7 +86,8 @@
                             <th mat-header-cell *matHeaderCellDef class="col-center"> ACCIONES</th>
                             <td mat-cell *matCellDef="let r" class="col-center">
                                 <div class="actions-cell">
-                                    <button class="btnn btnn-primary" type="button">
+                                    <button class="btnn btnn-primary" type="button" aria-label="Descargar carga"
+                                            [disabled]="isDownloadingReporte" (click)="onDownloadRow(r)">
                                         <mat-icon>download</mat-icon>
                                     </button>
                                 </div>

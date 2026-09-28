@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, DestroyRef, ElementRef, inject, OnInit, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -11,7 +11,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import { catchError, debounceTime, distinctUntilChanged, finalize, forkJoin, from, map, Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, forkJoin } from 'rxjs';
 import { ToastService } from '../../../core/services/toast.service';
 import { TerceroService } from '../../../core/services/tercero.service';
 import { CalendarioService } from '../../../core/services/calendario.service';
@@ -22,8 +22,6 @@ import { TerceroRow } from '../../../core/model/terceros/tercero-row.model';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { ConsultaTercerosLotesDialog } from '../../../shared/dialogs/consulta-terceros-lotes-dialog/consulta-terceros-lotes-dialog';
-import { TercerosHistoricoDialog } from '../../../shared/dialogs/terceros-historico-dialog/terceros-historico-dialog';
-import { extractBlobErrorMessage, extractFilename, saveBlob } from '../../../shared/helpers/file-download.helper';
 
 const ALLOWED_EXTENSION = '.txt';
 
@@ -528,75 +526,6 @@ export class CargaTercerosInstNoinst implements OnInit {
         this.toastService.error('Error', error?.error?.message ?? 'No se pudieron obtener los lotes.');
       },
     });
-  }
-
-  getHistoric(): void {
-    const qnaProceso = this.qnaCompleta;
-    if (!qnaProceso) {
-      this.toastService.error('Quincena no disponible', 'No se pudo determinar la quincena activa.');
-      return;
-    }
-    // optional: without a concepto the backend returns every concepto of the quincena
-    const concepto = this.form.controls.concepto.value;
-
-    this.terceroService.getHistoric(qnaProceso, concepto).subscribe({
-      next: ({ rows }) => {
-        if (rows.length === 0) {
-          this.toastService.warning('Sin histórico', 'No hay movimientos procesados para esta quincena.');
-          return;
-        }
-        this.dialog.open(TercerosHistoricoDialog, {
-          width: '1000px',
-          maxWidth: '95vw',
-          data: {
-            historico: rows,
-            qnaProceso,
-            concepto,
-          },
-        });
-      },
-      error: (error: HttpErrorResponse) => {
-        this.toastService.error('Error', error?.error?.message ?? 'No se pudo obtener el histórico.');
-      },
-    });
-  }
-
-  // ---------- download report (GET /terceros/descargar-reporte) ----------
-  onDownloadReport(): void {
-    const qnaProceso = this.qnaCompleta;
-    if (!qnaProceso) {
-      this.toastService.error('Quincena no disponible', 'No se pudo determinar la quincena activa.');
-      return;
-    }
-    // optional: without a concepto the backend returns every concepto of the quincena
-    const concepto = this.form.controls.concepto.value;
-
-    this.isDownloadingReporte = true;
-    this.toastService.upsertPersistent(this.DOWNLOAD_TOAST_ID, 'info', 'Generando reporte', 'Preparando el archivo Excel...');
-
-    this.terceroService.donwloadReportTerceros(qnaProceso, concepto)
-      .pipe(
-        finalize(() => {
-          this.isDownloadingReporte = false;
-          this.cd.detectChanges();
-        })
-      )
-      .subscribe({
-        next: (response: HttpResponse<Blob>) => {
-          if (!response.body) {
-            this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'error', 'Error al descargar', 'El servidor no devolvió ningún archivo.');
-            return;
-          }
-          const filename = extractFilename(response) ?? `terceros_qna${qnaProceso}.xlsx`;
-          saveBlob(response.body, filename);
-          this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'success', 'Reporte descargado', `Se descargó "${filename}" correctamente.`);
-        },
-        error: (err: HttpErrorResponse) => {
-          extractBlobErrorMessage(err, 'No fue posible generar el reporte.').subscribe((message) => {
-            this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'error', 'No se pudo descargar', message);
-          });
-        }
-      });
   }
 
   onPageChange(event: PageEvent): void {

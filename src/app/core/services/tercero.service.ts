@@ -225,11 +225,12 @@ export class TerceroService {
       .pipe(map((res) => ({ rows: res?.data ?? [], total: res?.count ?? 0 })));
   }
 
-  donwloadReportTerceros(qnaProceso: number, concepto?: string | null,fechaCarga?: string | null): Observable<HttpResponse<Blob>> {
-    let params = new HttpParams().set('qnaProceso', qnaProceso);
+  donwloadReportTerceros(qnaProceso?: number | null, concepto?: string | null, fechaCarga?: string | null): Observable<HttpResponse<Blob>> {
+    let params = new HttpParams();
+    if (qnaProceso != null) params = params.set('qnaProceso', qnaProceso);
     if (concepto) params = params.set('concepto', concepto);
     if (fechaCarga) params = params.set('fechaCarga', fechaCarga);
-    return this.http.get(`${this.base}/terceros/descargar-reporte`, { params, responseType: 'blob', observe: 'response'});
+    return this.http.get(`${this.base}/terceros/descargar-reporte`, { params, responseType: 'blob', observe: 'response' });
   }
 
 }
