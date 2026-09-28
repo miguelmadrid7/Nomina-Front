@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams, HttpResponse } from "@angular/common/http";
 import { BeneficiarioJMRequest } from "../../core/model/request/beneficiariojm-request.model";
 import { ApiResponse } from "../../core/model/response/api-Response.model";
 import { Banco } from "../model/banco.model";
@@ -107,5 +107,13 @@ export class JuiciosMercantilesService {
   //Actualiza los datos bancarios (TAB) de un beneficiario
   actualizarTab(id: number, data: any) {
     return this.http.patch<ApiResponse<any>>(`${this.base}/beneficiarios/jm/tab/${id}`, data, { headers: { 'Content-Type': 'application/json' } });
+  }
+
+  downloadReport(qnaProceso?: number | null): Observable<HttpResponse<Blob>> {
+    let params = new HttpParams();
+    if(qnaProceso !=null) {
+      params = params.set('qnaProceso', qnaProceso);
+    }
+    return this.http.get(`${this.base}/beneficiarios/jm/reporte-pagos`, { params, responseType: 'blob', observe: 'response'});
   }
 }

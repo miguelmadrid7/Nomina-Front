@@ -19,6 +19,8 @@ import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
 import { ToastService } from '../../../core/services/toast.service';
 import { Calendario } from '../../../core/model/calendario.model';
 import { CalendarioService } from '../../../core/services/calendario.service';
+import { extractBlobErrorMessage, extractFilename, saveBlob } from '../../../shared/helpers/file-download.helper';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-consulta-juicios-mercantiles',
@@ -63,6 +65,9 @@ export class ConsultaJuiciosMercantiles {
   cargandoQna = false;
   calendarioActual: Calendario | null = null;
   errorQna = false;
+  isDownloadingReport = false;
+
+  private readonly DOWNLOAD_TOAST_ID = 5202;
 
   readonly estados = [
     { value: 'TODOS', label: 'Todos' },
@@ -103,7 +108,7 @@ export class ConsultaJuiciosMercantiles {
     this.dataSource.paginator = this.paginator;
   }
 
-    loadQnaActivated(): void {
+  loadQnaActivated(): void {
     this.cargandoQna = true;
     this.errorQna = false;
     this.calendarioService.getQnaActiva().subscribe({
@@ -274,4 +279,45 @@ export class ConsultaJuiciosMercantiles {
     });
     this.updateTable(this.todosLosRegistros);
   }
+
+  onDownloadReport(): void {
+    if (this.isDownloadingReport) {
+      return;
+    }
+    const qnaProceso = this.selectedQna();
+
+    this.isDownloadingReport = true;
+    this.toastService.upsertPersistent(this.DOWNLOAD_TOAST_ID, 'info', 'Generando reporte',qnaProceso ? `Preparando el reporte de la quincena ${qnaProceso}...` : 'Preparando el reporte de la última quincena procesada...');
+    this.juiciosMercantilesService.downloadReport(qnaProceso)
+      .pipe(finalize(() => {
+        this.isDownloadingReport = false;
+        this.cd.detectChanges();
+      }))
+      .subscribe({
+        next: (response: HttpResponse<Blob>) => {
+          if (response.status === 204 || !response.body) {
+            this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'warning', 'Sin información', 'Aún no hay pagos de juicio mercantil procesados.');
+            return;
+          }
+          const filename = extractFilename(response) ?? `juicio_mercantil${qnaProceso ? '_qna' + qnaProceso : ''}.xlsx`;
+          saveBlob(response.body, filename);
+          this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'success', 'Reporte descargado', `Se descargó "${filename}" correctamente.`);
+        },
+        error: (err: HttpErrorResponse) => {
+          extractBlobErrorMessage(err, 'No fue posible generar el reporte.').subscribe((message) => {
+            this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'error', 'No se pudo descargar', message);
+          });
+        },
+      });
+  }
+
+  private selectedQna(): number | null {
+    const anio = this.searchForm.get('busqueda.anio')?.value;
+    const quincena = this.searchForm.get('busqueda.quincena')?.value;
+    if (!anio || !quincena) {
+      return null;
+    }
+    return Number(`${anio}${String(quincena).padStart(2, '0')}`);
+  }
+
 }
