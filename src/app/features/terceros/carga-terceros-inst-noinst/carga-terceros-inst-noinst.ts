@@ -23,6 +23,7 @@ import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-di
 import { MatDialog } from '@angular/material/dialog';
 import { ConsultaTercerosLotesDialog } from '../../../shared/dialogs/consulta-terceros-lotes-dialog/consulta-terceros-lotes-dialog';
 import { TercerosHistoricoDialog } from '../../../shared/dialogs/terceros-historico-dialog/terceros-historico-dialog';
+import { extractBlobErrorMessage, extractFilename, saveBlob } from '../../../shared/helpers/file-download.helper';
 
 const ALLOWED_EXTENSION = '.txt';
 
@@ -561,7 +562,7 @@ export class CargaTercerosInstNoinst implements OnInit {
   }
 
   // ---------- download report (GET /terceros/descargar-reporte) ----------
-  onDowloadReport(): void {
+  onDownloadReport(): void {
     const qnaProceso = this.qnaCompleta;
     if (!qnaProceso) {
       this.toastService.error('Quincena no disponible', 'No se pudo determinar la quincena activa.');
@@ -582,24 +583,16 @@ export class CargaTercerosInstNoinst implements OnInit {
       )
       .subscribe({
         next: (response: HttpResponse<Blob>) => {
-          const blob = response.body;
-          if (!blob) {
+          if (!response.body) {
             this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'error', 'Error al descargar', 'El servidor no devolvió ningún archivo.');
             return;
           }
-
-          const filename = this.extractFilename(response) ?? `terceros_qna${qnaProceso}.xlsx`;
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = filename;
-          link.click();
-          URL.revokeObjectURL(url);
-
+          const filename = extractFilename(response) ?? `terceros_qna${qnaProceso}.xlsx`;
+          saveBlob(response.body, filename);
           this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'success', 'Reporte descargado', `Se descargó "${filename}" correctamente.`);
         },
         error: (err: HttpErrorResponse) => {
-          this.extractBlobErrorMessage(err).subscribe((message) => {
+          extractBlobErrorMessage(err, 'No fue posible generar el reporte.').subscribe((message) => {
             this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'error', 'No se pudo descargar', message);
           });
         }
@@ -656,43 +649,4 @@ export class CargaTercerosInstNoinst implements OnInit {
     }
     return 'No fue posible cargar el archivo.';
   }
-
-  private dedupeByCve(conceptos: TerceroConcepto[]): TerceroConcepto[] {
-    const map = new Map<string, TerceroConcepto>();
-    for (const c of conceptos ?? []) {
-      const key = (c?.cve ?? '').toString().toLowerCase().trim();
-      if (!key) continue;
-      if (!map.has(key)) map.set(key, c);
-    }
-    return Array.from(map.values());
-  }
-
-  private extractFilename(response: HttpResponse<Blob>): string | null {
-    const disposition = response.headers.get('Content-Disposition');
-    if (!disposition) return null;
-    const match = disposition.match(/filename\*?=(?:UTF-8''|")?([^";]+)"?/i);
-    return match ? decodeURIComponent(match[1]) : null;
-  }
-
-  private extractBlobErrorMessage(err: HttpErrorResponse): Observable<string> {
-    const fallback = 'No fue posible generar el reporte.';
-    const body: unknown = err.error;
-
-    if (!(body instanceof Blob)) {
-      return of((body as { message?: string })?.message ?? fallback);
-    }
-
-    return from(body.text()).pipe(
-      map((text) => {
-        try {
-          const parsed = JSON.parse(text);
-          return parsed?.message ?? fallback;
-        } catch {
-          return fallback;
-        }
-      }),
-      catchError(() => of(fallback))
-    );
-  }
-
 }
