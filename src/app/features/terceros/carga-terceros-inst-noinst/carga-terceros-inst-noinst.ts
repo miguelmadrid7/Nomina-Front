@@ -65,16 +65,14 @@ export class CargaTercerosInstNoinst implements OnInit {
   pageSize = 10;
   pageIndex = 0;
   isProcessingPayroll = false;
-  isDownloadingReporte = false;
+
 
   dataSource = new MatTableDataSource<TerceroRow>([]);
 
   readonly displayedColumns: string[] = ['rfc', 'curp', 'nombreTrabajador', 'tipoMovimiento', 'vigencia','importeMensual', 'conceptoDescuento', 'estatus', 'observaciones','fechaRegistro','acciones'];
 
-
   private readonly PROCESS_TOAST_ID = 5102;
   private readonly UPLOAD_TOAST_ID = 5103;
-  private readonly DOWNLOAD_TOAST_ID = 5104;
 
   private readonly toastService = inject(ToastService);
   private readonly terceroService = inject(TerceroService);

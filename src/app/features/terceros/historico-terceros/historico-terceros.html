@@ -17,7 +17,7 @@
 
     <form class="config-inline" [formGroup]="filters">
         <mat-form-field appearance="outline" class="qna-compact concepto-field" floatLabel="always" subscriptSizing="dynamic">
-            <mat-label>Concepto</mat-label>
+            <mat-label>Seleccionar concepto a descargar</mat-label>
             <mat-icon matPrefix>account_balance</mat-icon>
             <mat-select formControlName="concepto" [placeholder]="cargaConceptos ? 'Cargando conceptos...' : 'Todos los conceptos'">
                 <mat-option [value]="null">Todos los conceptos</mat-option>
