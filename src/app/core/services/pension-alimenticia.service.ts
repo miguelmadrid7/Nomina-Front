@@ -1,5 +1,5 @@
 import { Injectable} from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../core/model/response/api-Response.model';
 import { Banco } from '../model/banco.model';
@@ -80,5 +80,13 @@ export class PensionAlimenticiaService {
 
     deleteBeneficiario(id: number): Observable<ApiResponse<any>> {
         return this.http.delete<ApiResponse<any>>(`${this.base}/beneficiarios/${id}`);
+    }
+
+    downloadReport(qnaProceso?: number | null): Observable<HttpResponse<Blob>> {
+        let params = new HttpParams();
+        if(qnaProceso !=null) {
+            params = params.set('qnaProceso', qnaProceso);
+        }
+        return this.http.get(`${this.base}/beneficiarios/reporte-pagos`, { params, responseType: 'blob', observe: 'response'});
     }
 }

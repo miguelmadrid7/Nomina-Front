@@ -22,6 +22,8 @@ import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
 import { ToastService } from '../../../core/services/toast.service';
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { Calendario } from '../../../core/model/calendario.model';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { extractBlobErrorMessage, extractFilename, saveBlob } from '../../../shared/helpers/file-download.helper';
 
 @Component({
   selector: 'app-pension-alimenticia-consulta',
@@ -51,7 +53,8 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
   private toastService = inject(ToastService);
   private readonly calendarioService = inject(CalendarioService);
   private readonly cd = inject(ChangeDetectorRef);
-  
+
+  private readonly DOWNLOAD_TOAST_ID = 5201;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -66,6 +69,8 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
   cargandoQna = false;
   calendarioActual: Calendario | null = null;
   errorQna = false;
+  isDownloadingReport = false;
+
 
   readonly form = this.fb.group({
     busqueda: this.fb.group({         
@@ -274,4 +279,44 @@ export class PensionAlimenticiaConsulta implements OnInit, OnDestroy {
         
       };
   }
+
+  onDownloadReport(): void {
+    if (this.isDownloadingReport) {
+      return;
+    }
+    const qnaProceso = this.selectedQna();
+    this.isDownloadingReport = true;
+    this.toastService.upsertPersistent(this.DOWNLOAD_TOAST_ID, 'info', 'Generando reporte', qnaProceso ? `Preparando el reporte de la quincena ${qnaProceso}...` : 'Preparando el reporte de la última quincena procesada...');
+    this.pensionAlimenticiaService.downloadReport(qnaProceso)
+      .pipe(finalize(() => {
+        this.isDownloadingReport = false;
+        this.cd.detectChanges();
+      }))
+      .subscribe({
+        next: (response: HttpResponse<Blob>) => {
+          if (response.status === 204 || !response.body) {
+            this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'warning', 'Sin información','Aún no hay pagos de pensión alimenticia procesados.');
+            return;
+          }
+          const filename = extractFilename(response) ?? `pension_alimenticia${qnaProceso ? '_qna' + qnaProceso : ''}.xlsx`;
+          saveBlob(response.body, filename);
+          this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'success', 'Reporte descargado', `Se descargó "${filename}" correctamente.`);
+        },
+        error: (err: HttpErrorResponse) => {
+          extractBlobErrorMessage(err, 'No fue posible generar el reporte.').subscribe((message) => {
+            this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'error', 'No se pudo descargar', message);
+          });
+        },
+      });
+  }
+
+  private selectedQna(): number | null {
+    const anio = this.form.get('busqueda.anio')?.value;
+    const quincena = this.form.get('busqueda.quincena')?.value;
+    if (!anio || !quincena) {
+      return null;
+    }
+    return Number(`${anio}${String(quincena).padStart(2, '0')}`);
+  }
+
 }
