@@ -1,13 +1,21 @@
 import { Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { Observable } from "rxjs";
+import { HttpClient, HttpParams, HttpResponse } from "@angular/common/http";
+import { map, Observable } from "rxjs";
 import { ApiResponse } from "../model/response/api-Response.model";
 import { CargarExcelResponse } from "../model/response/cargar-excel-response.model";
 import { PersonalizarListResponse } from "../model/response/personalizar-list-response.model";
 import { PersonalizarRegistroResponse } from "../model/response/personalizar-registro-response.model";
 import { ContinuarResponse } from "../model/response/validacion-excel-response.model";
 import { LoteResumen } from "../model/carga-excel/lote-resumen.model";
+import { HistoricoCarga } from "../model/historico-carga.model";
+
+const REPORT_PATH = '/nom-emp-pza-cpto/descargar-reporte';
+const REPORT_PARAMS = {
+  qna: 'qnaProceso',
+  concepto: 'concepto',
+  fechaCarga: 'fechaCargaMs', // epoch millis; avoids the time-zone mismatch seen in terceros
+} as const;
 
 @Injectable({
     providedIn: 'root',
@@ -108,6 +116,34 @@ export class PercepcionesInformadasService {
             params = params.set('fechaCarga', fechaCarga);
         }
         return this.http.get(`${this.base}/nom-emp-pza-cpto/descargar-validaciones`, {params, responseType: 'blob',});
+    }
+
+    getHistoric(
+        qnaProceso: number, 
+        concepto?: string | null
+    ): Observable<{ rows: HistoricoCarga[]; total: number }> {
+        let params = new HttpParams().set('qnaProceso', qnaProceso);
+        const cpto = concepto?.trim();
+        if (cpto) {
+            params = params.set('concepto', cpto);
+        }
+        return this.http.get<ApiResponse<HistoricoCarga[]>>(`${this.base}/nom-emp-pza-cpto/historico`, { params })
+            .pipe(map((res) => ({ rows: res?.data ?? [], total: res?.count ?? 0 })));
+    }
+
+
+    /** XLSX of processed informed perceptions; all filters are optional. */
+    downloadReport(qnaProceso?: number | null, concepto?: string | null, fechaCargaMs?: number | null): Observable<HttpResponse<Blob>> {
+        let params = new HttpParams();
+        if (qnaProceso != null) params = params.set(REPORT_PARAMS.qna, qnaProceso);
+        if (concepto) params = params.set(REPORT_PARAMS.concepto, concepto);
+        if (fechaCargaMs != null) params = params.set(REPORT_PARAMS.fechaCarga, fechaCargaMs);
+
+        return this.http.get(`${this.base}${REPORT_PATH}`, {
+            params,
+            responseType: 'blob',
+            observe: 'response',
+        });
     }
 
 }
