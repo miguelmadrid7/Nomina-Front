@@ -99,7 +99,7 @@ export const routes: Routes = [
           {
             path: 'calculo-nomina-ordinaria',
             loadComponent: () =>
-              import('./features/nomina/calculo-nomina/calculo-nomina.component')
+              import('./features/nomina/calculo-nomina-ordinaria/calculo-nomina.component')
                 .then(m => m.CalculoNominaComponent),
             data: { breadcrumb: 'Cálculo nómina ordinaria' }
           },
