@@ -367,53 +367,6 @@ export class PercepcionesInformadas {
     });
   }
 
-  onDownloadResult(): void {
-    const concepto = this.searchForm.get('concepto')?.value;
-    const qnaProceso = this.calendarioActual?.qna;
-    const ejercicio = this.calendarioActual?.ejercicio;
-
-    if (!qnaProceso || !ejercicio) {
-      this.toastService.error('Quincena no disponible', 'No se pudo determinar la quincena activa.');
-      return;
-    }
-
-    // Combinar año y quincena en formato AAAAQQ (ej. 202522)
-    const qnaCompleto = parseInt(`${ejercicio}${qnaProceso.toString().padStart(2, '0')}`);
-
-    this.percepcionesInformadasService.downloadValidations(qnaCompleto, concepto ?? undefined, undefined).subscribe({
-      next: (blob) => {
-        const fecha = new Date().toISOString().slice(0, 10);
-        const fileName = `validaciones_qna${qnaProceso}_${fecha}.xlsx`;
-
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-        link.click();
-        window.URL.revokeObjectURL(url);
-
-        this.toastService.success('Descarga completada', 'El archivo de resultado se descargó correctamente');
-        this.resultAvalible = false;
-        this.processedRows = [];
-        this.clear();
-      },
-      error: (error) => {
-        if (error.error instanceof Blob) {
-          error.error.text().then((text: string) => {
-            try {
-              const parsed = JSON.parse(text);
-              this.toastService.error('Sin resultados', parsed.message ?? 'No hay validaciones procesadas para descargar.');
-            } catch {
-              this.toastService.error('Error al descargar', 'No se pudo generar el archivo de resultado.');
-            }
-          });
-        } else {
-          this.toastService.error('Error al descargar', 'No se pudo generar el archivo de resultado.');
-        }
-      },
-    });
-  }
-
   selectEmployee(emp: EmpleadoItem):void {
     if(!emp) {
       this.empleadoId = null;

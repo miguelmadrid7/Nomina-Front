@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -15,7 +15,7 @@ import { CalendarioService } from '../../../core/services/calendario.service';
 import { PercepcionesInformadasService } from '../../../core/services/percepciones-informadas.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { DateYearsHelper } from '../../../shared/helpers/date-years.helper';
-import { extractBlobErrorMessage, extractFilename, saveBlob } from '../../../shared/helpers/file-download.helper';
+import { extractBlobErrorMessage, saveBlob } from '../../../shared/helpers/file-download.helper';
 
 @Component({
   selector: 'app-historico-percepciones-informadas',
@@ -41,24 +41,26 @@ export class HistoricoPercepcionesInformadas implements OnInit {
   errorQna = false;
   anios: number[] = [];
   quincenas: number[] = [];
-  historico: HistoricoCarga[] = [];
+
+  // full list from the backend; the table shows only the current page
+  private historico: HistoricoCarga[] = [];
   pagedRows: HistoricoCarga[] = [];
   cargando = false;
   totalElements = 0;
   pageSize = 10;
   pageIndex = 0;
   isDownloadingReporte = false;
-  reportEnabled = false;
 
   readonly conceptos = ['ME', 'MG', 'VM', '37', 'TP', 'OA', 'OL', 'TE', '7S'];
   readonly displayedColumns: string[] = ['concepto', 'qnaProceso', 'fechaCarga', 'acciones'];
 
   private readonly calendarioService = inject(CalendarioService);
-  private readonly percepcionesService = inject(PercepcionesInformadasService);
+  private readonly percepcionesInformadasService = inject(PercepcionesInformadasService);
   private readonly toastService = inject(ToastService);
   private readonly cd = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
 
+  // all filters are optional
   readonly filters = new FormGroup({
     anio: new FormControl<number | null>(null),
     quincena: new FormControl<number | null>(null),
@@ -69,8 +71,12 @@ export class HistoricoPercepcionesInformadas implements OnInit {
     this.anios = DateYearsHelper.getYears(1, 1);
     this.quincenas = DateYearsHelper.getQna();
     this.loadQnaActivated();
-    this.filters.valueChanges.pipe(debounceTime(200), takeUntilDestroyed(this.destroyRef)) .subscribe(() => this.applyFilters());
+    this.filters.valueChanges
+      .pipe(debounceTime(200), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.applyFilters());
   }
+
+  // ---------- quincena ----------
 
   private get qnaActiva(): number | null {
     const c = this.calendarioActual;
@@ -78,6 +84,7 @@ export class HistoricoPercepcionesInformadas implements OnInit {
     return Number(`${c.ejercicio}${c.qna.toString().padStart(2, '0')}`);
   }
 
+  /** AAAAQQ from the year + quincena filters, or null if either is missing. */
   private get qnaFiltro(): number | null {
     const { anio, quincena } = this.filters.getRawValue();
     if (!anio || !quincena) return null;
@@ -104,6 +111,8 @@ export class HistoricoPercepcionesInformadas implements OnInit {
     });
   }
 
+  // ---------- filters and data ----------
+
   applyFilters(): void {
     // the endpoint requires a quincena: the selected one, or the active one
     const qna = this.qnaFiltro ?? this.qnaActiva;
@@ -117,7 +126,7 @@ export class HistoricoPercepcionesInformadas implements OnInit {
 
   loadHistorico(qnaProceso: number, concepto?: string | null): void {
     this.cargando = true;
-    this.percepcionesService.getHistoric(qnaProceso, concepto)
+    this.percepcionesInformadasService.getHistoric(qnaProceso, concepto)
       .pipe(finalize(() => {
         this.cargando = false;
         this.cd.markForCheck();
@@ -136,51 +145,60 @@ export class HistoricoPercepcionesInformadas implements OnInit {
       });
   }
 
-  /** Downloads one specific load (row). */
-onDownloadRow(row: HistoricoCarga): void {
-  this.downloadExcel(row.qnaProceso, row.concepto, new Date(row.fechaCarga).getTime());
-}
+  // ---------- downloads (GET /nom-emp-pza-cpto/descargar-validaciones) ----------
 
-/** General report with the current filters; without quincena the backend uses the latest processed one. */
-onDownloadReport(): void {
-  this.downloadExcel(this.qnaFiltro, this.filters.controls.concepto.value, null);
-}
+  /** General report with the current filters (quincena is required by the endpoint). */
+  onDownloadReport(): void {
+    const qna = this.qnaFiltro ?? this.qnaActiva;
+    if (!qna) {
+      this.toastService.error('Quincena no disponible', 'No se pudo determinar la quincena.');
+      return;
+    }
+    this.downloadExcel(qna, this.filters.controls.concepto.value, null);
+  }
 
-private downloadExcel(qnaProceso: number | null, concepto: string | null, fechaCargaMs: number | null): void {
-  if (!this.reportEnabled || this.isDownloadingReporte) return;
+  /** Report of one specific load (row). */
+  onDownloadRow(row: HistoricoCarga): void {
+    this.downloadExcel(row.qnaProceso, row.concepto, this.toServerDateTime(row.fechaCarga));
+  }
 
-  this.isDownloadingReporte = true;
-  this.toastService.upsertPersistent(this.DOWNLOAD_TOAST_ID, 'info', 'Generando reporte', 'Preparando el archivo Excel...');
+  downloadExcel(qnaProceso: number, concepto: string | null, fechaCarga: string | null): void {
+    if (this.isDownloadingReporte) return;
 
-  this.percepcionesService.downloadReport(qnaProceso, concepto, fechaCargaMs)
-    .pipe(finalize(() => {
-      this.isDownloadingReporte = false;
-      this.cd.markForCheck();
-    }))
-    .subscribe({
-      next: (response: HttpResponse<Blob>) => {
-        if (!response.body) {
-          this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'error', 'Error al descargar', 'El servidor no devolvió ningún archivo.');
-          return;
+    this.isDownloadingReporte = true;
+    this.toastService.upsertPersistent(this.DOWNLOAD_TOAST_ID, 'info', 'Generando reporte', 'Preparando el archivo Excel...');
+    this.percepcionesInformadasService
+      .downloadValidations(qnaProceso, concepto ?? undefined, fechaCarga ?? undefined)
+      .pipe(finalize(() => {
+        this.isDownloadingReporte = false;
+        this.cd.markForCheck();
+      }))
+      .subscribe({
+        next: (blob: Blob) => {
+          const filename = `percepciones_qna${qnaProceso}${concepto ? '_' + concepto : ''}.xlsx`;
+          saveBlob(blob, filename);
+          this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'success', 'Reporte descargado', `Se descargó "${filename}" correctamente.`);
+        },
+        error: (err: HttpErrorResponse) => {
+          extractBlobErrorMessage(err, 'No fue posible generar el reporte.').subscribe((message) => {
+            this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'error', 'No se pudo descargar', message);
+          });
         }
-        const filename = extractFilename(response) ?? 'percepciones_informadas.xlsx';
-        saveBlob(response.body, filename);
-        this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'success', 'Reporte descargado', `Se descargó "${filename}" correctamente.`);
-      },
-      error: (err: HttpErrorResponse) => {
-        extractBlobErrorMessage(err, 'No fue posible generar el reporte.').subscribe((message) => {
-          this.toastService.resolvePersistent(this.DOWNLOAD_TOAST_ID, 'error', 'No se pudo descargar', message);
-        });
-      }
-    });
-}
+      });
+  }
 
+  /**
+   * The history returns fechaCarga in UTC ("...+00:00"); the backend likely reads it as local time.
+   * Convert to "yyyy-MM-ddTHH:mm:ss.SSS" in local time (assumes browser and server share time zone).
+   */
   private toServerDateTime(value: string): string {
     const d = new Date(value);
     const pad = (n: number, size = 2) => String(n).padStart(size, '0');
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}` + `T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`;
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+      + `T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`;
   }
 
+  // ---------- paging ----------
 
   onPageChange(event: PageEvent): void {
     this.pageSize = event.pageSize;
