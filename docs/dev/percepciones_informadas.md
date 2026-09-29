@@ -1,1 +1,0 @@
-# Terceros — carga y proceso de movimientos informados

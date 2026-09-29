@@ -3,8 +3,8 @@
 ## 1. Objetivo y alcance
 El modulo recibe archivos TXT de ancho fijo proporcionados por terceros.
 En la vista:
-- Se observa la qna proceso o qna activa(es lo mismo)
-- Se selecciona un cpto, dicho cpto viene de un endpoint del lado del backend
+- Se observa la qna proceso o qna activa(es lo mismo), viene de un endpoint del lado del backend
+- Se observa un select que hace la seleccion de un cpto, dicho cpto viene de un endpoint del lado del backend
 - Se muestra el boton de cargar TXT, en este caso seria el layout proporcionado por terceros
 - Al hacer la carga se hace validaciones, tales como: 
 * El cpto seleccionado coincida con el layout cargado
@@ -29,11 +29,15 @@ En la vista:
 9. Eliminar el lote temporal dentro de la misma transaccion.
 
 ## 2. Mapa de codigo
-    src/app/feature/terceros/
+- Ruta del modulo:
+src/app/features/terceros/carga-terceros-inst-noinst
+
+- Clases involucradas:
+    src/app/features/terceros/carga-terceros-inst-noinst
         carga-terceros-inst-noinst/
-        carga-terceros-inst-noinst.ts
-        carga-terceros-inst-noinst.html
-        carga-terceros-inst-noinst.css
+            carga-terceros-inst-noinst.ts
+            carga-terceros-inst-noinst.html
+            carga-terceros-inst-noinst.css
     
     src/app/core/services/
         tercero.service.ts
@@ -56,17 +60,18 @@ En la vista:
 
 ## 3. API(Service)
 Metodo |          Ruta                 | Uso 
+GET    | `/calendario/activa`          | Muestra la qna activa, esto se controla en el backend por medio de un endpoint de true/false 
 GET    | `/terceros/conceptos`         | Lista los conceptos configurados para terceros con su layout y movimientos permitidos. 
 POST   | `/terceros/cargar-txt`        | Multipart: carga TXT y valida el lote. 
 POST   | `/terceros/validar`           | Revalida por `qnaProceso + concepto`. 
 GET    | `/terceros/personalizar`      | Lista staging con paginacion, estatus y busqueda. 
-PUT    | `/terceros/personalizar/{id}` | Edita una fila y revalida el lote. 
 DELETE | `/terceros/personalizar/{id}` | Elimina una fila temporal. 
+PUT    | `/terceros/personalizar/{id}` | Edita una fila y revalida el lote. 
+
 POST   | `/terceros/procesar`          | Aplica movimientos, crea snapshot y limpia staging atomicamente. 
 GET    | `/terceros/lotes`             | Resume lotes pendientes. 
 DELETE | `/terceros/borrar-lote`       | Elimina staging por quincena y concepto. 
-GET    | `/terceros/historico`         | Lista lotes procesados distintos por concepto, quincena y fecha de carga. 
-GET    | `/terceros/descargar-reporte` | Descarga XLSX del historico. `qnaProceso`, `concepto` y `fechaCarga` son opcionales (ver 3.2). 
+
 
 ### 3.1 Carga multipart
 POST /terceros/cargar-txt` consume `multipart/form-data`:
@@ -151,14 +156,18 @@ Tipo | Significado  | Staging                                                   
 
 ## 7. Prueba operativa minima
 1. Arrancar el perfil local y confirmar el puerto en el log.
-2. Abrir `/swagger-ui/index.html`.
-3. Obtener JWT con `POST /users/getToken` y usar `Authorize`.
-4. Cargar por `POST /terceros/cargar-txt` un TXT de concepto `21` con `qnaProceso=202522`.
-5. Consultar `GET /terceros/personalizar?qnaProceso=202522&concepto=21`.
-6. Comprobar que un RFC inexistente o sin plaza en estatus `1`/`6` para el concepto quede rechazado.
-7. Volver a cargar el mismo archivo para comprobar rechazo por duplicado.
-8. Limpiar staging con `DELETE /terceros/borrar-lote?qnaProceso=202522&concepto=21`.
+2. Abrir `/src/environments/environment.ts`, cambiar la ruta a localhost, o descomentar esa ruta y comentar la de prod.
+3. Hacer login
+4. Obtener JWT con `POST /users/getToken` y usar `Authorize`.
+5. Entrar el modulo y probar flujo, pero una ves validado que este en ejecuion el proyecto en env de loscalhost
+6. Cargar por `POST /terceros/cargar-txt` un TXT de concepto `21` con `qnaProceso=202522`.
+7. Consultar `GET /terceros/personalizar?qnaProceso=202522&concepto=21`.
+8. Comprobar que un RFC inexistente o sin plaza en estatus `1`/`6` para el concepto quede rechazado.
+9. Volver a cargar el mismo archivo para comprobar rechazo por duplicado.
+10. Limpiar staging con `DELETE /terceros/borrar-lote?qnaProceso=202522&concepto=21`.
 No ejecutar `/procesar` en una base productiva solo para probar. Ese endpoint modifica `nom_emp_pza_cpto`.
+* NOTA IMPROTENTE:
+- Si no se puede ingresar al swagger, puedes hacer primero pruebas en el postman, el lo mismo.
 
 ## 8. Criterios al modificar el modulo
 - Mantener separado de Percepciones Informadas.
