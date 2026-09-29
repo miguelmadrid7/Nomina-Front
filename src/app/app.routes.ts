@@ -130,6 +130,13 @@ export const routes: Routes = [
               import('./features/nomina/percepciones-informadas/percepciones-informadas')
                 .then(m => m.PercepcionesInformadas),
             data: { breadcrumb: 'Carga de percepciones' }
+          },
+          {
+            path: 'historico-percepciones-informadas',
+            loadComponent: () =>
+              import('./features/nomina/historico-percepciones-informadas/historico-percepciones-informadas')
+                .then(m => m.HistoricoPercepcionesInformadas),
+            data: { breadcrumb: 'Historico de percepciones informadas' }
           }
         ]
       },
