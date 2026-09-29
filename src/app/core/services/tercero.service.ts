@@ -160,7 +160,12 @@ export class TerceroService {
 
   }
 
-  uploadTxt(file: File, qnaProceso: number, concepto: string, importeDefault?: number | null): Observable<ApiResponse<CargaTerceroResponse>> {
+  uploadTxt(
+    file: File, 
+    qnaProceso: number, 
+    concepto: string, 
+    importeDefault?: number | null
+  ): Observable<ApiResponse<CargaTerceroResponse>> {
     const formData = new FormData();
     formData.append('file', file);
     let params = new HttpParams().set('qnaProceso', qnaProceso) .set('concepto', concepto);
@@ -194,7 +199,10 @@ export class TerceroService {
     return this.http.get<ApiResponse<TerceroResponse>>(`${this.base}/terceros/personalizar`, { params: httpParams });
   }
 
-  updateRecord(id: number, payload: TerceroRegistroRequest): Observable<ApiResponse<TerceroRow>> {
+  updateRecord(
+    id: number, 
+    payload: TerceroRegistroRequest
+  ): Observable<ApiResponse<TerceroRow>> {
     return this.http.put<ApiResponse<TerceroRow>>(`${this.base}/terceros/personalizar/${id}`, payload);
   }
 
@@ -210,12 +218,18 @@ export class TerceroService {
     return this.http.get<ApiResponse<TercerosLote[]>>(`${this.base}/terceros/lotes`);
   }
 
-  deleteLote(qnaProceso: number, concepto: string): Observable<ApiResponse<TerceroLoteResponse>> {
+  deleteLote(
+    qnaProceso: number, 
+    concepto: string
+  ): Observable<ApiResponse<TerceroLoteResponse>> {
     const params = new HttpParams().set('qnaProceso', qnaProceso).set('concepto', concepto);
     return this.http.delete<ApiResponse<TerceroLoteResponse>>(`${this.base}/terceros/borrar-lote`, { params });
   }
 
-  getHistoric(qnaProceso: number, concepto?: string | null): Observable<{ rows: TerceroHistorico[]; total: number}> {
+  getHistoric(
+    qnaProceso: number, 
+    concepto?: string | null
+  ): Observable<{ rows: TerceroHistorico[]; total: number}> {
     let params = new HttpParams().set('qnaProceso', qnaProceso);
     const cpto = concepto?.trim();
     if (cpto) {
@@ -225,12 +239,15 @@ export class TerceroService {
       .pipe(map((res) => ({ rows: res?.data ?? [], total: res?.count ?? 0 })));
   }
 
-  donwloadReportTerceros(qnaProceso?: number | null, concepto?: string | null, fechaCarga?: string | null): Observable<HttpResponse<Blob>> {
+  donwloadReportTerceros(
+    qnaProceso?: number | null, 
+    concepto?: string | null, 
+    fechaCarga?: string | null
+  ): Observable<HttpResponse<Blob>> {
     let params = new HttpParams();
     if (qnaProceso != null) params = params.set('qnaProceso', qnaProceso);
     if (concepto) params = params.set('concepto', concepto);
     if (fechaCarga) params = params.set('fechaCarga', fechaCarga);
     return this.http.get(`${this.base}/terceros/descargar-reporte`, { params, responseType: 'blob', observe: 'response' });
   }
-
 }
