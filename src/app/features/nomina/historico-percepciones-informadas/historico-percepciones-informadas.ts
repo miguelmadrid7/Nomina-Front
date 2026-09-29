@@ -41,9 +41,7 @@ export class HistoricoPercepcionesInformadas implements OnInit {
   errorQna = false;
   anios: number[] = [];
   quincenas: number[] = [];
-
-  // full list from the backend; the table shows only the current page
-  private historico: HistoricoCarga[] = [];
+  historico: HistoricoCarga[] = [];
   pagedRows: HistoricoCarga[] = [];
   cargando = false;
   totalElements = 0;
@@ -60,7 +58,6 @@ export class HistoricoPercepcionesInformadas implements OnInit {
   private readonly cd = inject(ChangeDetectorRef);
   private readonly destroyRef = inject(DestroyRef);
 
-  // all filters are optional
   readonly filters = new FormGroup({
     anio: new FormControl<number | null>(null),
     quincena: new FormControl<number | null>(null),
@@ -76,15 +73,12 @@ export class HistoricoPercepcionesInformadas implements OnInit {
       .subscribe(() => this.applyFilters());
   }
 
-  // ---------- quincena ----------
-
   private get qnaActiva(): number | null {
     const c = this.calendarioActual;
     if (!c?.qna || !c?.ejercicio) return null;
     return Number(`${c.ejercicio}${c.qna.toString().padStart(2, '0')}`);
   }
 
-  /** AAAAQQ from the year + quincena filters, or null if either is missing. */
   private get qnaFiltro(): number | null {
     const { anio, quincena } = this.filters.getRawValue();
     if (!anio || !quincena) return null;
@@ -111,10 +105,7 @@ export class HistoricoPercepcionesInformadas implements OnInit {
     });
   }
 
-  // ---------- filters and data ----------
-
   applyFilters(): void {
-    // the endpoint requires a quincena: the selected one, or the active one
     const qna = this.qnaFiltro ?? this.qnaActiva;
     if (!qna) return;
     this.loadHistorico(qna, this.filters.controls.concepto.value);
@@ -145,9 +136,6 @@ export class HistoricoPercepcionesInformadas implements OnInit {
       });
   }
 
-  // ---------- downloads (GET /nom-emp-pza-cpto/descargar-validaciones) ----------
-
-  /** General report with the current filters (quincena is required by the endpoint). */
   onDownloadReport(): void {
     const qna = this.qnaFiltro ?? this.qnaActiva;
     if (!qna) {
@@ -157,7 +145,6 @@ export class HistoricoPercepcionesInformadas implements OnInit {
     this.downloadExcel(qna, this.filters.controls.concepto.value, null);
   }
 
-  /** Report of one specific load (row). */
   onDownloadRow(row: HistoricoCarga): void {
     this.downloadExcel(row.qnaProceso, row.concepto, this.toServerDateTime(row.fechaCarga));
   }
@@ -187,18 +174,12 @@ export class HistoricoPercepcionesInformadas implements OnInit {
       });
   }
 
-  /**
-   * The history returns fechaCarga in UTC ("...+00:00"); the backend likely reads it as local time.
-   * Convert to "yyyy-MM-ddTHH:mm:ss.SSS" in local time (assumes browser and server share time zone).
-   */
   private toServerDateTime(value: string): string {
     const d = new Date(value);
     const pad = (n: number, size = 2) => String(n).padStart(size, '0');
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
       + `T${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`;
   }
-
-  // ---------- paging ----------
 
   onPageChange(event: PageEvent): void {
     this.pageSize = event.pageSize;
