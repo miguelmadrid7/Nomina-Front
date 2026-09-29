@@ -78,12 +78,12 @@ No aplica como tal, unicamente en la columna del xls, debe de mostrar siempre ES
 1. Arrancar el perfil local y confirmar el puerto en el log.
 2. Abrir `/src/environments/environment.ts`, cambiar la ruta a localhost, o descomentar esa ruta y comentar la de prod.
 3. Hacer login
-3. Obtener JWT con `POST /users/getToken` y usar `Authorize`.
-4. Entrar el modulo y probar flujo, pero una ves validado que este en ejecuion el proyecto en env de loscalhost
+4. Obtener JWT con `POST /users/getToken` y usar `Authorize`.
+5. Entrar el modulo y probar flujo, pero una ves validado que este en ejecuion el proyecto en env de localhost
 * NOTA IMPROTENTE:
 - Si no se puede ingresar al swagger, puedes hacer primero pruebas en el postman, el lo mismo.
 
 ## 8. Criterios al modificar el modulo
-- Conservar `ApiResponse` en todos los sercices.
+- Conservar `ApiResponse` en todos los services.
 - No exponer registros de muestra, RFC, CURP, tokens ni credenciales en documentacion o logs compartidos.
 - En caso de que se integren nuevas varibales, revisar primero los modelos para ver si coincidan con lo que es el nuevo requerimiento

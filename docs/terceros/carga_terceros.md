@@ -1,5 +1,8 @@
 # Terceros — carga y proceso de movimientos informados
 
+- Nombre del modulo(Vista):
+- Carga de terceros
+
 ## 1. Objetivo y alcance
 El modulo recibe archivos TXT de ancho fijo proporcionados por terceros.
 En la vista:
@@ -67,7 +70,6 @@ POST   | `/terceros/validar`           | Revalida por `qnaProceso + concepto`.
 GET    | `/terceros/personalizar`      | Lista staging con paginacion, estatus y busqueda. 
 DELETE | `/terceros/personalizar/{id}` | Elimina una fila temporal. 
 PUT    | `/terceros/personalizar/{id}` | Edita una fila y revalida el lote. 
-
 POST   | `/terceros/procesar`          | Aplica movimientos, crea snapshot y limpia staging atomicamente. 
 GET    | `/terceros/lotes`             | Resume lotes pendientes. 
 DELETE | `/terceros/borrar-lote`       | Elimina staging por quincena y concepto. 
@@ -165,11 +167,12 @@ Tipo | Significado  | Staging                                                   
 8. Comprobar que un RFC inexistente o sin plaza en estatus `1`/`6` para el concepto quede rechazado.
 9. Volver a cargar el mismo archivo para comprobar rechazo por duplicado.
 10. Limpiar staging con `DELETE /terceros/borrar-lote?qnaProceso=202522&concepto=21`.
-No ejecutar `/procesar` en una base productiva solo para probar. Ese endpoint modifica `nom_emp_pza_cpto`.
+11. No ejecutar `/procesar` en una base productiva solo para probar. Ese endpoint modifica `nom_emp_pza_cpto`.
 * NOTA IMPROTENTE:
-- Si no se puede ingresar al swagger, puedes hacer primero pruebas en el postman, el lo mismo.
+- Si no se puede ingresar al swagger, puedes hacer primero pruebas en el postman.
 
 ## 8. Criterios al modificar el modulo
-- Mantener separado de Percepciones Informadas.
-- Conservar `ApiResponse` en todos los sercices.
+- Conservar `ApiResponse` en todos los services.
 - No exponer registros de muestra, RFC, CURP, tokens ni credenciales en documentacion o logs compartidos.
+- En caso de que se integren nuevas varibales, revisar primero los modelos para ver si coincidan con lo que es el nuevo requerimiento
+- Cada cambio debe de estar documentado, y justificado en el commit, ser muy detallado del por que el cambio y si no afecta en el demas flujo
