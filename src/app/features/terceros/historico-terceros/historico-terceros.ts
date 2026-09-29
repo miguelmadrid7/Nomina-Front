@@ -2,12 +2,12 @@ import { ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angul
 import { MatIconModule } from '@angular/material/icon';
 import { Calendario } from '../../../core/model/calendario.model';
 import { CalendarioService } from '../../../core/services/calendario.service';
-import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { TerceroHistorico } from '../../../core/model/terceros/tercero-historico.model';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { TerceroService } from '../../../core/services/tercero.service';
-import { debounce, debounceTime, finalize } from 'rxjs';
+import { debounceTime, finalize } from 'rxjs';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { ToastService } from '../../../core/services/toast.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
