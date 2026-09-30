@@ -9,7 +9,7 @@ import { CalendarioService } from '../../../core/services/calendario.service';
 import { IconService } from '../../../core/services/icon.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { IconoDialog } from '../../../shared/dialogs/alta-icono-dialog/alta-icono-dialog';
-import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-gestion-icono',
@@ -33,9 +33,13 @@ export class GestionIcono implements OnInit, OnDestroy {
   cargandoQna = false;
   calendarioActual: Calendario | null = null;
   errorQna = false;
-
   icons: Icon[] = [];
   cargandoIconos = false;
+  pagedIcons: Icon[] = [];
+  totalElements = 0;
+  pageSize = 10;
+  pageIndex = 0;
+
   readonly displayedColumns: string[] = ['figura', 'icon', 'name', 'description'];
 
   ngOnInit(): void {
@@ -74,7 +78,11 @@ export class GestionIcono implements OnInit, OnDestroy {
         this.cd.markForCheck();
       }))
       .subscribe({
-        next: (icons) => (this.icons = icons),
+       next: (icons) => {
+        this.icons = icons;
+        this.pageIndex = 0;
+        this.refreshPage();
+      },
         error: () => this.toastService.error('Error', 'No se pudieron cargar los íconos.'),
       });
   }
@@ -92,5 +100,17 @@ export class GestionIcono implements OnInit, OnDestroy {
         this.loadIcons(); 
       }
     });
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.pageSize = event.pageSize;
+    this.pageIndex = event.pageIndex;
+    this.refreshPage();
+  }
+
+  private refreshPage(): void {
+    this.totalElements = this.icons.length;
+    const start = this.pageIndex * this.pageSize;
+    this.pagedIcons = this.icons.slice(start, start + this.pageSize);
   }
 }
