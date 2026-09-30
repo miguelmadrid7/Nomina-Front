@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Module } from '../../../core/model/gestion-core/module.model';
@@ -18,6 +18,8 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { UppercaseDirective } from '../../directives/upperCase.directivas';
 import { ToastService } from '../../../core/services/toast.service';
+import { Icon } from '../../../core/model/gestion-core/icon.model';
+import { IconService } from '../../../core/services/icon.service';
 
 @Component({
   selector: 'app-module-dialog',
@@ -41,6 +43,9 @@ export class ALtaModuleDialog implements OnInit{
 
   form!: FormGroup;
   roles$!: Observable<Role[]>;
+  opcionesPadre: Module[] = [];
+  icons = signal<Icon[]>([]);
+
 
   private readonly dialogRef = inject(MatDialogRef<ALtaModuleDialog>);
   readonly data = inject<DialogData>(MAT_DIALOG_DATA);
@@ -48,13 +53,14 @@ export class ALtaModuleDialog implements OnInit{
   private readonly moduleService = inject(ModuleService);
   private readonly userService = inject(UserService);
   private readonly toastService = inject(ToastService);
+  private readonly iconService = inject(IconService);
 
   ngOnInit(): void {
     const module = this.module;
       this.form = this.fb.group({
         id: [{ value: module.id ?? '', disabled: true }],
         name: [module.name ?? '', Validators.required],
-        path: [module.path ?? '', this.mode === 'create' ? Validators.required : []],
+        path: [module.path ?? ''],
         description: [module.description ?? '', Validators.required],
         visible: [module.visible ?? module.vista ?? true, Validators.required],
         iconId: [module.iconId ?? 1, Validators.required],
@@ -62,6 +68,23 @@ export class ALtaModuleDialog implements OnInit{
         rolesId: [module.rolesId ?? module.roles?.map(role => role.id) ?? [], Validators.required],
       });
       this.loadRoles();
+      this.loadIcons();
+      this.opcionesPadre = this.calcularOpcionesPadre(); 
+  }
+
+  private calcularOpcionesPadre(): Module[] {
+    const todos = this.data.modules ?? [];
+    const excluidos = new Set<number>();
+    const marcar = (id: number) => {
+      excluidos.add(id);
+      todos
+        .filter(m => m.parentId === id && m.id != null && !excluidos.has(m.id))
+        .forEach(m => marcar(m.id!));
+    };
+    if (this.module.id != null) marcar(this.module.id);
+    return todos
+      .filter(m => m.id != null && !excluidos.has(m.id))
+      .sort((a, b) => a.name.localeCompare(b.name));
   }
 
   get mode(): 'create' | 'edit' {
@@ -127,5 +150,17 @@ export class ALtaModuleDialog implements OnInit{
 
   close(): void {
     this.dialogRef.close();
+  }
+
+  private loadIcons(): void {
+    this.iconService.getIcons().subscribe({
+      next: (icons) => this.icons.set(icons),
+      error: () => this.toastService.error('Error', 'No se pudieron cargar los íconos.'),
+    });
+  }
+
+  get selectedIcon(): Icon | undefined {
+    const id = Number(this.form?.get('iconId')?.value);
+    return this.icons().find((i) => i.id === id);
   }
 }

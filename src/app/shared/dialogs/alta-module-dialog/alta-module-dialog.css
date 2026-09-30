@@ -59,6 +59,19 @@
     padding-bottom: 0 !important;
 }
 
+.icon-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-option i {
+  width: 20px;
+  text-align: center;
+  font-size: 16px;
+  color: #5b1f30;
+}
+
 @media (max-width: 768px) {
   .form-grid {
     grid-template-columns: 1fr; 

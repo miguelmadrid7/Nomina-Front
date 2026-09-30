@@ -17,3 +17,11 @@ export interface SidebarGroup {
   expanded:   boolean;
   children: SidebarModule[];
 }
+
+export interface SidebarNode {
+  id: number;
+  name: string;
+  icon: string;
+  route: string | null;   // null = agrupador
+  children: SidebarNode[];
+}
