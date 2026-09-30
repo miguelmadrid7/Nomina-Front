@@ -106,7 +106,7 @@ export const routes: Routes = [
           {
             path: 'ordinaria',
             loadComponent: () =>
-              import('./features/nomina/nomina-ordinaria/nomina-ordinaria')
+              import('./features/nomina/visualizar-nomina-ordinaria/nomina-ordinaria')
                 .then(m => m.NominaOrdinaria),
             data: { breadcrumb: 'Visualizar nómina ordinaria' }
           },

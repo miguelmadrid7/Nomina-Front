@@ -1,6 +1,6 @@
 <div class="page-container">
   <div class="page-header page-header--split">
-    <h2 class="page-title">Nómina ordinaria</h2>
+    <h2 class="page-title">Consulta nómina ordinaria</h2>
 
     <div class="header-tools">
             <div class="qna-chip" role="status">
@@ -15,19 +15,6 @@
 
   <div class="section-divider"></div>
 
-  <div class="actions-right">
-    <div class="btn-group">
-      <button class="btn btn-primary" (click)="applySearchFilter()"> 
-        <mat-icon>search</mat-icon>
-           <span>Buscar</span> 
-      </button>
-    </div>
-    <button class="btn btn-danger" (click)="clearFilters()"> 
-      <mat-icon>delete_outline</mat-icon>
-        <span>Limpiar</span>
-    </button>
-  </div>
-
   <div class="global-search">
     <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always" >
       <mat-icon matPrefix>search</mat-icon>
@@ -39,7 +26,6 @@
     </mat-form-field>
 
     <div class="qna-filters">
-
       <mat-form-field appearance="outline" class="qna-compact" floatLabel="always" >
         <mat-label>Año</mat-label>
         <mat-select [(ngModel)]="anioSeleccionado" (ngModelChange)="onQnaChange()" placeholder="Seleccionar año">
@@ -57,7 +43,6 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-
     </div>
   </div>
 

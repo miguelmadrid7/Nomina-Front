@@ -68,17 +68,16 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
   private lastQnaKey: string | null = null;
   private qnaDebounceId: any;
 
+  private readonly calendarioService = inject(CalendarioService);
+  private readonly toastService = inject(ToastService);
   private readonly nominaService = inject(NominaService);
   private readonly loaderService = inject(LoaderService);
   private readonly dialog = inject(MatDialog);
-  private readonly toastService = inject(ToastService);
-  private readonly calendarioService = inject(CalendarioService);
   private readonly cd = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.anios = DateYearsHelper.getYears(1,1);
     this.quincenas = DateYearsHelper.getQna();
-    
     this.dataSource.filterPredicate = (data: any, filter: string) => {
     const search = filter.trim().toUpperCase();
       return (
@@ -143,7 +142,6 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
     if (!this.showRecords || !this.filtersReady) return;
       clearTimeout(this.qnaDebounceId);
       this.qnaDebounceId = setTimeout(() => {
-        
         if (this.anioSeleccionado && !this.quincenaSeleccionada) {
           this.loaderService.show();
           this.dataSource.data = [];
@@ -221,7 +219,6 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
       maxHeight: '90vh',
       autoFocus: false,
       position: { top: '80px' },
-      //panelClass: 'brand-dialog',
       data: {
         empleadoId: row.empleadoId,
         nombreEmpleado: row.nombreEmpleado,
