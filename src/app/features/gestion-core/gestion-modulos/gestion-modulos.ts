@@ -12,6 +12,7 @@ import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-di
 import { ToastService } from '../../../core/services/toast.service';
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { Calendario } from '../../../core/model/calendario.model';
+import { ModuleRow } from '../../../core/model/gestion-core/module-row.model';
 
 @Component({
   selector: 'app-gestion-modulos',
@@ -39,7 +40,7 @@ export class GestionModulos implements OnInit, OnDestroy {
   @ViewChild(MatPaginator) paginator?: MatPaginator;
   displayedColumns: string[] = ['name','description','vista','parent','icon','actions'];
   
-  modules = new MatTableDataSource<Module>([]);
+  modules = new MatTableDataSource<ModuleRow>([]);
   loading = false;
   loadingModuleId: number | null = null;
   totalModules = 0;
@@ -51,6 +52,7 @@ export class GestionModulos implements OnInit, OnDestroy {
   calendarioActual: Calendario | null = null;
   errorQna = false;
 
+  private groupedModules: ModuleRow[] = [];
   private allModules: Module[] = [];
 
 
@@ -61,6 +63,59 @@ export class GestionModulos implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.dialog.closeAll();
+  }
+
+  private applyTableState(): void {
+    const start = this.pageIndex * this.pageSize;
+    this.modules.data = this.groupedModules.slice(start, start + this.pageSize);
+  }
+
+  private buildTree(modules: Module[]): ModuleRow[] {
+    const ids = new Set(modules.map(m => m.id).filter((id): id is number => id != null));
+    const idsByName = new Map<string, number[]>();
+    for (const m of modules) {
+      if (m.id == null) continue;
+      const key = this.normalizeText(m.name);
+      idsByName.set(key, [...(idsByName.get(key) ?? []), m.id]);
+    }
+
+    const resolveParentId = (m: Module): number | null => {
+      if (m.parentId != null && ids.has(m.parentId)) return m.parentId;
+      if (m.parent) {
+        const matches = idsByName.get(this.normalizeText(m.parent)) ?? [];
+        if (matches.length === 1) return matches[0]; // ambiguous names are not guessed
+      }
+      return null;
+    };
+
+    const childrenOf = new Map<number | null, Module[]>();
+    for (const m of modules) {
+      const parentId = resolveParentId(m);
+      childrenOf.set(parentId, [...(childrenOf.get(parentId) ?? []), m]);
+    }
+    const result: ModuleRow[] = [];
+    const visited = new Set<number>();
+    const walk = (parentId: number | null, level: number): void => {
+      const children = [...(childrenOf.get(parentId) ?? [])].sort((a, b) => a.name.localeCompare(b.name));
+      for (const child of children) {
+        if (child.id == null || visited.has(child.id)) continue;
+        visited.add(child.id);
+        result.push({ ...child, level, isParent: (childrenOf.get(child.id)?.length ?? 0) > 0 });
+        walk(child.id, level + 1);
+      }
+    };
+    walk(null, 0);
+    for (const m of modules) {
+      if (m.id != null && !visited.has(m.id)) {
+        result.push({ ...m, level: 0, isParent: false });
+      }
+    }
+
+    return result;
+  }
+
+  private normalizeText(value: string | null | undefined): string {
+    return (value ?? '').trim().toLowerCase();
   }
 
   onPageChange(event: { pageIndex: number; pageSize: number }): void {
@@ -89,60 +144,10 @@ export class GestionModulos implements OnInit, OnDestroy {
     });
   }
 
-  private applyTableState(): void {
-    const grouped = this.groupModulesByParent([...this.allModules]);
-    const start = this.pageIndex * this.pageSize;
-    const end = start + this.pageSize;
-    this.modules.data = grouped.slice(start, end);
-  }
-
-  private groupModulesByParent(modules: Module[]): Module[] {
-    const result: Module[] = [];
-    const childrenByParentId = new Map<number, Module[]>();
-    const childrenByParentName = new Map<string, Module[]>();
-    const moduleIds = new Set(modules.map(module => module.id).filter((id): id is number => id !== undefined));
-    const moduleNames = new Set(modules.map(module => this.normalizeText(module.name)));
-
-    modules.forEach(module => {
-      if (module.parentId && moduleIds.has(module.parentId)) {
-        const children = childrenByParentId.get(module.parentId) ?? [];
-        children.push(module);
-        childrenByParentId.set(module.parentId, children);
-        return;
-      }
-
-      if (module.parent && moduleNames.has(this.normalizeText(module.parent))) {
-        const parentName = this.normalizeText(module.parent);
-        const children = childrenByParentName.get(parentName) ?? [];
-        children.push(module);
-        childrenByParentName.set(parentName, children);
-      }
-    });
-
-    const parentModules = modules.filter(module => {
-      const hasParentById = !!module.parentId && moduleIds.has(module.parentId);
-      const hasParentByName = !!module.parent && moduleNames.has(this.normalizeText(module.parent));
-      return !hasParentById && !hasParentByName;
-    });
-
-    parentModules.forEach(parent => {
-      result.push(parent);
-      result.push(...(childrenByParentId.get(parent.id ?? 0) ?? []));
-      result.push(...(childrenByParentName.get(this.normalizeText(parent.name)) ?? []));
-    });
-
-    return result;
-  }
-
-  private normalizeText(value: string | null | undefined): string {
-    return (value ?? '').trim().toLowerCase();
-  }
-
   isParentModule(module: Module): boolean {
     if (!module) {
       return false;
     }
-
     return this.allModules.some(item => {
       const hasParentById = !!module.id && item.parentId === module.id;
       const hasParentByName = !!item.parent && this.normalizeText(item.parent) === this.normalizeText(module.name);
@@ -155,7 +160,8 @@ export class GestionModulos implements OnInit, OnDestroy {
     this.moduleService.getAllModules().subscribe({
       next: (modules) => {
         this.allModules = [...modules];
-        this.totalModules = this.allModules.length;
+        this.groupedModules = this.buildTree(this.allModules);
+        this.totalModules = this.groupedModules.length;
         this.pageIndex = 0;
         this.applyTableState();
         this.loading = false;
@@ -177,23 +183,22 @@ export class GestionModulos implements OnInit, OnDestroy {
     this.cdr.markForCheck();
     this.moduleService.getModule(moduleId).subscribe({
       next: (module) => {
-        const parentModule = module.parent ? this.modules.data.find(item => item.name === module.parent) : null;
-        const moduleWithParent = {
+        const parentModule = module.parent ? this.allModules.find(item => item.name === module.parent): null;
+        const moduleWithParent: Module = {
           ...module,
-          parentId: module.parentId ?? parentModule?.id ?? null
+          parentId: module.parentId ?? parentModule?.id ?? null,
         };
         this.selectedModule = moduleWithParent;
         this.loadingModuleId = null;
-
         const dialogRef = this.dialog.open(ALtaModuleDialog, {
           width: '850px',
           maxWidth: '95vw',
           data: {
             mode: 'edit',
-            module: moduleWithParent
+            module: moduleWithParent,
+            modules: this.allModules
           }
         });
-
         dialogRef.afterClosed().subscribe((refresh: boolean) => {
           if (refresh) {
             this.getAllModules();
@@ -244,7 +249,8 @@ export class GestionModulos implements OnInit, OnDestroy {
       width: '700px',
       maxWidth: '95vw',
       data: {
-        mode: 'create'
+        mode: 'create',
+        modules: this.allModules
       }
     });
     dialogRef.afterClosed().subscribe((refresh: boolean) => {
