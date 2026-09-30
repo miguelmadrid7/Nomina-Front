@@ -14,27 +14,8 @@
   </div>
 
   <div class="section-divider"></div>
-  
-    <div class="actions-right">
-      <div class="btn-group">
-        <button class="btn btn-primary" (click)="buscar()">
-          <mat-icon>search</mat-icon>
-          <span>Buscar</span>
-        </button>
-      </div>
-      <button class="btn btn-danger" (click)="clearFilters()">
-        <mat-icon>delete_outline</mat-icon>
-        <span>Limpiar</span>
-      </button>
-
-      <button type="button" class="btn btn-download" [disabled]="isDownloadingReport" (click)="onDownloadReport()">
-          <mat-icon>{{ isDownloadingReport ? 'sync' : 'download' }}</mat-icon>
-          {{ isDownloadingReport ? 'Generando...' : 'Reporte' }}
-      </button>
-    </div>
 
   <div [formGroup]="form" class="global-search">
-
     <mat-form-field appearance="outline" class="with-separator qna-compact search-field" floatLabel="always">
       <mat-icon matPrefix>search</mat-icon>
       <mat-label>Buscar empleado (nombre o RFC)</mat-label>
@@ -76,6 +57,24 @@
           </mat-select>
       </mat-form-field>
     </div>
+  </div>
+
+  <div class="actions-right">
+    <div class="btn-group">
+      <button class="btn btn-primary" (click)="buscar()">
+        <mat-icon>search</mat-icon>
+          <span>Buscar</span>
+      </button>
+    </div>
+    <button class="btn btn-danger" (click)="clearFilters()">
+      <mat-icon>delete_outline</mat-icon>
+        <span>Limpiar</span>
+    </button>
+
+      <button type="button" class="btn btn-download" [disabled]="isDownloadingReport" (click)="onDownloadReport()">
+          <mat-icon>{{ isDownloadingReport ? 'sync' : 'download' }}</mat-icon>
+          {{ isDownloadingReport ? 'Generando...' : 'Reporte' }}
+      </button>
   </div>
 
   <div class="section-divider"></div>

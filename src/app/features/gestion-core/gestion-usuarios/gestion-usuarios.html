@@ -15,23 +15,6 @@
 
     <div class="section-divider"></div>
 
-    <div class="actions-right">
-        <div class="btn-group">
-            <button class="btn btn-primary" (click)="buscarUsuario()">
-                <mat-icon>search</mat-icon>
-                    <span>Buscar</span>
-            </button>
-        </div>
-        <button class="btn btn-danger" (click)="clearFilters()">
-            <mat-icon>delete_outline</mat-icon>
-                <span>Limpiar</span>
-        </button>
-        <button class="btn btn-success" type="button" (click)="openAltaUsuarioDialog()">
-            <mat-icon>person_add</mat-icon>
-                <span>Agregar</span>
-        </button>
-    </div>
-
     <form [formGroup]="form">
         <div formGroupName="busqueda" class="global-search">
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
@@ -53,6 +36,23 @@
                     </mat-autocomplete>
             </mat-form-field>
         </div>
+
+         <div class="actions-right">
+        <div class="btn-group">
+            <button class="btn btn-primary" (click)="buscarUsuario()">
+                <mat-icon>search</mat-icon>
+                    <span>Buscar</span>
+            </button>
+        </div>
+        <button class="btn btn-danger" (click)="clearFilters()">
+            <mat-icon>delete_outline</mat-icon>
+                <span>Limpiar</span>
+        </button>
+        <button class="btn btn-success" type="button" (click)="openAltaUsuarioDialog()">
+            <mat-icon>person_add</mat-icon>
+                <span>Agregar</span>
+        </button>
+    </div>
     </form>
 
     <div class="table-container">

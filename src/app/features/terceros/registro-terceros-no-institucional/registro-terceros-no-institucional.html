@@ -15,20 +15,6 @@
 
     <div class="section-divider"></div>
 
-    <div class="actions-right">
-        <div class="btn-group">
-            <button class="btn btn-primary" (click)="buscarEmpleado()">
-                <mat-icon>search</mat-icon>
-                    <span>Buscar</span>
-            </button>
-        </div>
-         <button class="btn btn-danger" (click)="clearFilters()">
-            <mat-icon>delete_outline</mat-icon>
-                <span>Limpiar</span>
-        </button>
-        
-    </div>
-
     <form *ngIf="form" [formGroup]="form">
         <div formGroupName="busqueda" class="global-search">
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
@@ -79,6 +65,19 @@
                     <mat-option *ngFor="let a of anio" [value]="a">{{ a }}</mat-option>
                 </mat-select>
         </mat-form-field>
+
+        <div class="actions-right">
+            <div class="btn-group">
+                <button class="btn btn-primary" (click)="buscarEmpleado()">
+                    <mat-icon>search</mat-icon>
+                        <span>Buscar</span>
+                </button>
+            </div>
+            <button class="btn btn-danger" (click)="clearFilters()">
+                <mat-icon>delete_outline</mat-icon>
+                    <span>Limpiar</span>
+            </button>
+        </div>
            
 
         <div class="section-divider"></div>

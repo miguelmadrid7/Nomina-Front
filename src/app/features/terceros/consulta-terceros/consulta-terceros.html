@@ -15,6 +15,27 @@
 
     <div class="section-divider"></div>
 
+    <form [formGroup]="form">
+        <div formGroupName="busqueda" class="global-search">
+            <mat-radio-group aria-label="Select an option" formControlName="tipoConcepto">
+                <mat-radio-button class="rad" [value]="2">No Institucionales</mat-radio-button>
+                 <mat-radio-button [value]="1">Institucionales</mat-radio-button>
+            </mat-radio-group>
+
+            <mat-form-field appearance="outline" class="compact-field qna-compact concepto-wi" floatLabel="always">
+                <mat-label>Concepto</mat-label>
+                    <mat-select formControlName ="concepto">
+                        <mat-option *ngFor="let c of conceptosFiltrados" [value]="c.cve">{{ c.cve }} - {{ c.descripcion }} </mat-option>
+                    </mat-select>
+            </mat-form-field>
+
+            <div class="concepto-total" *ngIf="buildQnaProceso() && form.get('busqueda.concepto')?.value">
+                Número de registros de este concepto:
+                <strong>{{ totalConceptoSeleccionado }}</strong>
+            </div>
+        </div>
+    </form>
+
     <div class="actions-right">
         <div class="btn-group">
             <button class="btn btn-primary">
@@ -38,27 +59,6 @@
                 <span>Descarga pdf</span>
             </button>
     </div>
-
-    <form [formGroup]="form">
-        <div formGroupName="busqueda" class="global-search">
-            <mat-radio-group aria-label="Select an option" formControlName="tipoConcepto">
-                <mat-radio-button class="rad" [value]="2">No Institucionales</mat-radio-button>
-                 <mat-radio-button [value]="1">Institucionales</mat-radio-button>
-            </mat-radio-group>
-
-            <mat-form-field appearance="outline" class="compact-field qna-compact concepto-wi" floatLabel="always">
-                <mat-label>Concepto</mat-label>
-                    <mat-select formControlName ="concepto">
-                        <mat-option *ngFor="let c of conceptosFiltrados" [value]="c.cve">{{ c.cve }} - {{ c.descripcion }} </mat-option>
-                    </mat-select>
-            </mat-form-field>
-
-            <div class="concepto-total" *ngIf="buildQnaProceso() && form.get('busqueda.concepto')?.value">
-                Número de registros de este concepto:
-                <strong>{{ totalConceptoSeleccionado }}</strong>
-            </div>
-        </div>
-    </form>
 
     <div class="section-divider"></div>
 
