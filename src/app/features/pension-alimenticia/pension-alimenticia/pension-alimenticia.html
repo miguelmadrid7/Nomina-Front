@@ -15,19 +15,6 @@
 
   <div class="section-divider"></div>
 
-  <div class="actions-right">
-    <div class="btn-group">
-      <button class="btn btn-primary" (click)="searchEmployee()">
-        <mat-icon>search</mat-icon>
-        <span>Buscar</span>
-      </button>
-    </div>
-    <button class="btn btn-danger" (click)="clearSearch()">
-      <mat-icon>delete_outline</mat-icon>
-        <span>Limpiar</span>
-    </button>
-  </div>
-
   <form [formGroup]="form" (ngSubmit)="saveEmployee()">
     <div class="global-search">
       <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
@@ -48,6 +35,21 @@
         </mat-autocomplete>
       </mat-form-field>
     </div>
+
+    <div class="actions-right">
+      
+        <button class="btn btn-primary" (click)="searchEmployee()">
+          <mat-icon>search</mat-icon>
+            <span>Buscar</span>
+        </button>
+     
+      <button class="btn btn-danger" (click)="clearSearch()">
+          <mat-icon>delete_outline</mat-icon>
+            <span>Limpiar</span>
+      </button>
+    </div>
+
+
 
     <div class="section-divider"></div>
 

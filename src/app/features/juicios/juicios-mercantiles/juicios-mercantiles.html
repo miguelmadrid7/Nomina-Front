@@ -16,23 +16,9 @@
     <div class="section-divider"></div>
 
     <div *ngIf="form" [formGroup]="form">
-        <mat-card class="form-card">
-            
-            <div class="actions-right">
-                <div class="btn-group">
-                    <button class="btn btn-primary" (click)="buscarEmpleado()">
-                        <mat-icon>search</mat-icon>
-                            <span>Buscar</span>
-                    </button>
-                </div>
-                <button class="btn btn-danger" (click)="clearFilters()">
-                    <mat-icon>delete_outline</mat-icon>
-                        <span>Limpiar</span>
-                </button>
-            </div>
-
+        <mat-card class="form-card search-card">
             <div formGroupName="busqueda" class="global-search">
-                <mat-form-field appearance="outline" class="with-separator qna-compact search-field" floatLabel="always">
+                <mat-form-field appearance="outline" class="with-separator qna-compact search-field" floatLabel="always" subscriptSizing="dynamic">
                     <mat-icon matPrefix>search</mat-icon>
                     <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
                     <input
@@ -48,8 +34,6 @@
                         <mat-option *ngFor="let emp of resultado" [value]="emp"> {{ displayFn(emp) }}  </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
-
-
             </div>
 
             <mat-card-content class="form-grid">
@@ -78,6 +62,17 @@
                     </div>
                 </div>
             </mat-card-content>
+
+            <div class="search-actions">
+                    <button class="btn btn-primary" type="button" (click)="buscarEmpleado()">
+                        <mat-icon>search</mat-icon>
+                        <span>Buscar</span>
+                    </button>
+                    <button class="btn btn-danger" type="button" (click)="clearFilters()">
+                        <mat-icon>delete_outline</mat-icon>
+                        <span>Limpiar</span>
+                    </button>
+                </div>
         </mat-card>
 
         <div class="section-divider"></div>
@@ -88,7 +83,7 @@
        
         <div class="actions-right">
             <div class="btn-group">
-                <button class="btn btn-success" (click)="saveBeneficiary()">
+                <button class="btn btn-success" type="button" (click)="saveBeneficiary()">
                     <mat-icon>save</mat-icon>
                         <span>Guardar</span>
                 </button>

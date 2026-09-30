@@ -65,6 +65,25 @@
   align-items: start;
 }
 
+/* Divider */
+.section-divider { 
+  grid-column: 1 / -1;
+  height: 2px; 
+  background: var(--brand); 
+  opacity: 0.15; 
+  margin: 10px 0 10px; 
+}
+
+/* CARD DE BÚSQUEDA DE EMPLEADO */
+.search-card {
+  padding: 20px 16px 16px;
+}
+
+/* Alinea "Datos del empleado" con el borde del buscador */
+.search-card .form-grid {
+  padding: 16px 0 0;
+}
+
 .row-nuOficio {
   grid-column: 1/-1;
 }
