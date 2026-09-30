@@ -1,12 +1,15 @@
 import { ChangeDetectorRef, Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
-import { IconoDialog } from '../../../shared/dialogs/alta-icono-dialog/alta-icono-dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-import { MatPaginatorModule } from '@angular/material/paginator';
-import { ToastService } from '../../../core/services/toast.service';
+import { finalize } from 'rxjs';
 import { Calendario } from '../../../core/model/calendario.model';
+import { Icon } from '../../../core/model/gestion-core/icon.model';
 import { CalendarioService } from '../../../core/services/calendario.service';
+import { IconService } from '../../../core/services/icon.service';
+import { ToastService } from '../../../core/services/toast.service';
+import { IconoDialog } from '../../../shared/dialogs/alta-icono-dialog/alta-icono-dialog';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-gestion-icono',
@@ -19,19 +22,25 @@ import { CalendarioService } from '../../../core/services/calendario.service';
   templateUrl: './gestion-icono.html',
   styleUrl: './gestion-icono.css'
 })
-export class GestionIcono implements OnDestroy, OnInit{
+export class GestionIcono implements OnInit, OnDestroy {
 
   private readonly dialog = inject(MatDialog);
   private readonly toastService = inject(ToastService);
   private readonly calendarioService = inject(CalendarioService);
+  private readonly iconService = inject(IconService);
   private readonly cd = inject(ChangeDetectorRef);
 
   cargandoQna = false;
   calendarioActual: Calendario | null = null;
   errorQna = false;
 
+  icons: Icon[] = [];
+  cargandoIconos = false;
+  readonly displayedColumns: string[] = ['figura', 'icon', 'name', 'description'];
+
   ngOnInit(): void {
     this.loadQnaActivated();
+    this.loadIcons();
   }
 
   ngOnDestroy(): void {
@@ -43,19 +52,31 @@ export class GestionIcono implements OnDestroy, OnInit{
     this.errorQna = false;
     this.calendarioService.getQnaActiva().subscribe({
       next: (resp) => {
-        const calendario = resp?.data ?? null;
-        this.calendarioActual = calendario;
+        this.calendarioActual = resp?.data ?? null;
         this.cargandoQna = false;
-        this.errorQna = !calendario;
-        this.cd.detectChanges();
+        this.errorQna = !this.calendarioActual;
+        this.cd.markForCheck();
       },
       error: () => {
         this.calendarioActual = null;
         this.cargandoQna = false;
         this.errorQna = true;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
       }
     });
+  }
+
+  loadIcons(): void {
+    this.cargandoIconos = true;
+    this.iconService.getIcons()
+      .pipe(finalize(() => {
+        this.cargandoIconos = false;
+        this.cd.markForCheck();
+      }))
+      .subscribe({
+        next: (icons) => (this.icons = icons),
+        error: () => this.toastService.error('Error', 'No se pudieron cargar los íconos.'),
+      });
   }
 
   openCreateDialog(): void {
@@ -65,14 +86,11 @@ export class GestionIcono implements OnDestroy, OnInit{
       disableClose: true
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result === true) {
-        this.openSuccessDialog();
+        this.toastService.info('Operación exitosa', 'El icono se guardó correctamente.', 6000);
+        this.loadIcons(); 
       }
     });
-  }
-
-  openSuccessDialog(): void {
-    this.toastService.info('Operación exitosa', 'El icono se guardó correctamente.', 6000);
   }
 }
