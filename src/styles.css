@@ -141,7 +141,8 @@ mat-sidenav-content {
   height: 2px; 
   background: var(--brand); 
   opacity: 0.15; 
-  margin: 18px 0 16px; 
+  margin: 5px 0 10px; 
+  
 }
 
 /* --- Configurations of buttons --- */
