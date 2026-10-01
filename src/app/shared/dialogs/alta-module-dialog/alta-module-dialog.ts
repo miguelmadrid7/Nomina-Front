@@ -13,7 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { Role } from '../../../core/model/rol.model';
-import { UserService } from '../../../core/services/user.service';
+import { UserService } from '../../../core/services/gestion-core/user.service';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { UppercaseDirective } from '../../directives/upperCase.directivas';
