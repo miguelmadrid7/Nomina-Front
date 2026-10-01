@@ -10,7 +10,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { EmpleadoItem } from '../../../core/model/emplado.model';
 import { AssignRoleRequest } from '../../../core/model/request/assignrole-request.model';
-import { UserService } from '../../../core/services/gestion-core/user.service';
+import { UserService } from '../../../core/services/user.service';
 import { MatCardModule } from '@angular/material/card';
 
 @Component({

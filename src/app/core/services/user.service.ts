@@ -1,11 +1,11 @@
 import { Injectable  } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { Observable, map } from 'rxjs';
-import { ApiResponse } from '../../model/response/api-Response.model';
-import { EmpleadoItem } from '../../model/emplado.model';
-import { Role } from '../../model/rol.model';
-import { User } from '../../model/user.model';
+import { ApiResponse } from '../../core/model/response/api-Response.model';
+import { EmpleadoItem } from '../model/emplado.model';
+import { Role } from '../model/rol.model';
+import { User } from '../model/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
