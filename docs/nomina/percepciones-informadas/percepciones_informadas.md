@@ -60,16 +60,17 @@ En la vista:
 ```
 
 ## 3. API(Service)
-Metodo   |          Ruta                              | Uso 
-GET      | `/calendario/activa`                       | Muestra la qna activa, esto se controla en el 
-VALIDATE | `excel-upload.service`                     | Valida el formato que contiene el excel 
-POST     | `/nom-emp-pza-cpto/cargar-excel`           | Hace la carga del excel en la tabla temporal
-GET      | `/nom-emp-pza-cpto/personalizar`           | Se obtiene la tabla de las validaciones
-POST     | `/nom-emp-pza-cpto/validar`                | Se revalida el lote ya precargado 
-PUT      | `/nom-emp-pza-cpto/personalizar/${id}`     | Edita una fila y revalida el lote. 
-POST     | `/nom-emp-pza-cpto/procesar`               | Se hace el volcado a la tabla de la nomina
-DELETE   | `/nom-emp-pza-cpto/personalizar/${id}`     | Elimina staging por quincena y concepto. 
-GET      | `/nom-emp-pza-cpto/descargar-validaciones` | Se descarga el excel ya con todas la validaciones aplicadas
+| Metodo |          Ruta                              | Uso                                                         |
+|--------|--------------------------------------------|-------------------------------------------------------------|
+GET      | `/calendario/activa`                       | Muestra la qna activa, esto se controla en el               |
+VALIDATE | `excel-upload.service`                     | Valida el formato que contiene el excel                     |
+POST     | `/nom-emp-pza-cpto/cargar-excel`           | Hace la carga del excel en la tabla temporal                |
+GET      | `/nom-emp-pza-cpto/personalizar`           | Se obtiene la tabla de las validaciones                     |
+POST     | `/nom-emp-pza-cpto/validar`                | Se revalida el lote ya precargado                           |
+PUT      | `/nom-emp-pza-cpto/personalizar/${id}`     | Edita una fila y revalida el lote.                          |
+POST     | `/nom-emp-pza-cpto/procesar`               | Se hace el volcado a la tabla de la nomina                  |
+DELETE   | `/nom-emp-pza-cpto/personalizar/${id}`     | Elimina staging por quincena y concepto.                    |  
+GET      | `/nom-emp-pza-cpto/descargar-validaciones` | Se descarga el excel ya con todas la validaciones aplicadas |
 
 ## 4. Layouts XLS, XLSX
 Unicamente se puede tener el archivo con las siguiente cabeceras:
