@@ -40,6 +40,7 @@ En la vista:
 
 ## 2. Mapa de codigo
 - Ruta del modulo:
+```text
     src/app/features/nomina/percepciones-informadas
         percepciones-informadas/
             percepciones-informadas.ts
@@ -56,6 +57,7 @@ En la vista:
         calendario.model.ts
         empleado.model.ts
         personalizar-row.model.ts
+```
 
 ## 3. API(Service)
 Metodo   |          Ruta                              | Uso 
