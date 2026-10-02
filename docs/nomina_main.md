@@ -21,6 +21,22 @@ Herramientas       | Npm                               | 10.9.3
 
 ---
 
+## Módulos del sistema
+Módulo                             | Descripción 
+Login                              | Muestra logs a nivel de consola del back
+Auditación                         | Muestra logs a nivel de consola del back
+Catálogos                          | Tablas de referencia (sexo, bancos, CCT, etc.) 
+Core                               | Usuarios, roles, módulos y permisos, notificaciones 
+Home                               | Dashboard
+Nómina                             | Módulo de todos los proceso de nómina y exportación de anexos 
+Juicios mercantiles                | Módulo de todos los procesos de juicios
+Pensión alimenticia(Beneficiarios) | Módulo de todos generales y pensión alimenticia  
+Terceros                           | Módulo de todos los procesos de terceros
+Empleados                          | Alta, baja y modificación de trabajadores 
+Plazas                             | Gestión de plazas y analítico FONE 
+Inasistencias                      | Registro de incidencias y faltas 
+FUP                                | Conceptos por plaza 
+
 
 ## Endpoints principales del sistema clasificado por modulos
 
@@ -182,7 +198,16 @@ POST   | `/terceros/borrar-lote`                             | `/terceros/borrar
 GET    | `/terceros/historico`                               | `/terceros/historico`                               | Consulta snapshots procesados.
 GET    | `/terceros/descargar-reporte`                       | `/terceros/descargar-reporte`                       | Descarga Excel de movimientos de terceros procesados.
 
-### Empleados - 
+### Empleados - `/employee`
+MÉTODO	| CONTROLLER BACK	                | SERVICE FRONT	                 | FUNCIÓN
+        | EmpleadoController	            | EmployeeService	             |
+GET     | `/employee/by/{target}`           | `/employee/by/{target}`        | Buscar por RFC, CURP o NOMBRE (header: targetValue).
+GET     | `/employee/by/{search}/search`    | `/employee/by/{search}/search` | Búsqueda general.
+
+### Catalogos - `/catalogo`
+MÉTODO	| CONTROLLER BACK	    | SERVICE FRONT	     | FUNCIÓN
+        | CatalogoController	| CatalogoService	 |
+GET     | `/catalogo/bancos`    | `/catalogo/bancos` | Obtener el catalogo de los bancos por medio de su ID.
 
 ### Plazas - 
 
@@ -233,19 +258,3 @@ GET    | `/terceros/descargar-reporte`                       | `/terceros/descar
 ├── .gitignore                      # Archivos y carpetas que Git debe ignorar (ej. node_modules)
 ├── angular.json                    # Configuración del proyecto Angular: build, entornos, assets, estilos
 └── package.json                    # Lista de dependencias y scripts del proyecto (npm start, npm run build)                                            
-
-## Módulos del sistema
-Módulo                             | Descripción 
-Login                              | Muestra logs a nivel de consola del back
-Auditación                         | Muestra logs a nivel de consola del back
-Catálogos                          | Tablas de referencia (sexo, bancos, CCT, etc.) 
-Core                               | Usuarios, roles, módulos y permisos, notificaciones 
-Home                               | Dashboard
-Nómina                             | Módulo de todos los proceso de nómina y exportación de anexos 
-Juicios mercantiles                | Módulo de todos los procesos de juicios
-Pensión alimenticia(Beneficiarios) | Módulo de todos generales y pensión alimenticia  
-Terceros                           | Módulo de todos los procesos de terceros
-Empleados                          | Alta, baja y modificación de trabajadores 
-Plazas                             | Gestión de plazas y analítico FONE 
-Inasistencias                      | Registro de incidencias y faltas 
-FUP                                | Conceptos por plaza 
