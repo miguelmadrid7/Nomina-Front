@@ -33,6 +33,7 @@ import { CalendarioService } from '../../../core/services/calendario.service';
 import { Calendario } from '../../../core/model/calendario.model';
 import { ToastService } from '../../../core/services/toast.service';
 import { CatalogoService } from '../../../core/services/catalogo.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-pension-alimenticia',
@@ -220,31 +221,32 @@ export class PensionAlimenticia implements OnDestroy {
       this.toastService.warning('Búsqueda inválida', 'Captura al menos 3 caracteres para buscar.', 4000)
       return;
     }
-    const obs =
+    const obs: Observable<Empleado | Empleado[]> =
       (esRFC(q) || (targetRFC && q.length >= 3))  ? this.pensionAlimenticiaService.searchPorTarget('RFC', q)  :
       (esCURP(q) || (targetCURP && q.length >= 3))? this.pensionAlimenticiaService.searchPorTarget('CURP', q) :
                                                     this.pensionAlimenticiaService.searchEmpleadoLibre(q);
     obs.subscribe({
-      next: (resp: ApiResponse<Empleado | Empleado[]>) => {
-        const d = resp?.data;
-        const arr = Array.isArray(d) ? d : (d ? [d] : []);
+      next: (data: Empleado | Empleado[]) => {
+        const arr = Array.isArray(data) ? data : (data ? [data] : []);
         this.resultados = arr.map(mapEmpleado);
         this.cargandoBusqueda = false;
+        this.cdr.detectChanges();
         setTimeout(() => {
           if (!this.autocompleteTrigger) return;
-            if (this.resultados.length > 0) {
-              this.autocompleteTrigger.openPanel();
-            } else {
-              this.autocompleteTrigger.closePanel();
-            }
-          });
-        },
-        error: () => {
-          this.resultados = [];
-          this.cargandoBusqueda = false;
-          this.autocompleteTrigger?.closePanel();
-        }
-      });
+          if (this.resultados.length > 0) {
+            this.autocompleteTrigger.openPanel();
+          } else {
+            this.autocompleteTrigger.closePanel();
+          }
+        });
+      },
+      error: () => {
+        this.resultados = [];
+        this.cargandoBusqueda = false;
+        this.autocompleteTrigger?.closePanel();
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   selectEmployee(emp: EmpleadoItem): void {
