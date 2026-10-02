@@ -5,37 +5,39 @@ Sistema de gestión de nómina para la Secretaría de Educación Pública de Hid
 ---
 
 ## Stack tecnológico
-Capa               | Tecnología                        | Versión 
-Framework          | Angular                           | 20.2.0 
-Lenguaje           | Typescript                        |
-Herramientas       | Npm                               | 10.9.3
-                   | Node.js                           | 22.19.0
-                   | Angular CLI                       | 20.2.0
-                   | Bootstrap                         | 5.3.8
-                   | Apexcharts                        | 5.16.0
-                   | Rxjs                              | 7.8.0
-                   | Sockjs-client                     | 1.6.1          
-                   | Stompjs                           | 2.3.3
-                   | Zone.js                           | 0.15.1
-                   | Xlsx                              | 0.18.5
+| Capa         | Tecnología     | Versión |
+|--------------|----------------|---------|
+| Framework    | Angular        | 20.2.0  |
+| Lenguaje     | TypeScript     |         |
+| Herramientas | Npm            | 10.9.3  |
+|              | Node.js        | 22.19.0 |
+|              | Angular CLI    | 20.2.0  |
+|              | Bootstrap      | 5.3.8   |
+|              | ApexCharts     | 5.16.0  |
+|              | RxJS           | 7.8.0   |
+|              | SockJS-client  | 1.6.1   |
+|              | StompJS        | 2.3.3   |
+|              | Zone.js        | 0.15.1  |
+|              | Xlsx           | 0.18.5  |
 
 ---
 
 ## Módulos del sistema
-Módulo                             | Descripción 
-Login                              | Muestra logs a nivel de consola del back
-Auditación                         | Muestra logs a nivel de consola del back
-Catálogos                          | Tablas de referencia (sexo, bancos, CCT, etc.) 
-Core                               | Usuarios, roles, módulos y permisos, notificaciones 
-Home                               | Dashboard
-Nómina                             | Módulo de todos los proceso de nómina y exportación de anexos 
-Juicios mercantiles                | Módulo de todos los procesos de juicios
-Pensión alimenticia(Beneficiarios) | Módulo de todos generales y pensión alimenticia  
-Terceros                           | Módulo de todos los procesos de terceros
-Empleados                          | Alta, baja y modificación de trabajadores 
-Plazas                             | Gestión de plazas y analítico FONE 
-Inasistencias                      | Registro de incidencias y faltas 
-FUP                                | Conceptos por plaza 
+| Módulo                            | Descripción                                                    |
+|-----------------------------------|-----------------------------------------------------------     |
+| Login                             | Muestra logs a nivel de consola del back                       |
+| Auditación                        | Muestra logs a nivel de consola del back                       |
+| Catálogos                         | Tablas de referencia (sexo, bancos, CCT, etc.)                 |
+| Core                              | Usuarios, roles, módulos y permisos, notificaciones            | 
+| Home                              | Dashboard                                                      |
+| Nómina                            | Módulo de todos los procesos de nómina y exportación de anexos |
+| Juicios mercantiles               | Módulo de todos los procesos de juicios                        |
+| Pensión alimenticia (Beneficiarios) | Módulo de datos generales y pensión alimenticia              |
+| Terceros                          | Módulo de todos los procesos de terceros                       |
+| Empleados                         | Alta, baja y modificación de trabajadores                      |
+| Plazas                            | Gestión de plazas y analítico FONE                             |
+| Inasistencias                     | Registro de incidencias y faltas                               |
+| FUP                               | Conceptos por plaza                     
 
 
 ## Endpoints principales del sistema clasificado por modulos
