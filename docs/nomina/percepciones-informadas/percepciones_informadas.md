@@ -60,17 +60,17 @@ En la vista:
 ```
 
 ## 3. API(Service)
-| Metodo |          Ruta                              | Uso                                                         |
-|--------|--------------------------------------------|-------------------------------------------------------------|
-GET      | `/calendario/activa`                       | Muestra la qna activa, esto se controla en el               |
-VALIDATE | `excel-upload.service`                     | Valida el formato que contiene el excel                     |
-POST     | `/nom-emp-pza-cpto/cargar-excel`           | Hace la carga del excel en la tabla temporal                |
-GET      | `/nom-emp-pza-cpto/personalizar`           | Se obtiene la tabla de las validaciones                     |
-POST     | `/nom-emp-pza-cpto/validar`                | Se revalida el lote ya precargado                           |
-PUT      | `/nom-emp-pza-cpto/personalizar/${id}`     | Edita una fila y revalida el lote.                          |
-POST     | `/nom-emp-pza-cpto/procesar`               | Se hace el volcado a la tabla de la nomina                  |
-DELETE   | `/nom-emp-pza-cpto/personalizar/${id}`     | Elimina staging por quincena y concepto.                    |  
-GET      | `/nom-emp-pza-cpto/descargar-validaciones` | Se descarga el excel ya con todas la validaciones aplicadas |
+| Metodo   |          Ruta                              | Uso                                                         |
+|----------|--------------------------------------------|-------------------------------------------------------------|
+| GET      | `/calendario/activa`                       | Muestra la qna activa, esto se controla en el               |
+| VALIDATE | `excel-upload.service`                     | Valida el formato que contiene el excel                     |
+| POST     | `/nom-emp-pza-cpto/cargar-excel`           | Hace la carga del excel en la tabla temporal                |
+| GET      | `/nom-emp-pza-cpto/personalizar`           | Se obtiene la tabla de las validaciones                     |
+| POST     | `/nom-emp-pza-cpto/validar`                | Se revalida el lote ya precargado                           |
+| PUT      | `/nom-emp-pza-cpto/personalizar/${id}`     | Edita una fila y revalida el lote.                          |
+| POST     | `/nom-emp-pza-cpto/procesar`               | Se hace el volcado a la tabla de la nomina                  |
+| DELETE   | `/nom-emp-pza-cpto/personalizar/${id}`     | Elimina staging por quincena y concepto.                    |  
+| GET      | `/nom-emp-pza-cpto/descargar-validaciones` | Se descarga el excel ya con todas la validaciones aplicadas |
 
 ## 4. Layouts XLS, XLSX
 Unicamente se puede tener el archivo con las siguiente cabeceras:
@@ -79,7 +79,7 @@ Unicamente se puede tener el archivo con las siguiente cabeceras:
 - CONCEPTO.
 - IMPORTE.
 - CANTIDAD.
-Si no se respetan este orden no se podar seguir el flujo correctamente y no se podra cargar correctamente, y no se permite hacer una carag incorrecta
+- Si no se respetan este orden no se podar seguir el flujo correctamente y no se podra cargar correctamente, y no se permite hacer una carag incorrecta
 
 ## 5. Regla de validacion de negocio
 1. El RFC debe corresponder a un empleado existente (`tab_empleados.deleted = false`).
@@ -93,7 +93,7 @@ Si no se respetan este orden no se podar seguir el flujo correctamente y no se p
 3. Hacer login
 4. Obtener JWT con `POST /users/getToken` y usar `Authorize`.
 5. Entrar el modulo y probar flujo, pero una ves validado que este en ejecuion el proyecto en env de localhost
-* NOTA IMPROTENTE:
+* NOTA IMPORTANTE:
 - Si no se puede ingresar al swagger, puedes hacer primero pruebas en el postman.
 
 ## 7. Criterios al modificar el modulo
