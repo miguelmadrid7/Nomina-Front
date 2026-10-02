@@ -7,29 +7,31 @@ import { BeneficiarioDetalleResponse } from '../../core/model/response/beneficia
 import { BeneficiarioRequest } from '../../core/model/request/beneficiario-request.model';
 import { IdResponse } from '../../core/model/response/id-response.model';
 import { BeneficiarioAlimRequest } from '../../core/model/request/beneficiarioalim-request.model';
-import { Observable } from 'rxjs';
-import { Empleado } from '../../features/servicios/empleado';
+import { map, Observable } from 'rxjs';
 import { LiquidoResponse } from '../../core/model/response/liquido-response.model';
 import { BeneficiarioEmpleadoResponse } from '../../core/model/response/beneficiarioempleado-response.model';
 import { CatalogoService } from './catalogo.service';
+import { EmployeeService } from './employee.service';
+
 @Injectable({ providedIn: 'root' })
 export class PensionAlimenticiaService {
-  private base = environment.apiUrl;
 
-  constructor(private http: HttpClient, private catalogoService: CatalogoService) {}
+    private base = environment.apiUrl;
+    constructor(
+        private http: HttpClient, 
+        private catalogoService: CatalogoService, 
+        private employeeService: EmployeeService) {}
 
     private extraHeaders(key?: string, value?: string) {
         return key && value ? { headers: new HttpHeaders().set(key, value) } : {};
     }
 
-    // Busca por RFC/CURP/NOMBRE usando header targetValue
     searchPorTarget(target: 'RFC' | 'CURP' | 'NOMBRE', value: string) {
-        return this.http.get<ApiResponse<Empleado[]>>(`${this.base}/employee/by/${target}`,this.extraHeaders('targetValue', value));
+        return this.employeeService.searchEmployeeByTarget(target, value).pipe(map(res => res.data ?? []));
     }
 
-    // Búsqueda libre (una sola caja)
     searchEmpleadoLibre(search: string) {
-        return this.http.get<ApiResponse<Empleado[]>>(`${this.base}/employee/by/${encodeURIComponent(search)}/search`);
+        return this.employeeService.searchEmployee(search).pipe(map(res => res.data ?? []));
     }
 
     addBeneficiarioAlim(payload: BeneficiarioAlimRequest) {

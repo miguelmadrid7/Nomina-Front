@@ -16,17 +16,19 @@ import { TercerosLote } from '../model/terceros/terceros-lote.model';
 import { TerceroLoteResponse } from '../model/response/terceros/tercero-lote-reponse.model';
 import { TerceroHistorico } from '../model/terceros/tercero-historico.model';
 import { TerceroConcepto } from '../model/terceros/tercero-conceptos.model';
+import { UserService } from './user.service';
+import { EmployeeService } from './employee.service';
 
 @Injectable({ providedIn: 'root' })
 export class TerceroService {
 
     private base = environment.apiUrl;
-    constructor(private http: HttpClient) {}
+    constructor(
+      private http: HttpClient, 
+      private employeeService: EmployeeService) {}
 
-    //Buscador para search del empleado
     searchEmployees(search: string): Observable<Empleado[]> {
-      const q = encodeURIComponent(search.trim());
-      return this.http.get<ApiResponse<Empleado[]>>(`${this.base}/employee/by/${q}/search`) .pipe(map(res => res.data ?? []));
+      return this.employeeService.searchEmployee(search).pipe(map(res => res.data ?? []));
     }
 
     // Se hace el resgistro de los terceros
