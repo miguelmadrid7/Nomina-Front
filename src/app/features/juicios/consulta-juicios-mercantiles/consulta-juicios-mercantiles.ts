@@ -21,6 +21,7 @@ import { Calendario } from '../../../core/model/calendario.model';
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { extractBlobErrorMessage, extractFilename, saveBlob } from '../../../shared/helpers/file-download.helper';
 import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { CatalogoService } from '../../../core/services/catalogo.service';
 
 @Component({
   selector: 'app-consulta-juicios-mercantiles',
@@ -48,6 +49,7 @@ export class ConsultaJuiciosMercantiles {
   private readonly dialog = inject(MatDialog); 
   private readonly loaderService = inject(LoaderService);
   private readonly toastService = inject(ToastService);
+  private readonly catalogoService = inject(CatalogoService);
   private readonly calendarioService = inject(CalendarioService);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -181,7 +183,7 @@ export class ConsultaJuiciosMercantiles {
   }
 
   loadBanks(): void {
-    this.juiciosMercantilesService.getBancos().subscribe({
+    this.catalogoService.getBancos().subscribe({
       next: (resp: any) => this.banco = resp?.data ?? [],
       error: () => {
         this.toastService.error('Error', 'Error al cargar bancos', 4000)

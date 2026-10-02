@@ -3,8 +3,8 @@ import { environment } from "../../../environments/environment";
 import { HttpClient, HttpParams, HttpResponse } from "@angular/common/http";
 import { BeneficiarioJMRequest } from "../../core/model/request/beneficiariojm-request.model";
 import { ApiResponse } from "../../core/model/response/api-Response.model";
-import { Banco } from "../model/banco.model";
 import { map, Observable } from "rxjs";
+import { CatalogoService } from "./catalogo.service";
 
 type AnyRow = Record<string, any>;
 
@@ -12,7 +12,7 @@ type AnyRow = Record<string, any>;
 export class JuiciosMercantilesService {
   private base = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private catalogoService: CatalogoService) {}
 
   //Buscador para search del empleado
   getBuscarEmpleado(search: string) {
@@ -67,10 +67,6 @@ export class JuiciosMercantilesService {
       );
   }
 
-  // Catalogo de bancos
-  getBancos() {
-    return this.http.get<ApiResponse<Banco[]>>(`${this.base}/catalogo/bancos`);
-  }
   //Lista de benficiarios
   getTodosBeneficiarios() {
     return this.http.get<ApiResponse<any[]>>(`${this.base}/beneficiarios/jm/tab`);

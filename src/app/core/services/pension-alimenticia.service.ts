@@ -2,7 +2,6 @@ import { Injectable} from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../core/model/response/api-Response.model';
-import { Banco } from '../model/banco.model';
 import { BeneficiarioDTO } from '../model/dto/beneficiarioDTO.model';
 import { BeneficiarioDetalleResponse } from '../../core/model/response/beneficiariodetalle-response.model';
 import { BeneficiarioRequest } from '../../core/model/request/beneficiario-request.model';
@@ -12,11 +11,12 @@ import { Observable } from 'rxjs';
 import { Empleado } from '../../features/servicios/empleado';
 import { LiquidoResponse } from '../../core/model/response/liquido-response.model';
 import { BeneficiarioEmpleadoResponse } from '../../core/model/response/beneficiarioempleado-response.model';
+import { CatalogoService } from './catalogo.service';
 @Injectable({ providedIn: 'root' })
 export class PensionAlimenticiaService {
   private base = environment.apiUrl;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private catalogoService: CatalogoService) {}
 
     private extraHeaders(key?: string, value?: string) {
         return key && value ? { headers: new HttpHeaders().set(key, value) } : {};
@@ -30,11 +30,6 @@ export class PensionAlimenticiaService {
     // Búsqueda libre (una sola caja)
     searchEmpleadoLibre(search: string) {
         return this.http.get<ApiResponse<Empleado[]>>(`${this.base}/employee/by/${encodeURIComponent(search)}/search`);
-    }
-
-    //Se obtiene la lista de los banco que hay en la bd y los muestra el combobox
-    getBancos() {
-        return this.http.get<ApiResponse<Banco[]>>(`${this.base}/catalogo/bancos`);
     }
 
     addBeneficiarioAlim(payload: BeneficiarioAlimRequest) {

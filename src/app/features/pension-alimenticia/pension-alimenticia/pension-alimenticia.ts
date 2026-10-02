@@ -32,6 +32,7 @@ import { formatEmployeeDisplay, mapEmpleado } from '../../../shared/helpers/empe
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { Calendario } from '../../../core/model/calendario.model';
 import { ToastService } from '../../../core/services/toast.service';
+import { CatalogoService } from '../../../core/services/catalogo.service';
 
 @Component({
   selector: 'app-pension-alimenticia',
@@ -67,6 +68,7 @@ export class PensionAlimenticia implements OnDestroy {
   private readonly cdr = inject(ChangeDetectorRef); 
   private readonly calendarioService = inject(CalendarioService);
   private readonly toastService = inject(ToastService);
+  private readonly catalogoService = inject(CatalogoService);
 
   
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
@@ -319,7 +321,7 @@ export class PensionAlimenticia implements OnDestroy {
   }
 
   loadBanksCatalog (): void {
-    this.pensionAlimenticiaService.getBancos().subscribe({
+    this.catalogoService.getBancos().subscribe({
       next: (response: ApiResponse<Banco[]>) => {
         this.bancos = response.data;
       },

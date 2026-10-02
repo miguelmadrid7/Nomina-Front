@@ -22,6 +22,7 @@ import { CalendarioService } from '../../../core/services/calendario.service';
 import { Calendario } from '../../../core/model/calendario.model';
 import { ToastService } from '../../../core/services/toast.service';
 import { DialogData } from '../../../core/model/dialogdata.model';
+import { CatalogoService } from '../../../core/services/catalogo.service';
 
 @Component({
   selector: 'app-consulta-pensiones-dialog',
@@ -51,6 +52,7 @@ export class ConsultaPensionesDialog implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly calendarioService = inject(CalendarioService);
   private readonly toastService = inject(ToastService);
+  private readonly catalogoService = inject(CatalogoService);
 
   form!: FormGroup;
   detalle: any = null;
@@ -298,7 +300,7 @@ export class ConsultaPensionesDialog implements OnInit {
   }
 
   loadBanksCatalog (): void {
-    this.pensionAlimenticiaService.getBancos()
+    this.catalogoService.getBancos()
     .subscribe({
       next: (response: ApiResponse<Banco[]>) => {
         setTimeout(() => {

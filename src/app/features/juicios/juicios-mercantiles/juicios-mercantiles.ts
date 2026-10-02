@@ -19,6 +19,7 @@ import { UppercaseDirective } from "../../../shared/directives/upperCase.directi
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { Calendario } from '../../../core/model/calendario.model';
 import { ToastService } from '../../../core/services/toast.service';
+import { CatalogoService } from '../../../core/services/catalogo.service';
 
 @Component({
   selector: 'app-juicios-mercantiles',
@@ -48,6 +49,7 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
   private readonly cd = inject(ChangeDetectorRef);
   private readonly calendarioService = inject(CalendarioService);
   private readonly toastService = inject(ToastService);
+  private readonly catalogoService = inject(CatalogoService);
 
   @ViewChild(MatAutocompleteTrigger) autocompleteTrigger?: MatAutocompleteTrigger;
   @ViewChild('searchInput') searchInput?: ElementRef<HTMLInputElement>;
@@ -272,7 +274,7 @@ export class JuiciosMercantiles implements OnInit, OnDestroy {
   }
 
   loadBanks(): void {
-    this.juiciosMercantilesService.getBancos().subscribe({
+    this.catalogoService.getBancos().subscribe({
       next: (response: ApiResponse<Banco[]>) => {
         this.bancos = response.data ?? [];
       },
