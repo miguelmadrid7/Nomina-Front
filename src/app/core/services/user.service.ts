@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable, map } from 'rxjs';
 import { ApiResponse } from '../../core/model/response/api-Response.model';
-import { EmpleadoItem } from '../model/emplado.model';
 import { Role } from '../model/rol.model';
 import { User } from '../model/user.model';
 
@@ -18,16 +17,16 @@ export class UserService {
     return this.http.get<ApiResponse<User[]>>(`${this.base}/users`).pipe(map(res => res.data ?? []));
   }
 
-  //Obtiene todo los roles
-  getRoles(): Observable<Role[]> {
-    return this.http.get<ApiResponse<Role[]>>(`${this.base}/roles`).pipe(map(res => res.data ?? []));
-  }
-
   getUser(userId: number): Observable<User> {
     const headers = new HttpHeaders({ 
       userId: String(userId) 
     });
     return this.http.get<ApiResponse<User>>(`${this.base}/users/user`, { headers }).pipe(map(res => res.data));
+  }
+
+  //Obtiene todo los roles
+  getRoles(): Observable<Role[]> {
+    return this.http.get<ApiResponse<Role[]>>(`${this.base}/roles`).pipe(map(res => res.data ?? []));
   }
 
   //Roles por usuarios
