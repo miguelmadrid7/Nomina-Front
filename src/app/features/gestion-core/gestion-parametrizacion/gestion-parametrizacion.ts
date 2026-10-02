@@ -2,7 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, inject, OnDestroy, OnInit,
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ParametrizacionResponse } from '../../../core/model/response/parametrizacion-response.model';
-import { ParametrizacionService } from '../../../core/services/parametrizacion.service';
+import { CoreSalarioMinimiService } from '../../../core/services/core-salario-minimo.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ApiResponse } from '../../../core/model/response/api-Response.model';
 import { AltaParametrizacionDialog } from '../../../shared/dialogs/alta-parametrizacion-dialog/alta-parametrizacion-dialog';
@@ -30,7 +30,7 @@ export class GestionParametrizacion implements OnInit, AfterViewInit, OnDestroy 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  private readonly parametrizacionService = inject(ParametrizacionService);
+  private readonly coreSalarioMinimoService = inject(CoreSalarioMinimiService);
   private readonly dialog = inject(MatDialog);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly toastService = inject(ToastService);
@@ -87,7 +87,7 @@ export class GestionParametrizacion implements OnInit, AfterViewInit, OnDestroy 
 
   getAllParam(): void {
     this.loading = true;
-    this.parametrizacionService.getAllParam().subscribe({
+    this.coreSalarioMinimoService.getAllParam().subscribe({
       next: (resp: ApiResponse<ParametrizacionResponse[]>) => {
         this.dataSource.data = resp.data ?? [];
         this.totalElements = this.dataSource.data.length;
@@ -141,7 +141,7 @@ export class GestionParametrizacion implements OnInit, AfterViewInit, OnDestroy 
       if (!confirmed) return;
 
       this.loading = true;
-      this.parametrizacionService.softDeleteParam(paramId)
+      this.coreSalarioMinimoService.softDeleteParam(paramId)
         .subscribe({
           next: () => {
             this.getAllParam();

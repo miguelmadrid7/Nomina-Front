@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ParametrizacionService } from '../../../core/services/parametrizacion.service';
+import { CoreSalarioMinimiService } from '../../../core/services/core-salario-minimo.service';
 import { DialogData } from '../../../core/model/dialogdata.model';
 import { ParametrizacionRequest } from '../../../core/model/request/parametrizacion-request.model';
 import { ToastService } from '../../../core/services/toast.service';
@@ -29,7 +29,7 @@ export class AltaParametrizacionDialog implements OnInit {
   isLoading  = false;
 
   private readonly dialogRef = inject(MatDialogRef<AltaParametrizacionDialog>);
-  private readonly parametrizacionService = inject(ParametrizacionService);
+  private readonly coreSalarioMinimoService = inject(CoreSalarioMinimiService);
   private readonly fb = inject(FormBuilder);
   private readonly toastService = inject(ToastService);
 
@@ -79,8 +79,8 @@ export class AltaParametrizacionDialog implements OnInit {
         qnaFin: raw.qnaFin!,
       };
       const llamada = this.isEdit 
-      ? this.parametrizacionService.updateParam(this.data.param!.id, payload)  
-      : this.parametrizacionService.createParam(payload);
+      ? this.coreSalarioMinimoService.updateParam(this.data.param!.id, payload)  
+      : this.coreSalarioMinimoService.createParam(payload);
 
     llamada.subscribe({
       next: () => {

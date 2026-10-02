@@ -2,12 +2,12 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { ApiResponse } from '../../core/model/response/api-Response.model';
-import { ParametrizacionRequest } from '../../core/model/request/parametrizacion-request.model';
-import { ParametrizacionResponse } from '../../core/model/response/parametrizacion-response.model';
+import { ApiResponse } from '../model/response/api-Response.model';
+import { ParametrizacionRequest } from '../model/request/parametrizacion-request.model';
+import { ParametrizacionResponse } from '../model/response/parametrizacion-response.model';
 
 @Injectable({ providedIn: 'root' })
-export class ParametrizacionService {
+export class CoreSalarioMinimiService {
     private base = environment.apiUrl;
     private readonly http = inject(HttpClient);
 
