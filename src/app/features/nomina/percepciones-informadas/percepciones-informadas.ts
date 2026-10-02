@@ -17,7 +17,7 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { ExcelUploadService, PERCEPCIONES_REQUIRED_COLUMNS } from '../../../core/services/excel-upload.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { PercepcionesInformadasService } from '../../../core/services/percepciones-informadas.service';
-import { PersonalizarRow } from '../../../core/model/personzaliza-row.model';
+import { PersonalizarRow } from '../../../core/model/personalizar-row.model';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog } from '@angular/material/dialog';
 import { ConsultaPersepcionesInformadasDialog } from '../../../shared/dialogs/consulta-persepciones-informadas-dialog/consulta-persepciones-informadas-dialog';
