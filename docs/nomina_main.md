@@ -22,71 +22,12 @@ Herramientas       | Npm                               | 10.9.3
 ---
 
 
-## Endpoints principales
+## Endpoints principales del sistema clasificado por modulos
 
-
----
-
-## Estructura del proyecto
-├── docs/                           # Documentación del proyecto: archivos .md de cada módulo
-├── node_modules/                   # Librerías instaladas por npm (no se edita ni se sube a Git)
-├── public/                         # Archivos estáticos que se copian tal cual al build (favicon, íconos)
-├── src/                            # Todo el código fuente de la aplicación
-│   ├── app/                        # Corazón de la app: componentes, servicios, rutas y lógica
-│   │   ├── core/                   # Lo que existe UNA sola vez en toda la app (singleton)
-│   │   │   ├── guards/             # Protegen rutas (ej. solo entrar si el usuario está logueado)
-│   │   │   ├── interceptors/       # Interceptan peticiones HTTP (ej. agregar token, manejar errores)
-│   │   │   ├── model/              # Interfaces y tipos de datos (estructura de usuarios, respuestas, etc.)
-│   │   │   └── services/           # Servicios globales (auth, conexión a la API, etc.)
-│   │   ├── features/               # Módulos/pantallas de negocio, uno por funcionalidad (ej. usuarios, reportes)
-│   │   ├── layout/                 # Estructura visual fija: header, sidebar, footer
-│   │   ├── shared/                 # Piezas reutilizables en varios lugares (botones, pipes, directivas)
-│   │   ├── app.config.server.ts    # Configuración extra cuando la app se renderiza en el servidor (SSR)
-│   │   ├── app.config.ts           # Configuración global: router, HttpClient, interceptors, providers
-│   │   ├── app.css                 # Estilos del componente raíz
-│   │   ├── app.html                # Plantilla HTML del componente raíz (normalmente contiene <router-outlet>)
-│   │   ├── app.routes.server.ts    # Define cómo se renderiza cada ruta en el servidor (SSR)
-│   │   ├── app.routes.ts           # Define qué componente se muestra según la URL
-│   │   ├── app.spec.ts             # Pruebas unitarias del componente raíz
-│   │   └── app.ts                  # Componente raíz: de él cuelgan todos los demás
-│   ├── assets/                     # Recursos estáticos usados dentro del código
-│   │   ├── icons/                  # Íconos del proyecto
-│   │   └── img/                    # Imágenes del proyecto
-│   ├── environments/               # Variables según el entorno (URL de la API, flags, etc.)
-│   │   ├── environments.ts         # Entorno por defecto (desarrollo)
-│   │   ├── environments.stage.ts   # Entorno de pruebas / staging
-│   │   ├── environments.prod.ts    # Entorno de producción
-│   │   └── environments.local.ts   # Entorno local de tu máquina
-│   ├── custom-theme.scss           # Tema personalizado (colores y tipografía, ej. de Angular Material)
-│   ├── index.html                  # Única página HTML real; Angular inyecta la app en <app-root>
-│   ├── main.server.ts              # Punto de arranque de la app en el servidor (SSR)
-│   ├── main.ts                     # Punto de arranque de la app en el navegador
-│   ├── polyfills.ts                # Compatibilidad con navegadores que no soportan funciones modernas
-│   ├── server.ts                   # Servidor Node/Express que sirve la app con SSR
-│   └── styles.css                  # Estilos globales para toda la aplicación
-├── .gitignore                      # Archivos y carpetas que Git debe ignorar (ej. node_modules)
-├── angular.json                    # Configuración del proyecto Angular: build, entornos, assets, estilos
-└── package.json                    # Lista de dependencias y scripts del proyecto (npm start, npm run build)                                            
-
-## Módulos del sistema
-Módulo                             | Descripción 
-Login                              | Muestra logs a nivel de consola del back
-Auditación                         | Muestra logs a nivel de consola del back
-Catálogos                          | Tablas de referencia (sexo, bancos, CCT, etc.) 
-Core                               | Usuarios, roles, módulos y permisos, notificaciones 
-Home                               | Dashboard
-Nómina                             | Módulo de todos los proceso de nómina y exportación de anexos 
-Juicios mercantiles                | Módulo de todos los procesos de juicios
-Pensión alimenticia(Beneficiarios) | Módulo de todos generales y pensión alimenticia  
-Terceros                           | Módulo de todos los procesos de terceros
-Empleados                          | Alta, baja y modificación de trabajadores 
-Plazas                             | Gestión de plazas y analítico FONE 
-Inasistencias                      | Registro de incidencias y faltas 
-FUP                                | Conceptos por plaza 
-
-
-## Endpoints del sistema clasificado por modulos
 ### Login 
+MÉTODO | CONTROLLER BACK	           | SERVICE FRONT	                    | FUNCIÓN
+       | UserController                | LoginService                       |
+POST   | `/users/getToken`	           | `/login`	                        | Obtener Token de sesión por medio de credenciales.
 
 ### Auditación — `/logs`
 MÉTODO | CONTROLLER BACK	           | SERVICE FRONT	                    | FUNCIÓN
@@ -234,3 +175,63 @@ GET    | `/terceros/descargar-reporte`                       | `/terceros/descar
 ### Inasistencias -
 
 ### FUP -
+
+
+---
+
+## Estructura del proyecto
+├── docs/                           # Documentación del proyecto: archivos .md de cada módulo
+├── node_modules/                   # Librerías instaladas por npm (no se edita ni se sube a Git)
+├── public/                         # Archivos estáticos que se copian tal cual al build (favicon, íconos)
+├── src/                            # Todo el código fuente de la aplicación
+│   ├── app/                        # Corazón de la app: componentes, servicios, rutas y lógica
+│   │   ├── core/                   # Lo que existe UNA sola vez en toda la app (singleton)
+│   │   │   ├── guards/             # Protegen rutas (ej. solo entrar si el usuario está logueado)
+│   │   │   ├── interceptors/       # Interceptan peticiones HTTP (ej. agregar token, manejar errores)
+│   │   │   ├── model/              # Interfaces y tipos de datos (estructura de usuarios, respuestas, etc.)
+│   │   │   └── services/           # Servicios globales (auth, conexión a la API, etc.)
+│   │   ├── features/               # Módulos/pantallas de negocio, uno por funcionalidad (ej. usuarios, reportes)
+│   │   ├── layout/                 # Estructura visual fija: header, sidebar, footer
+│   │   ├── shared/                 # Piezas reutilizables en varios lugares (botones, pipes, directivas)
+│   │   ├── app.config.server.ts    # Configuración extra cuando la app se renderiza en el servidor (SSR)
+│   │   ├── app.config.ts           # Configuración global: router, HttpClient, interceptors, providers
+│   │   ├── app.css                 # Estilos del componente raíz
+│   │   ├── app.html                # Plantilla HTML del componente raíz (normalmente contiene <router-outlet>)
+│   │   ├── app.routes.server.ts    # Define cómo se renderiza cada ruta en el servidor (SSR)
+│   │   ├── app.routes.ts           # Define qué componente se muestra según la URL
+│   │   ├── app.spec.ts             # Pruebas unitarias del componente raíz
+│   │   └── app.ts                  # Componente raíz: de él cuelgan todos los demás
+│   ├── assets/                     # Recursos estáticos usados dentro del código
+│   │   ├── icons/                  # Íconos del proyecto
+│   │   └── img/                    # Imágenes del proyecto
+│   ├── environments/               # Variables según el entorno (URL de la API, flags, etc.)
+│   │   ├── environments.ts         # Entorno por defecto (desarrollo)
+│   │   ├── environments.stage.ts   # Entorno de pruebas / staging
+│   │   ├── environments.prod.ts    # Entorno de producción
+│   │   └── environments.local.ts   # Entorno local de tu máquina
+│   ├── custom-theme.scss           # Tema personalizado (colores y tipografía, ej. de Angular Material)
+│   ├── index.html                  # Única página HTML real; Angular inyecta la app en <app-root>
+│   ├── main.server.ts              # Punto de arranque de la app en el servidor (SSR)
+│   ├── main.ts                     # Punto de arranque de la app en el navegador
+│   ├── polyfills.ts                # Compatibilidad con navegadores que no soportan funciones modernas
+│   ├── server.ts                   # Servidor Node/Express que sirve la app con SSR
+│   └── styles.css                  # Estilos globales para toda la aplicación
+├── .gitignore                      # Archivos y carpetas que Git debe ignorar (ej. node_modules)
+├── angular.json                    # Configuración del proyecto Angular: build, entornos, assets, estilos
+└── package.json                    # Lista de dependencias y scripts del proyecto (npm start, npm run build)                                            
+
+## Módulos del sistema
+Módulo                             | Descripción 
+Login                              | Muestra logs a nivel de consola del back
+Auditación                         | Muestra logs a nivel de consola del back
+Catálogos                          | Tablas de referencia (sexo, bancos, CCT, etc.) 
+Core                               | Usuarios, roles, módulos y permisos, notificaciones 
+Home                               | Dashboard
+Nómina                             | Módulo de todos los proceso de nómina y exportación de anexos 
+Juicios mercantiles                | Módulo de todos los procesos de juicios
+Pensión alimenticia(Beneficiarios) | Módulo de todos generales y pensión alimenticia  
+Terceros                           | Módulo de todos los procesos de terceros
+Empleados                          | Alta, baja y modificación de trabajadores 
+Plazas                             | Gestión de plazas y analítico FONE 
+Inasistencias                      | Registro de incidencias y faltas 
+FUP                                | Conceptos por plaza 
