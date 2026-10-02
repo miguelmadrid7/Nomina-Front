@@ -36,6 +36,7 @@ En la vista:
 src/app/features/terceros/carga-terceros-inst-noinst
 
 - Clases involucradas:
+```text
     src/app/features/terceros/carga-terceros-inst-noinst
         carga-terceros-inst-noinst/
             carga-terceros-inst-noinst.ts
@@ -60,6 +61,7 @@ src/app/features/terceros/carga-terceros-inst-noinst
     src/app/core/model/request/terceros
         tercero-lote-request.model.ts
         tercero-registro-request.model.ts
+```
 
 ## 3. API(Service)
 Metodo |          Ruta                 | Uso 
