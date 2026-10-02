@@ -29,6 +29,8 @@ MÉTODO | CONTROLLER BACK	           | SERVICE FRONT	                    | FUNCI
        | UserController                | LoginService                       |
 POST   | `/users/getToken`	           | `/login`	                        | Obtener Token de sesión por medio de credenciales.
 
+### Home - 
+
 ### Auditación — `/logs`
 MÉTODO | CONTROLLER BACK	           | SERVICE FRONT	                    | FUNCIÓN
        | LogController                 | LogService                         |
@@ -91,9 +93,23 @@ POST	| `/users/sendChangePassword`	    | -	                    | Envía el corre
 GET	    | `/users/validatePasswordRecovery`	| -	                    | Validamos si la liga sigue activa.
 POST	| `/users/changePasswordRecovery`	| -	                    | Cambio de contraseña por medio de la liga.
 
+### Core calendario - `/calendario`
+MÉTODO	| CONTROLLER BACK	                | SERVICE FRONT	                 | FUNCIÓN
+        | GestionCalendarioController	    | CalendarioService	             |
+GET     | `/calendario`                     | `/calendario`                  | Obtener calendario de nómina por ejercicio. 
+GET     | `/calendario/activa`              | `/calendario/activa`           | Obtener quincena activa.
+GET     | `/calendario/{id}`                | `/calendario/{id}`             | Obtener calendario por id.   
+GET     | `/calendario/conceptos-extra`     | `/calendario/conceptos-extra`  | Obtener quincena activa y sus conceptos extra.   
+POST    | `/calendario`                     | `/calendario`                  | Dar de alta un nuevo calendario.
+PUT     | `/calendario/{id}`                | `/calendario/{id}`             | Actualizar el estado del calendario.   
 
-
-### Home - 
+### Core salario minimo - `/salario-minimo`
+MÉTODO	| CONTROLLER BACK	                | SERVICE FRONT	                 | FUNCIÓN
+        | NomSalarioMinimoController	    | CoreSalarioMinimiService	     |
+GET     | `/salario-minimo`                 | `/calendario`                  | Muestra todos los registros. 
+POST    | `/salario-minimo`                 | `/calendario/activa`           | Guarda un nuevo registro.
+PATCH   | `/salario-minimo/{id}`            | `/calendario/{id}`             | Actualiza un registro.   
+DELETE  | `/salario-minimo/{id}`            | `/calendario/conceptos-extra`  | Elimina un registro (soft delete).   
 
 ### Nómina — `/calculation`  
 MÉTODO | CONTROLLER BACK	                           | SERVICE FRONT	                    | FUNCIÓN
@@ -104,7 +120,6 @@ POST   | `/calculation/execute`                        | `/calculation/execute` 
 GET    | `/calculation/status/{id}`                    | `/calculation/status/${id}`        | Obtiene el estatus de un job por ID.   
 POST   | `/calculation/export-anexo-v`                 | `/calculation/export-anexo-v`      | Exporta conceptos en CSV (Anexo V).  
 POST   | `/calculation/export-anexo-VI`                | `/calculation/export-anexo-VI`     | Exporta cheques en CSV (Anexo VI).  
-
 
 ### Juicios mercantiles - `/beneficiarios/jm`
 MÉTODO | CONTROLLER BACK	                                 | SERVICE FRONT	                                   | FUNCIÓN
@@ -166,7 +181,6 @@ GET    | `/terceros/lotes`                                   | `/terceros/lotes`
 POST   | `/terceros/borrar-lote`                             | `/terceros/borrar-lote`                             | Elimina el lote por quincena y concepto.
 GET    | `/terceros/historico`                               | `/terceros/historico`                               | Consulta snapshots procesados.
 GET    | `/terceros/descargar-reporte`                       | `/terceros/descargar-reporte`                       | Descarga Excel de movimientos de terceros procesados.
-
 
 ### Empleados - 
 
