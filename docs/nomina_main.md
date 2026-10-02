@@ -73,7 +73,7 @@ Módulo                             | Descripción
 Login                              | Muestra logs a nivel de consola del back
 Auditación                         | Muestra logs a nivel de consola del back
 Catálogos                          | Tablas de referencia (sexo, bancos, CCT, etc.) 
-Core                               | Usuarios, roles, módulos y permisos 
+Core                               | Usuarios, roles, módulos y permisos, notificaciones 
 Home                               | Dashboard
 Nómina                             | Módulo de todos los proceso de nómina y exportación de anexos 
 Juicios mercantiles                | Módulo de todos los procesos de juicios
@@ -83,7 +83,7 @@ Empleados                          | Alta, baja y modificación de trabajadores
 Plazas                             | Gestión de plazas y analítico FONE 
 Inasistencias                      | Registro de incidencias y faltas 
 FUP                                | Conceptos por plaza 
-Notificaciones                     | Mensajes en tiempo real vía WebSocket 
+
 
 ## Endpoints del sistema clasificado por modulos
 ### Login 
@@ -130,17 +130,27 @@ POST   | `/roles`                          | `/roles`                 | Agregar 
 PATCH  | `/roles`                          | `/roles`                 | Actualización de un rol y sus módulos.
 PATCH  | `/roles/softdeleted`              | `/roles/softdeleted`     | Elimina un rol.
 
-### Core role - `/roles`
-MÉTODO | CONTROLLER BACK	               | SERVICE FRONT	          | FUNCIÓN
-       | RoleController                    | RolService               |
-GET    | `/roles`                          | `/roles`                 | Obtener todos los roles.
-GET    | `/roles/role`                     | `/roles/role`            | Obtener un rol.
-GET    | `/roles/permisos`                 | -                        | Obtener todos los permisos.
-GET    | `/roles/permisosById`             | -                        | Obtener un permiso.
-GET    | `/roles/conceptos`                | `/roles/conceptos`       | Obtener conceptos permitidos por rol.
-POST   | `/roles`                          | `/roles`                 | Agregar un nuevo rol.
-PATCH  | `/roles`                          | `/roles`                 | Actualización de un rol y sus módulos.
-PATCH  | `/roles/softdeleted`              | `/roles/softdeleted`     | Elimina un rol.
+### Core user - `/users`
+MÉTODO	| CONTROLLER BACK	                | SERVICE FRONT	        | FUNCIÓN
+        | UserController	                | UserService	        |
+        |                                   | LoginService          |
+POST	| `/users/getToken`	                | `/login`	            | Obtener Token de sesión por medio de credenciales.
+GET	    | `/users`	                        | `/users`	            | Obtener todos los usuarios.
+GET	    | `/users/user`	                    | `/users/user`         | Obtiene a un usuario.
+GET	    | `/roles`	                        | `/roles`              | Obtiene todos los roles.
+GET	    | `/users/rolesByUser`	            | `/users/rolesByUser`	| Obtiene los roles del usuario.
+POST	| `/users`	                        | `/users`              | Crear un nuevo usuario.
+POST    | `/users/rolesByUser`	            | `/users/rolesByUser`  | Assigan roles por usuario.
+PATCH	| `/users/softdeleted`	            | `/users/softdeleted`	| Eliminación de un usuario.
+PATCH	| `/users`	                        | `/users`              | Actualización de usuario.
+POST	| `/users/moduleByUser`	            | -	                    | Obtiene los módulos del usuario.
+POST	| `/users/validateToken`	        | -	                    | Validación de token enviado por correo.
+POST	| `/users/changePassword`	        | -	                    | Cambio de contraseña del usuario.
+POST	| `/users/sendChangePassword`	    | -	                    | Envía el correo con la liga de cambio de contraseña.
+GET	    | `/users/validatePasswordRecovery`	| -	                    | Validamos si la liga sigue activa.
+POST	| `/users/changePasswordRecovery`	| -	                    | Cambio de contraseña por medio de la liga.
+
+
 
 ### Home - 
 
@@ -186,9 +196,9 @@ DELETE | `/beneficiarios/alim/${id}`                         | `/beneficiarios/a
 DELETE | `/beneficiarios/${id}`                              | `/beneficiarios/${id}`                              | Eliminar beneficiario (soft delete)
 GET    | `/beneficiarios/reporte-pagos`                      | `/beneficiarios/reporte-pagos`                      | Descarga de  reportes despues de haber pasado todo el proceso
 
-### Terceros - ``/nom-emp-pza-cpto`, `/terceros`
+### Terceros - `/nom-emp-pza-cpto`, `/terceros`
 MÉTODO | CONTROLLER BACK	                                 | SERVICE FRONT	                                   | FUNCIÓN
-       | NomEmpPzaCptoController                             | TerceroService                                      |                                                                             
+       | NomEmpPzaCptoController                             |TerceroService                                      |                                                                             
 GET    | `/employee/by/${encodeURIComponent(search)}/search` | `/employee/by/${encodeURIComponent(search)}/search` | Busqueda libre.
 POST   | `/nom-emp-pza-cpto/registro-np`                     | `/nom-emp-pza-cpto/registro-np`                     | Registra un concepto en tabla temporal.
 GET    | `/nom-emp-pza-cpto/conceptos`                       | `/nom-emp-pza-cpto/conceptos`                       | Obtiene los conceptos.
@@ -221,3 +231,6 @@ GET    | `/terceros/descargar-reporte`                       | `/terceros/descar
 
 ### Plazas - 
 
+### Inasistencias -
+
+### FUP -
