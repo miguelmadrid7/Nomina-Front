@@ -92,7 +92,7 @@ ME, MG, VM, 37, TP, OA, OL, TE, 7S
 * NOTA IMPORTANTE:
 - Si no se puede ingresar al swagger, puedes hacer primero pruebas en el postman.
 
-## 7. Criterios al modificar el modulo
+## 6. Criterios al modificar el modulo
 - Conservar `ApiResponse` en todos los services.
 - No exponer registros de muestra, RFC, CURP, tokens ni credenciales en documentacion o logs compartidos.
 - En caso de que se integren nuevas varibales, revisar primero los modelos para ver si coincidan con lo que es el nuevo requerimiento
