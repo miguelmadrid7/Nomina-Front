@@ -1,0 +1,17 @@
+<div class="dialog-shell">
+  <div class="dialog-header dlg-bar">
+    <button mat-icon-button class="dialog-close" (click)="cerrar()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="dialog-content">
+    <div class="dialog-title">{{ data.title || 'Confirmación' }}</div>
+    <div class="dialog-message">{{ data.message || '¿Deseas continuar?' }}</div>
+  </div>
+
+  <div class="dialog-actions">
+    <button *ngIf="data.cancelText" class="btn btn-danger" (click)="cancel()">{{ data.cancelText }}</button>
+    <button class="btn btn-primary" (click)="confirm()">{{ data.confirmText || 'Aceptar' }}</button>
+  </div>
+</div>

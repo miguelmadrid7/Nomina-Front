@@ -1,0 +1,23 @@
+.table-global {
+  width: 100%;
+  table-layout:fixed;
+}
+
+.badge-year {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-radius: 6px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+@media (max-width: 768px) {
+  .table-global {
+    min-width: 550px;
+  }
+}

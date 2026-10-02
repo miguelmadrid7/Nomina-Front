@@ -1,0 +1,13 @@
+<div class="loading-overlay" *ngIf="loading$ | async">
+  <div class="loading-card">
+    <mat-progress-spinner
+      diameter="45"
+      strokeWidth="4"
+      mode="indeterminate"
+      class="nomina-spinner">
+    </mat-progress-spinner>
+    <span class="loading-text">
+      Procesando...
+    </span>
+  </div>
+</div>
