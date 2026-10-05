@@ -10,18 +10,10 @@ export interface SidebarModule {
   vista: boolean;
 }
 
-export interface SidebarGroup {
-  parentId: number | null;
-  parentName: string;
-  icon: string;
-  expanded:   boolean;
-  children: SidebarModule[];
-}
-
 export interface SidebarNode {
   id: number;
   name: string;
   icon: string;
-  route: string | null;   // null = agrupador
+  route: string | null; 
   children: SidebarNode[];
 }
