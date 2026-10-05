@@ -64,34 +64,37 @@ src/app/features/terceros/carga-terceros-inst-noinst
 ```
 
 ## 3. API(Service)
-Metodo |          Ruta                 | Uso 
-GET    | `/calendario/activa`          | Muestra la qna activa, esto se controla en el backend por medio de un endpoint de true/false 
-GET    | `/terceros/conceptos`         | Lista los conceptos configurados para terceros con su layout y movimientos permitidos. 
-POST   | `/terceros/cargar-txt`        | Multipart: carga TXT y valida el lote. 
-POST   | `/terceros/validar`           | Revalida por `qnaProceso + concepto`. 
-GET    | `/terceros/personalizar`      | Lista staging con paginacion, estatus y busqueda. 
-DELETE | `/terceros/personalizar/{id}` | Elimina una fila temporal. 
-PUT    | `/terceros/personalizar/{id}` | Edita una fila y revalida el lote. 
-POST   | `/terceros/procesar`          | Aplica movimientos, crea snapshot y limpia staging atomicamente. 
-GET    | `/terceros/lotes`             | Resume lotes pendientes. 
-DELETE | `/terceros/borrar-lote`       | Elimina staging por quincena y concepto. 
+| Metodo    |  Ruta                         | Uso 
+|-----------|-------------------------------|----------------------------------------------------------------------------------------------|
+| GET       | `/calendario/activa`          | Muestra la qna activa, esto se controla en el backend por medio de un endpoint de true/false |
+| GET       | `/terceros/conceptos`         | Lista los conceptos configurados para terceros con su layout y movimientos permitidos.       |
+| POST      | `/terceros/cargar-txt`        | Multipart: carga TXT y valida el lote.                                                       |
+| POST      | `/terceros/validar`           | Revalida por `qnaProceso + concepto`.                                                        |
+| GET       | `/terceros/personalizar`      | Lista staging con paginacion, estatus y busqueda.                                            |
+| DELETE    | `/terceros/personalizar/{id}` | Elimina una fila temporal.                                                                   |
+| PUT       | `/terceros/personalizar/{id}` | Edita una fila y revalida el lote.                                                           |
+| POST      | `/terceros/procesar`          | Aplica movimientos, crea snapshot y limpia staging atomicamente.                             |
+| GET       | `/terceros/lotes`             | Resume lotes pendientes.                                                                     |
+| DELETE    | `/terceros/borrar-lote`       | Elimina staging por quincena y concepto.                                                     |
 
 
 ### 3.1 Carga multipart
 POST /terceros/cargar-txt` consume `multipart/form-data`:
-Campo            | Tipo     | Requerido | Nota 
-`file`           | TXT      | Si        | Se declara con `@RequestPart` para que Swagger muestre selector de archivo. 
-`qnaProceso`     | Integer  | Si        | Preferido en formato `AAAAQQ`, por ejemplo `202522`. 
-`concepto`       | String   | Si        | Normalizado a mayusculas; debe coincidir con el TXT. 
-`importeDefault` | Decimal  | No        | En `ILIMITADO` solo reemplaza el importe cuando el archivo trae cero; en `LIMITADO` tiene precedencia sobre el importe del archivo. 
+| Campo            | Tipo     | Requerido | Nota                                                                                                                                |
+|------------------|----------|-----------|-------------------------------------------------------------------------------------------------------------------------------------|
+| `file`           | TXT      | Si        | Se declara con `@RequestPart` para que Swagger muestre selector de archivo.                                                         |
+| `qnaProceso`     | Integer  | Si        | Preferido en formato `AAAAQQ`, por ejemplo `202522`.                                                                                |
+| `concepto`       | String   | Si        | Normalizado a mayusculas; debe coincidir con el TXT.                                                                                |
+| `importeDefault` | Decimal  | No        | En `ILIMITADO` solo reemplaza el importe cuando el archivo trae cero; en `LIMITADO` tiene precedencia sobre el importe del archivo. |
 
 ### 3.2 Filtros del reporte XLSX
 `GET /terceros/descargar-reporte` acepta `qnaProceso`, `concepto` y `fechaCarga`, los tres opcionales y combinables:
-qnaProceso | concepto | Resultado 
-Si         | Si       | Movimientos de ese concepto en esa quincena. 
-Si         | No       | Todos los conceptos de esa quincena. 
-No         | Si       | Ultima quincena **de ese concepto** (`findMaxQnaProcesoByConcepto`). 
-No         | No       | Ultima quincena procesada global (`findMaxQnaProceso`). 
+| qnaProceso | concepto | Resultado                                                                                                                                       |
+|------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------|
+| Si         | Si       | Movimientos de ese concepto en esa quincena.                                                                                                    |
+| Si         | No       | Todos los conceptos de esa quincena.                                                                                                            |
+| No         | Si       | Ultima quincena **de ese concepto** (`findMaxQnaProcesoByConcepto`).                                                                            |
+| No         | No       | Ultima quincena procesada global (`findMaxQnaProceso`).                                                                                         |
 
 El default por concepto no es el maximo global a proposito: un concepto puede llevar quincenas sin cargarse mientras otros ya procesaron la vigente, y con el maximo global el archivo saldria vacio. `fechaCarga` acota a una carga puntual dentro de la quincena resuelta y no participa en esa resolucion.
 Sin filas para la combinacion elegida la respuesta es `404`. El nombre del archivo lleva la quincena realmente exportada y el concepto cuando se filtro: `terceros_qna202522_85.xlsx`.
@@ -101,34 +104,36 @@ Hay **dos** layouts: `ILIMITADO` de 100 caracteres e `LIMITADO` de 180. Cual apl
 
 ### 4.1 Layout ILIMITADO de 100 caracteres
 No trae quincena de termino: `hasta` queda nulo y el servicio guarda `qna_fin = 999999` (vigencia abierta).
-Posicion | Longitud | Campo               | Tratamiento 
-1-13     | 13       | RFC                 | Trim + mayusculas. 
-14-43    | 30       | Nombre              | Trim. 
-44-71    | 28       | Filler              | Ignorado. 
-72-80    | 9        | Numero de documento | Se quitan ceros iniciales; todo ceros queda `NULL`. 
-81       | 1        | Tipo de movimiento  | Entero. 
-82-89    | 8        | Importe             | Dos decimales implicitos. 
-90-91    | 2        | Concepto            | Debe coincidir con la seleccion. 
-92       | 1        | Filler              | Ignorado. 
-93-98    | 6        | Desde               | Quincena efectiva en formato `AAAAQQ`. 
-99-100   | 2        | Filler              | Ignorado. 
+| Posicion | Longitud | Campo               | Tratamiento                                         |
+|----------|----------|---------------------|-----------------------------------------------------|
+| 1-13     | 13       | RFC                 | Trim + mayusculas.                                  |
+| 14-43    | 30       | Nombre              | Trim.                                               |
+| 44-71    | 28       | Filler              | Ignorado.                                           |
+| 72-80    | 9        | Numero de documento | Se quitan ceros iniciales; todo ceros queda `NULL`. |
+| 81       | 1        | Tipo de movimiento  | Entero.                                             |
+| 82-89    | 8        | Importe             | Dos decimales implicitos.                           |
+| 90-91    | 2        | Concepto            | Debe coincidir con la seleccion.                    |
+| 92       | 1        | Filler              | Ignorado.                                           |
+| 93-98    | 6        | Desde               | Quincena efectiva en formato `AAAAQQ`.              |
+| 99-100   | 2        | Filler              | Ignorado.                                           |
 Se guarda con `formato_origen = ILIMITADO_100`.
 
 ### 4.2 Layout LIMITADO de 180 caracteres
 Si trae quincena de termino, en la segunda mitad del periodo. Se acepta longitud 180 y, por compatibilidad con archivos recibidos previamente, 182.
-Posicion | Campo 
- 1-18    | Ramo, pagaduria y numero ISSSTE. No se interpreta; queda en `registro_origen`. 
- 19-31   | RFC. 
- 32-71   | Nombre. 
- 72-99   | Clave de cobro/plaza. Se conserva en el registro original; la asignacion exacta por clave queda pendiente de confirmacion de negocio. 
- 100-102 | Tipo de movimiento: 1 alta, 2 baja, 3 cambio. 
- 103-105 | Plazo o numero de quincenas. No se interpreta. 
- 106-117 | Periodo `QQAAAAQQAAAA`: quincena desde y hasta. Ambas se normalizan a `AAAAQQ`; por ejemplo `172026` se convierte en `202617`. 
- 118-119 | Concepto. Debe coincidir con la seleccion. 
- 120-126 | Importe mensual, dos decimales implicitos. 
- 127-132 | Numero de documento. 
- 133-138 | Quincena del reporte en formato `AAAAQQ`. Redundante con el `desde` del periodo; no se lee. 
- 139-fin | Parametros de origen. 
+| Posicion | Campo                                                                                                                                |
+|----------|--------------------------------------------------------------------------------------------------------------------------------------|
+| 1-18     | Ramo, pagaduria y numero ISSSTE. No se interpreta; queda en `registro_origen`.                                                       |
+| 19-31    | RFC.                                                                                                                                 |
+| 32-71    | Nombre.                                                                                                                              |
+| 72-99    | Clave de cobro/plaza. Se conserva en el registro original; la asignacion exacta por clave queda pendiente de confirmacion de negocio.| 
+| 100-102  | Tipo de movimiento: 1 alta, 2 baja, 3 cambio.                                                                                        |
+| 103-105  | Plazo o numero de quincenas. No se interpreta.                                                                                       |
+| 106-117  | Periodo `QQAAAAQQAAAA`: quincena desde y hasta. Ambas se normalizan a `AAAAQQ`; por ejemplo `172026` se convierte en `202617`.       |
+| 118-119  | Concepto. Debe coincidir con la seleccion.                                                                                           |
+| 120-126  | Importe mensual, dos decimales implicitos.                                                                                           |
+| 127-132  | Numero de documento.                                                                                                                 |
+| 133-138  | Quincena del reporte en formato `AAAAQQ`. Redundante con el `desde` del periodo; no se lee.                                          |
+| 139-fin  | Parametros de origen.                                                                                                                | 
 
 Se guarda con `formato_origen = LIMITADO_180` o `LIMITADO_182`.
 
@@ -152,13 +157,79 @@ Las reglas de aceptacion solicitadas actualmente son:
 5. La plaza resuelta para un alta debe existir, estar activa con estatus `1` o `6` y tener `tab_plaza_id > 0`; nunca se inserta el valor `0` como sustituto.
 
 ## 6. Semantica de movimientos
-Tipo | Significado  | Staging                                                                                      | Al procesar 
-1    | Alta         | `qna_ini = desde`. `qna_fin = hasta` si el layout es `LIMITADO`; `999999` si es `ILIMITADO`. | Crea deduccion `D` respetando ambas vigencias. 
-2    | Baja         | `qna_fin = hasta` si el layout es `LIMITADO`; `desde` si es `ILIMITADO`.                     | Localiza deduccion vigente y actualiza `qna_fin`. 
-3    | Modificacion | Fechas temporales nulas                                                                      | Localiza deduccion vigente y actualiza importe/quincena de proceso. 
+| Tipo | Significado  | Staging                                                                                      | Al procesar                                                           |
+|----- |--------------|----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|  
+| 1    | Alta         | `qna_ini = desde`. `qna_fin = hasta` si el layout es `LIMITADO`; `999999` si es `ILIMITADO`. | Crea deduccion `D` respetando ambas vigencias.                        |
+| 2    | Baja         | `qna_fin = hasta` si el layout es `LIMITADO`; `desde` si es `ILIMITADO`.                     | Localiza deduccion vigente y actualiza `qna_fin`.                     |
+| 3    | Modificacion | Fechas temporales nulas                                                                      | Localiza deduccion vigente y actualiza importe/quincena de proceso.   | 
 
 
-## 7. Prueba operativa minima
+## 7. Diagrama de clases
+| Componente principal      | Servicios               | Modelos                 | Modelos de request       | Modelos de response       |
+|---------------------------|-------------------------|-------------------------|--------------------------|---------------------------| 
+| `CargaTercerosInstNoinst` | `TerceroService`        | `TerceroConcepto`       | `TerceroLoteRequest`     | `CargaTerceroResponse`    |
+|                           |  `CalendarioService`    | `TerceroRow`            | `TerceroRegistroRequest` | `TerceroResponse`         |
+|                           |  `ToastService          | `TercerosLote`          |                          | `TerceroProcesarResponse` |
+|                           |                         | `TerceroHistorico`      |                          | `TerceroLoteResponse`     |          
+|                           |                         |  `Calendario`           |                          |                           | 
+
+## 8. Métodos del componente CargaTercerosInstNoinst
+### 8.1 Métodos de ciclo de vida
+| Método        | Descripción                                                                                                                                             |
+|---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ngOnInit()`  | Inicializa el componente: carga conceptos, quincena activa y configura el buscador con debounce. Suscribe a cambios en el concepto para limpiar estado. |
+
+### 8.2 Métodos de carga de datos
+| Método                                   | Descripción                                                                                                                                                    |
+|------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `loadQnaActivated()`                     | Obtiene la quincena activa desde `GET /calendario/activa`. Actualiza `calendarioActual` y maneja errores.                                                      |
+| `cargarConceptos()`                      | Obtiene la lista de conceptos desde `GET /terceros/conceptos`. Ordena alfabéticamente por clave y maneja errores.                                              |
+| `loadTerceroList(qnaProceso, concepto)`  | Lista registros de staging con paginación desde `GET /terceros/personalizar`. Soporta filtros de estatus y búsqueda. Actualiza `dataSource` y `totalElements`. |
+| `loadLotes()`                            | Obtiene lotes pendientes desde `GET /terceros/lotes` y abre diálogo `ConsultaTercerosLotesDialog` con los resultados.                                          |
+
+### 8.3 Métodos de manipulación de archivos
+| Método                 | Descripción                                                                                                                                                                  |
+|------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `onTxtSelected(event)` | Valida selección de archivo: verifica extensión `.txt`, archivo no vacío y concepto seleccionado. Guarda en `selectedFile`.                                                  |
+| `onUploadTxt()`        | Carga archivo TXT mediante `POST /terceros/cargar-txt` con multipart. Muestra toast persistente durante carga. Actualiza contadores de aceptados/rechazados y recarga lista. |
+| `clearFile()`          | Limpia `selectedFile` y resetea input de archivo.                                                                                                                            |
+| `rejectFile(message)`  | Rechaza archivo con mensaje de error, limpia selección y muestra toast.                                                                                                      |
+| `resetFileInput()`     | Resetea el elemento input de archivo nativo.                                                                                                                                 |
+
+### 8.4 Métodos de validación
+| Método               | Descripción                                                                                                       |
+|----------------------|-------------------------------------------------------------------------------------------------------------------|
+| `onRevalidateLote()` | Revalida el lote mediante `POST /terceros/validar`. Actualiza resumen de validación y recarga lista de registros. |
+| `esIlimitado(row)`   | Determina si un registro es de tipo ilimitado (movimiento 1 o 3).                                                 |
+
+### 8.5 Métodos de edición de registros
+| Método                          | Descripción                                                                                                                                                         |
+|---------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `onDeleteRow(row)`              | Elimina un registro temporal mediante `DELETE /terceros/personalizar/{id}`. Muestra diálogo de confirmación. Actualiza contadores y recarga lista.                  |
+| `onEditRow(row)`                | Activa modo de edición para una fila estableciendo `editingRowId`.                                                                                                  |
+| `onRecordUpdate(row, rawValue)` | Actualiza importe de un registro mediante `PUT /terceros/personalizar/{id}`. Valida importe > 0, actualiza y revalida lote. Actualiza contadores mediante forkJoin. |
+
+### 8.6 Métodos de procesamiento
+| Método                | Descripción                                                                                                                           |
+|-----------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `onProcessPayroll()`  | Procesa el lote mediante `POST /terceros/procesar`. Valida que no haya rechazados. Muestra toast persistente. Limpia estado al éxito. |
+| `onPageChange(event)` | Maneja cambio de página en paginador. Actualiza `pageSize` y `pageIndex`, recarga lista.                                              |
+
+### 8.7 Métodos de búsqueda
+| Método          | Descripción                                                                                                          |
+|-----------------|----------------------------------------------------------------------------------------------------------------------|
+| `setupSearch()` | Configura búsqueda con debounce de 300ms. Suscribe a cambios en `searchText` y recarga lista con filtro de búsqueda. |
+
+### 8.8 Métodos auxiliares
+| Método                     | Descripción                                                                                                        |
+|----------------------------|--------------------------------------------------------------------------------------------------------------------|
+| `extractErrorMessage(err)` | Extrae mensaje de error de `HttpErrorResponse`. Retorna mensaje del body o mensaje genérico.                       |
+| `qnaCompleta` (getter)     | Construye quincena completa en formato `AAAAQQ` a partir de `calendarioActual.ejercicio` y `calendarioActual.qna`. |
+| `searchEmployees(search)`  |  Busca empleados mediante `EmployeeService`.                                                                       |
+
+
+
+## 9. Prueba operativa minima
 1. Arrancar el perfil local y confirmar el puerto en el log.
 2. Abrir `/src/environments/environment.ts`, cambiar la ruta a localhost, o descomentar esa ruta y comentar la de prod.
 3. Hacer login
@@ -173,7 +244,7 @@ Tipo | Significado  | Staging                                                   
 * NOTA IMPROTENTE:
 - Si no se puede ingresar al swagger, puedes hacer primero pruebas en el postman.
 
-## 8. Criterios al modificar el modulo
+## 10. Criterios al modificar el modulo
 - Conservar `ApiResponse` en todos los services.
 - No exponer registros de muestra, RFC, CURP, tokens ni credenciales en documentacion o logs compartidos.
 - En caso de que se integren nuevas varibales, revisar primero los modelos para ver si coincidan con lo que es el nuevo requerimiento
