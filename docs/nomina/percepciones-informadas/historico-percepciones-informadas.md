@@ -32,6 +32,9 @@ En la vista:
 
 ## 2. Mapa de codigo
 - Ruta del modulo:
+src/app/features/nomina/historico-percepciones-informadas/
+
+- Clases involucradas: 
 ```text
     src/app/features/nomina/historico-percepciones-informadas/
         historico-percepciones-informadas/

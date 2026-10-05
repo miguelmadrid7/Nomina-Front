@@ -23,6 +23,7 @@ En la vista:
 src/app/features/nomina/calculo-nomina-ordinaria/
 
 - Clases involucradas:
+```text
     src/app/features/nomina/calculo-nomina-ordinaria/
         calculo-nomina-ordinaria/
             calculo-nomina.ts
@@ -45,16 +46,17 @@ src/app/features/nomina/calculo-nomina-ordinaria/
 
     src/app/shared/validators/
         validaciones.validators.ts
-
+```
 
 ## 3. API (Service)  
-Metodo |          Ruta                 | Uso 
-GET    | `/calendario/activa`          | Muestra la qna activa, esto se controla en el backend por medio de un endpoint de true/false 
-GET    | `/calendario/conceptos-extra` | Muestra los conceptos extra qu se deben de aplicar para la qna activa(qna proceso)
-POST   | `/calculation/execute`        | Es el boton de calculo de nomina, manda la peticion al back para que se emepiecen a ejeuctar todo el proceso del calculo de la nomina
-POST   | `/topic/payroll/${jobId}`     | Es la puerta abierta entre el back y la bd es la ejecucion del websocke en tiempo real de la sincronizacion de la ejecuicon de los SP 
-GET    | `/calculation/status/${id}`   | Muestra la sincronizacion entre front y back y manda el estatus de ejecucion de cada peticion que se hace durante la ejecucion del proceso de nomina, manda "RUNING" y si fallo "ERROR" y si se completo manda un "COMPLETE"
-GET    | `/calculation/nomina-cheque`  | Muestra el resultado del proceso de la qna ya calculada, se muestra en un dialogo
+| Metodo |          Ruta                 | Uso 
+|--------|-------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| GET    | `/calendario/activa`          | Muestra la qna activa, esto se controla en el backend por medio de un endpoint de true/false                                                                                                                                    |
+| GET    | `/calendario/conceptos-extra` | Muestra los conceptos extra qu se deben de aplicar para la qna activa(qna proceso)                                                                                                                                              |
+| POST   | `/calculation/execute`        | Es el boton de calculo de nomina, manda la peticion al back para que se emepiecen a ejeuctar todo el proceso del calculo de la nomina                                                                                           |
+| POST   | `/topic/payroll/${jobId}`     | Es la puerta abierta entre el back y la bd es la ejecucion del websocke en tiempo real de la sincronizacion de la ejecuicon de los SP                                                                                           |
+| GET    | `/calculation/status/${id}`   | Muestra la sincronizacion entre front y back y manda el estatus de ejecucion de cada peticion que se hace durante la ejecucion del proceso de nomina, manda "RUNING" y si fallo "ERROR" y si se completo manda un "COMPLETE"    |
+| GET    | `/calculation/nomina-cheque`  | Muestra el resultado del proceso de la qna ya calculada, se muestra en un dialogo                                                                                                                                               |
 
   
 ## 4. Reglas de validación de negocio  
@@ -66,7 +68,44 @@ GET    | `/calculation/nomina-cheque`  | Muestra el resultado del proceso de la 
 6. **Autenticación**: `AuthGuard` bloquea la ruta si `LoginService.isAuthenticated()` falla y redirige a `/login` con `returnUrl`.  
 7. **SSR-safe**: el token solo se lee de `localStorage` cuando `isPlatformBrowser` es verdadero.  
   
-## 5. Prueba operativa mínima  
+## 5. Diagrama de clases
+| Componente principal      | Servicios               | Modelos                 | Modelos de request       | Modelos de response       |
+|---------------------------|-------------------------|-------------------------|--------------------------|---------------------------| 
+| `CalculoNominaComponent`  | `CalendarioService`     | `Calendario`            | -                        | -                         |
+|                           | `ToastService`          | `ConceptoExtra`         |                          |                           |
+|                           | `PayrollJobService`     | `StepExecution`         |                          |                           |
+
+## 6. Métodos del componente CalculoNominaComponent
+
+### 6.1 Métodos de ciclo de vida
+| Método        | Descripción                                                                                                                                             |
+|---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ngOnInit()`  | Inicializa el componente: carga calendario actual, carga conceptos extra y se suscribe al estado del job de nómina.                                     |
+
+### 6.2 Métodos de carga de datos
+| Método                                  | Descripción                                                                                                                                                    |
+|-----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `cargarCalendarioActual()`              | Obtiene la quincena activa desde `GET /calendario/activa`. Actualiza `calendarioActual` y patchea el formulario con año y quincena.                            |
+| `cargarConceptosExtra()`                | Obtiene conceptos extra desde `GET /calendario/conceptos-extra`. Inicializa `conceptoSeleccionado` con todos los conceptos disponibles.                        |
+
+### 6.3 Métodos de ejecución
+| Método                    | Descripción                                                                                                                              |
+|---------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| `executePayrollProcess()` | Inicia el proceso de cálculo de nómina mediante `POST /calculation/execute`. Construye qnaProceso y llama al servicio PayrollJobService. |
+
+### 6.8 Métodos auxiliares
+| Method                            | Description                                                                                                        |
+|-----------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| `toggleConcepto(key)`             | Activa/desactiva un concepto extra en el Set `conceptoSeleccionado`.                                               |
+| `isConceptoSeleccionado(key)`     | Verifica si un concepto está seleccionado.                                                                         |
+| `getExecution(stepIndex)`         | Obtiene el historial de ejecución de un paso específico.                                                           |
+| `recomputeStepIndex()`            | Recalcula el índice del paso actual basado en el progreso.                                                         |
+| `subscribeToJobState()`           | Se suscribe al estado del job de nómina para actualizar progreso, errores y pasos en tiempo real.                  |
+| `qnaDisplay` (getter)             | Construye la quincena en formato QQ / AAAA para visualización.                                                     |
+| `totalDurationFormatted` (getter) | Formata la duración total del proceso en formato legible.                                                          |
+| `currentStepIndex` (getter)       | Retorna el índice del paso actual.                                                                                 |
+
+## 7. Prueba operativa mínima  
 1. Login válido → navegar a `/home/nomina/ordinaria`.  
 2. Clic en **"Ver Registros"** con año=2026, quincena=01.  
 3. Verificar que la tabla muestra filas con `qnaProceso = 202601`.  
@@ -74,7 +113,7 @@ GET    | `/calculation/nomina-cheque`  | Muestra el resultado del proceso de la 
 6. Clic en **"Descarga CSV"** → descarga `Calculo_Nomina.xlsx`.  
 7. Cerrar sesión y reintentar la ruta → redirige a `/login`.  
   
-## 6. Criterios al modificar el módulo  
+## 8. Criterios al modificar el módulo  
 - **No cambiar el contrato de headers** en `getCalculation()` sin coordinar con el backend: usa `@RequestHeader`, no query params.  
 - **Mantener el formato `qnaProceso`** (YYYYQQ); `adaptResponse`, `downloadExcel` y el diálogo dependen de él.  
 - Si se agregan columnas a `displayedColumns`, actualizar el `.html`(matColumnDef) y, si aplica, el `filterPredicate`.  
