@@ -80,49 +80,40 @@ ME, MG, VM, 37, TP, OA, OL, TE, 7S
 - Reset al filtrar: Al aplicar filtros, la página se resetea a 0
 
 
-## 6. Diagrama de clases
+## 5. Diagrama de clases
 | Componente principal              | Servicios                       | Modelos                 | Modelos de request       | Modelos de response       |
 |-----------------------------------|---------------------------------|-------------------------|--------------------------|---------------------------| 
 | `HistoricoPercepcionesInformadas` | `CalendarioService`             | `Calendario`            | -                        | -                         |
 |                                   | `PercepcionesInformadasService` | `HistoricoCarga`        |                          |                           |
 |                                   | `ToastService`                  |                         |                          |                           |
 
-## 7. Métodos del componente HistoricoPercepcionesInformadas
+## 6. Métodos del componente HistoricoPercepcionesInformadas
 
-### 7.1 Métodos de ciclo de vida
+### 6.1 Métodos de ciclo de vida
 | Método        | Descripción                                                                                                                                             |
 |---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `ngOnInit()`  | Inicializa el componente: genera años y quincenas, carga quincena activa y configura filtros con debounce de 200ms.                                     |
 
-### 7.2 Métodos de carga de datos
+### 6.2 Métodos de carga de datos
 | Método                                   | Descripción                                                                                                                                                    |
 |------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `loadQnaActivated()`                     | Obtiene la quincena activa desde `GET /calendario/activa`. Actualiza `calendarioActual` y aplica filtros automáticamente.                                      |
 | `loadHistorico(qnaProceso, concepto)`    | Carga histórico desde `GET /nom-emp-pza-cpto/historico`. Acepta filtro opcional por concepto. Actualiza `historico` y aplica paginación local.                 |
 
-### 7.3 Métodos de manipulación de archivos
+### 6.3 Métodos de manipulación de archivos
 | Método                                            | Descripción                                                                                                                                                                  |
 |---------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `downloadExcel(qnaProceso, concepto, fechaCarga)` | Descarga reporte XLSX desde `GET /nom-emp-pza-cpto/descargar-validaciones`. Muestra toast persistente durante descarga. Guarda el blob con nombre formateado.                |
 | `onDownloadReport()`                              | Descarga reporte general según los filtros aplicados (año, quincena, concepto).                                                                                              |
 | `onDownloadRow(row)`                              | Descarga reporte específico de una fila del histórico usando su qnaProceso, concepto y fechaCarga.                                                                           |
 
-### 7.4 Métodos de validación
-No aplica - Este módulo es de consulta únicamente, no realiza validaciones de negocio.
-
-### 7.5 Métodos de edición de registros
-No aplica - Este módulo es de consulta únicamente, no permite edición.
-
-### 7.6 Métodos de procesamiento
-No aplica - Este módulo es de consulta únicamente, no procesa datos.
-
-### 7.7 Métodos de búsqueda y filtros
+### 6.4 Métodos de búsqueda y filtros
 | Método           | Descripción                                                                                                          |
 |------------------|----------------------------------------------------------------------------------------------------------------------|
 | `applyFilters()` | Aplica los filtros seleccionados (año, quincena, concepto). Usa qnaFiltro si está presente, sino usa qnaActiva.      |
 | `clearFilters()` | Limpia todos los filtros (año, quincena, concepto) y recarga el histórico con la quincena activa.                    |
 
-### 7.8 Métodos auxiliares
+### 6.5 Métodos auxiliares
 | Method                     | Description                                                                                                        |
 |----------------------------|--------------------------------------------------------------------------------------------------------------------|
 | `onPageChange(event)`      | Maneja cambio de página en paginador local. Actualiza `pageSize` y `pageIndex`, refresca la página actual.         |
@@ -133,7 +124,7 @@ No aplica - Este módulo es de consulta únicamente, no procesa datos.
 
 
 
-## 5. Prueba operativa minima
+## 7. Prueba operativa minima
 1. Arrancar el perfil local y confirmar el puerto en el log.
 2. Abrir `/src/environments/environment.ts`, cambiar la ruta a localhost, o descomentar esa ruta y comentar la de prod.
 3. Hacer login
@@ -146,7 +137,7 @@ No aplica - Este módulo es de consulta únicamente, no procesa datos.
 * NOTA IMPORTANTE:
 - Si no se puede ingresar al swagger, puedes hacer primero pruebas en el postman.
 
-## 9. Criterios al modificar el modulo
+## 8. Criterios al modificar el modulo
 - Conservar `ApiResponse` en todos los services.
 - No exponer registros de muestra, RFC, CURP, tokens ni credenciales en documentacion o logs compartidos.
 - En caso de que se integren nuevas varibales, revisar primero los modelos para ver si coincidan con lo que es el nuevo requerimiento
