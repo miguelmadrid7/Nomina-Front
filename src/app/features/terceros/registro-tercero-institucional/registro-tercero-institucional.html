@@ -15,25 +15,6 @@
 
     <div class="section-divider"></div>
 
-    <div class="actions-right">
-        <div class="btn-group">
-            <button class="btn btn-primary" (click)="buscarRegistrosNp()">
-                <mat-icon>search</mat-icon>
-                    <span>Buscar</span>
-            </button>
-           
-        </div>
-        <button class="btn btn-danger" (click)="clearFilters()">
-            <mat-icon>delete_outline</mat-icon>
-                <span>Limpiar</span>
-        </button>
-       
-        <button class="btn btn-success" (click)="abrirAgregar()">
-            <mat-icon>playlist_add</mat-icon>
-            <span>Agregar</span>
-        </button>
-    </div>
-
     <form [formGroup]="form">
         <div formGroupName="busqueda" class="global-search">
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
@@ -61,6 +42,24 @@
                         <mat-option *ngFor="let c of conceptosFiltrados" [value]="c">{{ c.cve }} - {{ c.descripcion }}</mat-option>
                     </mat-select>
             </mat-form-field>
+
+            <div class="actions-right">
+                <div class="btn-group">
+                    <button class="btn btn-primary" (click)="buscarRegistrosNp()">
+                        <mat-icon>search</mat-icon>
+                            <span>Buscar</span>
+                    </button>
+                </div>
+                <button class="btn btn-danger" (click)="clearFilters()">
+                    <mat-icon>delete_outline</mat-icon>
+                        <span>Limpiar</span>
+                </button>
+        
+                <button class="btn btn-success" (click)="abrirAgregar()">
+                    <mat-icon>playlist_add</mat-icon>
+                    <span>Agregar</span>
+                </button>
+            </div>
         </div>
 
         <div class="section-divider"></div>
