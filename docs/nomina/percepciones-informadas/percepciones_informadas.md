@@ -96,7 +96,77 @@ Unicamente se puede tener el archivo con las siguiente cabeceras:
 * NOTA IMPORTANTE:
 - Si no se puede ingresar al swagger, puedes hacer primero pruebas en el postman.
 
-## 7. Criterios al modificar el modulo
+## 7. Diagrama de clases
+| Componente principal      | Servicios                       | Modelos                 | Modelos de request       | Modelos de response       |
+|---------------------------|---------------------------------|-------------------------|--------------------------|---------------------------| 
+| `PercepcionesInformadas`  | `CalendarioService`             | `Calendario`            | -                        | -                         |
+|                           | `ToastService`                  | `EmpleadoItem`          |                          |                           |
+|                           | `ExcelUploadService`            | `PersonalizarRow`       |                          |                           |
+|                           | `PercepcionesInformadasService` |                         |                          |                           |
+
+## 8. Métodos del componente PercepcionesInformadas
+
+### 8.1 Métodos de ciclo de vida
+| Método        | Descripción                                                                                                                                             |
+|---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ngOnInit()`  | Inicializa el componente: carga quincena activa y configura filtro de búsqueda con debounce de 300ms.                                                   |
+
+### 8.2 Métodos de carga de datos
+| Método                                          | Descripción                                                                                                                                                    |
+|-------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `loadQnaActivated()`                            | Obtiene la quincena activa desde `GET /calendario/activa`. Actualiza `calendarioActual` y maneja errores.                                                      |
+| `cargarListaPersonalizar(qnaProceso, concepto)` | Carga lista de validaciones desde `GET /nom-emp-pza-cpto/personalizar`. Actualiza `dataSource`, contadores de aceptados/rechazados y total de elementos.       |
+| `loadLotes()`                                   | Obtiene lotes pendientes desde el servicio y abre diálogo `ConsultaPersepcionesInformadasDialog` con los resultados.                                           |
+
+### 8.3 Métodos de manipulación de archivos
+| Método                   | Descripción                                                                                                                                                                  |
+|--------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `onExcelSelected(event)` | Valida selección de archivo Excel: verifica extensión (.xls, .xlsx), concepto seleccionado, formato de archivo y columnas requeridas. Guarda en `selecteExcelFile`.          |
+| `onAceptBotton()`        | Carga archivo Excel mediante `POST /nom-emp-pza-cpto/cargar-excel`. Muestra toast persistente durante validación. Actualiza contadores y recarga lista.                      |
+
+### 8.4 Métodos de validación
+| Método               | Descripción                                                                                                       |
+|----------------------|-------------------------------------------------------------------------------------------------------------------|
+| `onRevalidarLote()`  | Revalida el lote mediante validación de IDs. Actualiza resumen de validación y recarga lista de registros.        |
+
+### 8.5 Métodos de edición de registros
+| Método                            | Descripción                                                                                                                                                         |
+|-----------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `onDeleteRecord(row)`             | Elimina un registro temporal mediante `DELETE /nom-emp-pza-cpto/personalizar/{id}`. Muestra diálogo de confirmación. Actualiza contadores y recarga lista.          |
+| `onPersonalitedQuantity(row)`     | Activa modo de edición para la cantidad de una fila estableciendo `editingRowId`.                                                                                   |
+| `onQuantityChange(row, rawValue)` | Actualiza cantidad de un registro mediante edición. Valida cantidad > 0, actualiza y muestra resultado.                                                             |
+
+### 8.6 Métodos de procesamiento
+| Método                | Descripción                                                                                                                                   |
+|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
+| `onProcessPayroll()`  | Procesa el lote mediante `POST /nom-emp-pza-cpto/procesar`. Valida que no haya rechazados. Muestra toast persistente. Limpia estado al éxito. |
+| `onPageChange(event)` | Maneja cambio de página en paginador. Actualiza `pageSize` y `pageIndex`, recarga lista.                                                      |
+
+### 8.7 Métodos de búsqueda
+| Método          | Descripción                                                                                                          |
+|-----------------|----------------------------------------------------------------------------------------------------------------------|
+| `tableFilter()` | Configura búsqueda con debounce de 300ms. Filtra por RFC, CURP y nombre del trabajador.                              |
+
+### 8.8 Métodos auxiliares
+| Método                           | Descripción                                                                                                        |
+|----------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| `onOptionSelected(emp)`          | Maneja selección de empleado del autocomplete. Actualiza `empleadoId` y `empleadoRfc`.                             |
+| `onRowSelected(row)`             | Establece `selectedRowId` cuando se selecciona una fila.                                                           |
+| `selectEmployee(emp)`            | Extrae y normaliza el RFC del empleado seleccionado.                                                               |
+| `clear()`                        | Limpia todo el estado del componente: archivo, registros, contadores, filtros y resetea el input de archivo.       |
+| `validationSummaryText` (getter) | Construye texto de resumen de validación con aceptados y rechazados.                                               |
+
+
+## 9. Prueba operativa minima
+1. Arrancar el perfil local y confirmar el puerto en el log.
+2. Abrir `/src/environments/environment.ts`, cambiar la ruta a localhost, o descomentar esa ruta y comentar la de prod.
+3. Hacer login
+4. Obtener JWT con `POST /users/getToken` y usar `Authorize`.
+5. Entrar el modulo y probar flujo, pero una ves validado que este en ejecuion el proyecto en env de localhost
+* NOTA IMPORTANTE:
+- Si no se puede ingresar al swagger, puedes hacer primero pruebas en el postman.
+
+## 10. Criterios al modificar el modulo
 - Conservar `ApiResponse` en todos los services.
 - No exponer registros de muestra, RFC, CURP, tokens ni credenciales en documentacion o logs compartidos.
 - En caso de que se integren nuevas varibales, revisar primero los modelos para ver si coincidan con lo que es el nuevo requerimiento
