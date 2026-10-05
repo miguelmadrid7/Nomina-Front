@@ -135,8 +135,8 @@ export class CalculoNominaComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.cargarCalendarioActual();
-    this.cargarConceptosExtra();
+    this.loadCurrentCalendar();
+    this.loadExtraConcepts();
     this.subscribeToJobState();
   }
 
@@ -170,7 +170,7 @@ export class CalculoNominaComponent implements OnInit {
     return `${this.calendarioActual.qna.toString().padStart(2, '0')} / ${this.calendarioActual.ejercicio}`;
   }
 
-  private cargarCalendarioActual(): void {
+  loadCurrentCalendar(): void {
     this.cargandoCalendario = true;
     this.calendarioService.getQnaActiva()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -194,7 +194,7 @@ export class CalculoNominaComponent implements OnInit {
       });
   }
 
-  private cargarConceptosExtra(): void {
+  loadExtraConcepts(): void {
     this.calendarioService.getConceptosExtra()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
@@ -212,7 +212,7 @@ export class CalculoNominaComponent implements OnInit {
       });
   }
 
-  toggleConcepto(key: string): void {
+  toggleConcept(key: string): void {
     if (this.conceptoSeleccionado.has(key)) {
       this.conceptoSeleccionado.delete(key);
     } else {
@@ -221,7 +221,7 @@ export class CalculoNominaComponent implements OnInit {
     this.cdr.markForCheck();
   }
 
-  isConceptoSeleccionado(key: string): boolean {
+  isConceptSelected(key: string): boolean {
     return this.conceptoSeleccionado.has(key);
   }
 
