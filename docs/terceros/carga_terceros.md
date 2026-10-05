@@ -169,7 +169,7 @@ Las reglas de aceptacion solicitadas actualmente son:
 |---------------------------|-------------------------|-------------------------|--------------------------|---------------------------| 
 | `CargaTercerosInstNoinst` | `TerceroService`        | `TerceroConcepto`       | `TerceroLoteRequest`     | `CargaTerceroResponse`    |
 |                           |  `CalendarioService`    | `TerceroRow`            | `TerceroRegistroRequest` | `TerceroResponse`         |
-|                           |  `ToastService          | `TercerosLote`          |                          | `TerceroProcesarResponse` |
+|                           |  `ToastService`         | `TercerosLote`          |                          | `TerceroProcesarResponse` |
 |                           |                         | `TerceroHistorico`      |                          | `TerceroLoteResponse`     |          
 |                           |                         |  `Calendario`           |                          |                           | 
 
