@@ -34,7 +34,9 @@ export class PayrollJobService implements OnDestroy {
      * intenta reconectar a un proceso que haya quedado corriendo antes de un refresh.
      */
     constructor() {
-        this.tryReconnect();
+        if (this.isBrowser) {
+            queueMicrotask(() => this.tryReconnect());
+        }
     }
 
      /**
