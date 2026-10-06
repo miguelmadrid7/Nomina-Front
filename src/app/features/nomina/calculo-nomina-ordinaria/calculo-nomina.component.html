@@ -94,18 +94,18 @@
               <span class="concepto-status">Estado</span>
           </div>
           @for (concepto of conceptosExtra; track concepto.catModeloId) {
-              <div class="concepto-row" [class.concepto-excluido]="!isConceptoSeleccionado(concepto.catConceptoCve + concepto.catModeloId)">
+              <div class="concepto-row" [class.concepto-excluido]="!isConceptSelected(concepto.catConceptoCve + concepto.catModeloId)">
                   <span class="concepto-check">
                       <mat-checkbox class="meta-check"
-                          [checked]="isConceptoSeleccionado(concepto.catConceptoCve + concepto.catModeloId)"
-                          (change)="toggleConcepto(concepto.catConceptoCve + concepto.catModeloId)">
+                          [checked]="isConceptSelected(concepto.catConceptoCve + concepto.catModeloId)"
+                          (change)="toggleConcept(concepto.catConceptoCve + concepto.catModeloId)">
                       </mat-checkbox>
                   </span>
                   <span class="concepto-cve">{{ concepto.catConceptoCve }}</span>
                   <span class="concepto-modelo">Modelo {{ concepto.catModeloId }}</span>
                   <span class="concepto-desc">{{ concepto.descripcion }}</span>
                   <span class="concepto-status">
-                      @if (isConceptoSeleccionado(concepto.catConceptoCve + concepto.catModeloId)) {
+                      @if (isConceptSelected(concepto.catConceptoCve + concepto.catModeloId)) {
                           Incluido
                       } @else {
                           Excluido
