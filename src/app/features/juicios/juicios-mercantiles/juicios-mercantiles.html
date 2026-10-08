@@ -18,12 +18,13 @@
     <div *ngIf="form" [formGroup]="form">
         <mat-card class="form-card search-card">
             <div formGroupName="busqueda" class="global-search">
-                <mat-form-field appearance="outline" class="with-separator qna-compact search-field" floatLabel="always" subscriptSizing="dynamic">
+                <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                     <mat-icon matPrefix>search</mat-icon>
                     <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
                     <input
                         matInput
                         id="buscarEmpleado"
+                        placeholder="Nombre, curp o rfc del trabajador."
                         formControlName="searchText"
                         [matAutocomplete]="auto"
                         #inputTrigger="matAutocompleteTrigger"
@@ -78,7 +79,7 @@
         <div class="section-divider"></div>
 
         <div class="section-header">
-          <h2>Alta de juicio</h2>
+          <h2 class="page-title">Alta de juicio</h2>
         </div>
        
         <div class="actions-right">
