@@ -309,7 +309,7 @@ export class RegistroTercerosNoInstitucional implements OnDestroy {
   }
   
   verDetalles(row: any) {
-    const nombreCompleto = (row.nombreEmpleado || '').trim().split(' ');
+    const nombreCompleto = (row?.nombreEmpleado || '').trim().split(' ');
     const apellidoPaterno = nombreCompleto[0] || '';
     const apellidoMaterno = nombreCompleto[1] || '';
     const nombres = nombreCompleto.slice(2).join(' ') || '';

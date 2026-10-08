@@ -1,6 +1,6 @@
 <div class="page-container">
     <div class="page-header page-header--split"> 
-        <h2 class="page-title">Registro de terceros no institucionales</h2> 
+        <h2 class="page-title">Terceros no institucionales</h2> 
 
         <div class="header-tools">
             <div class="qna-chip" role="status">
@@ -76,6 +76,11 @@
             <button class="btn btn-danger" (click)="clearFilters()">
                 <mat-icon>delete_outline</mat-icon>
                     <span>Limpiar</span>
+            </button>
+
+            <button class="btn btn-success" (click)="verDetalles(dataSource.data[0])">
+                <mat-icon>playlist_add</mat-icon>
+                    <span>Agregar</span>
             </button>
         </div>
            
