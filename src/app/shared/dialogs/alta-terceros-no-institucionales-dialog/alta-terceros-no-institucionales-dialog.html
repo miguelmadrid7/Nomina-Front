@@ -1,13 +1,12 @@
 <div class="dialog-shell">
   <div class="dialog-header dlg-bar">
-      <button mat-icon-button class="dialog-close" (click)="cerrar()">
+    <div class="dlg-bar-title">Detalle Tercero</div>
+      <button class="dialog-close" (click)="cerrar()">
         <mat-icon>close</mat-icon>
       </button>
   </div>
 
-  <mat-dialog-content *ngIf="form" [formGroup]="form" class="dlg-content">
-    
-    <div class="dlg-bar-title">Detalle Tercero</div>
+  <mat-dialog-content *ngIf="form" [formGroup]="form" class="dialog-conten">
     
     <div class="dlg-recepcion" *ngIf="calRecSeleccionado">
       <strong>Fecha de recepción:</strong> {{ fechaRecepcionInfo }}
@@ -62,8 +61,6 @@
     </mat-card>
 
     <div class="section-divider"></div>
-
-    <div class="dlg-bar-title">Registro de Tercero</div>
 
     <div class="form-grid">
       <mat-form-field appearance="outline" class="login-field compact-field with-separator" floatLabel="always">
@@ -151,7 +148,7 @@
   </mat-dialog-content>
 
   <!-- ACTIONS -->
-  <div class="dlg-actions">
+  <div class="dialog-actions">
     <button class="btn btn-primary" (click)="guardar()">Guardar</button>
     <button class="btn btn-danger" (click)="cerrar()">Cancelar</button>
   </div>
