@@ -265,7 +265,6 @@ main {
 }
 
 /* ===== Ajustes menú multinivel ===== */
-
 /* Ícono con ancho fijo: todos los textos arrancan en la misma columna */
 .sidebar-shell .btn-toggle > span > i,
 .sidebar-shell .nav-link > i,
@@ -298,7 +297,7 @@ main {
 .sidebar-shell .btn-toggle-nav {
   margin-left: .95rem;
   padding-left: .6rem;
-  border-left: 1px solid rgba(255, 255, 255, .15);
+  border-left: 1px solid rgba(255, 255, 255, .05); 
   font-size: .9rem;
 }
 
