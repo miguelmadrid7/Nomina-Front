@@ -148,7 +148,7 @@ export const routes: Routes = [
           {
             path: 'registro-alimenticia',
             loadComponent: () =>
-              import('./features/pension-alimenticia/pension-alimenticia/pension-alimenticia')
+              import('./features/pension-alimenticia/registro-pension-alimenticia/pension-alimenticia')
                 .then(m => m.PensionAlimenticia),
             data: { breadcrumb: 'Pensión alimenticia' }
           },
@@ -169,7 +169,7 @@ export const routes: Routes = [
           {
             path: 'juicios-mercantiles',
             loadComponent: () =>
-              import('./features/juicios/juicios-mercantiles/juicios-mercantiles')
+              import('./features/juicios/registro-juicios-mercantiles/juicios-mercantiles')
                 .then(m => m.JuiciosMercantiles),
             data: { breadcrumb: 'Juicios mercantiles' }
           },
