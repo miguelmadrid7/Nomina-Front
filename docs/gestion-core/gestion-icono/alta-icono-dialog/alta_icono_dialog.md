@@ -1,4 +1,4 @@
-# Diálogo - Alta de Ícono
+# Diálogo - Gestión de Ícono
 
 - Nombre del diálogo:
 - IconoDialog (Alta de Ícono)
@@ -73,12 +73,12 @@ src/app/shared/dialogs/alta-icono-dialog/
 | `ngOnInit()`    | Inicializa el componente: crea el formulario con los campos name, icon y description, todos con Validators.required.                                    |
 
 ### 6.2 Métodos de envío de formulario
-| Method                | Description                                                                                                                                 |
+| Método                | Descripcion                                                                                                                                 |
 |-----------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
 | `submit()`            | Valida el formulario. Si es válido, construye el payload y llama al servicio para crear el ícono. Cierra el diálogo con true si es exitoso. |
 
 ### 6.3 Métodos de cierre
-| Method                | Description                                                                                                                           |
+| Metodo                | Descripcion                                                                                                                           |
 |-----------------------|---------------------------------------------------------------------------------------------------------------------------------------|
 | `close()`             | Cierra el diálogo retornando `false` (cancelación).                                                                                   |
 
