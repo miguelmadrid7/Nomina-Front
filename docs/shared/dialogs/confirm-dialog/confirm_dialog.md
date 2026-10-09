@@ -60,13 +60,13 @@ No aplica - Este diálogo no tiene métodos de ciclo de vida explícitos.
 ### 6.2 Métodos de confirmación
 | Method                | Description                                                                                                                           |
 |-----------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `confirm()`           | Cierra el diálogo retornando `true` (confirmación).                                                                                  |
-| `cancel()`            | Cierra el diálogo retornando `false` (cancelación).                                                                                  |
+| `confirm()`           | Cierra el diálogo retornando `true` (confirmación).                                                                                   |
+| `cancel()`            | Cierra el diálogo retornando `false` (cancelación).                                                                                   |
 
 ### 6.3 Métodos de cierre
 | Method                | Description                                                                                                                           |
 |-----------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `cerrar()`            | Cierra el diálogo sin retornar valor (cierre con botón X).                                                                           |
+| `cerrar()`            | Cierra el diálogo sin retornar valor (cierre con botón X).                                                                            |
 
 ### 6.4 Métodos auxiliares
 No aplica - Este diálogo no tiene métodos auxiliares adicionales.
