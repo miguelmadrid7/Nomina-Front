@@ -1,0 +1,137 @@
+/* GRID LAYOUT */
+.form-grid,
+.vigencia-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 16px;
+}
+
+/* La fila especial ocupa toda la anchura del grid padre (2 columnas) */
+.form-grid > .full {
+  grid-column: 1 / -1;
+}
+
+.form-grid{
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  align-items: start;
+  justify-content: start;
+}
+
+/* Fila interna: 3 columnas para los 3 campos */
+.name-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px 16px;
+}
+
+.span-3 {
+  grid-column: 1 / -1;
+}
+
+.grid-empty {
+  grid-column: 1 / -1;
+  height: 0;
+  border-top: 1px solid var(--line);
+  margin: 10px 0 12px;
+  width: 100%;
+}
+
+/* Separación extra debajo del bloque de carga de PDF */
+.pdf-upload-row {
+  margin-bottom: 12px;
+  display: block;
+}
+
+mat-form-field {
+  width: 100%;
+  display: block;
+}
+
+:host ::ng-deep .compact-field mat-icon {
+  font-size: 18px;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+}
+
+:host ::ng-deep .compact-field .mat-mdc-form-field-infix {
+  min-height: 40px;
+  padding-top: 8px;
+  padding-bottom: 2px;
+}
+
+/* Fecha y tiempo */
+.datetime-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px 16px;
+}
+
+.mat-caption {
+  margin-top: 6px;
+  color: #d32f2f;
+}
+
+.mat-body-2 {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.pdf-preview {
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  height: 420px;
+}
+
+.pdf-preview-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+  background: #f9fafb;
+}
+
+.pdf-preview iframe {
+  width: 100%;
+  height: calc(100% - 50px);
+  border: 0;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .datetime-row {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 30px; /* ← aumenta el gap horizontal */
+    align-items: start;
+  }
+
+  :host ::ng-deep .compact-field input.mat-mdc-input-element {
+    font-size: 11px; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .name-row,
+  .datetime-row {
+    grid-template-columns: 1fr;
+  }
+
+  .span-3 {
+    grid-column: 1;
+  }
+
+  .pdf-preview {
+    height: 300px;
+  }
+}

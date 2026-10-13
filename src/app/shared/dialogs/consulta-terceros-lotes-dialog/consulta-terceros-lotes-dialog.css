@@ -1,0 +1,21 @@
+.row-removing {
+  animation: row-out 300ms ease forwards;
+  pointer-events: none;
+}
+
+@keyframes row-out {
+  from {
+    opacity: 1;
+    background-color: #fcebeb;
+  }
+  to {
+    opacity: 0;
+    background-color: #fcebeb;
+  }
+}
+
+.empty-state {
+  margin: 16px 0;
+  text-align: center;
+  color: var(--text-secondary, #5f6368);
+}
