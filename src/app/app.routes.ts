@@ -222,6 +222,13 @@ export const routes: Routes = [
                 .then(m => m.HistoricoTerceros),
             data: { breadcrumb: 'Historico carga de terceros' }
           },
+          {    
+            path: 'gestion-constancias-terceros',
+            loadComponent: () =>
+              import('./features/terceros/gestion-constancias-terceros/gestion-constancias-terceros')
+                .then(m => m.GestionConstanciasTerceros),
+            data: { breadcrumb: 'Gestion de constancias de terceros' }
+          },
         ]
       },
     ]
