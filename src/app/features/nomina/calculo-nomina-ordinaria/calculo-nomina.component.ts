@@ -106,6 +106,11 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando concepto 58' },            // cpto_58
     { label: 'Calculando concepto 77' },            // cpto_77
     { label: 'Calculando concepto 62' },            // cpto_62
+    { label: 'Preparando descuentos de pensiones alimenticias' }, // cpto_62
+    { label: 'Consolidando pensiones alimenticias' }, // cpto_62
+    { label: 'Preparando descuentos de juicios mercantiles' }, // cpto_JM
+    { label: 'Consolidando juicios mercantiles' }, // cpto_JM 
+    { label: 'Calculando concepto 19' },            // cpto_19
     { label: 'Calculando deducciones informadas' }, // deducciones informadas
     { label: 'Calculando bonos BA' },               // bono_BA
     { label: 'Calculando bonos BE' },               // bono_BE
@@ -118,10 +123,6 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando bonos IH' },               // bono_IH
     { label: 'Calculando bonos OF' },               // bono_OF
     { label: 'Calculando bonos RM' },               // bono_RM
-    { label: 'Preparando descuentos de pensiones alimenticias' }, // cpto_62
-    { label: 'Consolidando pensiones alimenticias' }, // cpto_62
-    { label: 'Preparando descuentos de juicios mercantiles' }, // cpto_JM
-    { label: 'Consolidando juicios mercantiles' }, // cpto_JM
     { label: 'Actualizando importes' },              // updateImportes
     { label: 'Actualizando importes finales' },      // updateImportes
   ];
