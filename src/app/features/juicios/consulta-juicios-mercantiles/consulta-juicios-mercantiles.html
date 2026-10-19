@@ -142,9 +142,12 @@
                         <tr mat-header-row *matHeaderRowDef="displayedColumns" class="sticky-header"></tr>
                         <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.inactive-row]="row?.status === 'INACTIVO'"></tr>
 
-                        <tr class="mat-row" *matNoDataRow [class.hidden]="!hasCheck">
-                            <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
-                                SIN BENEFICIARIOS REGISTRADOS
+                        <tr class="mat-mdc-row" *matNoDataRow [class.hidden]="!hasCheck">
+                            <td class="mat-mdc-cell no-data" [attr.colspan]="displayedColumns.length">
+                                <div class="no-data__content no-data__content--static">
+                                    <mat-icon class="no-data__icon">search_off</mat-icon>
+                                    <span class="no-data__text">No se encontraron beneficiarios para la búsqueda realizada.</span>
+                                </div>
                             </td>
                         </tr>
                     </table>

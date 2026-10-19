@@ -208,6 +208,15 @@
 
                             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                            <tr class="mat-mdc-row" *matNoDataRow>
+                                <td class="mat-mdc-cell no-data" [attr.colspan]="displayedColumns.length">
+                                    <div class="no-data__content no-data__content--static">
+                                        <mat-icon class="no-data__icon">search_off</mat-icon>
+                                        <span class="no-data__text">No hay registros disponibles para los filtros seleccionados.</span>
+                                    </div>
+                                </td>
+                            </tr>
                         </table>
                     </div>
                      <div class="table-footer">

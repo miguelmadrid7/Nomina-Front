@@ -166,7 +166,16 @@
                   [class.row-finalizado]="!!row.qnaFin && row.qnaFin !== 999999"
                   [class.inicio-grupo]="row.mostrarEmpleado">
                 </tr>
-              </table>
+
+                <tr class="mat-mdc-row" *matNoDataRow>
+                  <td class="mat-mdc-cell no-data" [attr.colspan]="displayedColumns.length">
+                      <div class="no-data__content no-data__content--static">
+                          <mat-icon class="no-data__icon">search_off</mat-icon>
+                          <span class="no-data__text">No hay registros disponibles para los filtros seleccionados.</span>
+                      </div>
+                  </td>
+              </tr>
+          </table>
          </div>
           <div class="table-footer">
             <mat-paginator
