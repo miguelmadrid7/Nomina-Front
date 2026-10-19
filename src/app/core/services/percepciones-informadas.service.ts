@@ -1,6 +1,6 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
-import { HttpClient, HttpParams, HttpResponse } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { map, Observable } from "rxjs";
 import { ApiResponse } from "../model/response/api-Response.model";
 import { CargarExcelResponse } from "../model/response/cargar-excel-response.model";
@@ -10,14 +10,11 @@ import { ContinuarResponse } from "../model/response/validacion-excel-response.m
 import { LoteResumen } from "../model/carga-excel/lote-resumen.model";
 import { HistoricoCarga } from "../model/historico-carga.model";
 
-@Injectable({
-    providedIn: 'root',
-})
-
+@Injectable({providedIn: 'root',})
 export class PercepcionesInformadasService {
-    private base = environment.apiUrl;
 
-    constructor(private http: HttpClient) {}
+    private base = environment.apiUrl;
+    private readonly http = inject (HttpClient);
     
     uploadExcel(
         file: File,

@@ -1,5 +1,5 @@
-import { Injectable} from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
+import { inject, Injectable} from '@angular/core';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ApiResponse } from '../../core/model/response/api-Response.model';
 import { BeneficiarioDTO } from '../model/dto/beneficiarioDTO.model';
@@ -10,21 +10,14 @@ import { BeneficiarioAlimRequest } from '../../core/model/request/beneficiarioal
 import { map, Observable } from 'rxjs';
 import { LiquidoResponse } from '../../core/model/response/liquido-response.model';
 import { BeneficiarioEmpleadoResponse } from '../../core/model/response/beneficiarioempleado-response.model';
-import { CatalogoService } from './catalogo.service';
 import { EmployeeService } from './employee.service';
 
 @Injectable({ providedIn: 'root' })
 export class PensionAlimenticiaService {
 
     private base = environment.apiUrl;
-    constructor(
-        private http: HttpClient, 
-        private catalogoService: CatalogoService, 
-        private employeeService: EmployeeService) {}
-
-    private extraHeaders(key?: string, value?: string) {
-        return key && value ? { headers: new HttpHeaders().set(key, value) } : {};
-    }
+    private readonly http = inject (HttpClient);
+    private readonly employeeService = inject (EmployeeService);
 
     searchPorTarget(target: 'RFC' | 'CURP' | 'NOMBRE', value: string) {
         return this.employeeService.searchEmployeeByTarget(target, value).pipe(map(res => res.data ?? []));

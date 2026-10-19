@@ -1,4 +1,4 @@
-import { Injectable  } from '@angular/core';
+import { inject, Injectable  } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable, map } from 'rxjs';
@@ -10,7 +10,7 @@ import { User } from '../model/user.model';
 export class UserService {
 
   private base = environment.apiUrl;
-  constructor(private http: HttpClient) {}
+  private readonly http = inject (HttpClient);
 
   //Obtiene lo usuarios del sistema
   getAllUsers(): Observable<User[]> {

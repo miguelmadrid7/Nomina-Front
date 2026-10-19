@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
 import { ApiResponse } from "../../core/model/response/api-Response.model";
 import { Role } from "../model/rol.model";
@@ -9,8 +9,9 @@ import { Permission } from "../model/permission.model";
 
 @Injectable({ providedIn: 'root' })
 export class RolService {
-  private base = environment.apiUrl;
-  constructor(private http: HttpClient) {}
+    private base = environment.apiUrl;
+    private readonly http = inject (HttpClient);
+  
 
     getRoles(): Observable<Role[]> {
         return this.http.get<ApiResponse<Role[]>>(`${this.base}/roles`).pipe(map(res => res.data ?? []));

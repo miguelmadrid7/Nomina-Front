@@ -1,4 +1,4 @@
-import { Injectable  } from '@angular/core';
+import { inject, Injectable  } from '@angular/core';
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { map, Observable } from 'rxjs';
@@ -16,16 +16,15 @@ import { TercerosLote } from '../model/terceros/terceros-lote.model';
 import { TerceroLoteResponse } from '../model/response/terceros/tercero-lote-reponse.model';
 import { TerceroHistorico } from '../model/terceros/tercero-historico.model';
 import { TerceroConcepto } from '../model/terceros/tercero-conceptos.model';
-import { UserService } from './user.service';
 import { EmployeeService } from './employee.service';
 
 @Injectable({ providedIn: 'root' })
 export class TerceroService {
 
     private base = environment.apiUrl;
-    constructor(
-      private http: HttpClient, 
-      private employeeService: EmployeeService) {}
+    private readonly http = inject (HttpClient);
+    private readonly employeeService = inject (EmployeeService);
+
 
     searchEmployees(search: string): Observable<Empleado[]> {
       return this.employeeService.searchEmployee(search).pipe(map(res => res.data ?? []));

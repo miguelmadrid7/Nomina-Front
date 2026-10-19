@@ -8,6 +8,7 @@ import { ParametrizacionResponse } from '../model/response/parametrizacion-respo
 
 @Injectable({ providedIn: 'root' })
 export class CoreSalarioMinimiService {
+    
     private base = environment.apiUrl;
     private readonly http = inject(HttpClient);
 

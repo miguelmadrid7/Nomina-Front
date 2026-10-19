@@ -1,4 +1,4 @@
-import { Injectable  } from '@angular/core';
+import { inject, Injectable  } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable, map } from 'rxjs';
@@ -8,7 +8,7 @@ import { SidebarModule } from '../model/sidebar.model';
 @Injectable({ providedIn: 'root' })
 export class SidebarService {
     private base = environment.apiUrl;
-    constructor(private http: HttpClient) {}
+    private readonly http = inject (HttpClient);
 
     getModulesByUser(): Observable<SidebarModule[]> {
         return this.http.get<ApiResponse<any[]>>(`${this.base}/users/moduleByUser`).pipe(

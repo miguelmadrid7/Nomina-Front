@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -8,8 +8,10 @@ import { ModuleRequest } from '../../core/model/request/module-request.model';
 
 @Injectable({ providedIn: 'root' })
 export class ModuleService {
+
   private base = environment.apiUrl;
-  constructor(private http: HttpClient) {}
+  private readonly http = inject (HttpClient);
+  
 
     getAllModules(): Observable<Module[]> {
         return this.http.get<ApiResponse<Module[]>>(`${this.base}/modules`).pipe(map(res => res.data ?? []));

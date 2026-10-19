@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
-import { Injectable } from "@angular/core";
-import { map, Observable } from "rxjs";
+import { inject, Injectable } from "@angular/core";
+import { Observable } from "rxjs";
 import { Empleado } from "../../features/servicios/empleado";
 import { ApiResponse } from "../model/response/api-Response.model";
 
@@ -9,7 +9,7 @@ import { ApiResponse } from "../model/response/api-Response.model";
 export class EmployeeService {
 
     private base = environment.apiUrl;
-    constructor(private http: HttpClient) {}
+    private readonly http = inject (HttpClient);
 
      //Search free by employee by RFC/CURP/NOMBRE
     searchEmployee(search: string): Observable<ApiResponse<Empleado[]>> {

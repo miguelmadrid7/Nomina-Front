@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
@@ -8,9 +8,9 @@ import { ConceptoExtra } from '../model/concepto-extra.model';
 
 @Injectable({ providedIn: 'root' })
 export class CalendarioService {
-  private base = environment.apiUrl;
-
-  constructor(private http: HttpClient) {}
+  
+    private base = environment.apiUrl;
+    private readonly http = inject (HttpClient);
 
     getCalendarioQna(ejercicio?: number): Observable<ApiResponse<Calendario[]>> {
         const url = ejercicio != null

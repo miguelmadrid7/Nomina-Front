@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../../environments/environment";
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { ApiResponse } from "../model/response/api-Response.model";
 import { Banco } from "../model/banco.model";
 
@@ -8,7 +8,7 @@ import { Banco } from "../model/banco.model";
 export class CatalogoService {
 
     private base = environment.apiUrl;
-    constructor(private http: HttpClient) {}
+    private readonly http = inject (HttpClient);
 
      getBancos() {
         return this.http.get<ApiResponse<Banco[]>>(`${this.base}/catalogo/bancos`);

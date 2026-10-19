@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
@@ -8,7 +8,8 @@ import { LoginService } from './login.service';
 @Injectable({ providedIn: 'root' })
 export class ConceptoAccesoService {
 
-  constructor(private http: HttpClient, private loginService: LoginService ) {}
+  private readonly http = inject (HttpClient);
+  private readonly loginService = inject (LoginService);
 
   getConceptosPermitidos(): Observable<string[]> {
     const roles = this.loginService.getRoles();

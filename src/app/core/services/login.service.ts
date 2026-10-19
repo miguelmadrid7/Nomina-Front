@@ -9,12 +9,13 @@ import { PayrollJobService } from './payroll.service';
 
 @Injectable({ providedIn: 'root' })
 export class LoginService {
+
   private base = environment.apiUrl;
   private platformId = inject(PLATFORM_ID);
   private roleChanged = new BehaviorSubject<number | null>(null);
   private readonly payrollJobService = inject(PayrollJobService);
 
-  constructor(private http: HttpClient) {}
+  private readonly http = inject (HttpClient);
 
   private isBrowser() {
     return isPlatformBrowser(this.platformId);

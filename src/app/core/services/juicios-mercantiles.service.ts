@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
 import { HttpClient, HttpParams, HttpResponse } from "@angular/common/http";
 import { BeneficiarioJMRequest } from "../../core/model/request/beneficiariojm-request.model";
@@ -10,9 +10,10 @@ type AnyRow = Record<string, any>;
 
 @Injectable({ providedIn: 'root' })
 export class JuiciosMercantilesService {
-  private base = environment.apiUrl;
 
-  constructor(private http: HttpClient, private catalogoService: CatalogoService) {}
+  private base = environment.apiUrl;
+  private readonly http = inject (HttpClient);
+  private readonly catalogoService = inject (CatalogoService);
 
   //Buscador para search del empleado
   getBuscarEmpleado(search: string) {

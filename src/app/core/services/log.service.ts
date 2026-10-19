@@ -1,16 +1,15 @@
-import { Injectable } from "@angular/core";
+import { inject, Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { LogFileResponse } from "../model/response/logfile-response.model";
 import { LogDateResponse } from "../model/response/logdate-response.model";
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class LogService {
+
     private base = environment.apiUrl;
-     constructor(private http: HttpClient) {}
+    private readonly http = inject (HttpClient);
 
     private getHeaders(): HttpHeaders {
         const token = localStorage.getItem('token');
