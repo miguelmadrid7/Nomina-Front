@@ -2,11 +2,13 @@ import { HttpErrorResponse, HttpInterceptorFn } from "@angular/common/http";
 import { ToastService } from "../services/toast.service";
 import { inject } from "@angular/core";
 import { catchError, throwError } from "rxjs";
+import { ForbiddenDialogService } from "../services/forbidden.service";
 
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
     
     const toastService = inject(ToastService);
+    const forbiddenDialog = inject(ForbiddenDialogService);
 
     return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
@@ -37,11 +39,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
                 break;
 
                 case 403:
-                    toastService.error(
-                        'Acceso denegado', 
-                        'No tienes permisos para realizar esta operación',
-                        6000
-                    );
+                    forbiddenDialog.open();
                 break;
 
                 case 404:
