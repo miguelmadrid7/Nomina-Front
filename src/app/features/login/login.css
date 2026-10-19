@@ -1,0 +1,240 @@
+/* Letra global */
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* --- SECCIÓN 1: HEADER DORADO --- */
+.header-top-gold {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(20px, 3vw, 40px) 20px;
+   padding-left: clamp(90px, 18vw, 140px); 
+  background-color: #bc955b;
+  color: #ffffff;
+}
+
+.brand-logo {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);  
+  max-height: clamp(45px, 8vw, 75px); 
+  width: auto;
+}
+
+.header-title {
+  margin: 0;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: clamp(0px, 0.5vw, 2px);
+  font-size: clamp(14px, 4vw, 44px);    
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* --- SECCIÓN 2: FRANJA GUINDA SUB-HEADER --- */
+.header-sub-maroon {
+  background-color: #491D2A;
+  color: #ffffff;
+  padding: 50px 24px;
+  text-align: left;
+}
+
+.entity-name {
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+/* --- SECCIÓN 3: CUERPO BLANCO Y CARD RESCATADA --- */
+.main-body-white {
+  flex: 1;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  max-width: 400px;
+  width: 90%;
+  padding: 24px 32px; /* Original rescatado */
+  margin: 40px auto 24px; /* Original rescatado */
+  background: #ffffff;
+  color: #333;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.15); 
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.field-title {
+  display: inline-block;
+  font-weight: 700;
+  color: #1e1e1e;
+  margin: 8px 0 4px;
+  font-size: 14px;
+}
+
+.login-button button {
+  background-color: #491D2A !important;
+  color: #fff !important;
+  width: 100%;
+  padding: 12px 0;
+  font-weight: 700;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color .3s ease, transform .2s ease;
+}
+
+.login-button button:hover {
+  transform: scale(1.02);
+}
+
+.login-error {
+  color: #b00020;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.aux-links {
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.aux-links a {
+  font-size: 13px;
+  color: #3f51b5;
+  text-decoration: none;
+}
+
+/* --- SECCIÓN 4: FOOTER GUINDA --- */
+.footer-maroon {
+  background-color: #491D2A;
+  color: #bc955b;
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.footer-text {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #ffffff;                          
+  font-size: clamp(11px, 1.4vw, 13px);     
+  letter-spacing: clamp(1px, 0.3vw, 2px);
+}
+
+.footer-subtext {
+  font-weight: 600;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);         
+  font-size: clamp(9px, 1.1vw, 11px);     
+  letter-spacing: clamp(1.5px, 0.4vw, 3px); 
+}
+
+@keyframes errorSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+}
+
+/* --- AJUSTES MATERIAL: LÍNEAS SEPARADORAS --- */
+:host ::ng-deep {
+  .mat-mdc-form-field-flex {
+    align-items: center !important;
+  }
+  
+  .mat-mdc-text-field-wrapper .mat-mdc-form-field-infix {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  .mat-mdc-icon-button.mat-mdc-form-field-icon-suffix {
+    background: transparent !important;
+  }
+
+  .mat-mdc-form-field-error {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px 3px 6px;
+    background: rgba(176, 0, 32, 0.07);
+    border-radius: 20px;                  
+    border-left: 2.5px solid #b00020;
+    font-size: 11.5px !important;
+    font-weight: 600;
+    color: #b00020 !important;
+    margin-top: 4px;
+    animation: errorSlideIn 0.22s ease-out;
+    width: fit-content;
+  }
+
+  .error-icon {
+    font-size: 14px !important;
+    width: 14px !important;
+    height: 14px !important;
+    line-height: 14px !important;
+    color: #b00020 !important;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+
+  /* Borde del input se vuelve rojo cuando tiene error */
+  .mat-mdc-form-field.ng-invalid.ng-touched
+  .mdc-notched-outline__leading,
+  .mat-mdc-form-field.ng-invalid.ng-touched
+  .mdc-notched-outline__notch,
+  .mat-mdc-form-field.ng-invalid.ng-touched
+  .mdc-notched-outline__trailing {
+    border-color: #b00020 !important;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .header-top-gold {
+    padding-left: clamp(70px, 20vw, 100px);
+    min-height: 64px;
+  }
+
+  .brand-logo {
+    max-height: 45px;
+    left: 12px;
+  }
+
+  .header-sub-maroon {
+    padding: 20px 24px;
+  }
+
+  .footer-maroon {
+    padding: 16px; 
+  }
+
+  .card {
+    margin: 25px auto 24px;
+    border-radius: 8px;
+  }
+
+  .aux-links a {
+    font-size: 12px;
+  }
+}

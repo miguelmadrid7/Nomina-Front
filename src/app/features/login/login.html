@@ -1,0 +1,72 @@
+<header class="header">
+  <div class="header-top-gold">
+    <img class="brand-logo" src="assets/img/hidalgo.png" alt="Hidalgo Educación" />
+    <h1 class="header-title">Sistema de Nómina</h1>
+  </div>
+  
+  <div class="header-sub-maroon">
+    <span class="entity-name"></span>
+  </div>
+</header>
+
+<main class="main-body-white">
+  <form [formGroup]="loginForm" (ngSubmit)="login()" novalidate>
+    <mat-card class="card" appearance="outlined">
+      
+      <label class="field-title" for="usuario">Usuario:</label>
+        <mat-form-field appearance="outline" class="with-separator">
+          <mat-icon matPrefix>person</mat-icon>
+          <input 
+            matInput 
+            id="usuario" 
+            formControlName="user" 
+            placeholder="Usuario" 
+            required />
+          <mat-error *ngIf="userControl.invalid && userControl.touched"> 
+            <mat-icon class="error-icon">warning_amber</mat-icon>
+              Por favor ingrese su usuario. 
+            </mat-error>
+        </mat-form-field>
+
+      <label class="field-title" for="password">Contraseña:</label>
+        <mat-form-field appearance="outline" class="with-separator" floatLabel="always">
+          <mat-icon matPrefix>lock</mat-icon>
+          <input 
+              matInput id="password" 
+              formControlName="password" 
+              placeholder="Contraseña" 
+              [type]="hide ? 'password' : 'text'"
+              required />
+          <button 
+            mat-icon-button 
+            matSuffix type="button" 
+            (click)="hide = !hide" 
+            (mousedown)="$event.preventDefault()"
+            [attr.aria-label]="hide ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+            [attr.title]="hide ? 'Mostrar contraseña' : 'Ocultar contraseña'">
+              <mat-icon>{{ hide ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="passwordControl.invalid && passwordControl.touched"> 
+            <mat-icon class="error-icon">warning_amber</mat-icon>
+              Por favor ingrese su contraseña. 
+          </mat-error>
+        </mat-form-field>
+
+
+      <div class="login-button">
+        <button mat-raised-button type="submit" [disabled]="loading">
+          {{ loading ? 'Accesando...' : 'Acceder' }}
+        </button>
+      </div>
+
+      <div class="aux-links">
+        <a routerLink="/recuperar-contraseña">¿Olvidaste tu contraseña?</a>
+      </div>
+    </mat-card>
+  </form>
+</main>
+
+<footer class="footer-maroon">
+    <div class="footer-text">DIRECCIÓN GENERAL DE RECURSOS HUMANOS</div>
+    <div class="footer-subtext">DIRECCIÓN DE NÓMINA Y CONTROL DE PLAZAS</div>
+</footer>

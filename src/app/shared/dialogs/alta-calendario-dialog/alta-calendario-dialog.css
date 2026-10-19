@@ -1,0 +1,91 @@
+/* --- buttons --- */
+.btn-primary {
+  background: transparent;
+  color: #2563eb;
+  border-color: #2563eb;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  transform: translateY(-1px);
+}
+ 
+/* Form grid*/
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  align-items: start;
+  justify-content: start;
+}
+
+.checkbox-group {
+  grid-column: 1 / -1;       
+  display: flex;
+  flex-wrap: nowrap;     
+  gap: 16px;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.row-three {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 8px;
+}
+
+.row-three mat-form-field {
+  flex: 1;
+}
+
+:host ::ng-deep .compact-field mat-icon {
+  font-size: 18px;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-form-field-infix {
+    min-height: 40px !important;
+    display: flex;
+    align-items: center;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .qna-compact input.mat-mdc-input-element {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+:host ::ng-deep .checkbox-group .mat-mdc-checkbox {
+  --mdc-checkbox-state-layer-size: 10px;
+  margin: 0;
+}
+
+
+@media (max-width: 768px) {
+  .row-three {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .row-three mat-form-field {
+    width: 100%;
+  }
+
+  .checkbox-group {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .checkbox-group mat-checkbox {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 120px;
+  }
+}
