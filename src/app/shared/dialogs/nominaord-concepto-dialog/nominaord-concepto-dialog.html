@@ -99,7 +99,12 @@
 
               <ng-container matColumnDef="concepto">
                 <th mat-header-cell *matHeaderCellDef>Concepto</th>
-                <td mat-cell *matCellDef="let r">{{ r.concepto }}</td>
+                <td mat-cell *matCellDef="let r">
+                  <div class="concept-cell">
+                    <span class="concept-code">{{ r.concepto }}</span>
+                    <span class="concept-desc" *ngIf="r.descripcion">{{ r.descripcion }}</span>
+                  </div>
+                </td>
               </ng-container>
 
               <ng-container matColumnDef="importe">
@@ -126,7 +131,12 @@
 
               <ng-container matColumnDef="concepto">
                 <th mat-header-cell *matHeaderCellDef>Concepto</th>
-                <td mat-cell *matCellDef="let r">{{ r.concepto }}</td>
+                <td mat-cell *matCellDef="let r">
+                  <div class="concept-cell">
+                    <span class="concept-code">{{ r.concepto }}</span>
+                    <span class="concept-desc" *ngIf="r.descripcion">{{ r.descripcion }}</span>
+                  </div>
+                </td>
               </ng-container>
 
               <ng-container matColumnDef="importe">

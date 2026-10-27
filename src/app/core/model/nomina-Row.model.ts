@@ -17,6 +17,7 @@ export interface NominaRow {
     noComprobante: number | string;
     tipoConcepto: string;
     concepto: string;
+    descripcion?: string;
     importe: number;
   }>;
 

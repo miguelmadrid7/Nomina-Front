@@ -19,12 +19,12 @@ import { NominaRow } from "../../core/model/nomina-Row.model";
             clavePlaza: row[4],
             curp: row[5],
             rfc: row[6],
-            nombreEmpleado:`${row[7]} ${row[8]} ${row[9]}`,
+            nombreEmpleado: `${row[7]} ${row[8]} ${row[9]}`,
             tipoConcepto: row[10],
             concepto: row[11],
             descConcepto: row[12],
             importe: Number(row[13]) || 0,
-            baseCalculoIsr:Number(row[14]) || 0,
+            baseCalculoIsr: Number(row[14]) || 0,
         };
     }
 
@@ -38,6 +38,7 @@ import { NominaRow } from "../../core/model/nomina-Row.model";
                 noComprobante: row.noComprobante,
                 tipoConcepto: row.tipoConcepto,
                 concepto: row.concepto,
+                descripcion: row.descConcepto,
                 importe: row.importe,
             });
             return map;

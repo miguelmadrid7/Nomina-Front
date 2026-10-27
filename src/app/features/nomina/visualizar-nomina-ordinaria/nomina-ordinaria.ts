@@ -210,13 +210,14 @@ export class NominaOrdinaria implements OnInit, AfterViewInit, OnDestroy {
             noComprobante: d.noComprobante,
             tipoConcepto: d.tipoConcepto,
             concepto: d.concepto,
+            descripcion: d.descConcepto,
             importe: Number(d.importe) || 0,
           }));
 
     this.dialog.open(NominaordConceptoDialog, {
       width: '950px',
       maxWidth: '95vw',
-      maxHeight: '90vh',
+      maxHeight: '120vh',
       autoFocus: false,
       position: { top: '80px' },
       data: {

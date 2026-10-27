@@ -10,6 +10,9 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
+
+type ConceptRow = { tipo: string; concepto: string; descripcion: string; importe: number };
+
 @Component({
   selector: 'app-nominaord-concepto-dialog',
   standalone: true, 
@@ -37,8 +40,8 @@ export class NominaordConceptoDialog {
   liquido = 0;
   selectedView: 'ambas' | 'percepciones' | 'deducciones' = 'ambas';
 
-  percepciones: Array<{ tipo: string; concepto: string; importe: number }> = [];
-  deducciones: Array<{ tipo: string; concepto: string; importe: number }> = [];
+  percepciones: ConceptRow[] = [];
+  deducciones: ConceptRow[] = [];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: {
@@ -52,19 +55,21 @@ export class NominaordConceptoDialog {
         noComprobante: number|string;
         tipoConcepto: string; // "P - percepcion" o "D - deduccion"
         concepto: string;
+        descripcion?: string;
         importe: number;
       }>;
     },
     private ref: MatDialogRef<NominaordConceptoDialog>
   ) {
     const det = data.detalles ?? [];
+    console.log('Detalle 0 en diálogo:', det[0]); // TEMPORAL: borrar después
     const tipo = (v: string) => (v || '').trim().toUpperCase().charAt(0); // 'P' o 'D'
 
     this.percepciones = det.filter(d => tipo(d.tipoConcepto) === 'P')
-      .map(d => ({ tipo: 'P', concepto: d.concepto, importe: Number(d.importe) || 0 }));
+      .map(d => ({ tipo: 'P', concepto: d.concepto, descripcion: d.descripcion ?? '', importe: Number(d.importe) || 0 }));
 
     this.deducciones = det.filter(d => tipo(d.tipoConcepto) === 'D')
-      .map(d => ({ tipo: 'D', concepto: d.concepto, importe: Number(d.importe) || 0 }));
+      .map(d => ({ tipo: 'D', concepto: d.concepto, descripcion: d.descripcion ?? '', importe: Number(d.importe) || 0 }));
 
     this.totalPercepciones = this.percepciones.reduce((a, c) => a + c.importe, 0);
     this.totalDeducciones = this.deducciones.reduce((a, c) => a + c.importe, 0);
