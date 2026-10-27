@@ -62,7 +62,6 @@ export class NominaordConceptoDialog {
     private ref: MatDialogRef<NominaordConceptoDialog>
   ) {
     const det = data.detalles ?? [];
-    console.log('Detalle 0 en diálogo:', det[0]); // TEMPORAL: borrar después
     const tipo = (v: string) => (v || '').trim().toUpperCase().charAt(0); // 'P' o 'D'
 
     this.percepciones = det.filter(d => tipo(d.tipoConcepto) === 'P')
