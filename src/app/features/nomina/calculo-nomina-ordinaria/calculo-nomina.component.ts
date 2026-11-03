@@ -106,6 +106,9 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque concepto N1' },          // nom_cheque_cpto_p_N1
     { label: 'Calculando nómina cheque concepto R9' },          // nom_cheque_cpto_p_R9
     { label: 'Calculando nómina cheque concepto SD' },          // nom_cheque_cpto_p_SD
+    { label: 'Calculando nómina cheque concepto C4' },          // nom_cheque_cpto_p_C4
+    { label: 'Calculando nómina cheque concepto CG' },          // nom_cheque_cpto_p_CG
+    { label: 'Calculando nómina cheque concepto E9' },          // nom_cheque_cpto_p_E9
     { label: 'Calculando nómina cheque concepto D1, D2, D3, D4, D5, D6' },    // nom_cheque_cpto_p_D1_D6
     { label: 'Calculando nómina cheque concepto DO' },                        // nom_cheque_cpto_p_DO
     { label: 'Calculando nómina cheque concepto FC' },                        // nom_cheque_cpto_p_FC
@@ -116,7 +119,7 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque concepto H0' },            // nom_cheque_cpto_p_ho
     { label: 'Calculando nómina cheque concepto E2' },            // nom_cheque_cpto_p_E2
     //{ label: 'Calculando concepto informados' },                // cpto_informados
-    { label: 'Calculando nómina cheque concepto K1A K1F' },       // nom_cheque_cpto_p_K1A, K1F
+    { label: 'Calculando nómina cheque concepto K1A, K1F' },       // nom_cheque_cpto_p_K1A, K1F
     { label: 'Calculando nómina cheque concepto K1' },            // nom_cheque_cpto_p_K1
     { label: 'Calculando nómina cheque concepto O1' },            // nom_cheque_cpto_p_O1
     { label: 'Calculando nómina cheque concepto KW' },            // nom_cheque_cpto_p_KW
@@ -126,7 +129,8 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque concepto H4' },            // nom_cheque_cpto_p_H4
     { label: 'Calculando nómina cheque concepto E5' },            // nom_cheque_cpto_p_E5
     { label: 'Calculando nómina cheque concepto 71' },            // nom_cheque_cpto_p_71
-    { label: 'Calculando nómina cheque concepto quinquenios' },                  // cpto_quinquenios
+    { label: 'Calculando nómina cheque concepto quinquenios Q1, Q5' },           // nom_cheque_cpto_quinquenios_q1_q5
+    { label: 'Calculando nómina cheque concepto quinquenios A1, A5' },           // nom_cheque_cpto_quinquenios_a1_a5
     { label: 'Calculando nómina cheque concepto 14 sustítuto gravidez' },        // nom_cheque_cpto_14
     { label: 'Calculando nómina cheque concepto 15 sustítuto pre-pensionaria' }, // nom_cheque_cpto_15
     { label: 'Calculando nómina cheque concepto primas' },                       // nom_cheque_cpto_primas
@@ -151,7 +155,6 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque bonos GT' },               // nom_cheque_cpto_bono_GT
     { label: 'Calculando nómina cheque bonos IC' },               // nom_cheque_cpto_bono_IC
     { label: 'Calculando nómina cheque bonos IH' },               // nom_cheque_cpto_bono_IH
-    { label: 'Calculando nómina cheque bonos OF' },               // nom_cheque_cpto_bono_OF
     { label: 'Calculando nómina cheque bonos OF' },               // nom_cheque_cpto_bono_OF
     { label: 'Calculando nómina cheque bonos RM' },               // nom_cheque_cpto_bono_RM
     { label: 'Actualizando importes' },                           // updateImportes
