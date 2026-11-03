@@ -89,42 +89,73 @@ export class CalculoNominaComponent implements OnInit {
   currentStepIdx = 0;
 
   private readonly steps = [
-    { label: 'Inicializando proceso' },             // truncate
-    { label: 'Insertando nómina cheque plaza' },    // insertNomChequePza
-    { label: 'Insertando nómina cheque concepto' }, // insertNomChequeCptoTab
-    { label: 'Calculando concepto H0' },            // cpto_ho
-    { label: 'Calculando nómina cheque concepto 38' }, // nom_cheque_cpto_38
-    { label: 'Calculando concepto E2' },            // cpto_E2
-    { label: 'Calculando concepto informados' },    // cpto_informados
-    { label: 'Calculando concepto quinquenios' },   // cpto_quinquenios
-    { label: 'Calculando nómina cheque concepto 14 sustítuto gravidez' }, // nom_cheque_cpto_14
+    { label: 'Inicializando proceso' },                         // nom_cheque_truncate
+    { label: 'Insertando nómina cheque plaza' },                // nom_cheque_pza_insert
+    //{ label: 'Insertando nómina cheque concepto' },           // nom_cheque_cpto_tab
+    { label: 'Calculando nómina cheque concepto 07' },          // nom_cheque_cpto_p_07
+    { label: 'Calculando nómina cheque concepto 35' },          // nom_cheque_cpto_p_35
+    { label: 'Calculando nómina cheque concepto 38' },          // nom_cheque_cpto_p_38
+    { label: 'Calculando nómina cheque concepto 39' },          // nom_cheque_cpto_p_39
+    { label: 'Calculando nómina cheque concepto 44' },          // nom_cheque_cpto_p_44
+    { label: 'Calculando nómina cheque concepto 46' },          // nom_cheque_cpto_p_46
+    { label: 'Calculando nómina cheque concepto CP' },          // nom_cheque_cpto_p_CP
+    { label: 'Calculando nómina cheque concepto CT' },          // nom_cheque_cpto_p_CT
+    { label: 'Calculando nómina cheque concepto ET' },          // nom_cheque_cpto_p_ET
+    { label: 'Calculando nómina cheque concepto H3' },          // nom_cheque_cpto_p_H3
+    { label: 'Calculando nómina cheque concepto MB' },          // nom_cheque_cpto_p_MB
+    { label: 'Calculando nómina cheque concepto N1' },          // nom_cheque_cpto_p_N1
+    { label: 'Calculando nómina cheque concepto R9' },          // nom_cheque_cpto_p_R9
+    { label: 'Calculando nómina cheque concepto SD' },          // nom_cheque_cpto_p_SD
+    { label: 'Calculando nómina cheque concepto D1, D2, D3, D4, D5, D6' },    // nom_cheque_cpto_p_D1_D6
+    { label: 'Calculando nómina cheque concepto DO' },                        // nom_cheque_cpto_p_DO
+    { label: 'Calculando nómina cheque concepto FC' },                        // nom_cheque_cpto_p_FC
+    { label: 'Calculando nómina cheque concepto L1, L2, L3, LT' },            // nom_cheque_cpto_p_L1, L2, L3, LT
+    { label: 'Calculando nómina cheque concepto MA' },                        // nom_cheque_cpto_p_MA
+    { label: 'Calculando nómina cheque concepto ST' },                        // nom_cheque_cpto_p_ST
+    { label: 'Calculando nómina cheque concepto T1, T2, T3' },                // nom_cheque_cpto_p_T1, T2, T3
+    { label: 'Calculando nómina cheque concepto H0' },            // nom_cheque_cpto_p_ho
+    { label: 'Calculando nómina cheque concepto E2' },            // nom_cheque_cpto_p_E2
+    //{ label: 'Calculando concepto informados' },                // cpto_informados
+    { label: 'Calculando nómina cheque concepto K1A K1F' },       // nom_cheque_cpto_p_K1A, K1F
+    { label: 'Calculando nómina cheque concepto K1' },            // nom_cheque_cpto_p_K1
+    { label: 'Calculando nómina cheque concepto O1' },            // nom_cheque_cpto_p_O1
+    { label: 'Calculando nómina cheque concepto KW' },            // nom_cheque_cpto_p_KW
+    { label: 'Calculando nómina cheque concepto I2' },            // nom_cheque_cpto_p_I2
+    { label: 'Calculando nómina cheque concepto I4' },            // nom_cheque_cpto_p_I4
+    { label: 'Calculando nómina cheque concepto H2' },            // nom_cheque_cpto_p_H2
+    { label: 'Calculando nómina cheque concepto H4' },            // nom_cheque_cpto_p_H4
+    { label: 'Calculando nómina cheque concepto E5' },            // nom_cheque_cpto_p_E5
+    { label: 'Calculando nómina cheque concepto 71' },            // nom_cheque_cpto_p_71
+    { label: 'Calculando nómina cheque concepto quinquenios' },                  // cpto_quinquenios
+    { label: 'Calculando nómina cheque concepto 14 sustítuto gravidez' },        // nom_cheque_cpto_14
     { label: 'Calculando nómina cheque concepto 15 sustítuto pre-pensionaria' }, // nom_cheque_cpto_15
-    { label: 'Calculando nómina cheque concepto primas' }, // nom_cheque_cpto_primas
-    { label: 'Calculando concepto 01' },            // cpto_01
-    { label: 'Calculando concepto 02' },            // cpto_02
-    { label: 'Calculando concepto 04' },            // cpto_04
-    { label: 'Calculando concepto 58' },            // cpto_58
-    { label: 'Calculando concepto 77' },            // cpto_77
-    { label: 'Calculando concepto 62' },            // cpto_62
-    { label: 'Preparando descuentos de pensiones alimenticias' }, // cpto_62
-    { label: 'Consolidando pensiones alimenticias' }, // cpto_62
-    { label: 'Preparando descuentos de juicios mercantiles' }, // cpto_JM
-    { label: 'Consolidando juicios mercantiles' }, // cpto_JM 
-    { label: 'Calculando concepto 19' },            // cpto_19
-    { label: 'Calculando deducciones informadas' }, // deducciones informadas
-    { label: 'Calculando bonos BA' },               // bono_BA
-    { label: 'Calculando bonos BE' },               // bono_BE
-    { label: 'Calculando bonos BI' },               // bono_BI
-    { label: 'Calculando bonos CU' },               // bono_CU
-    { label: 'Calculando bonos DM' },               // bono_DM
-    { label: 'Calculando bonos FA' },               // bono_FA
-    { label: 'Calculando bonos GT' },               // bono_GT
-    { label: 'Calculando bonos IC' },               // bono_IC
-    { label: 'Calculando bonos IH' },               // bono_IH
-    { label: 'Calculando bonos OF' },               // bono_OF
-    { label: 'Calculando bonos RM' },               // bono_RM
-    { label: 'Actualizando importes' },              // updateImportes
-    { label: 'Actualizando importes finales' },      // updateImportes
+    { label: 'Calculando nómina cheque concepto primas' },                       // nom_cheque_cpto_primas
+    { label: 'Calculando nómina cheque concepto 01' },            // nom_cheque_cpto_01
+    { label: 'Calculando nómina cheque concepto 02' },            // nom_cheque_cpto_02
+    { label: 'Calculando nómina cheque concepto 04' },            // nom_cheque_cpto_04
+    { label: 'Calculando nómina cheque concepto 58' },            // nom_cheque_cpto_58
+    { label: 'Calculando nómina cheque concepto 77' },            // nom_cheque_cpto_77
+    { label: 'Calculando nómina cheque concepto 62' },            // nom_cheque_cpto_62
+    { label: 'Preparando descuentos de pensiones alimenticias' }, // nom_cheque_cpto_62
+    { label: 'Consolidando pensiones alimenticias' },             // cpto_62
+    { label: 'Preparando descuentos de juicios mercantiles' },    // cpto_JM
+    { label: 'Consolidando juicios mercantiles' },                // cpto_JM 
+    { label: 'Calculando nómina cheque concepto 19' },            // nom_cheque_cpto_19
+    { label: 'Calculando deducciones informadas' },               // deducciones informadas
+    { label: 'Calculando nómina cheque bonos BA' },               // nom_cheque_cpto_bono_BA
+    { label: 'Calculando nómina cheque bonos BE' },               // nom_cheque_cpto_bono_BE
+    { label: 'Calculando nómina cheque bonos BI' },               // nom_cheque_cpto_bono_BI
+    { label: 'Calculando nómina cheque bonos CU' },               // nom_cheque_cpto_bono_CU
+    { label: 'Calculando nómina cheque bonos DM' },               // nom_cheque_cpto_bono_DM
+    { label: 'Calculando nómina cheque bonos FA' },               // nom_cheque_cpto_bono_FA
+    { label: 'Calculando nómina cheque bonos GT' },               // nom_cheque_cpto_bono_GT
+    { label: 'Calculando nómina cheque bonos IC' },               // nom_cheque_cpto_bono_IC
+    { label: 'Calculando nómina cheque bonos IH' },               // nom_cheque_cpto_bono_IH
+    { label: 'Calculando nómina cheque bonos OF' },               // nom_cheque_cpto_bono_OF
+    { label: 'Calculando nómina cheque bonos OF' },               // nom_cheque_cpto_bono_OF
+    { label: 'Calculando nómina cheque bonos RM' },               // nom_cheque_cpto_bono_RM
+    { label: 'Actualizando importes' },                           // updateImportes
+    { label: 'Actualizando importes finales' },                   // updateImportes
   ];
 
   constructor() {
