@@ -120,15 +120,15 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque percepción concepto E2' },            // nom_cheque_cpto_p_E2
     //{ label: 'Calculando concepto informados' },                // cpto_informados
     { label: 'Calculando nómina cheque percepción concepto K1A, K1F' },                // nom_cheque_cpto_p_K1A, K1F
-    { label: 'Calculando nómina cheque percepción concepto informado K1' },            // nom_cheque_cpto_p_K1
-    { label: 'Calculando nómina cheque percepción concepto informado O1' },            // nom_cheque_cpto_p_O1
-    { label: 'Calculando nómina cheque percepción concepto informado KW' },            // nom_cheque_cpto_p_KW
-    { label: 'Calculando nómina cheque percepción concepto informado I2' },            // nom_cheque_cpto_p_I2
-    { label: 'Calculando nómina cheque percepción concepto informado I4' },            // nom_cheque_cpto_p_I4
-    { label: 'Calculando nómina cheque percepción concepto informado H2' },            // nom_cheque_cpto_p_H2
-    { label: 'Calculando nómina cheque percepción concepto informado H4' },            // nom_cheque_cpto_p_H4
-    { label: 'Calculando nómina cheque percepción concepto informado E5' },            // nom_cheque_cpto_p_E5
-    { label: 'Calculando nómina cheque percepción concepto informado 71' },            // nom_cheque_cpto_p_71
+    { label: 'Calculando nómina cheque percepción concepto informado cuota fija K1' },            // nom_cheque_cpto_p_K1
+    { label: 'Calculando nómina cheque percepción concepto informado cuota fija O1' },            // nom_cheque_cpto_p_O1
+    { label: 'Calculando nómina cheque percepción concepto informado cuota fija KW' },            // nom_cheque_cpto_p_KW
+    { label: 'Calculando nómina cheque percepción concepto informado cuota fija I2' },            // nom_cheque_cpto_p_I2
+    { label: 'Calculando nómina cheque percepción concepto informado cuota fija I4' },            // nom_cheque_cpto_p_I4
+    { label: 'Calculando nómina cheque percepción concepto informado cuota fija H2' },            // nom_cheque_cpto_p_H2
+    { label: 'Calculando nómina cheque percepción concepto informado cuota fija H4' },            // nom_cheque_cpto_p_H4
+    { label: 'Calculando nómina cheque percepción concepto informado cuota fija E5' },            // nom_cheque_cpto_p_E5
+    { label: 'Calculando nómina cheque percepción concepto informado cuota fija 71' },            // nom_cheque_cpto_p_71
     { label: 'Calculando nómina cheque percepción concepto quinquenios maestros Q1, Q5' },           // nom_cheque_cpto_quinquenios_q1_q5
     { label: 'Calculando nómina cheque percepción concepto quinquenios administrativos A1, A5' },    // nom_cheque_cpto_quinquenios_a1_a5
     { label: 'Calculando nómina cheque percepción concepto 14 sustítuto gravidez' },        // nom_cheque_cpto_14
