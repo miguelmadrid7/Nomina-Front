@@ -92,59 +92,59 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Inicializando proceso' },                         // nom_cheque_truncate
     { label: 'Insertando nómina cheque plaza' },                // nom_cheque_pza_insert
     //{ label: 'Insertando nómina cheque concepto' },           // nom_cheque_cpto_tab
-    { label: 'Calculando nómina cheque concepto 07' },          // nom_cheque_cpto_p_07
-    { label: 'Calculando nómina cheque concepto 35' },          // nom_cheque_cpto_p_35
-    { label: 'Calculando nómina cheque concepto 38' },          // nom_cheque_cpto_p_38
-    { label: 'Calculando nómina cheque concepto 39' },          // nom_cheque_cpto_p_39
-    { label: 'Calculando nómina cheque concepto 44' },          // nom_cheque_cpto_p_44
-    { label: 'Calculando nómina cheque concepto 46' },          // nom_cheque_cpto_p_46
-    { label: 'Calculando nómina cheque concepto CP' },          // nom_cheque_cpto_p_CP
-    { label: 'Calculando nómina cheque concepto CT' },          // nom_cheque_cpto_p_CT
-    { label: 'Calculando nómina cheque concepto ET' },          // nom_cheque_cpto_p_ET
-    { label: 'Calculando nómina cheque concepto H3' },          // nom_cheque_cpto_p_H3
-    { label: 'Calculando nómina cheque concepto MB' },          // nom_cheque_cpto_p_MB
-    { label: 'Calculando nómina cheque concepto N1' },          // nom_cheque_cpto_p_N1
-    { label: 'Calculando nómina cheque concepto R9' },          // nom_cheque_cpto_p_R9
-    { label: 'Calculando nómina cheque concepto SD' },          // nom_cheque_cpto_p_SD
-    { label: 'Calculando nómina cheque concepto C4' },          // nom_cheque_cpto_p_C4
-    { label: 'Calculando nómina cheque concepto CG' },          // nom_cheque_cpto_p_CG
-    { label: 'Calculando nómina cheque concepto E9' },          // nom_cheque_cpto_p_E9
-    { label: 'Calculando nómina cheque concepto D1, D2, D3, D4, D5, D6' },    // nom_cheque_cpto_p_D1_D6
-    { label: 'Calculando nómina cheque concepto DO' },                        // nom_cheque_cpto_p_DO
-    { label: 'Calculando nómina cheque concepto FC' },                        // nom_cheque_cpto_p_FC
-    { label: 'Calculando nómina cheque concepto L1, L2, L3, LT' },            // nom_cheque_cpto_p_L1, L2, L3, LT
-    { label: 'Calculando nómina cheque concepto MA' },                        // nom_cheque_cpto_p_MA
-    { label: 'Calculando nómina cheque concepto ST' },                        // nom_cheque_cpto_p_ST
-    { label: 'Calculando nómina cheque concepto T1, T2, T3' },                // nom_cheque_cpto_p_T1, T2, T3
-    { label: 'Calculando nómina cheque concepto H0' },            // nom_cheque_cpto_p_ho
-    { label: 'Calculando nómina cheque concepto E2' },            // nom_cheque_cpto_p_E2
+    { label: 'Calculando nómina cheque percepción concepto tabular 07' },          // nom_cheque_cpto_p_07
+    { label: 'Calculando nómina cheque percepción concepto tabular 35' },          // nom_cheque_cpto_p_35
+    { label: 'Calculando nómina cheque percepción concepto tabular 38' },          // nom_cheque_cpto_p_38
+    { label: 'Calculando nómina cheque percepción concepto tabular 39' },          // nom_cheque_cpto_p_39
+    { label: 'Calculando nómina cheque percepción concepto tabular 44' },          // nom_cheque_cpto_p_44
+    { label: 'Calculando nómina cheque percepción concepto tabular 46' },          // nom_cheque_cpto_p_46
+    { label: 'Calculando nómina cheque percepción concepto tabular CP' },          // nom_cheque_cpto_p_CP
+    { label: 'Calculando nómina cheque percepción concepto tabular CT' },          // nom_cheque_cpto_p_CT
+    { label: 'Calculando nómina cheque percepción concepto tabular ET' },          // nom_cheque_cpto_p_ET
+    { label: 'Calculando nómina cheque percepción concepto tabular H3' },          // nom_cheque_cpto_p_H3
+    { label: 'Calculando nómina cheque percepción concepto tabular MB' },          // nom_cheque_cpto_p_MB
+    { label: 'Calculando nómina cheque percepción concepto tabular N1' },          // nom_cheque_cpto_p_N1
+    { label: 'Calculando nómina cheque percepción concepto tabular R9' },          // nom_cheque_cpto_p_R9
+    { label: 'Calculando nómina cheque percepción concepto tabular SD' },          // nom_cheque_cpto_p_SD
+    { label: 'Calculando nómina cheque percepción concepto tabular C4' },          // nom_cheque_cpto_p_C4
+    { label: 'Calculando nómina cheque percepción concepto tabular CG' },          // nom_cheque_cpto_p_CG
+    { label: 'Calculando nómina cheque percepción concepto tabular E9' },          // nom_cheque_cpto_p_E9
+    { label: 'Calculando nómina cheque percepción concepto tabular informado D1, D2, D3, D4, D5, D6' },    // nom_cheque_cpto_p_D1_D6
+    { label: 'Calculando nómina cheque percepción concepto tabular informado DO' },                        // nom_cheque_cpto_p_DO
+    { label: 'Calculando nómina cheque percepción concepto tabular informado FC' },                        // nom_cheque_cpto_p_FC
+    { label: 'Calculando nómina cheque percepción concepto tabular informado L1, L2, L3, LT' },            // nom_cheque_cpto_p_L1, L2, L3, LT
+    { label: 'Calculando nómina cheque percepción concepto tabular informado MA' },                        // nom_cheque_cpto_p_MA
+    { label: 'Calculando nómina cheque percepción concepto tabular informado ST' },                        // nom_cheque_cpto_p_ST
+    { label: 'Calculando nómina cheque percepción concepto tabular informado T1, T2, T3' },                // nom_cheque_cpto_p_T1, T2, T3
+    { label: 'Calculando nómina cheque percepción concepto H0' },            // nom_cheque_cpto_p_ho
+    { label: 'Calculando nómina cheque percepción concepto E2' },            // nom_cheque_cpto_p_E2
     //{ label: 'Calculando concepto informados' },                // cpto_informados
-    { label: 'Calculando nómina cheque concepto K1A, K1F' },       // nom_cheque_cpto_p_K1A, K1F
-    { label: 'Calculando nómina cheque concepto K1' },            // nom_cheque_cpto_p_K1
-    { label: 'Calculando nómina cheque concepto O1' },            // nom_cheque_cpto_p_O1
-    { label: 'Calculando nómina cheque concepto KW' },            // nom_cheque_cpto_p_KW
-    { label: 'Calculando nómina cheque concepto I2' },            // nom_cheque_cpto_p_I2
-    { label: 'Calculando nómina cheque concepto I4' },            // nom_cheque_cpto_p_I4
-    { label: 'Calculando nómina cheque concepto H2' },            // nom_cheque_cpto_p_H2
-    { label: 'Calculando nómina cheque concepto H4' },            // nom_cheque_cpto_p_H4
-    { label: 'Calculando nómina cheque concepto E5' },            // nom_cheque_cpto_p_E5
-    { label: 'Calculando nómina cheque concepto 71' },            // nom_cheque_cpto_p_71
-    { label: 'Calculando nómina cheque concepto quinquenios Q1, Q5' },           // nom_cheque_cpto_quinquenios_q1_q5
-    { label: 'Calculando nómina cheque concepto quinquenios A1, A5' },           // nom_cheque_cpto_quinquenios_a1_a5
-    { label: 'Calculando nómina cheque concepto 14 sustítuto gravidez' },        // nom_cheque_cpto_14
-    { label: 'Calculando nómina cheque concepto 15 sustítuto pre-pensionaria' }, // nom_cheque_cpto_15
-    { label: 'Calculando nómina cheque concepto primas' },                       // nom_cheque_cpto_primas
-    { label: 'Calculando nómina cheque concepto 01' },            // nom_cheque_cpto_01
-    { label: 'Calculando nómina cheque concepto 02' },            // nom_cheque_cpto_02
-    { label: 'Calculando nómina cheque concepto 04' },            // nom_cheque_cpto_04
-    { label: 'Calculando nómina cheque concepto 58' },            // nom_cheque_cpto_58
-    { label: 'Calculando nómina cheque concepto 77' },            // nom_cheque_cpto_77
-    { label: 'Calculando nómina cheque concepto 62' },            // nom_cheque_cpto_62
-    { label: 'Preparando descuentos de pensiones alimenticias' }, // nom_cheque_cpto_62
-    { label: 'Consolidando pensiones alimenticias' },             // cpto_62
-    { label: 'Preparando descuentos de juicios mercantiles' },    // cpto_JM
-    { label: 'Consolidando juicios mercantiles' },                // cpto_JM 
-    { label: 'Calculando nómina cheque concepto 19' },            // nom_cheque_cpto_19
+    { label: 'Calculando nómina cheque percepción concepto K1A, K1F' },                // nom_cheque_cpto_p_K1A, K1F
+    { label: 'Calculando nómina cheque percepción concepto informado K1' },            // nom_cheque_cpto_p_K1
+    { label: 'Calculando nómina cheque percepción concepto informado O1' },            // nom_cheque_cpto_p_O1
+    { label: 'Calculando nómina cheque percepción concepto informado KW' },            // nom_cheque_cpto_p_KW
+    { label: 'Calculando nómina cheque percepción concepto informado I2' },            // nom_cheque_cpto_p_I2
+    { label: 'Calculando nómina cheque percepción concepto informado I4' },            // nom_cheque_cpto_p_I4
+    { label: 'Calculando nómina cheque percepción concepto informado H2' },            // nom_cheque_cpto_p_H2
+    { label: 'Calculando nómina cheque percepción concepto informado H4' },            // nom_cheque_cpto_p_H4
+    { label: 'Calculando nómina cheque percepción concepto informado E5' },            // nom_cheque_cpto_p_E5
+    { label: 'Calculando nómina cheque percepción concepto informado 71' },            // nom_cheque_cpto_p_71
+    { label: 'Calculando nómina cheque percepción concepto quinquenios maestros Q1, Q5' },           // nom_cheque_cpto_quinquenios_q1_q5
+    { label: 'Calculando nómina cheque percepción concepto quinquenios administrativos A1, A5' },    // nom_cheque_cpto_quinquenios_a1_a5
+    { label: 'Calculando nómina cheque percepción concepto 14 sustítuto gravidez' },        // nom_cheque_cpto_14
+    { label: 'Calculando nómina cheque percepción concepto 15 sustítuto pre-pensionaria' }, // nom_cheque_cpto_15
+    { label: 'Calculando nómina cheque percepción concepto primas' },                       // nom_cheque_cpto_primas
+    { label: 'Calculando nómina cheque deducción concepto 01' },            // nom_cheque_cpto_01
+    { label: 'Calculando nómina cheque deducción concepto 02' },            // nom_cheque_cpto_02
+    { label: 'Calculando nómina cheque deducción concepto 04' },            // nom_cheque_cpto_04
+    { label: 'Calculando nómina cheque deducción concepto 58' },            // nom_cheque_cpto_58
+    { label: 'Calculando nómina cheque deducción concepto 77' },            // nom_cheque_cpto_77
+    { label: 'Calculando nómina cheque deducción concepto 62' },            // nom_cheque_cpto_62
+    { label: 'Calculando nómina cheque deducción descuentos de pensiones alimenticias' }, // nom_cheque_cpto_62
+    { label: 'Consolidando nómina cheque deducción pensiones alimenticias' },             // cpto_62
+    { label: 'Calculando nómina cheque deducción descuentos de juicios mercantiles' },    // cpto_JM
+    { label: 'Consolidando nómina cheque deducción juicios mercantiles' },                // cpto_JM 
+    { label: 'Calculando nómina cheque deducción concepto 19' },            // nom_cheque_cpto_19
     { label: 'Calculando deducciones informadas' },               // deducciones informadas
     { label: 'Calculando nómina cheque bonos BA' },               // nom_cheque_cpto_bono_BA
     { label: 'Calculando nómina cheque bonos BE' },               // nom_cheque_cpto_bono_BE
