@@ -129,7 +129,7 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque percepción concepto informado cuota fija H4' },            // nom_cheque_cpto_p_H4
     { label: 'Calculando nómina cheque percepción concepto informado cuota fija E5' },            // nom_cheque_cpto_p_E5
     { label: 'Calculando nómina cheque percepción concepto informado cuota fija 71' },            // nom_cheque_cpto_p_71
-    { label: 'Calculando nómina cheque percepción concepto quinquenios maestros Q1, Q5' },           // nom_cheque_cpto_quinquenios_q1_q5
+    { label: 'Calculando nómina cheque percepción concepto quinquenios docentes Q1, Q5' },           // nom_cheque_cpto_quinquenios_q1_q5
     { label: 'Calculando nómina cheque percepción concepto quinquenios administrativos A1, A5' },    // nom_cheque_cpto_quinquenios_a1_a5
     { label: 'Calculando nómina cheque percepción concepto 14 sustítuto gravidez' },        // nom_cheque_cpto_14
     { label: 'Calculando nómina cheque percepción concepto 15 sustítuto pre-pensionaria' }, // nom_cheque_cpto_15
