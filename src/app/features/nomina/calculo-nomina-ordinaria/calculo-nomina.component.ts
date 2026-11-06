@@ -109,6 +109,8 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque percepción concepto tabular C4' },          // nom_cheque_cpto_p_C4
     { label: 'Calculando nómina cheque percepción concepto tabular CG' },          // nom_cheque_cpto_p_CG
     { label: 'Calculando nómina cheque percepción concepto tabular E9' },          // nom_cheque_cpto_p_E9
+    { label: 'Calculando nómina cheque percepción concepto tabular E2' },          // nom_cheque_cpto_p_E2
+    { label: 'Calculando nómina cheque percepción concepto tabular H0' },          // nom_cheque_cpto_p_ho
     { label: 'Calculando nómina cheque percepción concepto tabular informado D1, D2, D3, D4, D5, D6' },    // nom_cheque_cpto_p_D1_D6
     { label: 'Calculando nómina cheque percepción concepto tabular informado DO' },                        // nom_cheque_cpto_p_DO
     { label: 'Calculando nómina cheque percepción concepto tabular informado FC' },                        // nom_cheque_cpto_p_FC
@@ -116,8 +118,6 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque percepción concepto tabular informado MA' },                        // nom_cheque_cpto_p_MA
     { label: 'Calculando nómina cheque percepción concepto tabular informado ST' },                        // nom_cheque_cpto_p_ST
     { label: 'Calculando nómina cheque percepción concepto tabular informado T1, T2, T3' },                // nom_cheque_cpto_p_T1, T2, T3
-    { label: 'Calculando nómina cheque percepción concepto H0' },            // nom_cheque_cpto_p_ho
-    { label: 'Calculando nómina cheque percepción concepto E2' },            // nom_cheque_cpto_p_E2
     //{ label: 'Calculando concepto informados' },                // cpto_informados
     { label: 'Calculando nómina cheque percepción concepto K1A, K1F' },                // nom_cheque_cpto_p_K1A, K1F
     { label: 'Calculando nómina cheque percepción concepto informado cuota fija K1' },            // nom_cheque_cpto_p_K1
@@ -143,8 +143,9 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque deducción descuentos de pensiones alimenticias' }, // nom_cheque_cpto_62
     { label: 'Consolidando nómina cheque deducción pensiones alimenticias' },             // cpto_62
     { label: 'Calculando nómina cheque deducción descuentos de juicios mercantiles' },    // cpto_JM
-    { label: 'Consolidando nómina cheque deducción juicios mercantiles' },                // cpto_JM 
+    //{ label: 'Consolidando nómina cheque deducción juicios mercantiles' },                // cpto_JM 
     { label: 'Calculando nómina cheque deducción concepto 19' },            // nom_cheque_cpto_19
+    { label: 'Calculando nómina cheque deducción concepto MR' },            // nom_cheque_cpto_MR
     { label: 'Calculando deducciones informadas' },               // deducciones informadas
     { label: 'Calculando nómina cheque bonos BA' },               // nom_cheque_cpto_bono_BA
     { label: 'Calculando nómina cheque bonos BE' },               // nom_cheque_cpto_bono_BE
