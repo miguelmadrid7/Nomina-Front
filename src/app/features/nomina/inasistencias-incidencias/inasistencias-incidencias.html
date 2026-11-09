@@ -1,0 +1,147 @@
+<div class="page-container">
+    <div class="page-header page-header--split">
+        <h2 class="page-title">Inasistencias registro alta/baja</h2>
+
+        <div class="header-tools">
+            <div class="qna-chip" role="status">
+                <mat-icon>event</mat-icon>
+                <div class="qna-chip__text">
+                    <span class="qna-chip__label">Quincena activa</span>
+                    <span class="qna-chip__value">{{ cargandoQna ? 'Cargando...' : (calendarioActual ? calendarioActual.qna.toString().padStart(2, '0') + ' / ' + calendarioActual.ejercicio : 'No disponible') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="global-search">
+        <form [formGroup]="form">
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-icon matPrefix>search</mat-icon>
+                <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
+                <input matInput
+                    id="buscarEmpleado"
+                    formControlName="searchText"
+                    [matAutocomplete]="auto"
+                    #autocompleteTrigger="matAutocompleteTrigger"
+                    (input)="onSearchInputChange()"
+                    appUppercase
+                    (keydown.enter)="$event.preventDefault(); searchEmployee()">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onOptionSelected($event.option.value)">
+                    <mat-option *ngFor="let emp of resultados" [value]="emp"> {{ emp?.rfc || '—' }} · {{ emp?.curp || '—' }} · {{ emp?.nombreCompleto || '—' }} </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </form>
+    </div>
+
+    <div class="actions-right">
+        <button class="btn btn-primary" (click)="searchEmployee()">
+            <mat-icon>search</mat-icon>
+            <span>Buscar</span>
+        </button>
+
+        <button class="btn btn-danger" (click)="clearSearch()">
+            <mat-icon>delete_outline</mat-icon>
+            <span>Limpiar</span>
+        </button>
+    </div>
+
+    <div class="card plazas-card">
+        <ng-container *ngIf="empleadoSeleccionado; else sinEmpleado">
+            <div class="plazas-header">
+                {{ empleadoSeleccionado.nombreCompleto }} · RFC {{ empleadoSeleccionado.rfc }} ·
+                {{ plazas.length }} {{ plazas.length === 1 ? 'plaza' : 'plazas' }} · Quincena {{ qnaProcesoTexto }}
+            </div>
+
+            <div class="plaza-block" *ngFor="let p of plazas">
+                <div class="plaza-block-header">
+                    <span class="plaza-block-title">Plaza {{ p.cvePlaza }}</span>
+                    <span class="plaza-block-badge" *ngIf="getFaltas(p).length > 0">
+                        {{ getFaltas(p).length }} {{ getFaltas(p).length === 1 ? 'falta' : 'faltas' }} por registrar
+                    </span>
+                    <button type="button" class="btn btnn-successs plaza-block-add" (click)="agregarFalta(p)">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </div>
+
+                <ng-container *ngIf="getFaltas(p).length > 0; else sinFaltas">
+                    <div class="falta-grid falta-grid-head">
+                        <span>Plaza</span>
+                        <span>Folio</span>
+                        <span>Qna inasist.</span>
+                        <span>Fecha</span>
+                        <span>Tipo</span>
+                        <span>Horas</span>
+                        <span></span>
+                    </div>
+
+                    <div class="falta-grid" *ngFor="let falta of getFaltas(p).controls; let i = index" [formGroup]="falta">
+                        
+                        <span class="falta-plaza">{{ p.cvePlaza  }}</span>
+
+                        <mat-form-field appearance="outline" class="row-field" subscriptSizing="dynamic">
+                            <input matInput 
+                                type="number" 
+                                min="1" 
+                                formControlName="folio" 
+                                placeholder="Folio">
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="row-field" subscriptSizing="dynamic">
+                            <input matInput 
+                                [value]="getQnaInasistencia(falta)" 
+                                placeholder="Qna" readonly>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="row-field" subscriptSizing="dynamic">
+                            <input matInput 
+                                [matDatepicker]="picker" 
+                                formControlName="fechaInasistencia" 
+                                placeholder="dd/mm/aaaa">
+                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="row-field" subscriptSizing="dynamic">
+                            <mat-select formControlName="tipoInasistencia" placeholder="Tipo">
+                                 <mat-option *ngFor="let t of tiposInasistencia" [value]="t.value">{{ t.label }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+
+                        <mat-form-field appearance="outline" class="row-field" subscriptSizing="dynamic">
+                            <input matInput 
+                                type="number" 
+                                min="0" 
+                                formControlName="horasInasistencia">
+                        </mat-form-field>
+
+                        <button type="button" class="falta-remove" aria-label="Quitar falta" (click)="quitarFalta(p, i)">
+                            <mat-icon>close</mat-icon>
+                        </button>
+                    </div>
+
+                    <div class="plaza-block-actions">
+                        <button type="button" class="btn btnn-primaryy"
+                            [disabled]="isGuardando(p)"
+                            (click)="registrarFaltas(p)">
+                            <mat-icon>check</mat-icon>
+                            <span>{{ isGuardando(p) ? 'Registrando...' : 'Registrar ' + getFaltas(p).length + (getFaltas(p).length === 1 ? ' falta' : ' faltas') }}</span>
+                        </button>
+                    </div>
+                </ng-container>
+
+                <ng-template #sinFaltas>
+                    <div class="plaza-block-empty">Sin faltas por registrar en esta plaza.</div>
+                </ng-template>
+            </div>
+        </ng-container>
+
+        <ng-template #sinEmpleado>
+            <div class="no-data__content no-data__content--static">
+                <mat-icon class="no-data__icon">search_off</mat-icon>
+                <span class="no-data__text">Busca un trabajador para ver sus plazas.</span>
+            </div>
+        </ng-template>
+    </div>
+</div>

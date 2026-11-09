@@ -1,0 +1,119 @@
+/* --- GLOBAL SEARCH --- */
+.global-search {
+  display: flex;
+  align-items: center; 
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-field {
+  width: 400px;
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-form-field-infix {
+  min-height: 40px !important;
+  display: flex;
+  align-items: center;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.plazas-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.plazas-header {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #6b6b6b;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.plaza-block + .plaza-block {
+  border-top: 1px solid #e5e5e5;
+}
+
+.plaza-block-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #faf8f6;
+}
+
+.plaza-block-title {
+  font-weight: 600;
+}
+
+.plaza-block-info {
+  font-size: 13px;
+  color: #6b6b6b;
+}
+
+.plaza-block-badge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #f3ece6;
+  color: #6b1d2f;
+}
+
+.plaza-block-add {
+  margin-left: auto;
+}
+
+.falta-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr 0.9fr 1.3fr 1fr 0.6fr 40px;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 14px 4px 28px;
+}
+
+.falta-plaza {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: #faf8f6;
+  font-size: 13px;
+  color: #444;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.row-field {
+  width: 100%;
+}
+
+.falta-remove {
+  border: none;
+  background: transparent;
+  color: #d32f2f;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plaza-block-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 14px 14px;
+}
+
+.plaza-block-empty {
+  padding: 10px 14px 14px 28px;
+  font-size: 13px;
+  color: #9a9a9a;
+}
+
+
+
+
+@media (max-width: 768px) {
+  .inasistencias-layout {
+    grid-template-columns: 1fr;
+  }
+}
