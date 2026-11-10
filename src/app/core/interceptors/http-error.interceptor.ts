@@ -3,12 +3,17 @@ import { ToastService } from "../services/toast.service";
 import { inject } from "@angular/core";
 import { catchError, throwError } from "rxjs";
 import { ForbiddenDialogService } from "../services/forbidden.service";
+import { LoginService } from "../services/login.service";
+import { Router } from "@angular/router";
 
 
 export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
     
     const toastService = inject(ToastService);
     const forbiddenDialog = inject(ForbiddenDialogService);
+    const loginService = inject(LoginService);
+    const router = inject(Router);
+    const isLoginRequest = req.url.includes('/login');
 
     return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
@@ -31,11 +36,20 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
                 break;
 
                 case 401:
+                    if (isLoginRequest) {
+                        break;
+                    }
                     toastService.warning(
-                        'Sesión expirada', 
+                        'Sesión expirada',
                         'Tu sesión ha expirado. Inicia sesión nuevamente',
                         6000
                     );
+                    loginService.logout();
+                    if (!router.url.startsWith('/login')) {
+                        router.navigate(['/login'], {
+                            queryParams: { returnUrl: router.url }
+                        });
+                    }
                 break;
 
                 case 403:

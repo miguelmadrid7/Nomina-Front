@@ -75,7 +75,7 @@ export class Login {
           next: (modules) => {
             this.loginService.setMenuModules(modules);
             const returnUrl = this.router.routerState.snapshot.root.queryParams['returnUrl'];
-            this.router.navigate([returnUrl || this.loginService.getPrincipalRoute()]);
+            this.router.navigateByUrl(returnUrl || this.loginService.getPrincipalRoute());
             this.loading = false;
           },
           error: () => {
