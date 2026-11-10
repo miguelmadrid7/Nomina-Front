@@ -47,101 +47,280 @@
         </button>
     </div>
 
-    <div class="card plazas-card">
-        <ng-container *ngIf="empleadoSeleccionado; else sinEmpleado">
-            <div class="plazas-header">
-                {{ empleadoSeleccionado.nombreCompleto }} · RFC {{ empleadoSeleccionado.rfc }} ·
-                {{ plazas.length }} {{ plazas.length === 1 ? 'plaza' : 'plazas' }} · Quincena {{ qnaProcesoTexto }}
-            </div>
+    <div class="table-card card">
+        <div class="plazas-header" *ngIf="empleadoSeleccionado">
+            <div class="plazas-header-empleado">
+                <!-- Línea 1: nombre + selector de plaza -->
+                <div class="plazas-header-linea">
+                    <span class="plazas-header-nombre">{{ empleadoSeleccionado.nombreCompleto }}</span>
 
-            <div class="plaza-block" *ngFor="let p of plazas">
-                <div class="plaza-block-header">
-                    <span class="plaza-block-title">Plaza {{ p.cvePlaza }}</span>
-                    <span class="plaza-block-badge" *ngIf="getFaltas(p).length > 0">
-                        {{ getFaltas(p).length }} {{ getFaltas(p).length === 1 ? 'falta' : 'faltas' }} por registrar
-                    </span>
-                    <button type="button" class="btn btnn-successs plaza-block-add" (click)="agregarFalta(p)">
-                        <mat-icon>add</mat-icon>
-                    </button>
-                </div>
+                    <div class="plazas-header-select" *ngIf="plazas.length > 0">
+                        <span class="plazas-header-label">Plaza a registrar</span>
+                        <mat-form-field appearance="outline" class="qna-compact plaza-select" subscriptSizing="dynamic">
+                            <mat-select [value]="plazaSeleccionada"
+                                (selectionChange)="seleccionarPlaza($event.value)"
+                                panelClass="plaza-select-panel">
 
-                <ng-container *ngIf="getFaltas(p).length > 0; else sinFaltas">
-                    <div class="falta-grid falta-grid-head">
-                        <span>Plaza</span>
-                        <span>Folio</span>
-                        <span>Qna inasist.</span>
-                        <span>Fecha</span>
-                        <span>Tipo</span>
-                        <span>Horas</span>
-                        <span></span>
-                    </div>
+                                <mat-select-trigger>
+                                    <span class="plaza-trigger">
+                                        <span>{{ plazaSeleccionada?.cvePlaza }}</span>
+                                        <span class="plaza-chip" *ngIf="plazaSeleccionada">{{ horasLabel(plazaSeleccionada) }}</span>
+                                    </span>
+                                </mat-select-trigger>
 
-                    <div class="falta-grid" *ngFor="let falta of getFaltas(p).controls; let i = index" [formGroup]="falta">
-                        
-                        <span class="falta-plaza">{{ p.cvePlaza  }}</span>
-
-                        <mat-form-field appearance="outline" class="row-field" subscriptSizing="dynamic">
-                            <input matInput 
-                                type="number" 
-                                min="1" 
-                                formControlName="folio" 
-                                placeholder="Folio">
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="row-field" subscriptSizing="dynamic">
-                            <input matInput 
-                                [value]="getQnaInasistencia(falta)" 
-                                placeholder="Qna" readonly>
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="row-field" subscriptSizing="dynamic">
-                            <input matInput 
-                                [matDatepicker]="picker" 
-                                formControlName="fechaInasistencia" 
-                                placeholder="dd/mm/aaaa">
-                            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                            <mat-datepicker #picker></mat-datepicker>
-                        </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="row-field" subscriptSizing="dynamic">
-                            <mat-select formControlName="tipoInasistencia" placeholder="Tipo">
-                                 <mat-option *ngFor="let t of tiposInasistencia" [value]="t.value">{{ t.label }}</mat-option>
+                                <mat-option *ngFor="let p of plazas" [value]="p">
+                                    <span class="plaza-option">
+                                        <span>{{ p.cvePlaza }}</span>
+                                        <span class="plaza-option-horas" [class.plaza-option-horas--jornada]="(p.horas ?? 0) <= 0">
+                                            {{ horasLabel(p) }}
+                                        </span>
+                                    </span>
+                                </mat-option>
                             </mat-select>
                         </mat-form-field>
-
-                        <mat-form-field appearance="outline" class="row-field" subscriptSizing="dynamic">
-                            <input matInput 
-                                type="number" 
-                                min="0" 
-                                formControlName="horasInasistencia">
-                        </mat-form-field>
-
-                        <button type="button" class="falta-remove" aria-label="Quitar falta" (click)="quitarFalta(p, i)">
-                            <mat-icon>close</mat-icon>
-                        </button>
                     </div>
+                </div>
 
-                    <div class="plaza-block-actions">
-                        <button type="button" class="btn btnn-primaryy"
-                            [disabled]="isGuardando(p)"
-                            (click)="registrarFaltas(p)">
-                            <mat-icon>check</mat-icon>
-                            <span>{{ isGuardando(p) ? 'Registrando...' : 'Registrar ' + getFaltas(p).length + (getFaltas(p).length === 1 ? ' falta' : ' faltas') }}</span>
-                        </button>
-                    </div>
-                </ng-container>
-
-                <ng-template #sinFaltas>
-                    <div class="plaza-block-empty">Sin faltas por registrar en esta plaza.</div>
-                </ng-template>
+                <!-- Línea 2: RFC -->
+                <span class="plazas-header-sub">
+                    RFC {{ empleadoSeleccionado.rfc }} · {{ plazas.length }} {{ plazas.length === 1 ? 'plaza' : 'plazas' }}
+                </span>
             </div>
-        </ng-container>
 
-        <ng-template #sinEmpleado>
-            <div class="no-data__content no-data__content--static">
-                <mat-icon class="no-data__icon">search_off</mat-icon>
-                <span class="no-data__text">Busca un trabajador para ver sus plazas.</span>
+            <button type="button" class="btn btn-success plazas-header-add"
+                *ngIf="plazaSeleccionada"
+                (click)="agregarFila()">
+                <mat-icon>add</mat-icon>
+                <span>Agregar</span>
+            </button>
+        </div>
+
+        <div class="table-content">
+            <div class="table-scroll">
+                <table mat-table [dataSource]="dataSource" class="table-global">
+
+                    <ng-container matColumnDef="folio">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter"><span>NÚMERO</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-sm col-center" [formGroup]="f.form">
+                            <mat-form-field appearance="outline" class="row-field row-field--folio" subscriptSizing="dynamic">
+                                <input matInput type="number" min="1" formControlName="folio" placeholder="Número">
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="fechaCaptura">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter"><span>FECHA<br>CAPTURA</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-sm col-center">{{ dateToday | date:'dd/MM/yyyy' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="qna">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter"><span>QNA<br>INASISTENCIA</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-sm col-center" [formGroup]="f.form">
+                            <mat-form-field appearance="outline" class="row-field row-field--qna" subscriptSizing="dynamic">
+                                <input matInput formControlName="qnaInasistencia" inputmode="numeric" maxlength="6" placeholder="AAAAQQ">
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="tipo">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter"><span>TIPO DE<br>INASISTENCIA</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-sm col-center" [formGroup]="f.form">
+                            <mat-form-field appearance="outline" class="row-field row-field--tipo" subscriptSizing="dynamic">
+                                <mat-select formControlName="tipoInasistencia" placeholder="Tipo">
+                                    <mat-option *ngFor="let t of tiposInasistencia" [value]="t.value">{{ t.label }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="dia">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter"><span>DÍA DE<br>INASISTENCIA</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-sm col-center" [formGroup]="f.form">
+                            <mat-form-field appearance="outline" class="row-field row-field--dia" subscriptSizing="dynamic">
+                                <input matInput
+                                    [matDatepicker]="pickerDia"
+                                    [max]="dateToday"
+                                    formControlName="diaInasistencia"
+                                    placeholder="dd/mm/aaaa">
+                                <mat-datepicker-toggle matIconSuffix [for]="pickerDia"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerDia></mat-datepicker>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="horas">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter"><span>INASISTENCIA<br>HRS/DÍA</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-sm col-center" [formGroup]="f.form">
+                            <mat-form-field appearance="outline" class="row-field row-field--horas" subscriptSizing="dynamic"
+                                [class.row-field--readonly]="plazaSeleccionada?.esPlazaJornada">
+                                <input matInput type="number" min="0"
+                                    [max]="plazaSeleccionada?.horas || null"
+                                    formControlName="horasInasistencia"
+                                    [readonly]="plazaSeleccionada?.esPlazaJornada">
+                                <mat-error *ngIf="f.form.get('horasInasistencia')?.hasError('max')">
+                                    Máx. {{ plazaSeleccionada?.horas }}
+                                </mat-error>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="importe">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter"><span>IMPORTE<br>DESCUENTO</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-sm col-center" [formGroup]="f.form">
+                            <mat-form-field appearance="outline" class="row-field row-field--importe" subscriptSizing="dynamic">
+                                <span matTextPrefix>$&nbsp;</span>
+                                <input matInput type="number" min="0" step="0.01" formControlName="importeDescuento" placeholder="0.00">
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="acciones">
+                        <th mat-header-cell *matHeaderCellDef class="col-md col-center">
+                            <div class="header-filter"><span>ACCIONES</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-md col-center">
+                            <div class="row-actions">
+                                <button type="button" class="btnn btnn-primary"
+                                    matTooltip="Agregar a faltas por registrar"
+                                    aria-label="Agregar a faltas por registrar"
+                                    (click)="agregarAPendientes(f)">
+                                    <mat-icon>check</mat-icon>
+                                </button>
+
+                                <button type="button" class="btnn btnn-dangerr"
+                                    *ngIf="puedeQuitar()"
+                                    matTooltip="Quitar fila"
+                                    aria-label="Quitar fila"
+                                    (click)="quitarFila(f)">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                    <tr class="mat-mdc-row" *matNoDataRow>
+                        <td class="mat-mdc-cell no-data" [attr.colspan]="displayedColumns.length">
+                            <div class="no-data__content no-data__content--static">
+                                <mat-icon class="no-data__icon">search_off</mat-icon>
+                                <span class="no-data__text">Busca un trabajador para ver sus plazas.</span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
-        </ng-template>
+            <div class="table-footer">
+                <mat-paginator
+                    [length]="dataSource.data.length"
+                    [pageSize]="50"
+                    [pageSizeOptions]="[5, 10, 25, 50, 100]"
+                    showFirstLastButtons
+                    aria-label="Seleccionar página">
+                </mat-paginator>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+ 
+    <div class="table-card card registradas-card" *ngIf="faltasPendientes.length > 0">
+        <div class="plazas-header">
+            <span class="plazas-header-nombre">Faltas por registrar ({{ faltasPendientes.length }})</span>
+            
+            <button type="button" class="btn btn-success plazas-header-add"
+                [disabled]="guardandoTodo"
+                (click)="registrarPendientes()">
+                <mat-icon>save</mat-icon>
+                <span>{{ guardandoTodo ? 'Registrando...' : 'Aplicar' }}</span>
+            </button>
+        </div>
+
+        <div *ngFor="let grupo of gruposPendientes">
+            <div class="plazas-header registradas-grupo">
+                <span class="plazas-header-nombre">Clave plaza: {{ grupo.plaza.cvePlaza }}</span>
+                <span class="plaza-chip">Tipo plaza: {{ horasLabel(grupo.plaza) }}</span>
+            </div>
+
+            <div class="table-scroll">
+                <table mat-table [dataSource]="grupo.faltas" class="table-global">
+
+                    <ng-container matColumnDef="folio">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center"><div class="header-filter"><span>NÚMERO</span></div></th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">{{ r.form.value.folio }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="fechaCaptura">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center"><div class="header-filter"><span>FECHA<br>CAPTURA</span></div></th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">{{ dateToday | date:'dd/MM/yyyy' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="qna">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center"><div class="header-filter"><span>QNA<br>INASISTENCIA</span></div></th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">{{ r.form.value.qnaInasistencia }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="tipo">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center"><div class="header-filter"><span>TIPO DE<br>INASISTENCIA</span></div></th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">{{ tipoLabel(r.form.value.tipoInasistencia) }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="dia">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center"><div class="header-filter"><span>DÍA DE<br>INASISTENCIA</span></div></th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">{{ r.form.value.diaInasistencia | date:'dd/MM/yyyy' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="horas">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center"><div class="header-filter"><span>INASISTENCIA<br>HRS/DÍA</span></div></th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">{{ r.form.value.horasInasistencia }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="importe">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center"><div class="header-filter"><span>IMPORTE<br>DESCUENTO</span></div></th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">{{ r.form.value.importeDescuento | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="quitar">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center"><div class="header-filter"><span>ACCIÓN</span></div></th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">
+                            <button type="button" class="btnn btnn-dangerr"
+                                matTooltip="Quitar de la lista"
+                                aria-label="Quitar de la lista"
+                                [disabled]="guardandoTodo"
+                                (click)="quitarPendiente(r)">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="pendientesColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: pendientesColumns;"></tr>
+                </table>
+            </div>
+            <div class="table-footer">
+                <mat-paginator
+                    [length]="dataSource.data.length"
+                    [pageSize]="50"
+                    [pageSizeOptions]="[5, 10, 25, 50, 100]"
+                    showFirstLastButtons
+                    aria-label="Seleccionar página">
+                </mat-paginator>
+            </div>
+        </div>
     </div>
 </div>

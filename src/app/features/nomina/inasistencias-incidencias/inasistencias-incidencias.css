@@ -1,7 +1,7 @@
 /* --- GLOBAL SEARCH --- */
 .global-search {
   display: flex;
-  align-items: center; 
+  align-items: center;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -18,102 +18,249 @@
   padding-bottom: 0 !important;
 }
 
-.plazas-card {
-  padding: 0;
-  overflow: hidden;
-}
-
 .plazas-header {
-  padding: 10px 14px;
-  font-size: 13px;
-  color: #6b6b6b;
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 12px 14px;
   border-bottom: 1px solid #e5e5e5;
 }
 
-.plaza-block + .plaza-block {
-  border-top: 1px solid #e5e5e5;
+.plazas-header-empleado {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.plaza-block-header {
+.plazas-header-linea {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  background: #faf8f6;
+  gap: 8px 24px;
 }
 
-.plaza-block-title {
+.plazas-header-nombre {
   font-weight: 600;
+  white-space: nowrap;
 }
 
-.plaza-block-info {
-  font-size: 13px;
+.plazas-header-sub {
+  font-size: 12px;
   color: #6b6b6b;
 }
 
-.plaza-block-badge {
-  font-size: 12px;
-  padding: 2px 8px;
-  border-radius: 6px;
-  background: #f3ece6;
-  color: #6b1d2f;
-}
-
-.plaza-block-add {
-  margin-left: auto;
-}
-
-.falta-grid {
-  display: grid;
-  grid-template-columns: 1.5fr 0.8fr 0.9fr 1.3fr 1fr 0.6fr 40px;
-  gap: 8px;
+.plazas-header-select {
+  display: flex;
   align-items: center;
-  padding: 4px 14px 4px 28px;
+  gap: 8px;
 }
 
-.falta-plaza {
-  padding: 8px 10px;
-  border-radius: 6px;
-  background: #faf8f6;
-  font-size: 13px;
-  color: #444;
+.plazas-header-label {
+  font-size: 12px;
+  color: #6b6b6b;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.row-field {
+.plazas-header-add {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.plaza-select {
+  width: 320px;
+}
+
+.plazas-header .plazas-header-add mat-icon {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: currentColor;
+  opacity: 1;
+  visibility: visible;
+}
+
+.plazas-header .plazas-header-add {
+  margin-left: auto;
+  flex: 0 0 auto;          /* no se encoge ni se estira */
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 36px;
+  min-height: 0;
+  padding: 0 16px;
+  white-space: nowrap;
+}
+
+/* Plaza seleccionada: clave + chip de horas */
+.plaza-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.plaza-chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 10px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  white-space: nowrap;
+}
+
+/* Opciones de la lista (el panel se dibuja fuera del componente, por eso ::ng-deep) */
+::ng-deep .plaza-select-panel .plaza-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   width: 100%;
 }
 
-.falta-remove {
-  border: none;
-  background: transparent;
-  color: #d32f2f;
-  cursor: pointer;
+::ng-deep .plaza-select-panel .mdc-list-item__primary-text {
+  width: 100%;
+}
+
+::ng-deep .plaza-select-panel .plaza-option-horas {
+  font-size: 12px;
+  color: #6b6b6b;
+  white-space: nowrap;
+}
+
+::ng-deep .plaza-select-panel .plaza-option-horas--jornada {
+  color: #9a9a9a;
+  font-style: italic;
+}
+
+:host ::ng-deep .plaza-select .mdc-notched-outline > * {
+  border-color: #2e7d32 !important;
+  border-width: 1.5px !important;
+}
+
+.table-global .header-filter span {
+  white-space: normal;
+  line-height: 1.2;
+  text-align: center;
+  display: inline-block;
+}
+
+:host {
+  --row-field-height: 36px;
+}
+
+:host {
+  --folio-width: 120px;
+  --qna-width: 120px;
+  --tipo-width: 150px;
+  --dia-width: 150px;
+  --horas-width: 100px;
+  --importe-width: 130px;
+}
+
+:host ::ng-deep .row-field {
+  --mat-form-field-container-height: var(--row-field-height);
+  --mat-form-field-container-vertical-padding: 6px;
+  --mat-form-field-container-text-size: 13px;
+}
+
+:host ::ng-deep .row-field .mat-mdc-form-field-infix {
+  min-height: var(--row-field-height);
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+}
+
+:host ::ng-deep .row-field .mat-datepicker-toggle .mat-mdc-icon-button {
+  --mat-icon-button-state-layer-size: 28px;
+  width: 28px;
+  height: 28px;
+  padding: 2px;
+}
+
+:host ::ng-deep .row-field .mat-datepicker-toggle .mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.row-field {
+  width: var(--field-width, 100%);
+  min-width: var(--field-width, 100%);
+  max-width: var(--field-width, 100%);
+  margin: 4px 0;
+}
+
+.row-field--folio { --field-width: var(--folio-width); }
+.row-field--qna   { --field-width: var(--qna-width); }
+.row-field--tipo  { --field-width: var(--tipo-width); }
+.row-field--dia   { --field-width: var(--dia-width); }
+.row-field--horas { --field-width: var(--horas-width); }
+.row-field--importe { --field-width: var(--importe-width); }
+
+:host ::ng-deep .row-field .mat-mdc-form-field-infix {
+  width: auto;
+  min-width: 0;
+}
+
+.row-actions {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
 }
 
-.plaza-block-actions {
-  display: flex;
-  justify-content: flex-end;
-  padding: 8px 14px 14px;
+:host ::ng-deep .row-field--readonly .mat-mdc-text-field-wrapper {
+  background: #f3f3f3;
 }
 
-.plaza-block-empty {
-  padding: 10px 14px 14px 28px;
-  font-size: 13px;
-  color: #9a9a9a;
+:host ::ng-deep .row-field--readonly input {
+  color: #6b6b6b;
+  cursor: not-allowed;
 }
-
-
-
 
 @media (max-width: 768px) {
-  .inasistencias-layout {
-    grid-template-columns: 1fr;
+  .global-search,
+  .global-search form {
+    width: 100%;
+  }
+
+  .search-field {
+    width: 100%;
+  }
+
+  .plazas-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .plazas-header-linea {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .plazas-header-nombre {
+    white-space: normal;
+  }
+
+  /* Selector de plaza a todo el ancho, con la etiqueta arriba */
+  .plazas-header-select {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+
+  .plaza-select {
+    width: 100%;
+  }
+
+  /* Botón Agregar a todo el ancho y con su altura normal */
+  .plazas-header .plazas-header-add {
+    margin-left: 0;
+    width: 100%;
   }
 }
