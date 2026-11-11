@@ -119,7 +119,7 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque percepción concepto tabular informado ST' },                        // nom_cheque_cpto_p_ST
     { label: 'Calculando nómina cheque percepción concepto tabular informado T1, T2, T3' },                // nom_cheque_cpto_p_T1, T2, T3
     //{ label: 'Calculando concepto informados' },                // cpto_informados
-    { label: 'Calculando nómina cheque percepción concepto K1A, K1F' },                // nom_cheque_cpto_p_K1A, K1F
+    { label: 'Calculando nómina cheque percepción concepto K1A, K1F' },                           // nom_cheque_cpto_p_K1A, K1F
     { label: 'Calculando nómina cheque percepción concepto informado cuota fija K1' },            // nom_cheque_cpto_p_K1
     { label: 'Calculando nómina cheque percepción concepto informado cuota fija O1' },            // nom_cheque_cpto_p_O1
     { label: 'Calculando nómina cheque percepción concepto informado cuota fija KW' },            // nom_cheque_cpto_p_KW
@@ -140,10 +140,10 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque deducción concepto 58' },            // nom_cheque_cpto_58
     { label: 'Calculando nómina cheque deducción concepto 77' },            // nom_cheque_cpto_77
     { label: 'Calculando nómina cheque deducción concepto 62' },            // nom_cheque_cpto_62
-    { label: 'Calculando nómina cheque deducción descuentos de pensiones alimenticias' }, // nom_cheque_cpto_62
-    { label: 'Consolidando nómina cheque deducción pensiones alimenticias' },             // cpto_62
-    { label: 'Calculando nómina cheque deducción descuentos de juicios mercantiles' },    // cpto_JM
-    //{ label: 'Consolidando nómina cheque deducción juicios mercantiles' },                // cpto_JM 
+    { label: 'Calculando nómina cheque deducción descuentos de pensiones alimenticias' }, // nom_cheque_cpto_d_pa
+    //{ label: 'Consolidando nómina cheque deducción pensiones alimenticias' },           // cpto_62
+    { label: 'Calculando nómina cheque deducción descuentos de juicios mercantiles' },    // nom_cheque_cpto_d_jm
+    //{ label: 'Consolidando nómina cheque deducción juicios mercantiles' },              // cpto_JM 
     { label: 'Calculando nómina cheque deducción concepto 19' },            // nom_cheque_cpto_19
     { label: 'Calculando nómina cheque deducción concepto MR' },            // nom_cheque_cpto_MR
     { label: 'Calculando deducciones informadas' },               // deducciones informadas
