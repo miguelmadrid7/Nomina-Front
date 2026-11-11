@@ -11,7 +11,6 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatAutocompleteModule, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
-import { catchError, forkJoin, map, of } from 'rxjs';
 import { CalendarioService } from '../../../core/services/calendario.service';
 import { Calendario } from '../../../core/model/calendario.model';
 import { ToastService } from '../../../core/services/toast.service';
@@ -88,11 +87,9 @@ export class InasistenciasIncidencias implements OnInit, AfterViewInit {
   readonly displayedColumns: string[] = ['folio', 'fechaCaptura', 'qna', 'tipo', 'dia', 'horas', 'importe', 'acciones'];
   readonly pendientesColumns: string[] = ['folio', 'fechaCaptura', 'qna', 'tipo', 'dia', 'horas', 'importe', 'quitar'];
   readonly displayFn = (emp: EmpleadoWithPlaza | string | null): string => formatEmployeeDisplay(emp);
-  
   readonly form: FormGroup = this.fb.group({
     searchText: [''],
   });
-
   readonly tiposInasistencia: TipoInasistencia[] = [
     { value: 'N', label: 'Normal' },
     { value: 'A', label: 'Adición' },
@@ -256,7 +253,6 @@ export class InasistenciasIncidencias implements OnInit, AfterViewInit {
     // Copia de la fila (ya con su importe calculado), para que se conserve aunque el formulario se limpie
     this.faltasPendientes.push({ plaza, form: this.fb.group(fila.form.getRawValue()) });
     this.refrescarPendientes();
-
     const filas = this.filasPorPlaza.get(plaza.id) ?? [];
     if (filas.length > 1) {
       filas.splice(filas.indexOf(fila), 1);
@@ -277,7 +273,6 @@ export class InasistenciasIncidencias implements OnInit, AfterViewInit {
     this.refrescarPendientes();
   }
 
-  /** Botón final: guarda en la BD todas las faltas por registrar (un POST por falta). */
   registrarPendientes(): void {
     if (this.faltasPendientes.length === 0) return;
     if (!this.empleadoId || !this.calendarioActual || !this.qnaProceso) {
@@ -289,34 +284,30 @@ export class InasistenciasIncidencias implements OnInit, AfterViewInit {
     const ejercicio = this.calendarioActual.ejercicio;
     const qnaProceso = this.qnaProceso;
     const pendientes = [...this.faltasPendientes];
-
-    const requests = pendientes.map(p =>
-      this.inasistenciasService.addIncidencia(this.buildBody(p, empleadoId, ejercicio, qnaProceso)).pipe(
-        map(resp => resp?.success === true),
-        catchError(() => of(false))
-      )
-    );
+    const payloads = pendientes.map(p => this.buildBody(p, empleadoId, ejercicio, qnaProceso));
 
     this.guardandoTodo = true;
-    forkJoin(requests).subscribe(resultados => {
-      this.guardandoTodo = false;
-
-      // Se quedan en la lista solo las que fallaron
-      this.faltasPendientes = pendientes.filter((_, i) => !resultados[i]);
-      this.refrescarPendientes();
-
-      const exitosas = resultados.filter(ok => ok).length;
-      const fallidas = resultados.length - exitosas;
-
-      if (fallidas === 0) {
-        this.toastService.success('Faltas registradas', `${exitosas} ${exitosas === 1 ? 'falta registrada' : 'faltas registradas'}.`, 4000);
-      } else if (exitosas === 0) {
-        this.toastService.error('Error', 'No fue posible registrar las faltas.', 4000);
-      } else {
-        this.toastService.warning('Registro parcial', `${exitosas} registradas, ${fallidas} pendientes. Revisa las que quedaron.`, 5000);
-      }
-      this.cd.markForCheck();
-    });
+    this.inasistenciasService.addIncidenciasLote(payloads)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (resp) => {
+          this.guardandoTodo = false;
+          if (resp?.success) {
+            const total = resp.data?.length ?? pendientes.length;
+            this.faltasPendientes = [];
+            this.refrescarPendientes();
+            this.resetScreen();
+            this.toastService.success('Faltas registradas', `${total} ${total === 1 ? 'falta registrada' : 'faltas registradas'}.`, 4000);
+          } else {
+            this.toastService.error('Error', resp?.message ?? 'No fue posible registrar las faltas.', 4000);
+          }
+          this.cd.markForCheck();
+        },
+        error: () => {
+          this.guardandoTodo = false;
+          this.cd.markForCheck();
+        }
+      });
   }
 
   clearSearch(): void {
@@ -325,20 +316,42 @@ export class InasistenciasIncidencias implements OnInit, AfterViewInit {
     this.cargandoBusqueda = false;
     this.autocompleteTrigger?.closePanel();
     this.resetSeleccion();
+    this.resetScreen();
+  }
+
+  resetScreen(): void {
+    this.form.reset({ searchText: '' });
+    this.resultados = [];
+    this.cargandoBusqueda = false;
+    this.autocompleteTrigger?.closePanel();
+    this.resetSeleccion();
+    this.paginator?.firstPage();
+  }
+
+  resetSeleccion(): void {
+    this.empleadoId = null;
+    this.empleadoSeleccionado = null;
+    this.plazas = [];
+    this.plazaSeleccionada = null;
+    this.filasPorPlaza.clear();
+    this.dataSource.data = [];
+    this.faltasPendientes = [];
+    this.gruposPendientes = [];
+    this.guardandoTodo = false;
+    this.totalDescuento = 0;
   }
 
   private buildBody(p: FaltaPendiente, empleadoId: number, ejercicio: number, qnaProceso: number): IncidenciasInasistenciasRequest {
-    const { folio, tipoInasistencia, horasInasistencia, importeDescuento  } = p.form.value;
+    const { folio, tipoInasistencia, horasInasistencia, diaInasistencia } = p.form.value;
     return {
       folio: Number(folio),
       ejercicio,
       qnaProceso,
-      fechaInasistencia: DateYearsHelper.toIsoDate(new Date()),
+      fechaInasistencia: DateYearsHelper.toIsoDate(diaInasistencia),
       tipoInasistencia,
       horasInasistencia: Number(horasInasistencia) || 0,
       tabEmpleadosId: empleadoId,
       tabPlazasId: p.plaza.id,
-      importe: Number(importeDescuento) || 0,
     };
   }
 
@@ -365,14 +378,16 @@ export class InasistenciasIncidencias implements OnInit, AfterViewInit {
     return plaza.esPlazaJornada ? 1 : 0;
   }
 
-  /** Hrs/día: mínimo 0 y, en plazas de horas, máximo las horas de la plaza. */
+  /**
+   * Hrs/día. Plazas de horas: de 1 a las horas de la plaza (misma regla que valida el backend).
+   * Plazas de jornada: el backend siempre la cuenta como 1 día.
+   */
   private horasValidators(plaza: PlazaEmpleado) {
-    const validators = [Validators.required, Validators.min(0)];
     const horasPlaza = plaza.horas ?? 0;
     if (horasPlaza > 0) {
-      validators.push(Validators.max(horasPlaza));
+      return [Validators.required, Validators.min(1), Validators.max(horasPlaza)];
     }
-    return validators;
+    return [Validators.required, Validators.min(0)];
   }
 
   private buildFila(plaza: PlazaEmpleado): FilaFalta {
@@ -408,18 +423,5 @@ export class InasistenciasIncidencias implements OnInit, AfterViewInit {
       horasInasistencia: 0,
       importeDescuento: 0,
     };
-  }
-
-  private resetSeleccion(): void {
-    this.empleadoId = null;
-    this.empleadoSeleccionado = null;
-    this.plazas = [];
-    this.plazaSeleccionada = null;
-    this.filasPorPlaza.clear();
-    this.dataSource.data = [];
-    this.faltasPendientes = [];
-    this.gruposPendientes = [];
-    this.guardandoTodo = false;
-    this.totalDescuento = 0;
   }
 }
