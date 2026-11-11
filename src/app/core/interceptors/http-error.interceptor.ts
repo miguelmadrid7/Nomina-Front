@@ -30,7 +30,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
                 case 400:
                     toastService.warning(
                         'Solicitud inválida', 
-                         'La información enviada no es válida.',
+                        error.error?.message || 'La información enviada no es válida.',
                         6000
                     );
                 break;
