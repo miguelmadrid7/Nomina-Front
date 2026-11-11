@@ -7,4 +7,5 @@ export interface IncidenciasInasistenciasRequest {
     horasInasistencia: number;
     tabEmpleadosId: number;
     tabPlazasId: number;
+    importe: number;
 }

@@ -112,6 +112,13 @@
   white-space: nowrap;
 }
 
+.total-descuento {
+  font-size: 14px;
+  font-weight: 600;
+  color: #b3261e;
+}
+
+
 /* Opciones de la lista (el panel se dibuja fuera del componente, por eso ::ng-deep) */
 ::ng-deep .plaza-select-panel .plaza-option {
   display: flex;
