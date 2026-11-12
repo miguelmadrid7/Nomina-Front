@@ -210,6 +210,45 @@
 }
 
 
+/* El login es su propio contenedor de scroll, porque body tiene overflow: hidden */
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;     
+  overflow-y: auto;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Pantallas bajas (celular horizontal, laptop con zoom) */
+@media (max-height: 500px) {
+  .header-top-gold { 
+    padding-block: 12px; 
+  }
+
+  .header-sub-maroon { 
+    padding: 8px 24px; 
+  }
+  
+  .card { 
+    margin: 16px auto; 
+  }
+}
+
+/* Celulares muy angostos: el logo ya no tapa el título */
+@media (max-width: 360px) {
+  .header-top-gold { 
+    padding-left: 84px; 
+  }
+
+  .brand-logo { 
+    max-height: 36px; 
+  }
+
+  .header-title { 
+    letter-spacing: 0; 
+  }
+}
+
 @media (max-width: 768px) {
   .header-top-gold {
     padding-left: clamp(70px, 20vw, 100px);
