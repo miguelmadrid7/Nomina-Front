@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IconoDialog } from './icono-dialog';
+import { IconoDialog } from './alta-icono-dialog';
 
 describe('IconoDialog', () => {
   let component: IconoDialog;

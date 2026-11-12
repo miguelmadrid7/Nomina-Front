@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AltaModuleDialog } from './alta-module-dialog';
+import { ALtaModuleDialog } from './alta-module-dialog';
 
 describe('AltaModuleDialog', () => {
-  let component: AltaModuleDialog;
-  let fixture: ComponentFixture<AltaModuleDialog>;
+  let component: ALtaModuleDialog;
+  let fixture: ComponentFixture<ALtaModuleDialog>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AltaModuleDialog]
+      imports: [ALtaModuleDialog]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AltaModuleDialog);
+    fixture = TestBed.createComponent(ALtaModuleDialog);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DialogTerceroInstitucional } from './dialog-tercero-institucional';
+import { AltaTerceroInstitucionalDialog } from './alta-tercero-institucional-dialog';
 
 describe('DialogTercero5L', () => {
-  let component: DialogTerceroInstitucional;
-  let fixture: ComponentFixture<DialogTerceroInstitucional>;
+  let component: AltaTerceroInstitucionalDialog;
+  let fixture: ComponentFixture<AltaTerceroInstitucionalDialog>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DialogTerceroInstitucional]
+      imports: [AltaTerceroInstitucionalDialog]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(DialogTerceroInstitucional);
+    fixture = TestBed.createComponent(AltaTerceroInstitucionalDialog);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
