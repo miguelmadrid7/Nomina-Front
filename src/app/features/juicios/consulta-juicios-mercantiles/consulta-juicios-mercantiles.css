@@ -1,0 +1,165 @@
+/* SEARCH */
+.global-search {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.search-field {
+  flex: 0 1 450px;
+  width: 450px !important;
+  max-width: 450px;
+  min-width: 250px;
+}
+
+:host ::ng-deep .search-field .mat-mdc-form-field-infix {
+  min-height: 44px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .search-field .mat-mdc-text-field-wrapper {
+  padding-left: 8px;
+}
+
+/* Filtros de quincena */
+.qna-filters {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.qna-filters mat-form-field {
+  width: 130px;
+  min-width: 0;
+}
+
+:host ::ng-deep .qna-compact .mat-mdc-form-field-infix{
+  min-height:44px;
+  padding-top:10px;
+  padding-bottom:10px;
+}
+
+:host ::ng-deep .search-field .mat-mdc-form-field-infix {
+  min-height: 44px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .search-field .mat-mdc-text-field-wrapper {
+  padding-left: 8px;
+}
+
+/* Estatus de tabla */
+.chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.chip-ok {
+  color: #166534;
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+.chip-off {
+  color: #7f1d1d;
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+/* Fila inactiva en gris tenue */
+.row-finalizado,
+.inactive-row {
+  opacity: .55;
+  background-color: #f9fafb;
+}
+
+.row-finalizado .ico-btn-primary,
+.row-finalizado .ico-btn-danger,
+.inactive-row button[disabled] {
+  pointer-events: none;
+}
+
+
+/* TABLA — contenedor */
+.table-card {
+    background: var(--card);
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+    overflow: hidden;
+}
+
+/* SIN DATOS */
+.no-data-cell {
+    text-align: center !important;
+    color: #6b7280;
+    font-style: italic;
+    padding: 24px 0 !important;
+    height: 56px;
+    vertical-align: middle;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 768px) {
+  .table-global {
+    min-width: 700px;
+  }
+
+  .global-search {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .qna-filters {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .qna-filters mat-form-field {
+    width: 130px;
+    min-width: 0;
+    flex: 0 0 130px;
+  }
+
+  .search-field {
+    width: 100% !important;
+    max-width: 100%;
+  }
+  
+  :host ::ng-deep .search-field.mat-mdc-form-field {
+    height: auto !important;
+    flex: 0 0 auto !important;
+  }
+
+  :host ::ng-deep .search-field .mat-mdc-text-field-wrapper {
+    height: 56px !important;
+  }
+
+  :host ::ng-deep .search-field .mat-mdc-form-field-flex {
+    height: 56px !important;
+    align-items: center !important;
+  }
+
+  :host ::ng-deep .search-field .mat-mdc-form-field-infix {
+    min-height: 40px !important;
+    height: auto !important;
+  }
+}

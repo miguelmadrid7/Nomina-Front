@@ -1,0 +1,353 @@
+<div class="page-container">
+    <div class="page-header page-header--split">
+        <h2 class="page-title">Inasistencias registro alta/baja</h2>
+
+        <div class="header-tools">
+            <div class="qna-chip" role="status">
+                <mat-icon>event</mat-icon>
+                <div class="qna-chip__text">
+                    <span class="qna-chip__label">Quincena activa</span>
+                    <span class="qna-chip__value">{{ cargandoQna ? 'Cargando...' : (calendarioActual ? calendarioActual.qna.toString().padStart(2, '0') + ' / ' + calendarioActual.ejercicio : 'No disponible') }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="global-search">
+        <form [formGroup]="form">
+            <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
+                <mat-icon matPrefix>search</mat-icon>
+                <mat-label>Buscar (CURP, RFC, Empleado)</mat-label>
+                <input matInput
+                    id="buscarEmpleado"
+                    formControlName="searchText"
+                    [matAutocomplete]="auto"
+                    #autocompleteTrigger="matAutocompleteTrigger"
+                    (input)="onSearchInputChange()"
+                    appUppercase
+                    (keydown.enter)="$event.preventDefault(); searchEmployee()">
+                <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onOptionSelected($event.option.value)">
+                    <mat-option *ngFor="let emp of resultados" [value]="emp"> {{ emp?.rfc || '—' }} · {{ emp?.curp || '—' }} · {{ emp?.nombreCompleto || '—' }} </mat-option>
+                </mat-autocomplete>
+            </mat-form-field>
+        </form>
+    </div>
+
+    <div class="actions-right">
+        <button class="btn btn-primary" (click)="searchEmployee()">
+            <mat-icon>search</mat-icon>
+            <span>Buscar</span>
+        </button>
+
+        <button class="btn btn-danger" (click)="clearSearch()">
+            <mat-icon>delete_outline</mat-icon>
+            <span>Limpiar</span>
+        </button>
+    </div>
+
+    <div class="table-card card">
+        <div class="plazas-header" *ngIf="empleadoSeleccionado">
+            <div class="plazas-header-empleado">
+                <!-- Línea 1: nombre + selector de plaza -->
+                <div class="plazas-header-linea">
+                    <span class="plazas-header-nombre">{{ empleadoSeleccionado.nombreCompleto }}</span>
+
+                    <div class="plazas-header-select" *ngIf="plazas.length > 0">
+                        <span class="plazas-header-label">Plaza a registrar</span>
+                        <mat-form-field appearance="outline" class="qna-compact plaza-select" subscriptSizing="dynamic">
+                            <mat-select [value]="plazaSeleccionada"
+                                (selectionChange)="selectPlaza($event.value)"
+                                panelClass="plaza-select-panel">
+
+                                <mat-select-trigger>
+                                    <span class="plaza-trigger">
+                                        <span>{{ plazaSeleccionada?.cvePlaza }}</span>
+                                        <span class="plaza-chip" *ngIf="plazaSeleccionada">{{ horasLabel(plazaSeleccionada) }}</span>
+                                    </span>
+                                </mat-select-trigger>
+
+                                <mat-option *ngFor="let p of plazas" [value]="p">
+                                    <span class="plaza-option">
+                                        <span>{{ p.cvePlaza }}</span>
+                                        <span class="plaza-option-horas" [class.plaza-option-horas--jornada]="(p.horas ?? 0) <= 0">
+                                            {{ horasLabel(p) }}
+                                        </span>
+                                    </span>
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                </div>
+
+                <!-- Línea 2: RFC -->
+                <span class="plazas-header-sub">
+                    RFC {{ empleadoSeleccionado.rfc }} · {{ plazas.length }} {{ plazas.length === 1 ? 'plaza' : 'plazas' }}
+                </span>
+            </div>
+
+            <button type="button" class="btn btn-success plazas-header-add"
+                *ngIf="plazaSeleccionada"
+                (click)="addRow()">
+                <mat-icon>add</mat-icon>
+                <span>Agregar</span>
+            </button>
+        </div>
+
+        <div class="table-content">
+            <div class="table-scroll">
+                <table mat-table [dataSource]="dataSource" class="table-global">
+
+                    <ng-container matColumnDef="folio">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter"><span>NÚMERO</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-sm col-center" [formGroup]="f.form">
+                            <mat-form-field appearance="outline" class="row-field row-field--folio" subscriptSizing="dynamic">
+                                <input matInput type="number" min="1" formControlName="folio" placeholder="Número">
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="fechaCaptura">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter"><span>FECHA<br>CAPTURA</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-sm col-center">{{ dateToday | date:'dd/MM/yyyy' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="qna">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter"><span>QNA<br>INASISTENCIA</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-sm col-center" [formGroup]="f.form">
+                            <mat-form-field appearance="outline" class="row-field row-field--qna" subscriptSizing="dynamic">
+                                <input matInput formControlName="qnaInasistencia" inputmode="numeric" maxlength="6" placeholder="AAAAQQ">
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="tipo">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter"><span>TIPO DE<br>INASISTENCIA</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-sm col-center" [formGroup]="f.form">
+                            <mat-form-field appearance="outline" class="row-field row-field--tipo" subscriptSizing="dynamic">
+                                <mat-select formControlName="tipoInasistencia" placeholder="Tipo">
+                                    <mat-option *ngFor="let t of tiposInasistencia" [value]="t.value">{{ t.label }}</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="dia">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter"><span>DÍA DE<br>INASISTENCIA</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-sm col-center" [formGroup]="f.form">
+                            <mat-form-field appearance="outline" class="row-field row-field--dia" subscriptSizing="dynamic">
+                                <input matInput
+                                    [matDatepicker]="pickerDia"
+                                    [max]="dateToday"
+                                    formControlName="diaInasistencia"
+                                    placeholder="dd/mm/aaaa">
+                                <mat-datepicker-toggle matIconSuffix [for]="pickerDia"></mat-datepicker-toggle>
+                                <mat-datepicker #pickerDia></mat-datepicker>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="horas">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter"><span>INASISTENCIA<br>HRS/DÍA</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-sm col-center" [formGroup]="f.form">
+                            <mat-form-field appearance="outline" class="row-field row-field--horas" subscriptSizing="dynamic"
+                                [class.row-field--readonly]="plazaSeleccionada?.esPlazaJornada">
+                                <input matInput type="number" min="0"
+                                    [max]="plazaSeleccionada?.horas || null"
+                                    formControlName="horasInasistencia"
+                                    [readonly]="plazaSeleccionada?.esPlazaJornada">
+                                <mat-error *ngIf="f.form.get('horasInasistencia')?.hasError('max')">
+                                    Máx. {{ plazaSeleccionada?.horas }}
+                                </mat-error>
+                            </mat-form-field>
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="importe">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter">
+                                <span>IMPORTE<br>{{ (plazaSeleccionada?.horas ?? 0) > 0 ? 'POR HORA' : 'POR DÍA' }}</span>
+                            </div>
+                        </th>
+                        <!-- Solo lectura: importe base de la plaza. El descuento final lo calcula el backend. -->
+                        <td mat-cell *matCellDef="let f" class="col-sm col-center">
+                            {{ (plazaSeleccionada?.importeDescuento ?? 0) | currency:'MXN':'symbol-narrow':'1.2-2' }}
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="acciones">
+                        <th mat-header-cell *matHeaderCellDef class="col-md col-center">
+                            <div class="header-filter"><span>ACCIONES</span></div>
+                        </th>
+                        <td mat-cell *matCellDef="let f" class="col-md col-center">
+                            <div class="row-actions">
+                                <button type="button" class="btnn btnn-primary" (click)="agregarAPendientes(f)">
+                                    <mat-icon>check</mat-icon>
+                                </button>
+
+                                <button type="button" class="btnn btnn-dangerr"
+                                    *ngIf="canRemoveRow()"
+                                    (click)="removeRow(f)">
+                                    <mat-icon>close</mat-icon>
+                                </button>
+                            </div>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                    <tr class="mat-mdc-row" *matNoDataRow>
+                        <td class="mat-mdc-cell no-data" [attr.colspan]="displayedColumns.length">
+                            <div class="no-data__content no-data__content--static">
+                                <mat-icon class="no-data__icon">search_off</mat-icon>
+                                <span class="no-data__text">Busca un trabajador para ver sus plazas.</span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="table-footer">
+                <mat-paginator
+                    [length]="dataSource.data.length"
+                    [pageSize]="50"
+                    [pageSizeOptions]="[5, 10, 25, 50, 100]"
+                    showFirstLastButtons
+                    aria-label="Seleccionar página">
+                </mat-paginator>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-divider"></div>
+ 
+    <div class="table-card card registradas-card" *ngIf="faltasPendientes.length > 0">
+        <div class="plazas-header">
+            <span class="plazas-header-nombre">Faltas por registrar ({{ faltasPendientes.length }})</span>
+                <span class="plazas-header-sub">
+                    Total a descontar:
+                <span class="total-descuento">{{ totalDescuento | currency:'MXN':'symbol-narrow':'1.2-2' }}</span>
+            </span>
+            
+            <button type="button" class="btn btn-success plazas-header-add"
+                [disabled]="guardandoTodo"
+                (click)="registrarPendientes()">
+                <mat-icon>save</mat-icon>
+                <span>{{ guardandoTodo ? 'Registrando...' : 'Aplicar' }}</span>
+            </button>
+        </div>
+
+        <div *ngFor="let grupo of gruposPendientes">
+            <div class="plazas-header registradas-grupo">
+                <span class="plazas-header-nombre">Clave plaza: {{ grupo.plaza.cvePlaza }}</span>
+                <span class="plaza-chip">Tipo plaza: {{ horasLabel(grupo.plaza) }}</span>
+            </div>
+
+            <div class="table-scroll">
+                <table mat-table [dataSource]="grupo.faltas" class="table-global">
+
+                    <ng-container matColumnDef="folio">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter">
+                                <span>NÚMERO</span>
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">{{ r.form.value.folio }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="fechaCaptura">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter">
+                                <span>FECHA<br>CAPTURA</span>
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">{{ dateToday | date:'dd/MM/yyyy' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="qna">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter">
+                                <span>QNA<br>INASISTENCIA</span>
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">{{ r.form.value.qnaInasistencia }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="tipo">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter">
+                                <span>TIPO DE<br>INASISTENCIA</span>
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">{{ tipoLabel(r.form.value.tipoInasistencia) }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="dia">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter">
+                                <span>DÍA DE<br>INASISTENCIA</span>
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">{{ r.form.value.diaInasistencia | date:'dd/MM/yyyy' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="horas">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter">
+                                <span>INASISTENCIA<br>HRS/DÍA</span>
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">{{ r.form.value.horasInasistencia }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="importe">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter">
+                                <span>IMPORTE<br>DESCUENTO</span>
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">{{ r.form.value.importeDescuento | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="quitar">
+                        <th mat-header-cell *matHeaderCellDef class="col-sm col-center">
+                            <div class="header-filter">
+                                <span>ACCIÓN</span>
+                            </div>
+                        </th>
+                        <td mat-cell *matCellDef="let r" class="col-sm col-center">
+                            <button type="button" class="btnn btnn-dangerr" [disabled]="guardandoTodo" (click)="quitarPendiente(r)">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="pendientesColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: pendientesColumns;"></tr>
+                </table>
+            </div>
+            <div class="table-footer">
+                <mat-paginator
+                    [length]="dataSource.data.length"
+                    [pageSize]="50"
+                    [pageSizeOptions]="[5, 10, 25, 50, 100]"
+                    showFirstLastButtons
+                    aria-label="Seleccionar página">
+                </mat-paginator>
+            </div>
+        </div>
+    </div>
+</div>

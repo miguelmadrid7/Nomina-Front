@@ -1,0 +1,11 @@
+.lotes-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    font-size: 0.85rem; 
+}
+
+.lotes-table th, .lotes-table td { 
+    padding: 8px; 
+    text-align: center; 
+    border-bottom: 1px solid #e0e0e0; 
+}

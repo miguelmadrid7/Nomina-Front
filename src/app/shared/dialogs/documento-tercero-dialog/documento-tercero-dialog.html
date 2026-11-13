@@ -1,0 +1,54 @@
+<div  class="dialog-shell">
+    <div class="dialog-header dlg-bar">
+        <button mat-icon-button class="dialog-close" (click)="close()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+        
+    <div class="dialog-content">
+        <div class="dlg-bar-title">Historial de Tercero</div>
+
+            <mat-card class="form-card">
+                <mat-card-content class="form-grid">
+                    <div class="info-field">
+                        <mat-icon>fingerprint</mat-icon>
+                            <div class="info-content">
+                                <span class="info-label">Nombre empleado</span>
+                                <span>{{ data.empleado.nombreTrabajador || '—' }}</span>
+                            </div>
+                    </div>
+
+                    <div class="info-field">
+                        <mat-icon>fingerprint</mat-icon>
+                            <div class="info-content">
+                                <span class="info-label">RFC</span>
+                                <span>{{ data.empleado.rfc || '—' }}</span>
+                            </div>
+                    </div>
+
+                </mat-card-content>
+            </mat-card>
+
+        <div class="documentos-list" *ngIf="data.documentos.length > 0">
+            <div class="documento-item" 
+                     *ngFor="let doc of data.documentos"
+                     (click)="download(doc)">
+                    <mat-icon>picture_as_pdf</mat-icon>
+                    <div class="documento-info">
+                        <div class="documento-nombre">{{ doc.nombreArchivo }}</div>
+                        <div class="documento-detalles">
+                            {{ doc.numeroDocumento }} | 
+                            QNA: {{ doc.qnaProceso }} | 
+                            {{ formatFileSize(doc.tamanoArchivo) }} |
+                            {{ formatDate(doc.tsCreated) }}
+                        </div>
+                    </div>
+                    <mat-icon class="download-icon">download</mat-icon>
+                </div>
+            </div>
+            
+            <div *ngIf="data.documentos.length === 0" class="no-documentos">
+                <mat-icon>folder_open</mat-icon>
+                <p>No hay documentos disponibles</p>
+            </div>
+        </div>

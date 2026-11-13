@@ -1,0 +1,17 @@
+.icon-preview {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  border-radius: 10px;
+  background: #f0e4e7;
+  color: #5b1f30;
+}
+
+.empty-state {
+  margin: 16px 0;
+  text-align: center;
+  color: var(--text-secondary, #5f6368);
+}
