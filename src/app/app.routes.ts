@@ -144,7 +144,21 @@ export const routes: Routes = [
               import('./features/nomina/inasistencias-incidencias/inasistencias-incidencias')
                 .then(m => m.InasistenciasIncidencias),
             data: { breadcrumb: 'Inasistencias, incidencias' }
-          }
+          },
+          {
+            path: 'historico-inasistencias-incidencias',
+            loadComponent: () =>
+              import('./features/nomina/historico-inasistencias/historico-inasistencias')
+                .then(m => m.HistoricoInasistencias),
+            data: { breadcrumb: 'Historico inasistencias, incidencias' }
+          },
+          {
+            path: 'consulta-inasistencias-incidencias',
+            loadComponent: () =>
+              import('./features/nomina/consulta-inasistencias/consulta-inasistencias')
+                .then(m => m.ConsultaInasistencias),
+            data: { breadcrumb: 'Consulta inasistencias, incidencias' }
+          },
         ]
       },
 
