@@ -4,4 +4,7 @@ export interface PlazaEmpleado {
   horas: number | null;
   qnaIni: number | null;
   qnaFin: number | null;
+  importeDescuento: number | null;
+  plazaJornada: boolean;
+  tipoPlaza?: string | null; 
 }
