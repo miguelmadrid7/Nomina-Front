@@ -1,3 +1,5 @@
+import { ModuleRolePermissionRequest } from "./module-role-permission-request.model";
+
 export interface ModuleRequest {
   name: string;
   path: string | null;
@@ -5,5 +7,5 @@ export interface ModuleRequest {
   visible: boolean;
   iconId: number;
   parentId: number | null;
-  rolesId: number[];
+  roles: ModuleRolePermissionRequest[];
 }

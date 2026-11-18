@@ -1,4 +1,9 @@
 export interface ModuleRole {
-  id: number;
+  roleId: number;
   name: string;
+  canUpdate?: boolean;
+  canAdd?: boolean;
+  canDelete?: boolean;
+  canAuthorize?: boolean;
+  canViewTechnicalDetail?: boolean;
 }
