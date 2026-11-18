@@ -91,7 +91,6 @@ export class CalculoNominaComponent implements OnInit {
   private readonly steps = [
     { label: 'Inicializando proceso' },                         // nom_cheque_truncate
     { label: 'Insertando nómina cheque plaza' },                // nom_cheque_pza_insert
-    //{ label: 'Insertando nómina cheque concepto' },           // nom_cheque_cpto_tab
     { label: 'Calculando nómina cheque percepción concepto tabular 07' },          // nom_cheque_cpto_p_07
     { label: 'Calculando nómina cheque percepción concepto tabular 35' },          // nom_cheque_cpto_p_35
     { label: 'Calculando nómina cheque percepción concepto tabular 38' },          // nom_cheque_cpto_p_38
@@ -118,7 +117,6 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque percepción concepto tabular informado MA' },                        // nom_cheque_cpto_p_MA
     { label: 'Calculando nómina cheque percepción concepto tabular informado ST' },                        // nom_cheque_cpto_p_ST
     { label: 'Calculando nómina cheque percepción concepto tabular informado T1, T2, T3' },                // nom_cheque_cpto_p_T1, T2, T3
-    //{ label: 'Calculando concepto informados' },                // cpto_informados
     { label: 'Calculando nómina cheque percepción concepto K1A, K1F' },                           // nom_cheque_cpto_p_K1A, K1F
     { label: 'Calculando nómina cheque percepción concepto informado cuota fija K1' },            // nom_cheque_cpto_p_K1
     { label: 'Calculando nómina cheque percepción concepto informado cuota fija O1' },            // nom_cheque_cpto_p_O1
@@ -137,15 +135,14 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque deducción concepto 01' },            // nom_cheque_cpto_01
     { label: 'Calculando nómina cheque deducción concepto 02' },            // nom_cheque_cpto_02
     { label: 'Calculando nómina cheque deducción concepto 04' },            // nom_cheque_cpto_04
-    { label: 'Calculando nómina cheque deducción concepto 58' },            // nom_cheque_cpto_58
     { label: 'Calculando nómina cheque deducción concepto 77' },            // nom_cheque_cpto_77
+    { label: 'Calculando nómina cheque deducción concepto 58' },            // nom_cheque_cpto_58
     { label: 'Calculando nómina cheque deducción concepto 62' },            // nom_cheque_cpto_62
     { label: 'Calculando nómina cheque deducción descuentos de pensiones alimenticias' }, // nom_cheque_cpto_d_pa
-    //{ label: 'Consolidando nómina cheque deducción pensiones alimenticias' },           // cpto_62
     { label: 'Calculando nómina cheque deducción descuentos de juicios mercantiles' },    // nom_cheque_cpto_d_jm
-    //{ label: 'Consolidando nómina cheque deducción juicios mercantiles' },              // cpto_JM 
-    { label: 'Calculando nómina cheque deducción concepto 19' },            // nom_cheque_cpto_19
     { label: 'Calculando nómina cheque deducción concepto MR' },            // nom_cheque_cpto_MR
+    { label: 'Calculando nómina cheque deducción concepto 19' },            // nom_cheque_cpto_19
+    { label: 'Calculando nómina cheque deducción concepto 17' },            // nom_cheque_cpto_17
     { label: 'Calculando deducciones informadas' },               // deducciones informadas
     { label: 'Calculando nómina cheque bonos BA' },               // nom_cheque_cpto_bono_BA
     { label: 'Calculando nómina cheque bonos BE' },               // nom_cheque_cpto_bono_BE
@@ -158,8 +155,7 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque bonos IH' },               // nom_cheque_cpto_bono_IH
     { label: 'Calculando nómina cheque bonos OF' },               // nom_cheque_cpto_bono_OF
     { label: 'Calculando nómina cheque bonos RM' },               // nom_cheque_cpto_bono_RM
-    { label: 'Actualizando importes' },                           // updateImportes
-    { label: 'Actualizando importes finales' },                   // updateImportes
+    { label: 'Actualizando importes finales' },                   // nom_importes_update
   ];
 
   constructor() {
