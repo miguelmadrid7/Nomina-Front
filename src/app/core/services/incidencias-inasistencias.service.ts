@@ -1,6 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { environment } from "../../../environments/environment";
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpParams, HttpResponse } from "@angular/common/http";
 import { ApiResponse } from "../model/response/api-Response.model";
 import { Observable } from "rxjs";
 import { IncidenciasInasistenciasRequest } from "../model/request/iniasistencias-request.model";
@@ -43,6 +43,14 @@ export class IncidenciasInasistenciasService {
             httpParams = httpParams.set('tipo', params.tipo);
         }
         return this.http.get<ApiResponse<InasistenciasResponse[]>>(`${this.base}/inasistencias`, { params: httpParams });
+    }
+
+    descargarReporte(qnaProceso?: number): Observable<HttpResponse<Blob>> {
+        let params = new HttpParams();
+        if (qnaProceso != null) {
+            params = params.set('qnaProceso', String(qnaProceso));
+        }
+        return this.http.get(`${this.base}/inasistencias/reporte`, {params, responseType: 'blob', observe: 'response' });
     }
 
     addIncidencia(payload: IncidenciasInasistenciasRequest): Observable<ApiResponse<IncidenciaResponse>> {
