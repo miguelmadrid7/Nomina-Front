@@ -163,12 +163,11 @@
                             <div class="header-filter"><span>INASISTENCIA<br>HRS/DÍA</span></div>
                         </th>
                         <td mat-cell *matCellDef="let f" class="col-sm col-center" [formGroup]="f.form">
-                            <mat-form-field appearance="outline" class="row-field row-field--horas" subscriptSizing="dynamic"
-                                [class.row-field--readonly]="plazaSeleccionada?.esPlazaJornada">
+                            <mat-form-field appearance="outline" class="row-field row-field--horas" subscriptSizing="dynamic" [class.row-field--readonly]="plazaSeleccionada?.plazaJornada">
                                 <input matInput type="number" min="0"
                                     [max]="plazaSeleccionada?.horas || null"
                                     formControlName="horasInasistencia"
-                                    [readonly]="plazaSeleccionada?.esPlazaJornada">
+                                    [readonly]="plazaSeleccionada?.plazaJornada">
                                 <mat-error *ngIf="f.form.get('horasInasistencia')?.hasError('max')">
                                     Máx. {{ plazaSeleccionada?.horas }}
                                 </mat-error>
