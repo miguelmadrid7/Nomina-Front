@@ -46,6 +46,40 @@
                 <mat-checkbox formControlName="visible"></mat-checkbox>
             </div>
 
+            <!-- Role permissions -->
+            <div class="permissions-section" formArrayName="permissions">
+                <span class="field-group-label">PERMISOS POR ROL</span>
+                <span class="permissions-hint">Los permisos se asignan desde la pantalla de Roles.</span>
+                <div class="table-scroll">
+                    <table class="permissions-table">
+                        <thead>
+                            <tr>
+                                <th class="role-cell">Rol</th>
+                                @for (col of permissionColumns; track col.key) {
+                                    <th>{{ col.label }}</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (group of permissions.controls; track group; let i = $index) {
+                                <tr [formGroupName]="i">
+                                    <td class="role-cell">{{ roleName(group.get('roleId')?.value) }}</td>
+                                    @for (col of permissionColumns; track col.key) {
+                                        <td><mat-checkbox [formControlName]="col.key"></mat-checkbox></td>
+                                    }
+                                </tr>
+                            } @empty {
+                                <tr>
+                                    <td class="permissions-empty" [attr.colspan]="permissionColumns.length + 1">
+                                        Selecciona al menos un rol para asignar sus permisos.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <mat-form-field appearance="outline" class="qna-compact search-field with-separator" floatLabel="always">
                 <mat-label>PADRE</mat-label>
                 <mat-icon matPrefix>account_tree</mat-icon>
@@ -91,7 +125,7 @@
     </mat-dialog-content>
 
     <div class="dialog-actions">
-        <button class="btn btn-danger" type="button"(click)="close()">Cancelar</button>
-        <button class="btn btn-primary"type="button" (click)="submit()"> {{ mode === 'edit' ? 'Aceptar' : 'Guardar' }} </button>
+        <button class="btn btn-danger" type="button" (click)="close()">Cancelar</button>
+        <button class="btn btn-primary" type="button" (click)="submit()"> {{ mode === 'edit' ? 'Aceptar' : 'Guardar' }} </button>
     </div>
 </div>
