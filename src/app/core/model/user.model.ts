@@ -1,13 +1,15 @@
-export interface User  {
+export interface User {
     id: number;
     username: string;
-    email: string
+    email: string;
     area: string;
     task: string;
-    catEmpleadoId: number;
+    catempleadoid: number;
+    catNivelRhId?: number | null;
+    principal?: string | null;
+    tsCreated?: string | null;
     rolesname?: string;
     modulesname?: string;
-    parentmodulesname: string;
-    childmodulesname: string;
-    modulesName?: string;
+    parentmodulesname?: string;
+    childmodulesname?: string;
 }

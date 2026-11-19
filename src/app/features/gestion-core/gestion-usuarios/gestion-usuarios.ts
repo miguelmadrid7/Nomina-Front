@@ -19,6 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { UserService } from '../../../core/services/user.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { UsuarioDialog } from '../../../shared/dialogs/editar-usuario-dialog/editar-usuario-dialog';
+
 import { AltaUsuarioDialog } from '../../../shared/dialogs/alta-usuario-dialog/alta-usuario-dialog';
 import { ConfirmDialog } from '../../../shared/dialogs/confirm-dialog/confirm-dialog';
 import { ToastService } from '../../../core/services/toast.service';
@@ -211,8 +212,7 @@ export class GestionUsuarios implements OnDestroy {
       const email = (user.email ?? '').trim().toLowerCase();
       const area = (user.area ?? '').trim().toLowerCase();
       const task = (user.task ?? '').trim().toLowerCase();
-      const catEmpleadoId = String(user.catEmpleadoId ?? '').toLowerCase();
-
+      const catEmpleadoId = String(user.catempleadoid ?? '').toLowerCase();
       return (
         username.includes(q) ||
         email.includes(q) ||
@@ -300,7 +300,7 @@ export class GestionUsuarios implements OnDestroy {
       return;
     }
 
-    const etiqueta = (row.username|| row.email || String(row.catEmpleadoId)).trim();
+    const etiqueta = (row.username || row.email || String(row.catempleadoid)).trim();
     const confirmRef = this.dialog.open(ConfirmDialog, {
       width: '500px',
       autoFocus: false,
@@ -379,7 +379,7 @@ export class GestionUsuarios implements OnDestroy {
   }
 
   getUserModules(row: User): string[] {
-    return this.splitList(row.modulesName ?? '');
+    return this.splitList(row.modulesname ?? '');
   }
 
   getUserParentModules(row: User): string[] {

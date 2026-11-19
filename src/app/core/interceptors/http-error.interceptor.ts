@@ -35,22 +35,21 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req, next) => {
                     );
                 break;
 
-                case 401:
-                    if (isLoginRequest) {
+                case 401: {
+                        if (isLoginRequest) {
+                            break;
+                        }
+                        const motivo: string = error.error?.message ?? '';
+                        const mensaje = motivo === 'Token revocado' ? 'Tu sesión se cerró porque hubo cambios en tu cuenta. Inicia sesión nuevamente.' : 'Tu sesión ha expirado. Inicia sesión nuevamente.';
+                        loginService.logout();
+                        if (!router.url.startsWith('/login')) {
+                            toastService.warning('Sesión finalizada', mensaje, 6000);
+                            router.navigate(['/login'], {
+                                queryParams: { returnUrl: router.url }
+                            });
+                        }
                         break;
                     }
-                    toastService.warning(
-                        'Sesión expirada',
-                        'Tu sesión ha expirado. Inicia sesión nuevamente',
-                        6000
-                    );
-                    loginService.logout();
-                    if (!router.url.startsWith('/login')) {
-                        router.navigate(['/login'], {
-                            queryParams: { returnUrl: router.url }
-                        });
-                    }
-                break;
 
                 case 403:
                     forbiddenDialog.open();

@@ -50,10 +50,10 @@ export class UsuarioDialog {
     const user = this.data?.user ?? this.data;
     const pre = this.data?.selectedRoleIds ?? [];
     this.selectedRoleIdsSet = new Set<number>(pre);
-
     this.form = this.fb.group({
       id: [{ value: user?.id ?? '', disabled: true }],
       catEmpleadoId: [user?.catempleadoid ?? ''],
+      catNivelRhId: [user?.catNivelRhId ?? null],
       username: [user?.username ?? ''],
       email: [user?.email ?? ''],
       area: [user?.area ?? ''],
@@ -62,7 +62,7 @@ export class UsuarioDialog {
       deleted: [!!user?.deleted],
       isVerified: [!!user?.isVerified],
       isPassword: [!!user?.isPassword],
-      principal: [user?.config?.config?.principal ?? user?.config?.principal ?? ''],
+      principal: [user?.principal ?? user?.config?.config?.principal ?? user?.config?.principal ?? ''],
       extras: [((user?.config?.config?.extras ?? user?.config?.extras) ?? []).join(', ')],
       roleIds: [pre],
     });
@@ -70,9 +70,9 @@ export class UsuarioDialog {
 
   guardar(): void {
     const roleIds = (this.form.get('roleIds')?.value ?? []) as number[];
-
     const payloadUser = {
       srl_emp: this.form.get('catEmpleadoId')?.value ?? null,
+      catNivelRhId: this.form.get('catNivelRhId')?.value ?? null,
       user: this.form.get('username')?.value ?? null,
       email: this.form.get('email')?.value ?? null,
       area: this.form.get('area')?.value ?? null,

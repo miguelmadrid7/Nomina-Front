@@ -32,7 +32,8 @@ export class UserService {
   //Roles por usuarios
   getRolesByUser(userId: number): Observable<number[]> {
     const headers = new HttpHeaders({ userId: String(userId) });
-    return this.http.get<ApiResponse<number[]>>(`${this.base}/users/rolesByUser`, { headers }).pipe(map(res => res.data ?? []));
+    return this.http.get<ApiResponse<{ role_id: number; id: number }[]>>(`${this.base}/users/rolesByUser`, { headers })
+      .pipe(map(res => (res.data ?? []).map(r => r.role_id)));
   }
 
 

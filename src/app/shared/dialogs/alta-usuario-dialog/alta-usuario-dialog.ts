@@ -38,11 +38,11 @@ export class AltaUsuarioDialog {
   ngOnInit(): void {
     const roles = this.data?.roles ?? [];
     const defaultRoleId = roles.length === 1 ? roles[0]?.id : null;
-
     this.form = this.fb.group({
       user: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       srl_emp: [null, [Validators.required]],
+      catNivelRhId: [null], 
       area: [''],
       task: [''],
       active: [true],
