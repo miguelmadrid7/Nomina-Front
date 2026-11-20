@@ -147,6 +147,14 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque deducción concepto 56' },            // nom_cheque_cpto_56
     { label: 'Calculando nómina cheque deducción concepto SF' },            // nom_cheque_cpto_SF
     { label: 'Calculando nómina cheque deducción concepto VT' },            // nom_cheque_cpto_VT
+    { label: 'Calculando nómina cheque deducción concepto VT' },            // nom_cheque_cpto_VT
+    { label: 'Calculando nómina cheque deducción concepto 03' },            // nom_cheque_cpto_03
+    { label: 'Calculando nómina cheque deducción concepto VP' },            // nom_cheque_cpto_VP
+    { label: 'Calculando nómina cheque deducción concepto FJ' },            // nom_cheque_cpto_FJ
+    { label: 'Calculando nómina cheque deducción concepto CE' },            // nom_cheque_cpto_CE
+    { label: 'Calculando nómina cheque deducción concepto CS' },            // nom_cheque_cpto_CS
+    { label: 'Calculando nómina cheque deducción concepto 61' },            // nom_cheque_cpto_61
+    { label: 'Calculando nómina cheque deducción concepto BS' },            // nom_cheque_cpto_BS
     { label: 'Calculando deducciones informadas' },               // deducciones informadas
     { label: 'Calculando nómina cheque bonos BA' },               // nom_cheque_cpto_bono_BA
     { label: 'Calculando nómina cheque bonos BE' },               // nom_cheque_cpto_bono_BE
