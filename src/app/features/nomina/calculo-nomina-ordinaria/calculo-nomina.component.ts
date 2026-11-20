@@ -108,8 +108,8 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque percepción concepto tabular C4' },          // nom_cheque_cpto_p_C4
     { label: 'Calculando nómina cheque percepción concepto tabular CG' },          // nom_cheque_cpto_p_CG
     { label: 'Calculando nómina cheque percepción concepto tabular E9' },          // nom_cheque_cpto_p_E9
-    { label: 'Calculando nómina cheque percepción concepto tabular E2' },          // nom_cheque_cpto_p_E2
     { label: 'Calculando nómina cheque percepción concepto tabular H0' },          // nom_cheque_cpto_p_ho
+    { label: 'Calculando nómina cheque percepción concepto tabular E2' },          // nom_cheque_cpto_p_E2
     { label: 'Calculando nómina cheque percepción concepto tabular informado D1, D2, D3, D4, D5, D6' },    // nom_cheque_cpto_p_D1_D6
     { label: 'Calculando nómina cheque percepción concepto tabular informado DO' },                        // nom_cheque_cpto_p_DO
     { label: 'Calculando nómina cheque percepción concepto tabular informado FC' },                        // nom_cheque_cpto_p_FC
@@ -131,7 +131,8 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque percepción concepto quinquenios administrativos A1, A5' },    // nom_cheque_cpto_quinquenios_a1_a5
     { label: 'Calculando nómina cheque percepción concepto 14 sustítuto gravidez' },        // nom_cheque_cpto_14
     { label: 'Calculando nómina cheque percepción concepto 15 sustítuto pre-pensionaria' }, // nom_cheque_cpto_15
-    { label: 'Calculando nómina cheque percepción concepto primas' },                       // nom_cheque_cpto_primas
+    { label: 'Calculando nómina cheque percepción concepto primas' }, 
+    { label: 'Calculando nómina cheque retroactivos dedudcciones de ley' }, // nom_cheque_cpto_retro                      // nom_cheque_cpto_primas
     { label: 'Calculando nómina cheque deducción concepto 01' },            // nom_cheque_cpto_01
     { label: 'Calculando nómina cheque deducción concepto 02' },            // nom_cheque_cpto_02
     { label: 'Calculando nómina cheque deducción concepto 04' },            // nom_cheque_cpto_04
@@ -143,6 +144,9 @@ export class CalculoNominaComponent implements OnInit {
     { label: 'Calculando nómina cheque deducción concepto MR' },            // nom_cheque_cpto_MR
     { label: 'Calculando nómina cheque deducción concepto 19' },            // nom_cheque_cpto_19
     { label: 'Calculando nómina cheque deducción concepto 17' },            // nom_cheque_cpto_17
+    { label: 'Calculando nómina cheque deducción concepto 56' },            // nom_cheque_cpto_56
+    { label: 'Calculando nómina cheque deducción concepto SF' },            // nom_cheque_cpto_SF
+    { label: 'Calculando nómina cheque deducción concepto VT' },            // nom_cheque_cpto_VT
     { label: 'Calculando deducciones informadas' },               // deducciones informadas
     { label: 'Calculando nómina cheque bonos BA' },               // nom_cheque_cpto_bono_BA
     { label: 'Calculando nómina cheque bonos BE' },               // nom_cheque_cpto_bono_BE
